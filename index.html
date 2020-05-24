@@ -1,0 +1,415 @@
+<!--
+
+todo
+- github
+- sub folders
+- auto allign icons
+- ghost icons when moved
+- glsl
+- mini dwitter
+
+-->
+<html>
+<head>
+<title>OS13k</title>
+</head>
+<style>
+*
+{
+    font-family: arial;
+}
+body
+{
+    overflow: hidden;
+    background-image: linear-gradient(#223, #322);
+    background-color: #222;
+}
+</style>
+<body>
+<script>
+
+"use strict";
+
+const debug = 0;
+
+/////////////////////////////////////////////////////////////////////////////
+// icon object
+
+class OS13kIcon extends HTMLElement
+{
+	constructor({x=0, y=0, name, icon, src, width=500, height=500, hideWhenClosed=0})
+    {
+		super();
+        	
+		this.shadow = this.attachShadow({mode: 'open'});
+        
+        this.name = name;
+        this.icon = icon;
+        this.src = src;
+        this.windowWidth = width;
+        this.windowHeight = height;
+        this.SetPos(x, y);
+        this.hideWhenClosed = hideWhenClosed;
+        
+        this.shadowRoot.innerHTML = `
+        <style>
+        :host
+        {
+            position: absolute;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+        }
+        .iconImage
+        {
+            width: 64px;
+            height: 64px;
+            font-size: 42px;
+            background-image: linear-gradient(#fff, #999);
+            color: #000;
+            border-radius: 9px;
+            box-shadow: 3px 3px 5px #000F;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+        }
+        .iconName
+        {
+            text-align: center;
+            font-size: 18px;
+            color: #FFF;
+            text-shadow: 1px 1px 5px #000;
+            position: absolute;
+            top: 70px;
+        }
+		</style>
+        <span class=iconImage id=icon>${ icon }</span>
+        <span class=iconName id=name>${ name }</span>`;
+    }
+    
+    SetPos(x, y)
+    {
+        this.style.left = x;
+        this.style.top = y;
+    }
+    
+    Open()
+    {
+        if (this.os13kWindow)
+        {
+            this.os13kWindow.style.display = '';
+            this.os13kWindow.style.zIndex = ++topZ;
+            //this.os13kWindow.Close();
+            //this.os13kWindow = 0;
+            return;
+        }
+        
+        // stager open positions
+        openPos += 50;
+        if (openPos > 300)
+            openPos = 50;
+            
+        this.os13kWindow = new OS13kWindow({x:openPos, y:openPos, icon:this});
+        document.body.appendChild(this.os13kWindow);
+    }
+    
+    MouseDown()
+    {
+        this.style.zIndex = ++topZ;
+        //document.body.appendChild(this);
+    }
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// frame object
+
+class OS13kWindow extends HTMLElement
+{
+	constructor({x, y, icon})
+    {
+		super();
+        	
+        this.maximized = 0;
+        this.os13kIcon = icon;
+        this.style.zIndex = ++topZ;
+        this.SetPos(x, y);
+        this.SetSize(icon.windowWidth, icon.windowHeight);
+        
+		this.shadow = this.attachShadow({mode: 'open'});
+        this.shadowRoot.innerHTML = `
+        <style>
+        :host
+        {
+            position: absolute;
+            user-select: none;
+            background: #FFF;
+            display: flex;
+            flex-direction: column;
+            border: 2px solid black;
+            box-shadow: 5px 5px 5px #000F;
+            white-space: nowrap;
+            vertical-align: text-top;
+        }
+        .title
+        {
+            font-size: 36px;
+            background: #999;
+            color: #000;
+        }
+        .frame
+        {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .resize
+        {
+            font-size: 25px;
+            color: #000;
+            position: absolute;
+            top: 0;
+            right: 23;
+        }
+        .close
+        {
+            font-size: 40px;
+            color: #000;
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+		</style>
+        <span class=resize id=resize>🗖
+        </span>
+		</style>
+        <span class=close id=close>×
+        </span>
+        <span class=title id=title>${ '&nbsp;' + icon.icon + ' ' + icon.name }</span>`;
+        //<iframe id=frame src=${ icon.src } class=frame></iframe>`;
+
+        const frame = document.createElement('iframe');
+        frame.id = 'frame';
+        frame.className = 'frame';
+        frame.onload =e=>
+        {
+            const iframe_content = e.target.contentWindow || e.target.contentDocument;
+            iframe_content.focus();
+            iframe_content.zzfx = zzfx;
+            iframe_content.OS13k = OS13k;
+        };
+        frame.src = icon.src;
+        this.frame = frame;
+        this.shadow.appendChild(frame);
+
+        // this.frame = this.shadowRoot.getElementById('frame');
+        //this.shadow.appendChild(new OS13kIcon({name:'test', icon:'✌️', src:'test.html', hideWhenClosed:1}));
+    }
+    
+    SetPos(x, y)
+    {
+        this.style.left = x;
+        this.style.top = y;
+    }
+    
+    SetSize(width, height)
+    {
+        this.style.width = width;
+        this.style.height = height;
+    }
+    
+    Close()
+    {
+        if (this.os13kIcon.hideWhenClosed)
+            this.style.display = 'none';
+        else
+        {
+            this.remove();
+            this.os13kIcon.os13kWindow = 0;
+        }
+    }
+    
+    MouseDown(id)
+    {
+        this.style.zIndex = ++topZ;
+        if (id == 'close')
+            this.Close();
+        else if (id == 'resize')
+            this.Resize();
+        else if (id == 'title')
+            this.frame.style.pointerEvents = 'none';
+    }
+    
+    MouseUp(id)
+    {
+        this.frame.style.pointerEvents = 'auto';
+    }
+    
+    Resize()
+    {
+        this.maximized = !this.maximized;
+        if (this.maximized)
+        {
+            this.oldLeft = this.style.left;
+            this.oldTop = this.style.top;
+            this.oldWidth = this.style.width;
+            this.oldHeight = this.style.height;
+            this.style.left = 0;
+            this.style.top = 0;
+            this.style.width = innerWidth-9;
+            this.style.height = innerHeight-9;
+        }
+        else
+        {
+            this.style.left = this.oldLeft;
+            this.style.top = this.oldTop;
+            this.style.width = this.oldWidth;
+            this.style.height = this.oldHeight;
+        }
+        
+        this.shadowRoot.getElementById('resize').innerHTML = 
+            this.maximized ? '🗗' : '🗖';
+    }
+}
+
+customElements.define('os13k-icon', OS13kIcon)
+customElements.define('os13k-window', OS13kWindow)
+
+/////////////////////////////////////////////////////////////////////////////
+// input
+
+let selected;
+let seletOffsetX;
+let seletOffsetY;
+let openPos = 100;
+let topZ = 0;
+
+const FindIconInPath=path=>
+{
+    for(const p of path)
+    {   
+        if (p.localName == 'os13k-icon')
+            return p;
+    }
+}
+
+onmousedown=e=>
+{
+    const icon = FindIconInPath(e.path);
+    const target = icon ?? e.target;
+    
+    const rect = target.getBoundingClientRect();
+    seletOffsetX = e.x - rect.left;
+    seletOffsetY = e.y - rect.top;
+    
+    if (e.target != target)
+    {
+        const rect = e.target.getBoundingClientRect();
+        seletOffsetX += rect.left;
+        seletOffsetY += rect.top;
+    }
+    
+    if (icon)
+        icon.MouseDown();
+    else if (target.localName == 'os13k-window')
+    { 
+        target.MouseDown(e.path[0].id);
+        if (e.path[0].id != 'title')
+            return;
+    }
+    else
+        return;
+        
+    selected = target;
+}
+
+onmouseup=e=>
+{
+    if (!selected)
+        return;
+
+    if (selected.localName == 'os13k-window')
+        selected.MouseUp(e.path[0].id);
+    else if (selected.localName == 'os13k-icon')
+        selected.style.zIndex = 0;
+    selected = 0;
+}
+
+onmousemove=e=>
+{
+    if (!e.which)
+    {
+        // prevent getting stuck
+        onmouseup(e);
+        return;
+    }
+
+    if (selected)
+        selected.SetPos(e.x - seletOffsetX, e.y - seletOffsetY);
+}
+
+ondblclick=e=>
+{
+    const icon = FindIconInPath(e.path);
+    if (icon)
+        icon.Open();
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// ZzFXMicro - Zuper Zmall Zound Zynth 
+
+let zzfxV = .3; // volume
+const zzfx =      // play sound
+(I=1,J=.05,g=220,f=0,h=0,m=.1,n=0,K=1,r=0,z=0,t=0,A=0,u=0,B=0,v=0,L=0,e=0,d=2*Math.PI,b=44100,w=p=>2*p*Math.random()-p,C=p=>0<p?1:-1,M=r*=500*d/b**2,D=g*=(1+w(J))*d/b,N=C(v)*d/4,q=[],E=0,F=0,c=0,k=1,G=0,H=0,a=0,O,l,x,y=zzfxX.createBufferSource())=>{f=99+f*b|0;h=h*b|0;m=m*b|0;e=e*b|0;z*=500*d/b**3;l=f+h+m+e;v*=d/b;t*=d/b;A*=b;for(u*=b;c<l;q[c++]=a)++H>100*L&&(H=0,a=E*g*Math.sin(F*v-N),a=n?1<n?2<n?3<n?Math.sin((a%d)**3):Math.max(Math.min(Math.tan(a),1),-1):1-(2*a/d%2+2)%2:1-4*Math.abs(Math.round(a/d)-a/d):Math.sin(a),a=C(a)*Math.abs(a)**K,a*=I*zzfxV*(c<f?c/f:c<f+h?1:c<l-e?1-(c-f-h)/m:0),a=e?a/2+(e>c?0:(c<l-e?1:(c-l)/e)*q[c-e]/2):a),E+=1+w(B),F+=1+w(B),g+=r+=z,k&&++k>A&&(D+=t,g+=t,k=0),u&&++G>u&&(g=D,r=M,G=1,k=k||1);x=zzfxX.createBuffer(1,q.length,b);x.getChannelData(0).set(q);y.buffer=x;y.connect(zzfxX.destination);y.start()};const zzfxX=new(window.AudioContext||webkitAudioContext);zzfxX.z=zzfxX.createBufferSource;zzfxX.createBufferSource=(s=zzfxX.z())=>(s.start=s.start||(t=>zzfxX.noteOn(t)),s)
+
+/////////////////////////////////////////////////////////////////////////////
+// OS13k
+
+class _OS13k
+{
+    constructor()
+    {
+        this.lastActiveElement;
+    }
+
+    Alert(text)
+    {
+        alert(text);
+    }
+    
+    Update()
+    {
+        const activeElement = document.activeElement;
+        if (this.lastActiveElement != activeElement)
+        {
+            activeElement.style.zIndex = ++topZ;
+            this.lastActiveElement = activeElement;
+        }
+    }
+} // _OS13k
+
+const OS13k = new _OS13k;
+
+setInterval(OS13k.Update,100);
+
+let X = -80;
+const AddIcon=p=>
+{
+    p.x=X+=100; p.y=20; 
+    const icon = new OS13kIcon(p); 
+    document.body.appendChild(icon); 
+    return icon;
+}
+
+AddIcon({name:'Help', icon:'❓', src:'help.html'})
+AddIcon({name:'Test', icon:'✌️', src:'test.html', hideWhenClosed:1})
+AddIcon({name:'Mother Goose', icon:'🦢', src:'stories.html'})
+AddIcon({name:"Queen's Gambit", icon:'<span style=color:#f0f>♛</span>', src:'games/queensGambit.html', width:1290, height:720});
+AddIcon({name:'Free Cell', icon:'♠️', src:'games/freeCell.html', width:800, height:1e3, hideWhenClosed:1});
+AddIcon({name:'Digit Dilemma', icon:'<span style="font-family:monospace">☻</span>', src:'games/digitDilemma.html'});
+
+</script>
+</body>
+</html>
