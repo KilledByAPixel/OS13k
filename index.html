@@ -218,20 +218,20 @@ class OS13kIcon extends HTMLElement
         {
             // reopen the old window
             this.os13kWindow.style.display = '';
-            this.os13kWindow.focus();
-            return;
+        }
+        else
+        {
+            // stager open positions
+            openPos += 50;
+            if (openPos > 300)
+                openPos = 50;
+
+            // open the window
+            this.os13kWindow = new OS13kWindow({x:openPos, y:openPos, icon:this});
+            os13kDesktop.appendChild(this.os13kWindow);
         }
         
-        // stager open positions
-        openPos += 50;
-        if (openPos > 300)
-            openPos = 50;
-        
-        // open the window
-        this.os13kWindow = new OS13kWindow({x:openPos, y:openPos, icon:this});
-        os13kDesktop.appendChild(this.os13kWindow);
-        
-        // set focus immediatly
+        // set focus to window
         this.os13kWindow.focus();
     }
     
@@ -270,6 +270,11 @@ class OS13kIcon extends HTMLElement
         {
             // only allow dropping into folders
             if (!element.os13kIcon.folder)
+                return;
+               
+            // prevent dropping on title bar
+            const shadowElement = element.shadowRoot.elementFromPoint(e.x, e.y);
+            if (shadowElement && shadowElement.id == 'titleBar')
                 return;
                 
             // prevent recursive folders
@@ -594,13 +599,14 @@ class _OS13k
         this.audioContext.createBufferSource=(s=this.audioContext._createBufferSource())=>(s.start=s.start||(t=>zzfxX.noteOn(t)),s);
     }
     
-    Medal(name, icon, score)
+    Medal(gameName, medalName, icon, score)
     {
         // show popup and unlock medal
     }
     
     PlaySamples(samples)
     {
+        // play raw audio sample data
         const buffer = this.audioContext.createBuffer(1, samples.length, 44100);
         const source = this.audioContext.createBufferSource();
         buffer.getChannelData(0).set(samples);
