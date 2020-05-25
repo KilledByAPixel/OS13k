@@ -237,6 +237,9 @@ class OS13kIcon extends HTMLElement
         // open the window
         this.os13kWindow = new OS13kWindow({x:openPos, y:openPos, icon:this});
         document.body.appendChild(this.os13kWindow);
+        
+        // set focus immediatly
+        this.os13kWindow.focus();
     }
     
     MouseDown()
