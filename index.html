@@ -1,18 +1,6 @@
 <!--
 
-todo
-- glsl
-- bar on bottom with open window icons
-- right click menu
-    - create icon
-    - create folder
-    - delete
-    - arrange
-- desktop local storage persistance
-    - save as a desktop structure
-- icons that can open web links
-- ability to scale window size
-- better fill icons, handle wrapping
+OS13k - A tiny pseudo operating system for JS13k
 
 -->
 <html>
@@ -28,12 +16,28 @@ body
 {
     overflow: hidden;
     background: linear-gradient(#223, #322);
-    background-attachment: fixed;
+}
+*:active
+{
+    cursor: grabbing;
+}
+.title
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 400;
+    font-family: impact;
+    color: #0002;
+    height: 100%;
+    user-select: none;
 }
 </style>
 </head>
 <body>
-<template id=template_icon>
+<span id=os13kDesktop></span>
+<span class=title>OS13k</span>
+<template id=templateIcon>
 <style>
 :host
 {
@@ -42,12 +46,13 @@ body
     align-items: center;
     flex-direction: column;
     user-select: none;
+    cursor: grab;
 }
 .icon
 {
-    width: 64px;
-    height: 64px;
-    font-size: 42px;
+    width: 64;
+    height: 64;
+    font-size: 42;
     background: linear-gradient(#fff, #999);
     border-radius: 9px;
     box-shadow: 3px 3px 5px #000;
@@ -57,31 +62,29 @@ body
     justify-content: center;
     white-space: nowrap;
     pointer-events: none;
-
 }
 .name
 {
     position: absolute;
-    top: 70px;
+    top: 70;
     text-align: center;
-    font-size: 18px;
+    font-size: 18;
     color: #FFF;
     text-shadow: 1px 1px 5px #000;
 }
 </style>
 </template>
-<template id=template_window>
+<template id=templateWindow>
 <style>
 :host
 {
     position: absolute;
     user-select: none;
-    background: #FFF;
+    background: #000;
     display: flex;
     flex-direction: column;
     border: 2px solid #000;
     box-shadow: 9px 9px 9px #000;
-    vertical-align: text-top;
     overflow: hidden;
 }
 .frame
@@ -91,6 +94,7 @@ body
     height: 100%;
     border: none;
     overflow: hidden;
+    background: #FFF;
 }
 .folder
 {
@@ -98,21 +102,20 @@ body
 }
 .titleBar
 {
-    font-size: 36px;
-    background: #aac;
-    color: #000;
+    font-size: 36;
+    cursor: grab;
 }
 .resize
 {
+    font-size: 26;
     position: absolute;
-    top: 0; right: 23;
-    font-size: 25px;
+    right: 23;
 }
 .close
 {
+    font-size: 40;
     position: absolute;
-    top: 0; right: 0;
-    font-size: 40px;
+    right: 0;
 }
 </style>
 <span id=resize class=resize>🗖</span>
@@ -126,30 +129,29 @@ body
 // os13k desktop
 const desktopLayout = 
 [
-{name:'Help', icon:'❓', src:'help.html?1'},
+{name:'Help', icon:'❓', src:'help.html?2'},
+{name:'System', icon:'⚙️', folder:
+[
+    {name:'Test', icon:'✌️', src:'test.html?2', hideWhenClosed:1},
+]},
 {name:'Games', icon:'🎮', folder:
 [
     {name:"Sn1ke", icon:'👀', src:'games/sn1ke.html', width:400, height:330, hideWhenClosed:1},
-    {name:"Tetris", icon:'T', src:'games/tetris.html', width:210, height:420},
+    {name:"Tetris", icon:'🆃', src:'games/tetris.html', width:220, height:430},
     {name:"Queen's Gambit", icon:'<span style=color:#f0f>♛</span>', src:'games/queensGambit.html', width:1290, height:720},
     {name:'Free Cell', icon:'♠️', src:'games/freeCell.html', width:800, height:1e3, hideWhenClosed:1},
-    {name:'Digit Dilemma', icon:'<span style="font-family:monospace">☻</span>', src:'games/digitDilemma.html'},
+    {name:'Digit Dilemma', icon:'<span style=font-family:monospace>☻</span>', src:'games/digitDilemma.html'},
     {name:'Hue Jumper', icon:'🌲', src:'games/hueJumper.html', width:1290, height:720},
 ]},
 {name:'Utilities', icon:'🔧', folder:
 [
     {name:'Photo Booth', icon:'📸', src:'utilities/photoBooth.html', width:1380, height:600},
     {name:'Unicode Toys', icon:'𝖀', src:'utilities/unicodeToys.html', width:500, height:800},
-    {name:'Mini Shadertoy', src:'utilities/miniShadertoy.html', width:340, height:400},
-]},
-{name:'System', icon:'⚙️', folder:
-[
-    {name:'Test', icon:'✌️', src:'test.html?2', hideWhenClosed:1},
+    {name:'Mini Shadertoy', icon:'𝓢', src:'utilities/miniShadertoy.html', width:340, height:400},
 ]},
 {name:'Toys', icon:'🤖', folder:
 [
-    {name:'Mini Mandelbox', src:'toys/miniMandelbox.html', hideWhenClosed:1},
-    {name:'ZzFX Sounds', icon:'ZZ', src:'toys/zzfxSoundBoard.html', hideWhenClosed:1},
+    {name:'ZzFX Sounds', icon:'𝐙𝐙', src:'toys/zzfxSoundBoard.html', hideWhenClosed:1},
 ]},
 {name:'Test Folder', folder:
 [
@@ -166,7 +168,7 @@ const InitDesktop=_=>
     {
         p.x=X+=iconGridSizeX; p.y=iconGridSizeX/4; 
         const icon = new OS13kIcon(p); 
-        document.body.appendChild(icon); 
+        os13kDesktop.appendChild(icon); 
         return icon;
     }
     
@@ -182,7 +184,7 @@ let openPos = 99;
 
 class OS13kIcon extends HTMLElement
 {
-	constructor({x=0, y=0, name, icon, src, width=720, height=600, hideWhenClosed, allowMultiple, folder})
+	constructor({x, y, name, icon, src, width=720, height=540, hideWhenClosed, allowMultiple, folder})
     {
 		super();
         
@@ -204,26 +206,16 @@ class OS13kIcon extends HTMLElement
         this.folder = folder;
         
         // create shadow root
-        this.shadowRoot.innerHTML = template_icon.innerHTML;
-        
-        // attach icon image
-        const spanIcon = document.createElement('span');
-        spanIcon.className = 'icon';
-        spanIcon.innerHTML = icon;
-        this.shadowRoot.appendChild(spanIcon);
-        
-        // attach icon name
-        const spanName = document.createElement('span');
-        spanName.className = 'name';
-        spanName.innerHTML = name;
-        this.shadowRoot.appendChild(spanName);
+        this.shadowRoot.innerHTML = templateIcon.innerHTML
+            +`<span class=icon>${ icon }</span>`
+            +`<span class=name>${ name }</span>`;
     }
     
     Open()
     {
         if (this.os13kWindow && !this.allowMultiple)
         {
-            // re-open the old window
+            // reopen the old window
             this.os13kWindow.style.display = '';
             this.os13kWindow.focus();
             return;
@@ -236,7 +228,7 @@ class OS13kIcon extends HTMLElement
         
         // open the window
         this.os13kWindow = new OS13kWindow({x:openPos, y:openPos, icon:this});
-        document.body.appendChild(this.os13kWindow);
+        os13kDesktop.appendChild(this.os13kWindow);
         
         // set focus immediatly
         this.os13kWindow.focus();
@@ -244,7 +236,7 @@ class OS13kIcon extends HTMLElement
     
     MouseDown()
     {
-        // focus on parent window 
+        // focus on icon's window if it exists
         if (this.parentElement && this.parentElement.os13kWindow)
             this.parentElement.os13kWindow.focus();
         
@@ -254,7 +246,7 @@ class OS13kIcon extends HTMLElement
         moveIcon.realIcon = this;
         moveIcon.style.opacity = .5;
         moveIcon.style.zIndex = ++activeWindowZ;
-        document.body.appendChild(moveIcon);
+        os13kDesktop.appendChild(moveIcon);
         selected = moveIcon;
     }
     
@@ -264,7 +256,7 @@ class OS13kIcon extends HTMLElement
         const rect = this.getBoundingClientRect();
         
         // get rid of this temporary move icon
-        document.body.removeChild(this);
+        os13kDesktop.removeChild(this);
         
         // get element under mouse
         const element = document.elementFromPoint(e.x, e.y);
@@ -275,11 +267,11 @@ class OS13kIcon extends HTMLElement
         let y = rect.top;
         if (element.localName == 'os13k-window')
         {
-            // prevent dropping into non folders
+            // only allow dropping into folders
             if (!element.os13kIcon.folder)
                 return;
                 
-            // check for recursion
+            // prevent recursive folders
             const DetectRecursion=icon=>
             {        
                 if (icon.os13kWindow == element)
@@ -301,15 +293,15 @@ class OS13kIcon extends HTMLElement
             x -= rect.left;
             y -= rect.top;
             
-            // put icon in folder
+            // put icon in folder and set focus
             element.folder.appendChild(this.realIcon);
             element.focus();
         }
         else
         {
-            // drop icon onto desktop
-            document.body.appendChild(this.realIcon);
-            document.body.focus();
+            // drop icon onto desktop and set focus
+            os13kDesktop.appendChild(this.realIcon);
+            os13kDesktop.focus();
             if (activeWindow)
                 activeWindow.SetActive(0);
         }
@@ -345,7 +337,7 @@ class OS13kWindow extends HTMLElement
         
         // create shadow root
 		this.shadow = this.attachShadow({mode: 'open'});
-        this.shadowRoot.innerHTML = template_window.innerHTML;
+        this.shadowRoot.innerHTML = templateWindow.innerHTML;
         
         // create title bar
         const spanTitleBar = document.createElement('span');
@@ -478,10 +470,10 @@ class OS13kWindow extends HTMLElement
             this.oldHeight = this.style.height;
             
             // set to max size
-            this.style.left = 0;
-            this.style.top = 0;
-            this.style.width = innerWidth-9;
-            this.style.height = innerHeight-9;
+            this.style.left = 5;
+            this.style.top = 5;
+            this.style.width = innerWidth-18;
+            this.style.height = innerHeight-18;
         }
         else
         {
@@ -499,33 +491,6 @@ class OS13kWindow extends HTMLElement
 } // OS13kWindow
 
 customElements.define('os13k-window', OS13kWindow);
-
-/////////////////////////////////////////////////////////////////////////////
-// OS13k Controller
-        
-class _OS13k
-{
-    constructor()
-    {
-    }
-    
-    Update()
-    {
-        // listen for change in active element
-        // this happens when clicking on an iframe
-        const activeElement = document.activeElement;
-        if (this.lastActiveElement != activeElement)
-        {
-            if (activeElement.localName == 'os13k-window')
-                activeElement.focus();
-            this.lastActiveElement = activeElement;
-        }
-    }
-} // _OS13k
-
-const OS13k = new _OS13k;
-setInterval(OS13k.Update,100);
-InitDesktop();
 
 /////////////////////////////////////////////////////////////////////////////
 // input
@@ -546,7 +511,8 @@ onmousedown=e=>
     }
     
     // prevent pointer events while dragging
-    document.body.style.pointerEvents = 'none';
+    os13kDesktop.style.pointerEvents = 'none';
+    document.body.style.cursor = 'grabbing';
     
     // get os13k target
     const originalTarget = e.originalTarget || e.path[0];
@@ -578,7 +544,7 @@ onmousedown=e=>
     }
     else
     {
-        // deactivate window
+        // deactivate window if not clicked on
         if (activeWindow)
             activeWindow.SetActive(0);
     }
@@ -586,8 +552,9 @@ onmousedown=e=>
 
 onmouseup=e=>
 {
-    // allow pointer events
-    document.body.style.pointerEvents = '';
+    // allow pointer events and reset cursor
+    os13kDesktop.style.pointerEvents = '';
+    document.body.style.cursor = '';
     
     // release selected
     if (selected && selected.MouseUp)
@@ -611,6 +578,25 @@ onmousemove=e=>
 let zzfxV = .3; // volume
 const zzfx =      // play sound
 (I=1,J=.05,g=220,f=0,h=0,m=.1,n=0,K=1,r=0,z=0,t=0,A=0,u=0,B=0,v=0,L=0,e=0,d=2*Math.PI,b=44100,w=p=>2*p*Math.random()-p,C=p=>0<p?1:-1,M=r*=500*d/b**2,D=g*=(1+w(J))*d/b,N=C(v)*d/4,q=[],E=0,F=0,c=0,k=1,G=0,H=0,a=0,O,l,x,y=zzfxX.createBufferSource())=>{f=99+f*b|0;h=h*b|0;m=m*b|0;e=e*b|0;z*=500*d/b**3;l=f+h+m+e;v*=d/b;t*=d/b;A*=b;for(u*=b;c<l;q[c++]=a)++H>100*L&&(H=0,a=E*g*Math.sin(F*v-N),a=n?1<n?2<n?3<n?Math.sin((a%d)**3):Math.max(Math.min(Math.tan(a),1),-1):1-(2*a/d%2+2)%2:1-4*Math.abs(Math.round(a/d)-a/d):Math.sin(a),a=C(a)*Math.abs(a)**K,a*=I*zzfxV*(c<f?c/f:c<f+h?1:c<l-e?1-(c-f-h)/m:0),a=e?a/2+(e>c?0:(c<l-e?1:(c-l)/e)*q[c-e]/2):a),E+=1+w(B),F+=1+w(B),g+=r+=z,k&&++k>A&&(D+=t,g+=t,k=0),u&&++G>u&&(g=D,r=M,G=1,k=k||1);x=zzfxX.createBuffer(1,q.length,b);x.getChannelData(0).set(q);y.buffer=x;y.connect(zzfxX.destination);y.start()};const zzfxX=new(window.AudioContext||webkitAudioContext);zzfxX.z=zzfxX.createBufferSource;zzfxX.createBufferSource=(s=zzfxX.z())=>(s.start=s.start||(t=>zzfxX.noteOn(t)),s)
+
+/////////////////////////////////////////////////////////////////////////////
+// OS13k Init
+    
+let lastActiveElement;
+const OS13kUpdate=_=>
+{
+    // listen for change in active element
+    // this happens when clicking on an iframe
+    const activeElement = document.activeElement;
+    if (lastActiveElement != activeElement)
+    {
+        if (activeElement.localName == 'os13k-window')
+            activeElement.focus();
+        lastActiveElement = activeElement;
+    }
+}
+setInterval(OS13kUpdate,100);
+InitDesktop();
 
 </script>
 </body>
