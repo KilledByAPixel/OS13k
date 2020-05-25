@@ -1,18 +1,24 @@
 <!--
 
 todo
-- github
-- sub folders
-- auto allign icons
-- ghost icons when moved
 - glsl
 - mini dwitter
+- bar on bottom with open window icons
+- right click menu
+    - create icon
+    - create folder
+    - delete
+    - arrange
+- custom alerts
+- fit icons to window
+- desktop local storage persistance
+- icons that can open web links
 
 -->
 <html>
 <head>
 <title>OS13k</title>
-</head>
+<meta charset=utf-8>
 <style>
 *
 {
@@ -21,73 +27,190 @@ todo
 body
 {
     overflow: hidden;
-    background-image: linear-gradient(#223, #322);
-    background-color: #222;
+    background: linear-gradient(#223, #322);
+    background-attachment: fixed;
 }
 </style>
+</head>
 <body>
+<template id=template_icon>
+<style>
+:host
+{
+    position: absolute;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    user-select: none;
+}
+.iconImage
+{
+    width: 64px;
+    height: 64px;
+    font-size: 42px;
+    background: linear-gradient(#fff, #999);
+    color: #000;
+    border-radius: 9px;
+    box-shadow: 3px 3px 5px #000F;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    pointer-events: none;
+}
+.iconName
+{
+    text-align: center;
+    font-size: 18px;
+    color: #FFF;
+    text-shadow: 1px 1px 5px #000;
+    position: absolute;
+    top: 70px;
+}
+</style>
+</template>
+<template id=template_window>
+<style>
+:host
+{
+    position: absolute;
+    user-select: none;
+    background: #FFF;
+    display: flex;
+    flex-direction: column;
+    border: 2px solid black;
+    box-shadow: 5px 5px 5px #000F;
+    vertical-align: text-top;
+}
+.titleBar
+{
+    font-size: 36px;
+    background: #aac;
+    color: #000;
+}
+.frame
+{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border: none;
+    overflow: hidden;
+}
+.folder
+{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border: none;
+    overflow: hidden;
+    background: #222;
+    user-select: none;
+}
+.resize
+{
+    font-size: 25px;
+    color: #000;
+    position: absolute;
+    top: 0; right: 23;
+}
+.close
+{
+    font-size: 40px;
+    color: #000;
+    position: absolute;
+    top: 0; right: 0;
+}
+</style>
+<span id=resize class=resize>🗖</span>
+<span id=close class=close>×</span>
+</template>
 <script>
 
 "use strict";
 
-const debug = 0;
+const desktopLayout = 
+[
+            {name:"Queen's Gambit", icon:'<span style=color:#f0f>♛</span>', src:'games/queensGambit.html', width:1290, height:720},
+    {name:'Help', icon:'❓', src:'help.html'},
+    {name:'Games', icon:'🎮', folder:
+        [
+            {name:"Queen's Gambit", icon:'<span style=color:#f0f>♛</span>', src:'games/queensGambit.html', width:1290, height:720},
+            {name:'Free Cell', icon:'♠️', src:'games/freeCell.html', width:800, height:1e3, hideWhenClosed:1},
+            {name:'Digit Dilemma', icon:'<span style="font-family:monospace">☻</span>', src:'games/digitDilemma.html'},
+            {name:'Hue Jumper', icon:'🌲', src:'games/hueJumper.html', width:1290, height:720},
+        ]
+    },
+    {name:'Utilities', icon:'🔧', folder:
+        [
+            {name:'Test', icon:'✌️', src:'test.html', hideWhenClosed:1},
+        ]
+    },
+    {name:'System', icon:'⚙️', folder:[]},
+    {name:'Toys', icon:'🤖', folder:[]},
+    {name:'Test Folder', folder:
+        [
+            {name:'Mother Goose', icon:'🦢', src:'stories.html'},
+        ]
+    },
+    {name:'Test Folder2', folder:[]},
+];
+
+const iconGridSizeX = 99;
+const iconGridSizeY = 130;
+const InitDesktop=_=>
+{
+    let X = iconGridSizeX/4-iconGridSizeX;
+    const AddIcon=p=>
+    {
+        p.x=X+=iconGridSizeX; p.y=iconGridSizeX/4; 
+        const icon = new OS13kIcon(p); 
+        document.body.appendChild(icon); 
+        return icon;
+    }
+    
+    for (const i of desktopLayout)
+        AddIcon(i);
+}
 
 /////////////////////////////////////////////////////////////////////////////
 // icon object
 
+let topIconZ = 0;
+let openPos = 99;
+
 class OS13kIcon extends HTMLElement
 {
-	constructor({x=0, y=0, name, icon, src, width=500, height=500, hideWhenClosed=0})
+	constructor({x=0, y=0, name, icon, src, width=500, height=500, hideWhenClosed, allowMultiple, folder})
     {
 		super();
         	
 		this.shadow = this.attachShadow({mode: 'open'});
         
+        if (folder && !icon)
+            icon = '📁';
+            
         this.name = name;
         this.icon = icon;
         this.src = src;
         this.windowWidth = width;
         this.windowHeight = height;
         this.SetPos(x, y);
-        this.hideWhenClosed = hideWhenClosed;
+        this.hideWhenClosed = hideWhenClosed || folder;
+        this.allowMultiple = allowMultiple;
+        this.folder = folder;
         
-        this.shadowRoot.innerHTML = `
-        <style>
-        :host
-        {
-            position: absolute;
-            user-select: none;
-            display: flex;
-            align-items: center;
-            flex-direction: column;
-        }
-        .iconImage
-        {
-            width: 64px;
-            height: 64px;
-            font-size: 42px;
-            background-image: linear-gradient(#fff, #999);
-            color: #000;
-            border-radius: 9px;
-            box-shadow: 3px 3px 5px #000F;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            white-space: nowrap;
-        }
-        .iconName
-        {
-            text-align: center;
-            font-size: 18px;
-            color: #FFF;
-            text-shadow: 1px 1px 5px #000;
-            position: absolute;
-            top: 70px;
-        }
-		</style>
-        <span class=iconImage id=icon>${ icon }</span>
-        <span class=iconName id=name>${ name }</span>`;
+        this.shadowRoot.innerHTML = template_icon.innerHTML;
+        
+        const spanIcon = document.createElement('span');
+        spanIcon.className = 'iconImage';
+        spanIcon.innerHTML = icon;
+        this.shadowRoot.appendChild(spanIcon);
+        
+        const spanName = document.createElement('span');
+        spanName.className = 'iconName';
+        spanName.innerHTML = name;
+        this.shadowRoot.appendChild(spanName);
     }
     
     SetPos(x, y)
@@ -98,12 +221,10 @@ class OS13kIcon extends HTMLElement
     
     Open()
     {
-        if (this.os13kWindow)
+        if (this.os13kWindow && !this.allowMultiple)
         {
             this.os13kWindow.style.display = '';
-            this.os13kWindow.style.zIndex = ++topZ;
-            //this.os13kWindow.Close();
-            //this.os13kWindow = 0;
+            this.os13kWindow.focus();
             return;
         }
         
@@ -118,13 +239,80 @@ class OS13kIcon extends HTMLElement
     
     MouseDown()
     {
-        this.style.zIndex = ++topZ;
-        //document.body.appendChild(this);
+        if (this.parentElement && this.parentElement.os13kWindow)
+            this.parentElement.os13kWindow.focus();
+            
+        const rect = this.getBoundingClientRect();
+        const moveIcon = new OS13kIcon({x:rect.left, y:rect.top, name:this.name, icon:this.icon});
+        moveIcon.style.opacity = .5;
+        moveIcon.realIcon = this;
+        moveIcon.style.zIndex = ++topWindowZ;
+        document.body.appendChild(moveIcon);
+        return moveIcon;
     }
-}
+    
+    MouseUp(e)
+    {
+        const rect = this.getBoundingClientRect();
+        document.body.removeChild(this);
+        
+        let x = rect.left;
+        let y = rect.top;
+        
+        const element = document.elementFromPoint(e.x, e.y);
+        if (!element)
+            return;
+        else if (element.localName == 'os13k-window')
+        {
+            if (!element.os13kIcon.folder)
+                return;
+                
+            // check for recursion
+            const DetectRecursion=icon=>
+            {        
+                if (icon.os13kWindow == element)
+                    return 1;
+                    
+                if (icon.os13kWindow)
+                    for( const c of icon.os13kWindow.folder.children)
+                        if (DetectRecursion(c))
+                            return 1;
+            }
+            
+            if (DetectRecursion(this.realIcon))
+            {
+                alert('Recursive folder structure detected!');
+                return;
+            }
+                
+            const rect = element.folder.getBoundingClientRect();
+            x -= rect.left;
+            y -= rect.top;
+            
+            element.folder.appendChild(this.realIcon);
+            element.focus();
+        }
+        else
+        {
+            document.body.appendChild(this.realIcon);
+            document.body.focus();
+            if (topWindow)
+                topWindow.SetActive(0);
+            topWindow = 0;
+        }
+        
+        this.realIcon.SetPos(x, y);
+        this.realIcon.style.zIndex = ++topIconZ;
+    }
+} // OS13kIcon
+
+customElements.define('os13k-icon', OS13kIcon);
 
 /////////////////////////////////////////////////////////////////////////////
 // frame object
+
+let topWindow;
+let topWindowZ = 1e6;
 
 class OS13kWindow extends HTMLElement
 {
@@ -134,78 +322,75 @@ class OS13kWindow extends HTMLElement
         	
         this.maximized = 0;
         this.os13kIcon = icon;
-        this.style.zIndex = ++topZ;
         this.SetPos(x, y);
-        this.SetSize(icon.windowWidth, icon.windowHeight);
+        this.style.width = icon.windowWidth;
+        this.style.height = icon.windowHeight;
         
 		this.shadow = this.attachShadow({mode: 'open'});
-        this.shadowRoot.innerHTML = `
-        <style>
-        :host
+        this.shadowRoot.innerHTML = template_window.innerHTML;
+        
+        // create title bar
+        const spanTitleBar = document.createElement('span');
+        spanTitleBar.className = 'titleBar';
+        spanTitleBar.id = 'titleBar';
+        spanTitleBar.innerHTML = '&nbsp;' + icon.icon + ' ' + icon.name;
+        this.shadowRoot.appendChild(spanTitleBar);
+        this.titleBar = spanTitleBar;
+        
+        if (icon.folder)
         {
-            position: absolute;
-            user-select: none;
-            background: #FFF;
-            display: flex;
-            flex-direction: column;
-            border: 2px solid black;
-            box-shadow: 5px 5px 5px #000F;
-            white-space: nowrap;
-            vertical-align: text-top;
-        }
-        .title
-        {
-            font-size: 36px;
-            background: #999;
-            color: #000;
-        }
-        .frame
-        {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-        .resize
-        {
-            font-size: 25px;
-            color: #000;
-            position: absolute;
-            top: 0;
-            right: 23;
-        }
-        .close
-        {
-            font-size: 40px;
-            color: #000;
-            position: absolute;
-            top: 0;
-            right: 0;
-        }
-		</style>
-        <span class=resize id=resize>🗖
-        </span>
-		</style>
-        <span class=close id=close>×
-        </span>
-        <span class=title id=title>${ '&nbsp;' + icon.icon + ' ' + icon.name }</span>`;
-        //<iframe id=frame src=${ icon.src } class=frame></iframe>`;
+            // create div frame
+            const folder = document.createElement('div');
+            this.folder = folder;
+            folder.className = 'folder';
+            folder.os13kWindow = this;
+            this.shadow.appendChild(folder);
+            this.focus();
 
-        const frame = document.createElement('iframe');
-        frame.id = 'frame';
-        frame.className = 'frame';
-        frame.onload =e=>
+            // add icons to folder
+            let X = iconGridSizeX/4-iconGridSizeX;
+            const AddIcon=p=>
+            {
+                p.x=X+=iconGridSizeX; p.y=iconGridSizeX/4; 
+                folder.appendChild(new OS13kIcon(p));
+            }
+            for (const i of icon.folder)
+                AddIcon(i);
+        }
+        else if (icon.src)
         {
-            const iframe_content = e.target.contentWindow || e.target.contentDocument;
-            iframe_content.focus();
-            iframe_content.zzfx = zzfx;
-            iframe_content.OS13k = OS13k;
-        };
-        frame.src = icon.src;
-        this.frame = frame;
-        this.shadow.appendChild(frame);
-
-        // this.frame = this.shadowRoot.getElementById('frame');
-        //this.shadow.appendChild(new OS13kIcon({name:'test', icon:'✌️', src:'test.html', hideWhenClosed:1}));
+            // create iframe
+            const frame = document.createElement('iframe');
+            this.frame = frame;
+            frame.className = 'frame';
+            frame.sandbox.add('allow-scripts');
+            frame.sandbox.add('allow-same-origin');
+            frame.sandbox.add('allow-pointer-lock');
+            frame.onload=e=>
+            {
+                // init iframe
+                const iframe_content = e.target.contentWindow;
+                iframe_content.focus();
+                
+                try
+                {
+                    // todo: fix this on firefox, it works on chrome
+                    iframe_content.zzfx = zzfx;
+                    iframe_content.OS13k = OS13k;
+                }
+                catch 
+                {
+                    console.log('Error: could not pass OS13k globals to frame.');   
+                };
+                
+            };
+            //this.style.zIndex = ++topWindowZ;
+            //frame.referrerPolicy = 'origin';
+            //frame.referrerPolicy = 'same-origin';
+            //frame.referrerPolicy = 'no-referrer';
+            frame.src = icon.src;
+            this.shadow.appendChild(frame);
+        }
     }
     
     SetPos(x, y)
@@ -214,10 +399,20 @@ class OS13kWindow extends HTMLElement
         this.style.top = y;
     }
     
-    SetSize(width, height)
+    focus()
     {
-        this.style.width = width;
-        this.style.height = height;
+        super.focus();
+        
+        if (topWindow)
+            topWindow.SetActive(0);
+        topWindow = this;
+        this.style.zIndex = ++topWindowZ;
+        this.SetActive(1);
+    }
+    
+    SetActive(active=1)
+    {
+        this.titleBar.style.background = active ? '#aac' : '#555';
     }
     
     Close()
@@ -233,18 +428,21 @@ class OS13kWindow extends HTMLElement
     
     MouseDown(id)
     {
-        this.style.zIndex = ++topZ;
+        this.focus();
         if (id == 'close')
             this.Close();
         else if (id == 'resize')
             this.Resize();
-        else if (id == 'title')
+        else if (id == 'titleBar' && this.frame)
             this.frame.style.pointerEvents = 'none';
+            
+        this.SetActive();
     }
     
-    MouseUp(id)
+    MouseUp()
     {
-        this.frame.style.pointerEvents = 'auto';
+        if (this.frame)
+            this.frame.style.pointerEvents = 'auto';
     }
     
     Resize()
@@ -272,51 +470,55 @@ class OS13kWindow extends HTMLElement
         this.shadowRoot.getElementById('resize').innerHTML = 
             this.maximized ? '🗗' : '🗖';
     }
-}
+} // OS13kWindow
 
-customElements.define('os13k-icon', OS13kIcon)
-customElements.define('os13k-window', OS13kWindow)
+customElements.define('os13k-window', OS13kWindow);
 
-/////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////fg/////////////////////////////////////
 // input
 
 let selected;
 let seletOffsetX;
 let seletOffsetY;
-let openPos = 100;
-let topZ = 0;
-
-const FindIconInPath=path=>
-{
-    for(const p of path)
-    {   
-        if (p.localName == 'os13k-icon')
-            return p;
-    }
-}
+let lastMouseDownTarget;
+let lastMouseDownTargetTime;
 
 onmousedown=e=>
 {
-    const icon = FindIconInPath(e.path);
-    const target = icon ?? e.target;
+    if (selected)
+    {
+        // prevent getting stuck
+        selected.MouseUp(e);
+        selected = 0;
+        return;
+    }
+    
+    const originalTarget = e.originalTarget || e.path[0];
+    let target = originalTarget.parentNode.host || originalTarget;
     
     const rect = target.getBoundingClientRect();
     seletOffsetX = e.x - rect.left;
     seletOffsetY = e.y - rect.top;
     
-    if (e.target != target)
+    if (target.localName == 'os13k-icon')
     {
-        const rect = e.target.getBoundingClientRect();
-        seletOffsetX += rect.left;
-        seletOffsetY += rect.top;
+        if (lastMouseDownTarget == target && lastMouseDownTargetTime > Date.now())
+        {
+            // handle double click
+            target.Open();
+            return;
+        }
+        
+        lastMouseDownTarget = target;
+        lastMouseDownTargetTime = Date.now() + 300;
+        target = target.MouseDown();
     }
-    
-    if (icon)
-        icon.MouseDown();
     else if (target.localName == 'os13k-window')
     { 
-        target.MouseDown(e.path[0].id);
-        if (e.path[0].id != 'title')
+        target.MouseDown(originalTarget.id);
+        
+        // only allow dragging from the title bar
+        if (originalTarget.id != 'titleBar')
             return;
     }
     else
@@ -327,34 +529,15 @@ onmousedown=e=>
 
 onmouseup=e=>
 {
-    if (!selected)
-        return;
-
-    if (selected.localName == 'os13k-window')
-        selected.MouseUp(e.path[0].id);
-    else if (selected.localName == 'os13k-icon')
-        selected.style.zIndex = 0;
+    if (selected)
+        selected.MouseUp(e);
     selected = 0;
 }
 
 onmousemove=e=>
 {
-    if (!e.which)
-    {
-        // prevent getting stuck
-        onmouseup(e);
-        return;
-    }
-
     if (selected)
         selected.SetPos(e.x - seletOffsetX, e.y - seletOffsetY);
-}
-
-ondblclick=e=>
-{
-    const icon = FindIconInPath(e.path);
-    if (icon)
-        icon.Open();
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -366,7 +549,7 @@ const zzfx =      // play sound
 
 /////////////////////////////////////////////////////////////////////////////
 // OS13k
-
+        
 class _OS13k
 {
     constructor()
@@ -384,31 +567,16 @@ class _OS13k
         const activeElement = document.activeElement;
         if (this.lastActiveElement != activeElement)
         {
-            activeElement.style.zIndex = ++topZ;
+            if (activeElement.localName == 'os13k-window')
+                activeElement.focus();
             this.lastActiveElement = activeElement;
         }
     }
 } // _OS13k
 
 const OS13k = new _OS13k;
-
 setInterval(OS13k.Update,100);
-
-let X = -80;
-const AddIcon=p=>
-{
-    p.x=X+=100; p.y=20; 
-    const icon = new OS13kIcon(p); 
-    document.body.appendChild(icon); 
-    return icon;
-}
-
-AddIcon({name:'Help', icon:'❓', src:'help.html'})
-AddIcon({name:'Test', icon:'✌️', src:'test.html', hideWhenClosed:1})
-AddIcon({name:'Mother Goose', icon:'🦢', src:'stories.html'})
-AddIcon({name:"Queen's Gambit", icon:'<span style=color:#f0f>♛</span>', src:'games/queensGambit.html', width:1290, height:720});
-AddIcon({name:'Free Cell', icon:'♠️', src:'games/freeCell.html', width:800, height:1e3, hideWhenClosed:1});
-AddIcon({name:'Digit Dilemma', icon:'<span style="font-family:monospace">☻</span>', src:'games/digitDilemma.html'});
+InitDesktop();
 
 </script>
 </body>
