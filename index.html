@@ -108,15 +108,25 @@ body
 }
 .resize
 {
-    font-size: 26;
     position: absolute;
     right: 23;
+    font-size: 36;
+    line-height: 50px;
+}
+.resize:hover
+{
+    background:#fff;
 }
 .close
 {
-    font-size: 40;
     position: absolute;
     right: 0;
+    font-size: 36;
+    line-height: 50px;
+}
+.close:hover
+{
+    background:#f00;
 }
 </style>
 <span id=resize class=resize>🗖</span>
@@ -190,8 +200,7 @@ class OS13kIcon extends HTMLElement
 		super();
         
         // set default icon
-        if (!icon)
-            icon = icon || folder ? '📁' : name[0].toUpperCase();
+        icon = icon ? icon : folder ? '📁' : name[0].toUpperCase();
         
         // set icon data
 		this.shadow = this.attachShadow({mode: 'open'});
@@ -274,15 +283,15 @@ class OS13kIcon extends HTMLElement
                
             // prevent dropping on title bar
             const shadowElement = element.shadowRoot.elementFromPoint(e.x, e.y);
-            if (shadowElement && shadowElement.id == 'titleBar')
+            if (shadowElement && shadowElement.id)
                 return;
                 
             // prevent recursive folders
             const DetectRecursion=icon=>
-            {        
+            {
                 if (icon.os13kWindow == element)
                     return 1;
-                    
+                
                 if (icon.os13kWindow && icon.os13kWindow.folder)
                     for( const c of icon.os13kWindow.folder.children)
                         if (DetectRecursion(c))
@@ -357,7 +366,7 @@ class OS13kWindow extends HTMLElement
         {
             // create folder frame
             const folder = document.createElement('div');
-            folder.className = 'folder frame';
+            folder.className = 'frame folder';
             folder.os13kWindow = this;
             this.folder = folder;
             this.shadow.appendChild(folder);
@@ -523,7 +532,7 @@ onmousedown=e=>
     
     // get os13k target
     const originalTarget = e.originalTarget || e.path[0];
-    let target = originalTarget.parentNode.host || originalTarget;
+    const target = originalTarget.parentNode.host || originalTarget;
     
     // set selected offset
     const rect = target.getBoundingClientRect();
