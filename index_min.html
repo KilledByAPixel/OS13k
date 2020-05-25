@@ -1,13 +1,108 @@
 <html>
+<head>
+<title>OS13k</title>
+<meta charset=utf-8>
+</head>
 <style>
-* { font-family: arial; }
+*
+{
+    font-family: arial;
+}
 body
 {
-overflow: hidden;
-background-image: linear-gradient(#223, #322);
+    overflow: hidden;
+    background: linear-gradient(#223, #322);
+    background-attachment: fixed;
 }
 </style>
+</head>
+<body>
+<template id=template_icon>
+<style>
+:host
+{
+    position: absolute;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    user-select: none;
+}
+.icon
+{
+    width: 64px;
+    height: 64px;
+    font-size: 42px;
+    background: linear-gradient(#fff, #999);
+    border-radius: 9px;
+    box-shadow: 3px 3px 5px #000;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    pointer-events: none;
+
+}
+.name
+{
+    position: absolute;
+    top: 70px;
+    text-align: center;
+    font-size: 18px;
+    color: #FFF;
+    text-shadow: 1px 1px 5px #000;
+}
+</style>
+</template>
+<template id=template_window>
+<style>
+:host
+{
+    position: absolute;
+    user-select: none;
+    background: #FFF;
+    display: flex;
+    flex-direction: column;
+    border: 2px solid #000;
+    box-shadow: 9px 9px 9px #000;
+    vertical-align: text-top;
+    overflow: hidden;
+}
+.frame
+{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border: none;
+    overflow: hidden;
+}
+.folder
+{
+    background: #222;
+}
+.titleBar
+{
+    font-size: 36px;
+    background: #aac;
+    color: #000;
+}
+.resize
+{
+    position: absolute;
+    top: 0; right: 23;
+    font-size: 25px;
+}
+.close
+{
+    position: absolute;
+    top: 0; right: 0;
+    font-size: 40px;
+}
+</style>
+<span id=resize class=resize>🗖</span>
+<span id=close class=close>×</span>
+</template>
 <body>
 <script>
-const desktopLayout=[{name:"Help",icon:"❓",src:"help.html"},{name:"Games",icon:"🎮",folder:[{name:"Queen's Gambit",icon:"<span style=color:#f0f>♛</span>",src:"games/queensGambit.html",width:1290,height:720},{name:"Free Cell",icon:"♠️",src:"games/freeCell.html",width:800,height:1e3,hideWhenClosed:1},{name:"Digit Dilemma",icon:'<span style="font-family:monospace">☻</span>',src:"games/digitDilemma.html"},{name:"Hue Jumper",icon:"🌲",src:"games/hueJumper.html",width:1290,height:720}]},{name:"Utilities",icon:"🔧",folder:[{name:"Test",icon:"✌️",src:"test.html",hideWhenClosed:1}]},{name:"System",icon:"⚙️",folder:[]},{name:"Toys",icon:"🤖",folder:[]},{name:"Test Folder",folder:[{name:"Mother Goose",icon:"🦢",src:"stories.html"}]},{name:"Test Folder2",folder:[]}],iconGridSizeX=99,iconGridSizeY=130,InitDesktop=e=>{let t=iconGridSizeX/4-iconGridSizeX;const n=e=>{e.x=t+=iconGridSizeX,e.y=iconGridSizeX/4;const n=new OS13kIcon(e);return document.body.appendChild(n),n};for(const e of desktopLayout)n(e)};let topWindow,topIconZ=0,openPos=99;class OS13kIcon extends HTMLElement{constructor({x:e=0,y:t=0,name:n,icon:o,src:s,width:i=500,height:l=500,hideWhenClosed:d,allowMultiple:a,folder:h}){super(),this.shadow=this.attachShadow({mode:"open"}),h&&!o&&(o="📁"),this.name=n,this.icon=o,this.src=s,this.windowWidth=i,this.windowHeight=l,this.SetPos(e,t),this.hideWhenClosed=d||h,this.allowMultiple=a,this.folder=h,this.shadowRoot.innerHTML=`\n        <style>\n        :host\n        {\n            position: absolute;\n            user-select: none;\n            display: flex;\n            align-items: center;\n            flex-direction: column;\n        }\n        .iconImage\n        {\n            width: 64px;\n            height: 64px;\n            font-size: 42px;\n            background-image: linear-gradient(#fff, #999);\n            color: #000;\n            border-radius: 9px;\n            box-shadow: 3px 3px 5px #000F;\n            overflow: hidden;\n            display: flex;\n            align-items: center;\n            justify-content: center;\n            white-space: nowrap;\n        }\n        .iconName\n        {\n            text-align: center;\n            font-size: 18px;\n            color: #FFF;\n            text-shadow: 1px 1px 5px #000;\n            position: absolute;\n            top: 70px;\n        }\n\t\t</style>\n        <span class=iconImage id=icon>${o}</span>\n        <span class=iconName id=name>${n}</span>`}SetPos(e,t){this.style.left=e,this.style.top=t}Open(){if(this.os13kWindow&&!this.allowMultiple)return this.os13kWindow.style.display="",void this.os13kWindow.focus();(openPos+=50)>300&&(openPos=50),this.os13kWindow=new OS13kWindow({x:openPos,y:openPos,icon:this}),document.body.appendChild(this.os13kWindow)}MouseDown(){this.parentElement.os13kWindow&&this.parentElement.os13kWindow.focus();const e=this.getBoundingClientRect(),t=new OS13kIcon({x:e.left,y:e.top,name:this.name,icon:this.icon});return t.style.opacity=.5,t.realIcon=this,t.style.zIndex=++topWindowZ,document.body.appendChild(t),t}MouseUp(e){const t=this.getBoundingClientRect();document.body.removeChild(this);let n=t.left,o=t.top;const s=document.elementFromPoint(e.x,e.y);if(s){if("os13k-window"==s.localName){if(!s.os13kIcon.folder)return;const e=t=>{if(t.os13kWindow==s)return 1;if(t.os13kWindow)for(const n of t.os13kWindow.folder.children)if(e(n))return 1};if(e(this.realIcon))return void alert("Recursive folder structure detected!");const t=s.folder.getBoundingClientRect();n-=t.left,o-=t.top,s.folder.appendChild(this.realIcon),s.focus()}else document.body.appendChild(this.realIcon),document.body.focus(),topWindow&&topWindow.SetActive(0),topWindow=0;this.realIcon.SetPos(n,o),this.realIcon.style.zIndex=++topIconZ}}}customElements.define("os13k-icon",OS13kIcon);let selected,seletOffsetX,seletOffsetY,lastMouseDownTarget,lastMouseDownTargetTime,topWindowZ=1e6;class OS13kWindow extends HTMLElement{constructor({x:e,y:t,icon:n}){if(super(),this.maximized=0,this.os13kIcon=n,this.SetPos(e,t),this.style.width=n.windowWidth,this.style.height=n.windowHeight,this.shadow=this.attachShadow({mode:"open"}),this.shadowRoot.innerHTML=`\n        <style>\n        :host\n        {\n            position: absolute;\n            user-select: none;\n            background: #FFF;\n            display: flex;\n            flex-direction: column;\n            border: 2px solid black;\n            box-shadow: 5px 5px 5px #000F;\n            vertical-align: text-top;\n        }\n        .titleBar\n        {\n            font-size: 36px;\n            background: #aac;\n            color: #000;\n        }\n        .frame\n        {\n            position: relative;\n            width: 100%;\n            height: 100%;\n            border: none;\n            overflow: hidden;\n        }\n        .folder\n        {\n            position: relative;\n            width: 100%;\n            height: 100%;\n            border: none;\n            overflow: hidden;\n            background: #222;\n        }\n        .resize\n        {\n            font-size: 25px;\n            color: #000;\n            position: absolute;\n            top: 0; right: 23;\n        }\n        .close\n        {\n            font-size: 40px;\n            color: #000;\n            position: absolute;\n            top: 0; right: 0;\n        }\n\t\t</style>\n        <span id=resize class=resize>🗖</span>\n        <span id=close class=close>×</span>\n        <span id=titleBar class=titleBar>${"&nbsp;"+n.icon+" "+n.name}</span>`,this.titleBar=this.shadowRoot.getElementById("titleBar"),n.folder){const e=document.createElement("div");this.folder=e,e.className="folder",e.os13kWindow=this,this.shadow.appendChild(e),this.focus();let t=iconGridSizeX/4-iconGridSizeX;const o=n=>{n.x=t+=iconGridSizeX,n.y=iconGridSizeX/4,e.appendChild(new OS13kIcon(n))};for(const e of n.folder)o(e)}else if(n.src){const e=document.createElement("iframe");this.frame=e,e.className="frame",e.onload=(e=>{const t=e.target.contentWindow||e.target.contentDocument;t.zzfx=zzfx,t.OS13k=OS13k,t.focus()}),e.src=n.src,this.shadow.appendChild(e)}}SetPos(e,t){this.style.left=e,this.style.top=t}focus(){super.focus(),topWindow&&topWindow.SetActive(0),topWindow=this,this.style.zIndex=++topWindowZ,this.SetActive(1)}SetActive(e=1){this.titleBar.style.background=e?"#aac":"#555"}Close(){this.os13kIcon.hideWhenClosed?this.style.display="none":(this.remove(),this.os13kIcon.os13kWindow=0)}MouseDown(e){this.focus(),"close"==e?this.Close():"resize"==e?this.Resize():"titleBar"==e&&this.frame&&(this.frame.style.pointerEvents="none"),this.SetActive()}MouseUp(){this.frame&&(this.frame.style.pointerEvents="auto")}Resize(){this.maximized=!this.maximized,this.maximized?(this.oldLeft=this.style.left,this.oldTop=this.style.top,this.oldWidth=this.style.width,this.oldHeight=this.style.height,this.style.left=0,this.style.top=0,this.style.width=innerWidth-9,this.style.height=innerHeight-9):(this.style.left=this.oldLeft,this.style.top=this.oldTop,this.style.width=this.oldWidth,this.style.height=this.oldHeight),this.shadowRoot.getElementById("resize").innerHTML=this.maximized?"🗗":"🗖"}}customElements.define("os13k-window",OS13kWindow);const FindIconInPath=e=>{for(const t of e)if("os13k-icon"==t.localName)return t};onmousedown=(e=>{const t=FindIconInPath(e.path);let n=t||e.target;const o=n.getBoundingClientRect();if(seletOffsetX=e.x-o.left,seletOffsetY=e.y-o.top,t){if(lastMouseDownTarget==n&&lastMouseDownTargetTime>Date.now())return void t.Open();lastMouseDownTarget=n,lastMouseDownTargetTime=Date.now()+300,n=t.MouseDown()}else{if("os13k-window"!=n.localName)return;if(n.MouseDown(e.path[0].id),"titleBar"!=e.path[0].id)return}selected=n}),onmouseup=(e=>{selected&&selected.MouseUp(e),selected=0}),onmousemove=(e=>{selected&&selected.SetPos(e.x-seletOffsetX,e.y-seletOffsetY)});let zzfxV=.3;const zzfx=(e=1,t=.05,n=220,o=0,s=0,i=.1,l=0,d=1,a=0,h=0,c=0,r=0,f=0,p=0,m=0,u=0,w=0,x=2*Math.PI,y=44100,z=(e=>2*e*Math.random()-e),g=(e=>0<e?1:-1),k=(a*=500*x/y**2),S=(n*=(1+z(t))*x/y),W=g(m)*x/4,M=[],I=0,b=0,v=0,C=1,O=0,X=0,T=0,D,B,E,P=zzfxX.createBufferSource())=>{for(h*=500*x/y**3,B=(o=99+o*y|0)+(s=s*y|0)+(i=i*y|0)+(w=w*y|0),m*=x/y,c*=x/y,r*=y,f*=y;v<B;M[v++]=T)++X>100*u&&(X=0,T=I*n*Math.sin(b*m-W),T=g(T=l?1<l?2<l?3<l?Math.sin((T%x)**3):Math.max(Math.min(Math.tan(T),1),-1):1-(2*T/x%2+2)%2:1-4*Math.abs(Math.round(T/x)-T/x):Math.sin(T))*Math.abs(T)**d,T*=e*zzfxV*(v<o?v/o:v<o+s?1:v<B-w?1-(v-o-s)/i:0),T=w?T/2+(w>v?0:(v<B-w?1:(v-B)/w)*M[v-w]/2):T),I+=1+z(p),b+=1+z(p),n+=a+=h,C&&++C>r&&(S+=c,n+=c,C=0),f&&++O>f&&(n=S,a=k,O=1,C=C||1);(E=zzfxX.createBuffer(1,M.length,y)).getChannelData(0).set(M),P.buffer=E,P.connect(zzfxX.destination),P.start()},zzfxX=new(window.AudioContext||webkitAudioContext);zzfxX.z=zzfxX.createBufferSource,zzfxX.createBufferSource=((e=zzfxX.z())=>(e.start=e.start||(e=>zzfxX.noteOn(e)),e));class _OS13k{constructor(){this.lastActiveElement}Alert(e){alert(e)}Update(){const e=document.activeElement;this.lastActiveElement!=e&&("os13k-window"==e.localName&&e.focus(),this.lastActiveElement=e)}}const OS13k=new _OS13k;setInterval(OS13k.Update,100),InitDesktop();
+"use strict";const desktopLayout=[{name:"Help",icon:"❓",src:"help.html?1"},{name:"Games",icon:"🎮",folder:[{name:"Queen's Gambit",icon:"<span style=color:#f0f>♛</span>",src:"games/queensGambit.html",width:1290,height:720},{name:"Free Cell",icon:"♠️",src:"games/freeCell.html",width:800,height:1e3,hideWhenClosed:1},{name:"Digit Dilemma",icon:'<span style="font-family:monospace">☻</span>',src:"games/digitDilemma.html"},{name:"Hue Jumper",icon:"🌲",src:"games/hueJumper.html",width:1290,height:720}]},{name:"Utilities",icon:"🔧",folder:[{name:"Test",icon:"✌️",src:"test.html?2",hideWhenClosed:1}]},{name:"System",icon:"⚙️",folder:[]},{name:"Toys",icon:"🤖",folder:[]},{name:"Test Folder",folder:[{name:"Mother Goose",icon:"🦢",src:"stories.html"}]}],iconGridSizeX=99,iconGridSizeY=130,InitDesktop=e=>{let t=iconGridSizeX/4-iconGridSizeX;const o=e=>{e.x=t+=iconGridSizeX,e.y=iconGridSizeX/4;const o=new OS13kIcon(e);return document.body.appendChild(o),o};for(const e of desktopLayout)o(e)};let activeWindow,topIconZ=0,openPos=99;class OS13kIcon extends HTMLElement{constructor({x:e=0,y:t=0,name:o,icon:s,src:i,width:n=500,height:d=500,hideWhenClosed:l,allowMultiple:a,folder:c}){super(),s||(s=s||c?"📁":i[0].toUpperCase()),this.shadow=this.attachShadow({mode:"open"}),this.name=o,this.icon=s,this.src=i,this.windowWidth=n,this.windowHeight=d,this.style.left=e,this.style.top=t,this.hideWhenClosed=l||c,this.allowMultiple=a,this.folder=c,this.shadowRoot.innerHTML=template_icon.innerHTML;const h=document.createElement("span");h.className="icon",h.innerHTML=s,this.shadowRoot.appendChild(h);const r=document.createElement("span");r.className="name",r.innerHTML=o,this.shadowRoot.appendChild(r)}Open(){if(this.os13kWindow&&!this.allowMultiple)return this.os13kWindow.style.display="",void this.os13kWindow.focus();(openPos+=50)>300&&(openPos=50),this.os13kWindow=new OS13kWindow({x:openPos,y:openPos,icon:this}),document.body.appendChild(this.os13kWindow)}MouseDown(){this.parentElement&&this.parentElement.os13kWindow&&this.parentElement.os13kWindow.focus();const e=this.getBoundingClientRect(),t=new OS13kIcon({x:e.left,y:e.top,name:this.name,icon:this.icon});t.realIcon=this,t.style.opacity=.5,t.style.zIndex=++activeWindowZ,document.body.appendChild(t),selected=t}MouseUp(e){const t=this.getBoundingClientRect();document.body.removeChild(this);const o=document.elementFromPoint(e.x,e.y);if(!o)return;let s=t.left,i=t.top;if("os13k-window"==o.localName){if(!o.os13kIcon.folder)return;const e=t=>{if(t.os13kWindow==o)return 1;if(t.os13kWindow&&t.os13kWindow.folder)for(const o of t.os13kWindow.folder.children)if(e(o))return 1};if(e(this.realIcon))return void alert("Recursive folder structure detected!");const t=o.folder.getBoundingClientRect();s-=t.left,i-=t.top,o.folder.appendChild(this.realIcon),o.focus()}else document.body.appendChild(this.realIcon),document.body.focus(),activeWindow&&activeWindow.SetActive(0);this.realIcon.style.left=s,this.realIcon.style.top=i,this.realIcon.style.zIndex=++topIconZ}}customElements.define("os13k-icon",OS13kIcon);let activeWindowZ=1e7;class OS13kWindow extends HTMLElement{constructor({x:e,y:t,icon:o}){super(),this.maximized=0,this.os13kIcon=o,this.style.left=e,this.style.top=t,this.style.width=o.windowWidth,this.style.height=o.windowHeight,this.shadow=this.attachShadow({mode:"open"}),this.shadowRoot.innerHTML=template_window.innerHTML;const s=document.createElement("span");if(s.className="titleBar",s.id="titleBar",s.innerHTML="&nbsp;"+o.icon+" "+o.name,this.shadowRoot.appendChild(s),this.titleBar=s,o.folder){const e=document.createElement("div");e.className="folder frame",e.os13kWindow=this,this.folder=e,this.shadow.appendChild(e),this.focus();let t=iconGridSizeX/4-iconGridSizeX;const s=o=>{o.x=t+=iconGridSizeX,o.y=iconGridSizeX/4,e.appendChild(new OS13kIcon(o))};for(const e of o.folder)s(e)}else if(o.src){const e=document.createElement("iframe");this.frame=e,e.className="frame",e.sandbox.add("allow-scripts"),e.sandbox.add("allow-same-origin"),e.sandbox.add("allow-popups"),e.sandbox.add("allow-modals"),e.sandbox.add("allow-pointer-lock"),e.onload=(e=>{const t=e.target.contentWindow;t.focus();try{t.zzfx=zzfx}catch(e){}}),e.src=o.src,this.shadow.appendChild(e)}}focus(){super.focus(),activeWindow&&activeWindow.SetActive(0),this.SetActive()}SetActive(e=1){this.titleBar.style.background=e?"#aac":"#555",e?(this.style.zIndex=++activeWindowZ,activeWindow=this):activeWindow=0}Close(){this.os13kIcon.hideWhenClosed?this.style.display="none":(this.remove(),this.os13kIcon.os13kWindow=0)}MouseDown(e){"close"==e?this.Close():"resize"==e&&this.Resize(),this.focus(),"titleBar"==e&&(selected=this)}Resize(){this.maximized=!this.maximized,this.maximized?(this.oldLeft=this.style.left,this.oldTop=this.style.top,this.oldWidth=this.style.width,this.oldHeight=this.style.height,this.style.left=0,this.style.top=0,this.style.width=innerWidth-9,this.style.height=innerHeight-9):(this.style.left=this.oldLeft,this.style.top=this.oldTop,this.style.width=this.oldWidth,this.style.height=this.oldHeight),this.shadowRoot.getElementById("resize").innerHTML=this.maximized?"🗗":"🗖"}}customElements.define("os13k-window",OS13kWindow);class _OS13k{constructor(){}Update(){const e=document.activeElement;this.lastActiveElement!=e&&("os13k-window"==e.localName&&e.focus(),this.lastActiveElement=e)}}const OS13k=new _OS13k;let selected,seletOffsetX,seletOffsetY,lastMouseDownTarget,lastMouseDownTargetTime;setInterval(OS13k.Update,100),InitDesktop(),onmousedown=(e=>{if(selected)return void onmouseup(e);document.body.style.pointerEvents="none";const t=e.originalTarget||e.path[0];let o=t.parentNode.host||t;const s=o.getBoundingClientRect();if(seletOffsetX=e.x-s.left,seletOffsetY=e.y-s.top,"os13k-icon"==o.localName){if(lastMouseDownTarget==o&&lastMouseDownTargetTime>Date.now())return void o.Open();lastMouseDownTargetTime=Date.now()+300,lastMouseDownTarget=o,o.MouseDown()}else"os13k-window"==o.localName?o.MouseDown(t.id):activeWindow&&activeWindow.SetActive(0)}),onmouseup=(e=>{document.body.style.pointerEvents="",selected&&selected.MouseUp&&selected.MouseUp(e),selected=0}),onmousemove=(e=>{selected&&(selected.style.left=e.x-seletOffsetX,selected.style.top=e.y-seletOffsetY)});let zzfxV=.3;const zzfx=(e=1,t=.05,o=220,s=0,i=0,n=.1,d=0,l=1,a=0,c=0,h=0,r=0,m=0,f=0,w=0,p=0,u=0,y=2*Math.PI,z=44100,k=(e=>2*e*Math.random()-e),g=(e=>0<e?1:-1),x=(a*=500*y/z**2),W=(o*=(1+k(t))*y/z),M=g(w)*y/4,S=[],v=0,C=0,I=0,T=1,b=0,O=0,X=0,D,E,H,B=zzfxX.createBufferSource())=>{for(c*=500*y/z**3,E=(s=99+s*z|0)+(i=i*z|0)+(n=n*z|0)+(u=u*z|0),w*=y/z,h*=y/z,r*=z,m*=z;I<E;S[I++]=X)++O>100*p&&(O=0,X=v*o*Math.sin(C*w-M),X=g(X=d?1<d?2<d?3<d?Math.sin((X%y)**3):Math.max(Math.min(Math.tan(X),1),-1):1-(2*X/y%2+2)%2:1-4*Math.abs(Math.round(X/y)-X/y):Math.sin(X))*Math.abs(X)**l,X*=e*zzfxV*(I<s?I/s:I<s+i?1:I<E-u?1-(I-s-i)/n:0),X=u?X/2+(u>I?0:(I<E-u?1:(I-E)/u)*S[I-u]/2):X),v+=1+k(f),C+=1+k(f),o+=a+=c,T&&++T>r&&(W+=h,o+=h,T=0),m&&++b>m&&(o=W,a=x,b=1,T=T||1);(H=zzfxX.createBuffer(1,S.length,z)).getChannelData(0).set(S),B.buffer=H,B.connect(zzfxX.destination),B.start()},zzfxX=new(window.AudioContext||webkitAudioContext);zzfxX.z=zzfxX.createBufferSource,zzfxX.createBufferSource=((e=zzfxX.z())=>(e.start=e.start||(e=>zzfxX.noteOn(e)),e));
 </script>
