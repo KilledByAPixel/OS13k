@@ -131,7 +131,7 @@ body
 
 const desktopLayout = 
 [
-    {name:'Help', icon:'❓', src:'help.html'},
+    {name:'Help', icon:'❓', src:'help.html?1'},
     {name:'Games', icon:'🎮', folder:
         [
             {name:"Queen's Gambit", icon:'<span style=color:#f0f>♛</span>', src:'games/queensGambit.html', width:1290, height:720},
@@ -142,7 +142,7 @@ const desktopLayout =
     },
     {name:'Utilities', icon:'🔧', folder:
         [
-            {name:'Test', icon:'✌️', src:'test.html', hideWhenClosed:1},
+            {name:'Test', icon:'✌️', src:'test.html?2', hideWhenClosed:1},
         ]
     },
     {name:'System', icon:'⚙️', folder:[]},
@@ -272,7 +272,7 @@ class OS13kIcon extends HTMLElement
                 if (icon.os13kWindow == element)
                     return 1;
                     
-                if (icon.os13kWindow)
+                if (icon.os13kWindow && icon.os13kWindow.folder)
                     for( const c of icon.os13kWindow.folder.children)
                         if (DetectRecursion(c))
                             return 1;
@@ -364,6 +364,7 @@ class OS13kWindow extends HTMLElement
             frame.className = 'frame';
             frame.sandbox.add('allow-scripts');
             frame.sandbox.add('allow-same-origin');
+            frame.sandbox.add('allow-popups');
             frame.sandbox.add('allow-pointer-lock');
             frame.onload=e=>
             {
