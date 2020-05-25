@@ -129,6 +129,8 @@ const desktopLayout =
 {name:'Help', icon:'❓', src:'help.html?1'},
 {name:'Games', icon:'🎮', folder:
 [
+    {name:"Sn1ke", icon:'👀', src:'games/sn1ke.html', width:400, height:330, hideWhenClosed:1},
+    {name:"Tetris", icon:'T', src:'games/tetris.html', width:210, height:420},
     {name:"Queen's Gambit", icon:'<span style=color:#f0f>♛</span>', src:'games/queensGambit.html', width:1290, height:720},
     {name:'Free Cell', icon:'♠️', src:'games/freeCell.html', width:800, height:1e3, hideWhenClosed:1},
     {name:'Digit Dilemma', icon:'<span style="font-family:monospace">☻</span>', src:'games/digitDilemma.html'},
@@ -136,13 +138,18 @@ const desktopLayout =
 ]},
 {name:'Utilities', icon:'🔧', folder:
 [
-    {name:'Test', icon:'✌️', src:'test.html?2', hideWhenClosed:1},
+    {name:'Test', icon:'✌️', src:'utilities/test.html?2', hideWhenClosed:1},
+    {name:'Photo Booth', icon:'📸', src:'utilities/photoBooth.html', width:1380, height:600},
+    {name:'Unicode Toys', icon:'𝖀', src:'utilities/unicodeToys.html', width:500, height:800},
+    {name:'Mini Shadertoy', src:'utilities/miniShadertoy.html', width:340, height:400},
 ]},
 {name:'System', icon:'⚙️', folder:
 [
 ]},
 {name:'Toys', icon:'🤖', folder:
 [
+    {name:'Mini Mandelbox', src:'toys/miniMandelbox.html', hideWhenClosed:1},
+    {name:'ZzFX Sounds', icon:'ZZ', src:'toys/zzfxSoundBoard.html', hideWhenClosed:1},
 ]},
 {name:'Test Folder', folder:
 [
@@ -175,13 +182,13 @@ let openPos = 99;
 
 class OS13kIcon extends HTMLElement
 {
-	constructor({x=0, y=0, name, icon, src, width=500, height=500, hideWhenClosed, allowMultiple, folder})
+	constructor({x=0, y=0, name, icon, src, width=720, height=600, hideWhenClosed, allowMultiple, folder})
     {
 		super();
         
         // set default icon
         if (!icon)
-            icon = icon || folder ? '📁' : src[0].toUpperCase();
+            icon = icon || folder ? '📁' : name[0].toUpperCase();
         
         // set icon data
 		this.shadow = this.attachShadow({mode: 'open'});
