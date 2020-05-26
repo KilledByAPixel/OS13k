@@ -627,6 +627,8 @@ class OS13kWindow extends HTMLElement
             // move to top when active
             this.style.zIndex = ++activeWindowZ;
             activeWindow = this;
+            
+            // set focus to iframe
             if (this.iframe_content)
                 this.iframe_content.focus();
         }
