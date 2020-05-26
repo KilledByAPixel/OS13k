@@ -99,12 +99,13 @@ body
 {
     font-size:32;
     cursor:grab;
+    height:45;
 }
 .resize
 {
     position:absolute;
     right:23;
-    font-size:23;
+    font-size:25;
 }
 .resize:hover
 {
@@ -114,7 +115,7 @@ body
 {
     position:absolute;
     right:0;
-    font-size:32;
+    font-size:36;
 }
 .close:hover
 {
@@ -405,9 +406,9 @@ class OS13kIcon extends HTMLElement
         else
         {
             // stager open positions
-            windowOpenOffset += 50;
+            windowOpenOffset += 44;
             if (windowOpenOffset > 300)
-                windowOpenOffset = 99+25;
+                windowOpenOffset = 99+22;
 
             // open the window
             this.os13kWindow = new OS13kWindow({x:windowOpenOffset, y:windowOpenOffset, icon:this});
