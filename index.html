@@ -51,7 +51,7 @@ body
     font-size:42;
     background:linear-gradient(#fff,#999);
     border-radius:9px;
-    box-shadow:3px 3px 5px #000;
+    box-shadow:4px 4px 5px #000;
     overflow:hidden;
     display:flex;
     align-items:center;
@@ -98,7 +98,7 @@ body
 }
 .titleBar
 {
-    font-size:36;
+    font-size:32;
     cursor:grab;
 }
 .resize
@@ -238,14 +238,16 @@ class _OS13k
     GetKeyDirection(keyCode)
     {
         // get direction from wasd or arrow keys
+        let x = 0;
+        let y = 0;
         if (keyCode == 87 || keyCode == 38) // up
-            y = -1;
+            y += 1;
         if (keyCode == 83 || keyCode == 40) // down
-            y = 1;
-        if (keyCode == 65 || keyCode == 38) // left
-            x = -1;
+            y -= 1;
         if (keyCode == 68 || keyCode == 39) // right
-            x = 1;
+            x += 1;
+        if (keyCode == 65 || keyCode == 38) // left
+            x -= 1;
         return {x, y}
     }
     
@@ -507,12 +509,16 @@ class OS13kWindow extends HTMLElement
         this.shadowRoot.innerHTML = templateWindow.innerHTML;
         
         // create title bar
-        const spanTitleBar = document.createElement('span');
-        spanTitleBar.className = 'titleBar';
-        spanTitleBar.id = 'titleBar';
-        spanTitleBar.innerHTML = '&nbsp;' + icon.icon + ' ' + icon.name;
-        this.shadowRoot.appendChild(spanTitleBar);
-        this.titleBar = spanTitleBar;
+        const titleBar = document.createElement('span');
+        titleBar.className = 'titleBar';
+        titleBar.id = 'titleBar';
+        titleBar.innerHTML = '&nbsp;' + icon.icon + ' ' + icon.name;
+        this.shadowRoot.appendChild(titleBar);
+        this.titleBar = titleBar;
+        
+        const titleBarGap = document.createElement('span');
+        titleBarGap.style.height = 2;
+        this.shadowRoot.appendChild(titleBarGap);
         
         if (icon.folder)
         {
@@ -537,15 +543,14 @@ class OS13kWindow extends HTMLElement
         else if (icon.src)
         {
             // create iframe
-            const frame = document.createElement('iframe');
-            this.frame = frame;
-            frame.className = 'frame';
-            frame.sandbox.add('allow-scripts');
-            frame.sandbox.add('allow-same-origin');
-            frame.sandbox.add('allow-popups');
-            frame.sandbox.add('allow-modals');
-            frame.sandbox.add('allow-pointer-lock');
-            frame.onload=e=>
+            const iframe = document.createElement('iframe');
+            iframe.className = 'frame';
+            iframe.sandbox.add('allow-scripts');
+            iframe.sandbox.add('allow-same-origin');
+            iframe.sandbox.add('allow-popups');
+            iframe.sandbox.add('allow-modals');
+            iframe.sandbox.add('allow-pointer-lock');
+            iframe.onload=e=>
             {
                 // init iframe
                 const iframe_content = e.target.contentWindow;
@@ -568,8 +573,8 @@ class OS13kWindow extends HTMLElement
                     throw e;
                 }
             };
-            frame.src = icon.src;
-            this.shadow.appendChild(frame);
+            iframe.src = icon.src;
+            this.shadow.appendChild(iframe);
         }
     }
     
