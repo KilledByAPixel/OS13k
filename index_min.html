@@ -1,107 +1,17 @@
-<html>
-<head>
-<title>OS13k</title>
-<meta charset=utf-8>
-<style>
-*
-{
-    font-family: arial;
-}
-body
-{
-    overflow: hidden;
-    background: linear-gradient(#223, #322);
-    background-attachment: fixed;
-}
+<html><head><title>OS13k</title><meta charset=utf-8></head><body><style>
+*{font-family:arial}body{overflow:hidden;background:linear-gradient(#223,#322);background-attachment:fixed}*:active{cursor:grabbing}.title{display:flex;align-items:center;justify-content:center;font-size:300;font-family:impact;color:#0002;height:100%;user-select:none}
 </style>
-</head>
-<body>
-<template id=template_icon>
-<style>
-:host
-{
-    position: absolute;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    user-select: none;
-}
-.icon
-{
-    width: 64px;
-    height: 64px;
-    font-size: 42px;
-    background: linear-gradient(#fff, #999);
-    border-radius: 9px;
-    box-shadow: 3px 3px 5px #000;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    white-space: nowrap;
-    pointer-events: none;
-
-}
-.name
-{
-    position: absolute;
-    top: 70px;
-    text-align: center;
-    font-size: 18px;
-    color: #FFF;
-    text-shadow: 1px 1px 5px #000;
-}
-</style>
-</template>
-<template id=template_window>
-<style>
-:host
-{
-    position: absolute;
-    user-select: none;
-    background: #FFF;
-    display: flex;
-    flex-direction: column;
-    border: 2px solid #000;
-    box-shadow: 9px 9px 9px #000;
-    vertical-align: text-top;
-    overflow: hidden;
-}
-.frame
-{
-    position: relative;
-    width: 100%;
-    height: 100%;
-    border: none;
-    overflow: hidden;
-}
-.folder
-{
-    background: #222;
-}
-.titleBar
-{
-    font-size: 36px;
-    background: #aac;
-    color: #000;
-}
-.resize
-{
-    position: absolute;
-    top: 0; right: 23;
-    font-size: 25px;
-}
-.close
-{
-    position: absolute;
-    top: 0; right: 0;
-    font-size: 40px;
-}
+<template id=templateIcon><style>
+:host{position:absolute;display:flex;align-items:center;flex-direction:column;user-select:none;cursor:grab;pointer-events:auto}.icon{width:64;height:64;font-size:42;background:linear-gradient(#fff,#999);border-radius:9px;box-shadow:3px 3px 5px #000;overflow:hidden;display:flex;align-items:center;justify-content:center;white-space:nowrap;pointer-events:none}.name{position:absolute;top:70;text-align:center;font-size:18;color:#FFF;text-shadow:1px 1px 5px #000}
+</style></template>
+<template id=templateWindow><style>
+:host{position:absolute;user-select:none;background:#000;display:flex;flex-direction:column;border:2px solid #000;box-shadow:9px 9px 9px #000;overflow:hidden}.frame{position:relative;width:100%;height:100%;border:none;overflow:hidden;background:#FFF}.folder{background:#222}.titleBar{font-size:36;cursor:grab}.resize{position:absolute;right:23;font-size:24}.resize:hover{background:#fff}.close{position:absolute;right:0;font-size:36}.close:hover{background:#f00}
 </style>
 <span id=resize class=resize>🗖</span>
 <span id=close class=close>×</span>
 </template>
-<body>
+<span class=title>OS13k</span>
+<span id=os13kDesktop></span>
 <script>
-"use strict";const desktopLayout=[{name:"Help",icon:"❓",src:"help.html?1"},{name:"Games",icon:"🎮",folder:[{name:"Queen's Gambit",icon:"<span style=color:#f0f>♛</span>",src:"games/queensGambit.html",width:1290,height:720},{name:"Free Cell",icon:"♠️",src:"games/freeCell.html",width:800,height:1e3,hideWhenClosed:1},{name:"Digit Dilemma",icon:'<span style="font-family:monospace">☻</span>',src:"games/digitDilemma.html"},{name:"Hue Jumper",icon:"🌲",src:"games/hueJumper.html",width:1290,height:720}]},{name:"Utilities",icon:"🔧",folder:[{name:"Test",icon:"✌️",src:"test.html?2",hideWhenClosed:1}]},{name:"System",icon:"⚙️",folder:[]},{name:"Toys",icon:"🤖",folder:[]},{name:"Test Folder",folder:[{name:"Mother Goose",icon:"🦢",src:"stories.html"}]}],iconGridSizeX=99,iconGridSizeY=130,InitDesktop=e=>{let t=iconGridSizeX/4-iconGridSizeX;const o=e=>{e.x=t+=iconGridSizeX,e.y=iconGridSizeX/4;const o=new OS13kIcon(e);return document.body.appendChild(o),o};for(const e of desktopLayout)o(e)};let activeWindow,topIconZ=0,openPos=99;class OS13kIcon extends HTMLElement{constructor({x:e=0,y:t=0,name:o,icon:s,src:i,width:n=500,height:d=500,hideWhenClosed:l,allowMultiple:a,folder:c}){super(),s||(s=s||c?"📁":i[0].toUpperCase()),this.shadow=this.attachShadow({mode:"open"}),this.name=o,this.icon=s,this.src=i,this.windowWidth=n,this.windowHeight=d,this.style.left=e,this.style.top=t,this.hideWhenClosed=l||c,this.allowMultiple=a,this.folder=c,this.shadowRoot.innerHTML=template_icon.innerHTML;const h=document.createElement("span");h.className="icon",h.innerHTML=s,this.shadowRoot.appendChild(h);const r=document.createElement("span");r.className="name",r.innerHTML=o,this.shadowRoot.appendChild(r)}Open(){if(this.os13kWindow&&!this.allowMultiple)return this.os13kWindow.style.display="",void this.os13kWindow.focus();(openPos+=50)>300&&(openPos=50),this.os13kWindow=new OS13kWindow({x:openPos,y:openPos,icon:this}),document.body.appendChild(this.os13kWindow)}MouseDown(){this.parentElement&&this.parentElement.os13kWindow&&this.parentElement.os13kWindow.focus();const e=this.getBoundingClientRect(),t=new OS13kIcon({x:e.left,y:e.top,name:this.name,icon:this.icon});t.realIcon=this,t.style.opacity=.5,t.style.zIndex=++activeWindowZ,document.body.appendChild(t),selected=t}MouseUp(e){const t=this.getBoundingClientRect();document.body.removeChild(this);const o=document.elementFromPoint(e.x,e.y);if(!o)return;let s=t.left,i=t.top;if("os13k-window"==o.localName){if(!o.os13kIcon.folder)return;const e=t=>{if(t.os13kWindow==o)return 1;if(t.os13kWindow&&t.os13kWindow.folder)for(const o of t.os13kWindow.folder.children)if(e(o))return 1};if(e(this.realIcon))return void alert("Recursive folder structure detected!");const t=o.folder.getBoundingClientRect();s-=t.left,i-=t.top,o.folder.appendChild(this.realIcon),o.focus()}else document.body.appendChild(this.realIcon),document.body.focus(),activeWindow&&activeWindow.SetActive(0);this.realIcon.style.left=s,this.realIcon.style.top=i,this.realIcon.style.zIndex=++topIconZ}}customElements.define("os13k-icon",OS13kIcon);let activeWindowZ=1e7;class OS13kWindow extends HTMLElement{constructor({x:e,y:t,icon:o}){super(),this.maximized=0,this.os13kIcon=o,this.style.left=e,this.style.top=t,this.style.width=o.windowWidth,this.style.height=o.windowHeight,this.shadow=this.attachShadow({mode:"open"}),this.shadowRoot.innerHTML=template_window.innerHTML;const s=document.createElement("span");if(s.className="titleBar",s.id="titleBar",s.innerHTML="&nbsp;"+o.icon+" "+o.name,this.shadowRoot.appendChild(s),this.titleBar=s,o.folder){const e=document.createElement("div");e.className="folder frame",e.os13kWindow=this,this.folder=e,this.shadow.appendChild(e),this.focus();let t=iconGridSizeX/4-iconGridSizeX;const s=o=>{o.x=t+=iconGridSizeX,o.y=iconGridSizeX/4,e.appendChild(new OS13kIcon(o))};for(const e of o.folder)s(e)}else if(o.src){const e=document.createElement("iframe");this.frame=e,e.className="frame",e.sandbox.add("allow-scripts"),e.sandbox.add("allow-same-origin"),e.sandbox.add("allow-popups"),e.sandbox.add("allow-modals"),e.sandbox.add("allow-pointer-lock"),e.onload=(e=>{const t=e.target.contentWindow;t.focus();try{t.zzfx=zzfx}catch(e){}}),e.src=o.src,this.shadow.appendChild(e)}}focus(){super.focus(),activeWindow&&activeWindow.SetActive(0),this.SetActive()}SetActive(e=1){this.titleBar.style.background=e?"#aac":"#555",e?(this.style.zIndex=++activeWindowZ,activeWindow=this):activeWindow=0}Close(){this.os13kIcon.hideWhenClosed?this.style.display="none":(this.remove(),this.os13kIcon.os13kWindow=0)}MouseDown(e){"close"==e?this.Close():"resize"==e&&this.Resize(),this.focus(),"titleBar"==e&&(selected=this)}Resize(){this.maximized=!this.maximized,this.maximized?(this.oldLeft=this.style.left,this.oldTop=this.style.top,this.oldWidth=this.style.width,this.oldHeight=this.style.height,this.style.left=0,this.style.top=0,this.style.width=innerWidth-9,this.style.height=innerHeight-9):(this.style.left=this.oldLeft,this.style.top=this.oldTop,this.style.width=this.oldWidth,this.style.height=this.oldHeight),this.shadowRoot.getElementById("resize").innerHTML=this.maximized?"🗗":"🗖"}}customElements.define("os13k-window",OS13kWindow);class _OS13k{constructor(){}Update(){const e=document.activeElement;this.lastActiveElement!=e&&("os13k-window"==e.localName&&e.focus(),this.lastActiveElement=e)}}const OS13k=new _OS13k;let selected,seletOffsetX,seletOffsetY,lastMouseDownTarget,lastMouseDownTargetTime;setInterval(OS13k.Update,100),InitDesktop(),onmousedown=(e=>{if(selected)return void onmouseup(e);document.body.style.pointerEvents="none";const t=e.originalTarget||e.path[0];let o=t.parentNode.host||t;const s=o.getBoundingClientRect();if(seletOffsetX=e.x-s.left,seletOffsetY=e.y-s.top,"os13k-icon"==o.localName){if(lastMouseDownTarget==o&&lastMouseDownTargetTime>Date.now())return void o.Open();lastMouseDownTargetTime=Date.now()+300,lastMouseDownTarget=o,o.MouseDown()}else"os13k-window"==o.localName?o.MouseDown(t.id):activeWindow&&activeWindow.SetActive(0)}),onmouseup=(e=>{document.body.style.pointerEvents="",selected&&selected.MouseUp&&selected.MouseUp(e),selected=0}),onmousemove=(e=>{selected&&(selected.style.left=e.x-seletOffsetX,selected.style.top=e.y-seletOffsetY)});let zzfxV=.3;const zzfx=(e=1,t=.05,o=220,s=0,i=0,n=.1,d=0,l=1,a=0,c=0,h=0,r=0,m=0,f=0,w=0,p=0,u=0,y=2*Math.PI,z=44100,k=(e=>2*e*Math.random()-e),g=(e=>0<e?1:-1),x=(a*=500*y/z**2),W=(o*=(1+k(t))*y/z),M=g(w)*y/4,S=[],v=0,C=0,I=0,T=1,b=0,O=0,X=0,D,E,H,B=zzfxX.createBufferSource())=>{for(c*=500*y/z**3,E=(s=99+s*z|0)+(i=i*z|0)+(n=n*z|0)+(u=u*z|0),w*=y/z,h*=y/z,r*=z,m*=z;I<E;S[I++]=X)++O>100*p&&(O=0,X=v*o*Math.sin(C*w-M),X=g(X=d?1<d?2<d?3<d?Math.sin((X%y)**3):Math.max(Math.min(Math.tan(X),1),-1):1-(2*X/y%2+2)%2:1-4*Math.abs(Math.round(X/y)-X/y):Math.sin(X))*Math.abs(X)**l,X*=e*zzfxV*(I<s?I/s:I<s+i?1:I<E-u?1-(I-s-i)/n:0),X=u?X/2+(u>I?0:(I<E-u?1:(I-E)/u)*S[I-u]/2):X),v+=1+k(f),C+=1+k(f),o+=a+=c,T&&++T>r&&(W+=h,o+=h,T=0),m&&++b>m&&(o=W,a=x,b=1,T=T||1);(H=zzfxX.createBuffer(1,S.length,z)).getChannelData(0).set(S),B.buffer=H,B.connect(zzfxX.destination),B.start()},zzfxX=new(window.AudioContext||webkitAudioContext);zzfxX.z=zzfxX.createBufferSource,zzfxX.createBufferSource=((e=zzfxX.z())=>(e.start=e.start||(e=>zzfxX.noteOn(e)),e));
+"use strict";const m=[{name:"Help",icon:"❓",src:"help.html?2"},{name:"System",icon:"⚙️",a:[{name:"Test",icon:"✌️",src:"test.html?2",f:1}]},{name:"Games",icon:"🎮",a:[{name:"Lava Rush",icon:"🌋",src:"games/lavaRush.html"},{name:"Sn1ke",icon:"👀",src:"games/sn1ke.html",width:400,height:330,f:1},{name:"Tetris",icon:"🆃",src:"games/tetris.html",width:220,height:430},{name:"Queen's Gambit",icon:"<span style=color:#f0f>♛</span>",src:"games/queensGambit.html",width:1290,height:720},{name:"Free Cell",icon:"♠️",src:"games/freeCell.html",width:800,height:1e3,f:1},{name:"Digit Dilemma",icon:"<span style=font-family:monospace>☻</span>",src:"games/digitDilemma.html"},{name:"Hue Jumper",icon:"🌲",src:"games/hueJumper.html",width:1290,height:720}]},{name:"Utilities",icon:"🔧",a:[{name:"Photo Booth",icon:"📸",src:"utilities/photoBooth.html",width:1380,height:600},{name:"Unicode Toys",icon:"𝖀",src:"utilities/unicodeToys.html",width:500,height:800},{name:"Mini Shadertoy",icon:"𝓢",src:"utilities/miniShadertoy.html",width:340,height:400}]},{name:"Toys",icon:"🤖",a:[{name:"ZzFX Sounds",icon:"𝐙𝐙",src:"toys/zzfxSoundBoard.html",f:1},{name:"Yin Yangs",icon:"☯️",src:"toys/infiniteYinYangs.html"}]},{name:"Test Folder",a:[{name:"Mother Goose",icon:"🦢",src:"stories.html"}]}];function q(){let e=-74.25;for(const s of m){var o=s;o.x=e+=99,o.y=24.75;const i=new OS13kIcon(o);os13kDesktop.appendChild(i),o.open&&t(i)}}class _OS13k{constructor(){this.c=new(window.AudioContext||webkitAudioContext),this.c.v=this.c.createBufferSource,this.c.createBufferSource=((t=this.c.v())=>(t.start=t.start||(t=>this.c.noteOn(t)),t.stop=t.stop||(t=>this.c.noteOff(t)),t)),q(),setInterval(this.u,99)}u(){const t=document.activeElement;this.w!=t&&("os13k-window"==t.localName&&t.focus(),this.w=t)}Medal(){}GetKeyDirection(t){return 87!=t&&38!=t||(y=-1),83!=t&&40!=t||(y=1),65!=t&&38!=t||(x=-1),68!=t&&39!=t||(x=1),{x:x,y:y}}PlaySamples(t){const e=this.c.createBuffer(1,t.length,44100),o=this.c.createBufferSource();return e.getChannelData(0).set(t),o.buffer=e,o.connect(this.c.destination),o.start(),o}CreateShader(t,e){const o=(t=t.getContext("webgl")).createShader(t.VERTEX_SHADER);t.shaderSource(o,"attribute vec4 p;void main(){gl_Position=p;}"),t.compileShader(o);var s=t.ARRAY_BUFFER;if(t.bindBuffer(s,t.createBuffer()),t.bufferData(s,new Int8Array([-3,1,1,-3,1,1]),t.STATIC_DRAW),t.enableVertexAttribArray(0),t.vertexAttribPointer(0,2,t.BYTE,0,0,0),s=t.createShader(t.FRAGMENT_SHADER),t.shaderSource(s,"precision mediump float;uniform vec3 iResolution;uniform float iTime;\n"+e+"\nvoid main(){mainImage(gl_FragColor,gl_FragCoord.xy);gl_FragColor.a=1.;}"),t.compileShader(s),t.getShaderParameter(s,t.COMPILE_STATUS))return e=t.createProgram(),t.attachShader(e,o),t.attachShader(e,s),t.linkProgram(e),t.useProgram(e),e;console.log(t.getShaderInfoLog(s))}RenderShader(t,e,o=0){const s=t.getContext("webgl");return s.uniform3f(s.getUniformLocation(e,"iResolution"),t.width,t.height,0),s.uniform1f(s.getUniformLocation(e,"iTime"),o),s.viewport(0,0,t.width,t.height),s.drawArrays(s.TRIANGLE_FAN,0,3)}}let A=99,H=0;function t(t){t.b&&!t.o?t.b.style.display="":(300<(A+=50)&&(A=50),t.b=new OS13kWindow({x:A,y:A,icon:t}),os13kDesktop.appendChild(t.b)),t.b.focus()}class OS13kIcon extends HTMLElement{constructor({x:t,y:e,name:o,icon:s,src:i,width:n=720,height:a=540,f:r,o:h,a:l}){super(),s=s||(l?"📁":o[0].toUpperCase()),this.j=this.attachShadow({mode:"open"}),this.name=o,this.icon=s,this.src=i,this.H=n,this.G=a,this.style.left=t,this.style.top=e,this.f=r||l,this.o=h,this.a=l,this.shadowRoot.innerHTML=templateIcon.innerHTML+`<span class=icon>${s}</span>`+`<span class=name>${o}</span>`}l(){this.parentElement&&this.parentElement.b&&this.parentElement.b.focus();var t=this.getBoundingClientRect();(t=new OS13kIcon({x:t.left,y:t.top,name:this.name,icon:this.icon})).g=this,t.style.opacity=.5,t.style.zIndex=++I,t.style.pointerEvents="none",os13kDesktop.appendChild(t),J=t}m(t){var e=this.getBoundingClientRect();os13kDesktop.removeChild(this);const o=document.elementFromPoint(t.x,t.y);if(o){var s=os13kDesktop,i=e.left;if(e=e.top,"os13k-window"==o.localName){if(!o.i.a||(s=o.shadowRoot.elementFromPoint(t.x,t.y))&&s.id)return;const n=t=>{if(t.b==o)return 1;if(t.b&&t.b.a)for(const e of t.b.a.children)if(n(e))return 1};if(n(this.g))return void alert("Self referential folder structure detected!");i-=(s=o.a.getBoundingClientRect()).left,e-=s.top,s=o}(t=s.a?s.a:s)!=this.g.parentElement&&(t.appendChild(this.g),K&&t==os13kDesktop&&L(K,0)),s.focus(),this.g.style.left=i,this.g.style.top=e,this.g.style.zIndex=++H}}}customElements.define("os13k-icon",OS13kIcon);let K,J,V,W,I=1e7;function L(t,e=1){t.F.style.background=e?"#aac":"#555",e?(t.style.zIndex=++I,K=t):K=0}function U(t){(t.h=!t.h)?(t.B=t.style.left,t.C=t.style.top,t.D=t.style.width,t.A=t.style.height,t.style.left=5,t.style.top=5,t.style.width=innerWidth-18,t.style.height=innerHeight-18):(t.style.left=t.B,t.style.top=t.C,t.style.width=t.D,t.style.height=t.A),t.shadowRoot.getElementById("resize").innerHTML=t.h?"🗗":"🗖"}class OS13kWindow extends HTMLElement{constructor({x:t,y:e,icon:o}){if(super(),this.h=0,this.i=o,this.style.left=t,this.style.top=e,this.style.width=o.H,this.style.height=o.G,this.j=this.attachShadow({mode:"open"}),this.shadowRoot.innerHTML=templateWindow.innerHTML,(t=document.createElement("span")).className="titleBar",t.id="titleBar",t.innerHTML="&nbsp;"+o.icon+" "+o.name,this.shadowRoot.appendChild(t),this.F=t,o.a){const e=document.createElement("div");e.className="folder frame",e.b=this,this.a=e,this.j.appendChild(e),this.focus();let i=-74.25;for(var s of(t=(t=>{t.x=i+=99,t.y=24.75,e.appendChild(new OS13kIcon(t))}),o.a))t(s)}else o.src&&(this.frame=s=document.createElement("iframe"),s.className="frame",s.sandbox.add("allow-scripts"),s.sandbox.add("allow-same-origin"),s.sandbox.add("allow-popups"),s.sandbox.add("allow-modals"),s.sandbox.add("allow-pointer-lock"),s.onload=(t=>{(t=t.target.contentWindow).focus();try{t.OS13k=OS13k,t.zzfx=zzfx,t.OS13kStart&&t.OS13kStart()}catch(t){throw t}}),s.src=o.src,this.j.appendChild(s))}focus(){super.focus(),K&&L(K,0),L(this)}l(t){"close"==t?this.i.f?(this.style.display="none",this.h&&U(this)):(this.i.b=0,this.remove()):"resize"==t&&U(this),this.focus(),"titleBar"==t&&(J=this)}}customElements.define("os13k-window",OS13kWindow),onmousedown=(t=>{if(J)onmouseup(t);else{os13kDesktop.style.pointerEvents="none",document.body.style.cursor="grabbing";var e=t.originalTarget||t.path[0],o=e.parentNode.host||e,s=o.getBoundingClientRect();V=t.x-s.left,W=t.y-s.top,"os13k-icon"==o.localName||"os13k-window"==o.localName?o.l(e.id):K&&L(K,0)}}),onmouseup=(t=>{os13kDesktop.style.pointerEvents="",document.body.style.cursor="",J&&J.m&&J.m(t),J=0}),onmousemove=(t=>{J&&(J.style.left=t.x-V,J.style.top=t.y-W)}),ondblclick=(e=>{"os13k-icon"==(e=(e=e.originalTarget||e.path[0]).parentNode.host||e).localName&&t(e)});let zzfxV=.3;const zzfx=(t=1,e=.05,o=220,s=0,i=0,n=.1,a=0,r=1,h=0,l=0,c=0,m=0,d=0,f=0,u=0,p=0,g=0,y=2*Math.PI,w=44100,S=(t=>2*t*Math.random()-t),k=(t=>0<t?1:-1),b=(h*=500*y/w**2),x=(o*=(1+S(e))*y/w),C=k(u)*y/4,v=[],T=0,E=0,A=0,M=1,R=0,B=0,I=0,D,L)=>{for(l*=500*y/w**3,L=(s=99+s*w|0)+(i=i*w|0)+(n=n*w|0)+(g=g*w|0),u*=y/w,c*=y/w,m*=w,d*=w;A<L;v[A++]=I)++B>100*p&&(B=0,I=T*o*Math.sin(E*u-C),I=k(I=a?1<a?2<a?3<a?Math.sin((I%y)**3):Math.max(Math.min(Math.tan(I),1),-1):1-(2*I/y%2+2)%2:1-4*Math.abs(Math.round(I/y)-I/y):Math.sin(I))*Math.abs(I)**r,I*=t*zzfxV*(A<s?A/s:A<s+i?1:A<L-g?1-(A-s-i)/n:0),I=g?I/2+(g>A?0:(A<L-g?1:(A-L)/g)*v[A-g]/2):I),T+=1+S(f),E+=1+S(f),o+=h+=l,M&&++M>m&&(x+=c,o+=c,M=0),d&&++R>d&&(o=x,h=b,R=1,M=M||1);return OS13k.PlaySamples(v)},OS13k=new _OS13k;
 </script>

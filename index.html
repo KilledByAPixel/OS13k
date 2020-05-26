@@ -1,77 +1,72 @@
-<!--
-
-OS13k - A tiny pseudo operating system for JS13k
-
--->
+<!-- OS13k - A tiny pseudo operating system for JS13k -->
 <html>
 <head>
 <title>OS13k</title>
 <meta charset=utf-8>
+</head>
+<body>
 <style>
 *
 {
-    font-family: arial;
+    font-family:arial;
 }
 body
 {
-    overflow: hidden;
-    background: linear-gradient(#223, #322);
-    background-attachment: fixed;
+    overflow:hidden;
+    background:linear-gradient(#223,#322);
+    background-attachment:fixed;
 }
 *:active
 {
-    cursor: grabbing;
+    cursor:grabbing;
 }
 .title
 {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 300;
-    font-family: impact;
-    color: #0002;
-    height: 100%;
-    user-select: none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:300;
+    font-family:impact;
+    color:#0002;
+    height:100%;
+    user-select:none;
 }
 </style>
-</head>
-<body>
-<span id=os13kDesktop></span>
-<span class=title>OS13k</span>
 <template id=templateIcon>
 <style>
 :host
 {
-    position: absolute;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    user-select: none;
-    cursor: grab;
+    position:absolute;
+    display:flex;
+    align-items:center;
+    flex-direction:column;
+    user-select:none;
+    cursor:grab;
+    pointer-events:auto;
 }
 .icon
 {
-    width: 64;
-    height: 64;
-    font-size: 42;
-    background: linear-gradient(#fff, #999);
-    border-radius: 9px;
-    box-shadow: 3px 3px 5px #000;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    white-space: nowrap;
-    pointer-events: none;
+    width:64;
+    height:64;
+    font-size:42;
+    background:linear-gradient(#fff,#999);
+    border-radius:9px;
+    box-shadow:3px 3px 5px #000;
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    white-space:nowrap;
+    pointer-events:none;
 }
 .name
 {
-    position: absolute;
-    top: 70;
-    text-align: center;
-    font-size: 18;
-    color: #FFF;
-    text-shadow: 1px 1px 5px #000;
+    position:absolute;
+    top:70;
+    text-align:center;
+    font-size:18;
+    color:#FFF;
+    text-shadow:1px 1px 5px #000;
 }
 </style>
 </template>
@@ -79,38 +74,38 @@ body
 <style>
 :host
 {
-    position: absolute;
-    user-select: none;
-    background: #000;
-    display: flex;
-    flex-direction: column;
-    border: 2px solid #000;
-    box-shadow: 9px 9px 9px #000;
-    overflow: hidden;
+    position:absolute;
+    user-select:none;
+    background:#000;
+    display:flex;
+    flex-direction:column;
+    border:2px solid #000;
+    box-shadow:9px 9px 9px #000;
+    overflow:hidden;
 }
 .frame
 {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    border: none;
-    overflow: hidden;
-    background: #FFF;
+    position:relative;
+    width:100%;
+    height:100%;
+    border:none;
+    overflow:hidden;
+    background:#FFF;
 }
 .folder
 {
-    background: #222;
+    background:#222;
 }
 .titleBar
 {
-    font-size: 36;
-    cursor: grab;
+    font-size:36;
+    cursor:grab;
 }
 .resize
 {
-    position: absolute;
-    right: 23;
-    font-size: 24;
+    position:absolute;
+    right:23;
+    font-size:24;
 }
 .resize:hover
 {
@@ -118,9 +113,9 @@ body
 }
 .close
 {
-    position: absolute;
-    right: 0;
-    font-size: 36;
+    position:absolute;
+    right:0;
+    font-size:36;
 }
 .close:hover
 {
@@ -130,12 +125,24 @@ body
 <span id=resize class=resize>🗖</span>
 <span id=close class=close>×</span>
 </template>
+<span class=title>OS13k</span>
+<span id=os13kDesktop></span>
 <script>
+
+// ==ClosureCompiler==
+// @compilation_level ADVANCED_OPTIMIZATIONS
+// @language_out ECMASCRIPT_2019
+// @js_externs OS13k, OS13kIcon, OS13kWindow, zzfx, zzfxV
+// @js_externs _OS13k.Medal, _OS13k.Medal, _OS13k.GetKeyDirection
+// @js_externs _OS13k.PlaySamples, _OS13k.CreateShader, _OS13k.RenderShader
+// @output_file_name OS13k.min.js
+// ==/ClosureCompiler==
 
 "use strict";
 
 /////////////////////////////////////////////////////////////////////////////
-// os13k desktop
+// OS13k desktop
+
 const desktopLayout = 
 [
 {name:'Help', icon:'❓', src:'help.html?2'},
@@ -145,7 +152,7 @@ const desktopLayout =
 ]},
 {name:'Games', icon:'🎮', folder:
 [
-    {name:'Lava Rush', icon:'🌋', src:'games/lavaRush.html'},
+    {name:'Lava Rush', icon:'🌋', src:'games/lavaRush.html?1'},
     {name:"Sn1ke", icon:'👀', src:'games/sn1ke.html', width:400, height:330, hideWhenClosed:1},
     {name:"Tetris", icon:'🆃', src:'games/tetris.html', width:220, height:430},
     {name:"Queen's Gambit", icon:'<span style=color:#f0f>♛</span>', src:'games/queensGambit.html', width:1290, height:720},
@@ -162,7 +169,7 @@ const desktopLayout =
 {name:'Toys', icon:'🤖', folder:
 [
     {name:'ZzFX Sounds', icon:'𝐙𝐙', src:'toys/zzfxSoundBoard.html', hideWhenClosed:1},
-    {name:'Yin Yangs', icon:'☯️', src:'toys/infiniteYinYangs.html'},
+    {name:'Yin Yangs', icon:'☯️', src:'toys/infiniteYinYangs.html?1'},
 ]},
 {name:'Test Folder', folder:
 [
@@ -170,30 +177,156 @@ const desktopLayout =
 ]},
 ];
 
-const iconGridSizeX = 99;
-const iconGridSizeY = 130;
-const InitDesktop=_=>
+/////////////////////////////////////////////////////////////////////////////
+// OS13k System
+
+class _OS13k
 {
-    let X = iconGridSizeX/4-iconGridSizeX;
-    const AddIcon=p=>
+    constructor()
     {
-        p.x=X+=iconGridSizeX; p.y=iconGridSizeX/4; 
-        const icon = new OS13kIcon(p); 
-        os13kDesktop.appendChild(icon); 
-        if (p.open)
-            icon.Open();
-        return icon;
+        // init web audio
+        this.audioContext = new (window.AudioContext || webkitAudioContext);
+        this.audioContext._createBufferSource = this.audioContext.createBufferSource;
+        this.audioContext.createBufferSource =
+        (s = this.audioContext._createBufferSource())=>
+        (
+            s.start = s.start || (t => this.audioContext.noteOn (t)),
+            s.stop  = s.stop  || (t => this.audioContext.noteOff(t)),
+            s
+        );
+        
+        // startup os13k
+        this.InitDesktop();
+        setInterval(this.Update, 99);
     }
     
-    for (const i of desktopLayout)
-        AddIcon(i);
-}
+    InitDesktop()
+    {
+        // add icons to desktop
+        let X = iconGridSizeX/4-iconGridSizeX;
+        const AddIcon=p=>
+        {
+            p.x=X+=iconGridSizeX; p.y=iconGridSizeX/4; 
+            const icon = new OS13kIcon(p); 
+            os13kDesktop.appendChild(icon); 
+            if (p.open)
+                icon.Open();
+            return icon;
+        }
+        for (const i of desktopLayout)
+            AddIcon(i);
+    }
+    
+    Update()
+    {
+        // listen for change in active element
+        // this happens when clicking on an iframe
+        const activeElement = document.activeElement;
+        if (this.lastActiveElement != activeElement)
+        {
+            if (activeElement.localName == 'os13k-window')
+                activeElement.focus();
+            this.lastActiveElement = activeElement;
+        }
+    }
+    
+    Medal(gameName, medalName, icon, difficulty)
+    {
+        // show popup and unlock medal
+    }
+    
+    GetKeyDirection(keyCode)
+    {
+        // get direction from wasd or arrow keys
+        if (keyCode == 87 || keyCode == 38) // up
+            y = -1;
+        if (keyCode == 83 || keyCode == 40) // down
+            y = 1;
+        if (keyCode == 65 || keyCode == 38) // left
+            x = -1;
+        if (keyCode == 68 || keyCode == 39) // right
+            x = 1;
+        return {x, y}
+    }
+    
+    PlaySamples(samples)
+    {
+        // play raw audio sample data
+        const buffer = this.audioContext.createBuffer(1, samples.length, 44100);
+        const source = this.audioContext.createBufferSource();
+        buffer.getChannelData(0).set(samples);
+        source.buffer = buffer;
+        source.connect(this.audioContext.destination);
+        source.start();
+        return source;
+    }
+    
+    CreateShader(canvas, code)
+    {
+        const x = canvas.getContext('webgl');
+
+        // create simple pass through vertex shader
+        const vertexShader = x.createShader(x.VERTEX_SHADER);
+        x.shaderSource(vertexShader,"attribute vec4 p;void main(){gl_Position=p;}");
+        x.compileShader(vertexShader);
+        
+        // create vertex buffer that is a giant triangle to cover the viewport
+        const vertexBuffer = x.ARRAY_BUFFER;
+        x.bindBuffer(vertexBuffer,x.createBuffer());
+        x.bufferData(vertexBuffer,new Int8Array([-3,1,1,-3,1,1]),x.STATIC_DRAW);
+        x.enableVertexAttribArray(0);
+        x.vertexAttribPointer(0,2,x.BYTE,0,0,0); // 2D vertex
+        
+        // create shadertoy compatible pixel shader
+        const pixelShader = x.createShader(x.FRAGMENT_SHADER)
+        const shaderProgramCode = 
+            'precision mediump float;'
+            + 'uniform vec3 iResolution;'
+            + 'uniform float iTime;\n'
+            + code
+            + '\nvoid main()'
+            + '{mainImage(gl_FragColor,gl_FragCoord.xy);gl_FragColor.a=1.;}'
+        x.shaderSource(pixelShader, shaderProgramCode)
+        x.compileShader(pixelShader);
+
+        // check for errors
+        if (!x.getShaderParameter(pixelShader, x.COMPILE_STATUS))
+        {
+            console.log(x.getShaderInfoLog(pixelShader));
+            return;
+        }
+
+        // create program
+        const shaderProgram = x.createProgram();
+        x.attachShader(shaderProgram, vertexShader);
+        x.attachShader(shaderProgram, pixelShader);
+        x.linkProgram(shaderProgram);
+        x.useProgram(shaderProgram);
+        return shaderProgram;
+    }
+    
+    RenderShader(canvas, shaderProgram, time=0)
+    {
+        const x = canvas.getContext('webgl');
+        
+        // set uniforms
+        x.uniform3f(x.getUniformLocation(shaderProgram,"iResolution"),
+            canvas.width, canvas.height, 0);
+        x.uniform1f(x.getUniformLocation(shaderProgram,"iTime"), time);
+        
+        // render shader
+        x.viewport(0, 0, canvas.width, canvas.height);
+        return x.drawArrays(x.TRIANGLE_FAN, 0, 3);
+    } 
+}; // _OS13k
 
 /////////////////////////////////////////////////////////////////////////////
-// icon object
+// OS13kIcon
 
+const iconGridSizeX = 99;
+const iconGridSizeY = 130;
+let windowOpenOffset = 99;
 let topIconZ = 0;
-let openPos = 99;
 
 class OS13kIcon extends HTMLElement
 {
@@ -233,12 +366,12 @@ class OS13kIcon extends HTMLElement
         else
         {
             // stager open positions
-            openPos += 50;
-            if (openPos > 300)
-                openPos = 50;
+            windowOpenOffset += 50;
+            if (windowOpenOffset > 300)
+                windowOpenOffset = 50;
 
             // open the window
-            this.os13kWindow = new OS13kWindow({x:openPos, y:openPos, icon:this});
+            this.os13kWindow = new OS13kWindow({x:windowOpenOffset, y:windowOpenOffset, icon:this});
             os13kDesktop.appendChild(this.os13kWindow);
         }
         
@@ -258,6 +391,7 @@ class OS13kIcon extends HTMLElement
         moveIcon.realIcon = this;
         moveIcon.style.opacity = .5;
         moveIcon.style.zIndex = ++activeWindowZ;
+        moveIcon.style.pointerEvents = 'none';
         os13kDesktop.appendChild(moveIcon);
         selected = moveIcon;
     }
@@ -275,6 +409,7 @@ class OS13kIcon extends HTMLElement
         if (!element)
             return;
             
+        let target = os13kDesktop;
         let x = rect.left;
         let y = rect.top;
         if (element.localName == 'os13k-window')
@@ -289,19 +424,19 @@ class OS13kIcon extends HTMLElement
                 return;
                 
             // prevent recursive folders
-            const DetectRecursion=icon=>
+            const DetectSelfReference=icon=>
             {
                 if (icon.os13kWindow == element)
                     return 1;
                 
                 if (icon.os13kWindow && icon.os13kWindow.folder)
                     for( const c of icon.os13kWindow.folder.children)
-                        if (DetectRecursion(c))
+                        if (DetectSelfReference(c))
                             return 1;
             }
-            if (DetectRecursion(this.realIcon))
+            if (DetectSelfReference(this.realIcon))
             {
-                alert('Recursive folder structure detected!');
+                alert('Self referential folder structure detected!');
                 return;
             }
             
@@ -310,19 +445,22 @@ class OS13kIcon extends HTMLElement
             x -= rect.left;
             y -= rect.top;
             
-            // put icon in folder and set focus
-            element.folder.appendChild(this.realIcon);
-            element.focus();
+            // put icon in folder
+            target = element;
         }
-        else
+
+        // move icon if it is a different folder
+        const targetFolder = target.folder ? target.folder : target;
+        if (targetFolder != this.realIcon.parentElement)
         {
-            // drop icon onto desktop and set focus
-            os13kDesktop.appendChild(this.realIcon);
-            os13kDesktop.focus();
-            if (activeWindow)
+            targetFolder.appendChild(this.realIcon);
+
+            // deactivate window if dropped in desktop
+            if (activeWindow && targetFolder == os13kDesktop)
                 activeWindow.SetActive(0);
         }
-        
+        target.focus();
+            
         // set icon position
         this.realIcon.style.left = x;
         this.realIcon.style.top = y;
@@ -333,7 +471,7 @@ class OS13kIcon extends HTMLElement
 customElements.define('os13k-icon', OS13kIcon);
 
 /////////////////////////////////////////////////////////////////////////////
-// frame object
+// OS13kWindow
 
 let activeWindow;
 let activeWindowZ = 1e7;
@@ -368,7 +506,7 @@ class OS13kWindow extends HTMLElement
         {
             // create folder frame
             const folder = document.createElement('div');
-            folder.className = 'frame folder';
+            folder.className = 'folder frame';
             folder.os13kWindow = this;
             this.folder = folder;
             this.shadow.appendChild(folder);
@@ -406,13 +544,15 @@ class OS13kWindow extends HTMLElement
                 {
                     iframe_content.OS13k = OS13k;
                     iframe_content.zzfx = zzfx;
-                    iframe_content.OS13kInit();
+                    if (iframe_content.OS13kStart)
+                        iframe_content.OS13kStart();
                 }
                 catch (e)
                 {
                     // Could not pass OS13k to frame!
-                    // This may be due to file:// links being treated 
-                    // as different origin in some browsers.
+                    // This may be due to file:// links being treated as
+                    // different origin in some browsers for security reasons.
+                    // If running on the web it may work fine.
                     throw e;
                 }
             };
@@ -453,12 +593,14 @@ class OS13kWindow extends HTMLElement
         {
             // hide window so it can be reopened
             this.style.display = 'none';
+            if (this.maximized)
+                this.Resize();
         }
         else
         {
             // destroy window
-            this.remove();
             this.os13kIcon.os13kWindow = 0;
+            this.remove();
         }
     }
     
@@ -480,8 +622,7 @@ class OS13kWindow extends HTMLElement
     
     Resize()
     {
-        this.maximized = !this.maximized;
-        if (this.maximized)
+        if (this.maximized = !this.maximized)
         {
             // save old values
             this.oldLeft = this.style.left;
@@ -513,13 +654,11 @@ class OS13kWindow extends HTMLElement
 customElements.define('os13k-window', OS13kWindow);
 
 /////////////////////////////////////////////////////////////////////////////
-// input
+// Input
 
 let selected;
 let seletOffsetX;
 let seletOffsetY;
-let lastMouseDownTarget;
-let lastMouseDownTargetTime;
 
 onmousedown=e=>
 {
@@ -543,25 +682,9 @@ onmousedown=e=>
     seletOffsetX = e.x - rect.left;
     seletOffsetY = e.y - rect.top;
     
-    if (target.localName == 'os13k-icon')
-    {
-        // handle double click
-        if (lastMouseDownTarget == target && lastMouseDownTargetTime > Date.now())
-        {
-            target.Open();
-            return;
-        }
-        lastMouseDownTargetTime = Date.now() + 300;
-        lastMouseDownTarget = target;
-        
-        // icon handle mouse down
-        target.MouseDown();
-    }
-    else if (target.localName == 'os13k-window')
-    {
-        // window handle mouse down
+    // handle mouse down event
+    if (target.localName == 'os13k-icon' || target.localName == 'os13k-window')
         target.MouseDown(originalTarget.id);
-    }
     else
     {
         // deactivate window if not clicked on
@@ -584,135 +707,34 @@ onmouseup=e=>
 
 onmousemove=e=>
 {
+    // update selected position
     if (selected)
     {
-        // update selected position
         selected.style.left = e.x - seletOffsetX;
         selected.style.top = e.y - seletOffsetY;
     }
+}
+
+ondblclick=e=>
+{
+    // get os13k target
+    const originalTarget = e.originalTarget || e.path[0];
+    const target = originalTarget.parentNode.host || originalTarget;
+    if (target.localName == 'os13k-icon')
+        target.Open();
 }
 
 /////////////////////////////////////////////////////////////////////////////
 // ZzFXMicro - Zuper Zmall Zound Zynth 
 
 let zzfxV = .3; // volume
-const zzfx =      // play sound
+const zzfx =    // play sound
 (I=1,J=.05,g=220,f=0,h=0,m=.1,n=0,K=1,r=0,z=0,t=0,A=0,u=0,B=0,v=0,L=0,e=0,d=2*Math.PI,b=44100,w=p=>2*p*Math.random()-p,C=p=>0<p?1:-1,M=r*=500*d/b**2,D=g*=(1+w(J))*d/b,N=C(v)*d/4,q=[],E=0,F=0,c=0,k=1,G=0,H=0,a=0,O,l)=>{f=99+f*b|0;h=h*b|0;m=m*b|0;e=e*b|0;z*=500*d/b**3;l=f+h+m+e;v*=d/b;t*=d/b;A*=b;for(u*=b;c<l;q[c++]=a)++H>100*L&&(H=0,a=E*g*Math.sin(F*v-N),a=n?1<n?2<n?3<n?Math.sin((a%d)**3):Math.max(Math.min(Math.tan(a),1),-1):1-(2*a/d%2+2)%2:1-4*Math.abs(Math.round(a/d)-a/d):Math.sin(a),a=C(a)*Math.abs(a)**K,a*=I*zzfxV*(c<f?c/f:c<f+h?1:c<l-e?1-(c-f-h)/m:0),a=e?a/2+(e>c?0:(c<l-e?1:(c-l)/e)*q[c-e]/2):a),E+=1+w(B),F+=1+w(B),g+=r+=z,k&&++k>A&&(D+=t,g+=t,k=0),u&&++G>u&&(g=D,r=M,G=1,k=k||1);return OS13k.PlaySamples(q)}
 
 /////////////////////////////////////////////////////////////////////////////
-// OS13k Init
-
-class _OS13k
-{
-    constructor()
-    {
-        // init web audio
-        this.audioContext = new (window.AudioContext || webkitAudioContext);
-        this.audioContext._createBufferSource = this.audioContext.createBufferSource;
-        this.audioContext.createBufferSource =
-        (s = audioContext._createBufferSource())=>
-        (
-            s.start = s.start || (t => audioContext.noteOn (t)),
-            s.stop  = s.stop  || (t => audioContext.noteOff(t)),
-            s
-        );
-    }
-    
-    Medal(gameName, medalName, icon, score)
-    {
-        // show popup and unlock medal
-    }
-    
-    PlaySamples(samples)
-    {
-        // play raw audio sample data
-        const buffer = this.audioContext.createBuffer(1, samples.length, 44100);
-        const source = this.audioContext.createBufferSource();
-        buffer.getChannelData(0).set(samples);
-        source.buffer = buffer;
-        source.connect(this.audioContext.destination);
-        source.start();
-        return source;
-    }
-    
-    Update()
-    {
-        // listen for change in active element
-        // this happens when clicking on an iframe
-        const activeElement = document.activeElement;
-        if (this.lastActiveElement != activeElement)
-        {
-            if (activeElement.localName == 'os13k-window')
-                activeElement.focus();
-            this.lastActiveElement = activeElement;
-        }
-    }
-    
-    CreateShader(canvas, code)
-    {
-        const x = canvas.getContext('webgl');
-
-        // create simple pass through vertex shader
-        const vertexShader = x.createShader(x.VERTEX_SHADER);
-        x.shaderSource(vertexShader,"attribute vec4 p;void main(){gl_Position=p;}");
-        x.compileShader(vertexShader);
-        
-        // create vertex buffer that is a giant triangle to cover the viewport
-        const vertexBuffer = x.ARRAY_BUFFER;
-        x.bindBuffer(vertexBuffer,x.createBuffer());
-        x.bufferData(vertexBuffer,new Int8Array([-3,1,1,-3,1,1]),x.STATIC_DRAW);
-        x.enableVertexAttribArray(0);
-        x.vertexAttribPointer(0,2,x.BYTE,0,0,0); // 2D vertex
-        
-        // create shadertoy compatible pixel shader
-        const pixelShader = x.createShader(x.FRAGMENT_SHADER)
-        const shaderProgramCode = 
-            'precision mediump float;'
-            + `uniform vec3 iResolution;`
-            + `uniform float iTime;`
-            + code
-            + '\nvoid main()'
-            + '{mainImage(gl_FragColor,gl_FragCoord.xy);gl_FragColor.a=1.;}'
-        x.shaderSource(pixelShader, shaderProgramCode)
-        x.compileShader(pixelShader);
-
-        // check for errors
-        const compiled = x.getShaderParameter(pixelShader, x.COMPILE_STATUS);
-        if (!compiled)
-        {
-            console.log(x.getShaderInfoLog(pixelShader));
-            return;
-        }
-
-        // create program
-        const shaderProgram = x.createProgram();
-        x.attachShader(shaderProgram, vertexShader);
-        x.attachShader(shaderProgram, pixelShader);
-        x.linkProgram(shaderProgram);
-        x.useProgram(shaderProgram);
-        return shaderProgram;
-    }
-    
-    RenderShader(canvas, shaderProgram, time=0)
-    {
-        const x = canvas.getContext('webgl');
-        
-        // set uniforms
-        x.uniform3f(x.getUniformLocation(shaderProgram,"iResolution"),
-            canvas.width, canvas.height, 0);
-        x.uniform1f(x.getUniformLocation(shaderProgram,"iTime"), time);
-        
-        // render shader
-        x.viewport(0, 0, canvas.width, canvas.height);
-        return x.drawArrays(x.TRIANGLE_FAN, 0, 3);
-    }
-    
-}; // _OS13k
+// OS13k startup!
 
 const OS13k = new _OS13k;
-
-setInterval(OS13k.Update, 99);
-InitDesktop();
 
 </script>
 </body>
