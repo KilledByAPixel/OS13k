@@ -22,7 +22,7 @@ More icon settings
 OS13k System Calls
 - The function OS13kInit is called on child frames when opened
 - To acces OS13k features, use the OS13k object
-- ZzFx sounds can played by calling zzfx, no need to include anything
+- ZzFx sounds can played by calling zzfx, volume is controlled by the system
 - OS13k.CreateShader(canvas, code) to create a shadertoy compatible webgl shader
 - OS13k.RenderShader(canvas, shaderProgram, time=0) to render a shader
 - OS13k.Medal will register a medal for your game as complete
