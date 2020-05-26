@@ -1,7 +1,6 @@
-<!-- OS13k - A tiny pseudo operating system for JS13k -->
 <html>
 <head>
-<title>OS13k</title>
+<title>OS13k - A tiny pseudo operating system for JS13k</title>
 <meta charset=utf-8>
 </head>
 <body>
@@ -22,14 +21,14 @@ body
 }
 .title
 {
-    display:flex;
-    align-items:center;
-    justify-content:center;
     font-size:300;
     font-family:impact;
     color:#0002;
     height:100%;
     user-select:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 }
 </style>
 <template id=templateIcon>
@@ -53,11 +52,11 @@ body
     border-radius:9px;
     box-shadow:4px 4px 5px #000;
     overflow:hidden;
+    white-space:nowrap;
+    pointer-events:none;
     display:flex;
     align-items:center;
     justify-content:center;
-    white-space:nowrap;
-    pointer-events:none;
 }
 .name
 {
@@ -105,7 +104,7 @@ body
 {
     position:absolute;
     right:23;
-    font-size:24;
+    font-size:23;
 }
 .resize:hover
 {
@@ -115,7 +114,7 @@ body
 {
     position:absolute;
     right:0;
-    font-size:36;
+    font-size:32;
 }
 .close:hover
 {
@@ -135,7 +134,7 @@ body
 // @js_externs OS13k, OS13kIcon, OS13kWindow, zzfx, zzfxV
 // @js_externs _OS13k.Medal, _OS13k.Medal, _OS13k.GetKeyDirection
 // @js_externs _OS13k.PlaySamples, _OS13k.CreateShader, _OS13k.RenderShader
-// @js_externs _OS13k.Random, _OS13k.randomSeed
+// @js_externs _OS13k.Random, _OS13k.randomSeed, _OS13k.CreateDweet
 // @output_file_name OS13k.min.js
 // ==/ClosureCompiler==
 
@@ -146,7 +145,7 @@ body
 
 const desktopLayout = 
 [
-{name:'Help', icon:'❓', src:'help.html?4', open:1, width:400, height:380},
+{name:'Help', icon:'❓', src:'help.html?5', open:1, width:400, height:380},
 {name:'System', icon:'⚙️', folder:
 [
     {name:'Test', icon:'✌️', src:'system/test.html?2', hideWhenClosed:1},
@@ -170,9 +169,18 @@ const desktopLayout =
 {name:'Toys', icon:'🤖', folder:
 [
     {name:'ZzFX Sounds', icon:'𝐙𝐙', src:'toys/zzfxSoundBoard.html'},
-    {name:'Yin Yangs', icon:'☯️', src:'toys/infiniteYinYangs.html?1'}
+    {name:'Yin Yangs', icon:'☯️', src:'toys/infiniteYinYangs.html?1'},
 ]},
-{name:'Favorites', folder:[]},
+{name:'Dweets', icon:'<b>III</b>', folder:
+[
+    {name:'Black Hole', icon:'🌌', src:'dweets/blackHole.html'},
+    {name:'Mandelbrot Nebula', icon:'🌟', src:'dweets/mandelbrotNebula.html'},
+    {name:'Bogus Roads', icon:'🛣️', src:'dweets/bogusRoads.html'},
+    {name:'Automatic Breakout', icon:'●', src:'dweets/breakout.html'},
+    {name:'Underwater Cavern', icon:'🌊', author:'Pavel', src:'dweets/underwaterCavern.html'},
+    {name:'City Traffic', icon:'🚌', author:'Tomxor', src:'dweets/cityTraffic.html'},
+    {name:'Train Set', icon:'🚂', author:'jylikangas', src:'dweets/trainSet.html'},
+]},
 ];
 
 /////////////////////////////////////////////////////////////////////////////
@@ -321,6 +329,20 @@ class _OS13k
         return x.drawArrays(x.TRIANGLE_FAN, 0, 3);
     }
     
+    CreateDweet(document, code)
+    {
+        // set up document
+        document.body.innerHTML = '<canvas id=c width=1920 height=1080 style=background:#FFF>';
+        document.body.style = 'background:#111;margin:0;display:flex;align-items:center;justify-content:center;overflow:hidden';
+        
+        // create dweet
+        const window = document.defaultView;
+        window.eval('function u(t) {\n' + code + '\n}'
+            + 'R=(r,g,b,a=1)=>`rgba(${0|r},${0|g},${0|b},${a})`,frame=0,x=window.c.getContext`2d`,S=Math.sin,C=Math.cos,T=Math.tan,loop=()=>{requestAnimationFrame(loop),u((60*(frame++/60)-frame-1|0?frame-1:frame)/60),c.style.width=1920/1080>innerWidth/innerHeight?innerWidth:innerHeight*1920/1080}');
+            
+        window.loop();
+    }
+    
     Random(max=1, min=0)
     {
         // Mersenne Twister
@@ -342,7 +364,7 @@ let topIconZ = 0;
 
 class OS13kIcon extends HTMLElement
 {
-	constructor({x, y, name, icon, src, width=720, height=480, hideWhenClosed, allowMultiple, folder})
+	constructor({x, y, name, icon, src, width=720, height=450, author, hideWhenClosed, allowMultiple, folder})
     {
 		super();
         
@@ -360,6 +382,7 @@ class OS13kIcon extends HTMLElement
         this.windowHeight = height;
         this.style.left = x;
         this.style.top = y;
+        this.author = author;
         this.hideWhenClosed = hideWhenClosed || folder;
         this.allowMultiple = allowMultiple;
         this.folder = folder;
@@ -512,7 +535,10 @@ class OS13kWindow extends HTMLElement
         const titleBar = document.createElement('span');
         titleBar.className = 'titleBar';
         titleBar.id = 'titleBar';
-        titleBar.innerHTML = '&nbsp;' + icon.icon + ' ' + icon.name;
+        titleBar.innerHTML = '&nbsp;' 
+            + icon.icon + ' ' 
+            + icon.name + ' ' 
+            + (icon.author? ' (' +icon.author +')': '');
         this.shadowRoot.appendChild(titleBar);
         this.titleBar = titleBar;
         
@@ -561,17 +587,17 @@ class OS13kWindow extends HTMLElement
                 {
                     iframe_content.OS13k = OS13k;
                     iframe_content.zzfx = zzfx;
-                    if (iframe_content.OS13kStart)
-                        iframe_content.OS13kStart();
                 }
                 catch (e)
                 {
-                    // Could not pass OS13k to frame!
                     // This may be due to file:// links being treated as
                     // different origin in some browsers for security reasons.
-                    // If running on the web it may work fine.
                     throw e;
                 }
+                
+                // init os13k in iframe
+                if (iframe_content.OS13kStart)
+                    iframe_content.OS13kStart();
             };
             iframe.src = icon.src;
             this.shadow.appendChild(iframe);
@@ -592,7 +618,7 @@ class OS13kWindow extends HTMLElement
     SetActive(active=1)
     {
         // change title color when active
-        this.titleBar.style.background = active ? '#aac' : '#555';
+        this.titleBar.style.background = active ? '#aac' : '#777';
         
         if (active)
         {
