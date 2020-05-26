@@ -12,7 +12,7 @@ Add an icon config to desktopLayout to create a new program
 - example {name:'Test', icon:'✌️', src:'test.html'}
 
 Top level icons will open on start if they have the flag 'open' (for faster iteration)
-- example {name:'Test', src:'test.html', open}
+- example {src:'test.html', open}
 
 More icon settings
 - width and height of window
