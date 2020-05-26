@@ -181,6 +181,10 @@ const desktopLayout =
     {name:'City Traffic', icon:'🚌', author:'Tomxor', src:'dweets/cityTraffic.html'},
     {name:'Train Set', icon:'🚂', author:'jylikangas', src:'dweets/trainSet.html'},
 ]},
+{name:'Music', icon:'🎵', folder:
+[
+    {name:'Min Bytes', icon:'<span style=color:#f00>𝓜</span>', width:500, height:500, src:'music/minBytes.html'},
+]},
 {name:'Favorites', folder:[]},
 ];
 
@@ -260,10 +264,10 @@ class _OS13k
         return {x, y}
     }
     
-    PlaySamples(samples)
+    PlaySamples(samples, sampleRate=44100)
     {
         // play raw audio sample data
-        const buffer = this.audioContext.createBuffer(1, samples.length, 44100);
+        const buffer = this.audioContext.createBuffer(1, samples.length, sampleRate);
         const source = this.audioContext.createBufferSource();
         buffer.getChannelData(0).set(samples);
         source.buffer = buffer;

@@ -1,0 +1,172 @@
+<!--
+    
+post
+- soundcloud
+    
+todo:
+x show curent song
+o hide stuff when music is playing
+x go to next song when ended
+o effect for each song
+o transitions, 2 effects, drive alpha
+x short functions, hsl color, reneder rect with hsl color
+- figure out lengths of songs
+o show song time
+- need a way to get function at each time to sync up visual
+
+get rid of R
+tru get rid of draw functions
+
+    
+effect dweets
+
+- black hole - https://www.dwitter.net/d/13326
+- tie die - https://www.dwitter.net/d/13345
+- loop equation simple - https://www.dwitter.net/d/13198
+- rain mountain - https://www.dwitter.net/d/13416
+
+
+- sea anemone https://www.dwitter.net/d/13062
+- sunset on ocean https://www.dwitter.net/d/13427
+- snow mountain https://www.dwitter.net/d/13417
+- moon rain https://www.dwitter.net/d/13418
+
+- bees https://www.dwitter.net/d/13468
+- strange loop - https://www.dwitter.net/d/13386
+- text with trippy background - https://www.dwitter.net/d/13347
+- army of squares - https://www.dwitter.net/d/13270
+- snow - https://www.dwitter.net/d/13230
+- 3d wireframe object - https://www.dwitter.net/d/13219
+- shooting stars https://www.dwitter.net/d/13216
+- loop equation bw - https://www.dwitter.net/d/13210
+- loop equation color - https://www.dwitter.net/d/13209
+- bubbles - https://www.dwitter.net/d/13197
+- breakout https://www.dwitter.net/d/13487
+
+
+- petes - https://www.dwitter.net/d/13167
+- autodweet1 cloud city https://www.dwitter.net/d/13136
+- autodweet2 glitch machine https://www.dwitter.net/d/13108
+- autodweet3 edge zoom https://www.dwitter.net/d/13080
+- audodweet4 architecture https://www.dwitter.net/d/13065
+
+
+-->   
+    
+<!doctype html>
+<html>
+<head>
+<title>MinBytes - A Minimal ByteBeat Album/Demo By Frank Force 2019</title>
+<meta charset="utf-8">
+</head>
+<body style="background-color:#000;">
+<canvas id='canvas' style='position:absolute; left:0px; top:0px; width:100%; height:100%'></canvas>
+<script>
+ ///////////////////////////////////////////////////////////////////////  
+
+// js1k shim variables    
+d = document; b = d.body; a = d.getElementById('canvas'); c = a.getContext('2d');
+
+// fit canvas to window when resized
+b.onresize=_=>{ a.width = window.innerWidth; a.height = window.innerHeight; }
+b.onresize()
+
+//////////////////////////////////////////////////
+// MinBytes - A Minimal Bytebeat Album in 1k
+// Frank Force 2019
+//////////////////////////////////////////////////
+    
+// songs
+A=(
+   f, // audio function
+   r, // sample rate
+   e, // star speed
+   n  // name
+   )=>
+{
+    // draw actor
+    c.font = h+"px'";
+    c.fillStyle=`hsl(${t/5},99%,${++i-C&&i?95:50}%)`
+    c.fillText(i?i+". "+n:F&&((t/1e3|0)%8<4)?F:n,x,y+h/3);
+    //c.strokeText((i?i+". ":"") + n,x,y+h/3);
+    //c.strokeStyle ="#F00";c.strokeRect(x-180,y-h/2,360,h); // hitbox debug
+    
+    if ((Math.abs(M - x) < 180 && Math.abs(Y - y) < h/2 || i == N))
+    {
+        S&&S.stop(); // stop last song
+        
+        // init song
+        F=f; // function
+        N=-1; // wait for song to end
+        E=e; // star speed
+        
+        if (C=i)
+        {
+            // fill buffer with music
+            s=[]
+            for(k=0;k<r*100;++k)
+                s[k] = (e=f(k)*2-1, e>1?1:e)/8;
+            S=OS13k.PlaySamples(s, R=r);
+            u=Date.now();
+        }
+    }
+    y+=h; // next line
+}
+
+// main game loop
+setInterval(G=_=> // loop
+{
+    // black background
+    c.fillStyle="#0008";
+    c.fillRect(0,0,a.width,a.height);              
+    //c.strokeStyle="#F00";c.strokeRect(a.width/2-1280/2,0,1280,720);  // debug 720p
+    
+    c.textAlign="center"; // center text
+    
+    // stars effect
+    for(i=3e3;i--;c.fillRect((Math.sin(i)*1e9-T*i)%a.width*2-9,i*9%a.height,j=i%4,j))c.fillStyle=`hsl(${i*20},99%,85%)`;
+        
+    // visualizer
+    for(i=32;F&&1e5>t&&i--;c.fillRect(a.width/2-i*q*a.height/40,0,i*q*a.height/20,a.height))
+    {
+        for(j=R/10;j--;)q+=(F(t*R/1e3+j)&1<<i)>>i
+        q/=R/9;
+
+        c.fillStyle=`hsl(${i*20},99%,50%,.1)`
+    }
+    
+    // update time
+    t=Date.now()-u;
+    
+    F&&1e5<t-2e3?C=N=C-9?C+1:0:T+=E/5e3; // advance to next song & update stars
+    
+    // track select menu
+    x=a.width/2;
+    y=h=59;
+    i=-1;
+    A(0,0,.5,                 "𝓜𝓲𝓷𝓑𝔂𝓽𝓮𝓼"); // title + reset mouse & vizualizer
+    h=40;
+    A(t=>t&t>>8,          1e5, 2, "TAKEOFF");
+    A(t=>t&t>>11,         1e4, 1, "BINARY");
+    A(t=>t&t>>4&t<<4,     1e4, 4, "DENSITY");
+    A(t=>t&t>>9&(9*t),    5e4, 1, "TWINKLE");
+    A(t=>t&t<<t/4>>9,     5e3, 3, "RUMBLE");
+    A(t=>t&t>>6&t>>9,     1e5, 3, "SIDEREAL");
+    A(t=>t&t>>5&t*131,    3e3, 9, "ZODIAC");
+    A(t=>t&(t<<8^t>>5),   1e5, 99,"FTL");
+    
+    q=M=0;
+},16);
+    
+// input
+onclick=x=>{M=x.x;Y=x.y}
+    
+// init 
+S=M=C=N=F=T=E=u=i=0;
+
+// stop the music
+onunload =_=>S&&S.stop();
+
+</script>
+</body>
+</html>
