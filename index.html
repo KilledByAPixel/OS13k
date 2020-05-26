@@ -197,7 +197,7 @@ class _OS13k
     constructor()
     {
         // init web audio
-        this.audioContext = new (window.AudioContext || webkitAudioContext);
+        this.audioContext = new (AudioContext || webkitAudioContext);
         this.audioContext._createBufferSource = this.audioContext.createBufferSource;
         this.audioContext.createBufferSource =
         (s = this.audioContext._createBufferSource())=>
@@ -407,7 +407,7 @@ class OS13kIcon extends HTMLElement
             // stager open positions
             windowOpenOffset += 50;
             if (windowOpenOffset > 300)
-                windowOpenOffset = 50;
+                windowOpenOffset = 99+25;
 
             // open the window
             this.os13kWindow = new OS13kWindow({x:windowOpenOffset, y:windowOpenOffset, icon:this});
@@ -741,8 +741,6 @@ onmousedown=e=>
         if (activeWindow)
             activeWindow.SetActive(0);
     }
-    
-    e.preventDefault();
 }
 
 onmouseup=e=>
@@ -755,8 +753,6 @@ onmouseup=e=>
     if (selected && selected.MouseUp)
         selected.MouseUp(e);
     selected = 0;
-    
-    e.preventDefault();
 }
 
 onmousemove=e=>
@@ -767,8 +763,6 @@ onmousemove=e=>
         selected.style.left = e.x - seletOffsetX;
         selected.style.top = e.y - seletOffsetY;
     }
-    
-    e.preventDefault();
 }
 
 ondblclick=e=>
@@ -778,8 +772,6 @@ ondblclick=e=>
     const target = originalTarget.parentNode.host || originalTarget;
     if (target.localName == 'os13k-icon')
         target.Open();
-    
-    e.preventDefault();
 }
 
 /////////////////////////////////////////////////////////////////////////////
