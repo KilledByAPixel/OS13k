@@ -330,12 +330,14 @@ let topIconZ = 0;
 
 class OS13kIcon extends HTMLElement
 {
-	constructor({x, y, name, icon, src, width=720, height=540, hideWhenClosed, allowMultiple, folder})
+	constructor({x, y, name, icon, src, width=720, height=480, hideWhenClosed, allowMultiple, folder})
     {
 		super();
         
         // set default icon
-        icon = icon ? icon : folder ? '📁' : name[0].toUpperCase();
+        src = src || '';
+        name = name || src.split('.')[0];
+        icon = icon || ( folder ? '📁' : name[0]? name[0].toUpperCase() : '' );
         
         // set icon data
 		this.shadow = this.attachShadow({mode: 'open'});
@@ -436,7 +438,7 @@ class OS13kIcon extends HTMLElement
             }
             if (DetectSelfReference(this.realIcon))
             {
-                alert('Self referential folder structure detected!');
+                alert('Self referential folders detected!');
                 return;
             }
             
