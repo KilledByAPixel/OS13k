@@ -1,5 +1,4 @@
-# OS13k
-A tiny pseudo operating system in only 13 kilobytes
+# OS13k - A tiny pseudo operating system for JS13k
 
 ## Please keep this project confidential!
 
