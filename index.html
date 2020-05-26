@@ -337,8 +337,7 @@ class _OS13k
         document.body.style = 'background:#111;margin:0;display:flex;align-items:center;justify-content:center;overflow:hidden';
         
         // create dweet
-        document.defaultView.eval('function u(t) {' + code + '}'
-            + 'x=c.getContext`2d`,frame=0,S=Math.sin,C=Math.cos,T=Math.tan,R=(r,g,b,a=1)=>`rgba(${0|r},${0|g},${0|b},${a})`,loop=()=>requestAnimationFrame(loop,document.hasFocus()&&u((60*(frame++/60)-frame-1|0?frame-1:frame)/60),c.style.width=1920/1080>innerWidth/innerHeight?innerWidth:innerHeight*1920/1080);loop()');
+        document.defaultView.eval('function u(t){' + code + '}x=c.getContext`2d`,frame=0,S=Math.sin,C=Math.cos,T=Math.tan,R=(r,g,b,a=1)=>`rgba(${0|r},${0|g},${0|b},${a})`,loop=()=>requestAnimationFrame(loop,document.hasFocus()&&u((60*(frame++/60)-frame-1|0?frame-1:frame)/60),c.style.width=1920/1080>innerWidth/innerHeight?innerWidth:innerHeight*1920/1080);loop()');
     }
     
     Random(max=1, min=0)
