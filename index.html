@@ -149,7 +149,7 @@ const desktopLayout =
 {name:'Help', icon:'❓', src:'help.html?4', open:1, width:400, height:380},
 {name:'System', icon:'⚙️', folder:
 [
-    {name:'Test', icon:'✌️', src:'test.html?2', hideWhenClosed:1},
+    {name:'Test', icon:'✌️', src:'system/test.html?2', hideWhenClosed:1},
 ]},
 {name:'Games', icon:'🎮', folder:
 [
@@ -230,7 +230,7 @@ class _OS13k
         }
     }
     
-    Medal(gameName, medalName, icon, difficulty)
+    Medal(gameName, medalName, difficulty, icon)
     {
         // show popup and unlock medal
     }
@@ -346,7 +346,7 @@ class OS13kIcon extends HTMLElement
     {
 		super();
         
-        // set default icon
+        // set defaults
         src = src || '';
         name = name || src.split('.')[0];
         icon = icon || ( folder ? '📁' : name[0]? name[0].toUpperCase() : '' );
