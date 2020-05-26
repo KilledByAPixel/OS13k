@@ -10,7 +10,7 @@ OS13kStart=()=>
         requestAnimationFrame(Update);
         c.width = innerWidth;
         c.height = innerWidth;
-        OS13k.RenderShader(c, shader, time/1e3);
+        document.hasFocus()&&OS13k.RenderShader(c, shader, time/1e3);
     }
     Update();
 }
