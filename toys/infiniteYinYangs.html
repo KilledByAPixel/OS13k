@@ -1,0 +1,97 @@
+<body style=margin:0;overflow:hidden>
+<canvas id=c>
+<script>
+
+OS13kInit=()=>
+{
+    shader = OS13k.CreateShader(c, shaderCode);
+    Update = time =>
+    {
+        requestAnimationFrame(Update);
+        c.width = innerWidth;
+        c.height = innerWidth;
+        OS13k.RenderShader(c, shader, time / 1e3);
+    }
+    Update();
+}
+
+// Infinite Yin Yangs Mini
+// https://www.shadertoy.com/view/wd2Szm
+shaderCode=`
+
+#define T iTime
+#define R iResolution
+#define M iMouse
+
+// magic stuff
+#define A(i)(6.283*fract(3.7*sin(i))+.7*mix(-1.,1.,fract(3.7*sin(i)))*T)
+#define P(i)vec2(-(step(.5,fract(3.7*sin(i)))-.5)*sin(A(i)),(step(.5,fract(3.7*sin(i)))-.5)*cos(A(i)))
+
+void mainImage( out vec4 _FragColor, in vec2 _FragCoord )
+{
+    // standard uv fixup
+	vec2 p = (2.0*_FragCoord.xy-R.xy)/R.y + 0.5*vec2(sin(0.2*T),sin(0.3*T));
+    
+    // get the recursion values
+	float i = floor(T-length(p)),
+        m = T - i-length(p), 
+        z = pow(2.718, -log(3.333)*m) * .08,
+        v = 0.;
+    
+    // get the zoom position
+    p = p*z+ P(i);
+	for (float r = 0.; r < 9.; ++r)
+		p += (P(i+r+1.) / 3.333) * pow(1. / 3.333, r);
+    
+	// recursion
+    for (float r = 0.; r<9.; ++r)
+    {
+        // rotate
+        m = -A(i);
+        p=vec2(p.x*cos(m) - p.y*sin(m), p.x*sin(m) + p.y*cos(m));
+
+        // yin yang function
+        float b = 5.*z/min(R.y, R.x),
+        c = 1.0,
+        l = length(2.0*p + vec2(0, 1)),
+        d = l;
+        if (p.x < 0.0)
+            c = mix(c, 0.0, smoothstep(1.0-b, 1.0+b, l));
+
+        l = length(2.0*p - vec2(0, 1));
+        if (p.x > 0.0)
+            c = mix(0.0, c, smoothstep(1.0-b, 1.0+b, l));
+        if (p.y > 0.0)
+            d = l;
+
+        v = mix(c, v, smoothstep(1.0-b, 1.0, length(p)));
+
+        if (d > .6)
+        {
+			// stop if outside
+            v = mix(step(0.0, p.y), v, smoothstep(.6+.12,.6+.12+b,d));
+
+			// fix color around the edges
+            if (d < .72+b && p.y > 0.0) ++i;
+            break;
+        }
+
+        // which side are we on?
+        p.y += mix(0.5, -0.5,  v = step(0.0,p.y));
+
+        // update zoom and position
+        z *= 2./.6;
+        p *= 2./.6;	 
+        
+        // unrotate
+        m = A(i);
+        p=vec2(p.x*cos(m) - p.y*sin(m), p.x*sin(m) + p.y*cos(m));
+       	++i;
+    }
+    
+	// final coloring
+    _FragColor = vec4(v*vec3(1.+sin(i+T+i),1.+sin(i+T+1.),1.+sin(i+T+2.)),1.);
+}
+`; // shader
+
+</script>

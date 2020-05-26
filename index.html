@@ -110,8 +110,7 @@ body
 {
     position: absolute;
     right: 23;
-    font-size: 36;
-    line-height: 50px;
+    font-size: 24;
 }
 .resize:hover
 {
@@ -122,7 +121,6 @@ body
     position: absolute;
     right: 0;
     font-size: 36;
-    line-height: 50px;
 }
 .close:hover
 {
@@ -147,6 +145,7 @@ const desktopLayout =
 ]},
 {name:'Games', icon:'🎮', folder:
 [
+    {name:'Lava Rush', icon:'🌋', src:'games/lavaRush.html'},
     {name:"Sn1ke", icon:'👀', src:'games/sn1ke.html', width:400, height:330, hideWhenClosed:1},
     {name:"Tetris", icon:'🆃', src:'games/tetris.html', width:220, height:430},
     {name:"Queen's Gambit", icon:'<span style=color:#f0f>♛</span>', src:'games/queensGambit.html', width:1290, height:720},
@@ -163,6 +162,7 @@ const desktopLayout =
 {name:'Toys', icon:'🤖', folder:
 [
     {name:'ZzFX Sounds', icon:'𝐙𝐙', src:'toys/zzfxSoundBoard.html', hideWhenClosed:1},
+    {name:'Yin Yangs', icon:'☯️', src:'toys/infiniteYinYangs.html'},
 ]},
 {name:'Test Folder', folder:
 [
@@ -180,6 +180,8 @@ const InitDesktop=_=>
         p.x=X+=iconGridSizeX; p.y=iconGridSizeX/4; 
         const icon = new OS13kIcon(p); 
         os13kDesktop.appendChild(icon); 
+        if (p.open)
+            icon.Open();
         return icon;
     }
     
@@ -404,12 +406,14 @@ class OS13kWindow extends HTMLElement
                 {
                     iframe_content.OS13k = OS13k;
                     iframe_content.zzfx = zzfx;
+                    iframe_content.OS13kInit();
                 }
                 catch (e)
                 {
                     // Could not pass OS13k to frame!
                     // This may be due to file:// links being treated 
                     // as different origin in some browsers.
+                    throw e;
                 }
             };
             frame.src = icon.src;
@@ -593,7 +597,7 @@ onmousemove=e=>
 
 let zzfxV = .3; // volume
 const zzfx =      // play sound
-(I=1,J=.05,g=220,f=0,h=0,m=.1,n=0,K=1,r=0,z=0,t=0,A=0,u=0,B=0,v=0,L=0,e=0,d=2*Math.PI,b=44100,w=p=>2*p*Math.random()-p,C=p=>0<p?1:-1,M=r*=500*d/b**2,D=g*=(1+w(J))*d/b,N=C(v)*d/4,q=[],E=0,F=0,c=0,k=1,G=0,H=0,a=0,O,l)=>{f=99+f*b|0;h=h*b|0;m=m*b|0;e=e*b|0;z*=500*d/b**3;l=f+h+m+e;v*=d/b;t*=d/b;A*=b;for(u*=b;c<l;q[c++]=a)++H>100*L&&(H=0,a=E*g*Math.sin(F*v-N),a=n?1<n?2<n?3<n?Math.sin((a%d)**3):Math.max(Math.min(Math.tan(a),1),-1):1-(2*a/d%2+2)%2:1-4*Math.abs(Math.round(a/d)-a/d):Math.sin(a),a=C(a)*Math.abs(a)**K,a*=I*zzfxV*(c<f?c/f:c<f+h?1:c<l-e?1-(c-f-h)/m:0),a=e?a/2+(e>c?0:(c<l-e?1:(c-l)/e)*q[c-e]/2):a),E+=1+w(B),F+=1+w(B),g+=r+=z,k&&++k>A&&(D+=t,g+=t,k=0),u&&++G>u&&(g=D,r=M,G=1,k=k||1);OS13k.PlaySamples(q)}
+(I=1,J=.05,g=220,f=0,h=0,m=.1,n=0,K=1,r=0,z=0,t=0,A=0,u=0,B=0,v=0,L=0,e=0,d=2*Math.PI,b=44100,w=p=>2*p*Math.random()-p,C=p=>0<p?1:-1,M=r*=500*d/b**2,D=g*=(1+w(J))*d/b,N=C(v)*d/4,q=[],E=0,F=0,c=0,k=1,G=0,H=0,a=0,O,l)=>{f=99+f*b|0;h=h*b|0;m=m*b|0;e=e*b|0;z*=500*d/b**3;l=f+h+m+e;v*=d/b;t*=d/b;A*=b;for(u*=b;c<l;q[c++]=a)++H>100*L&&(H=0,a=E*g*Math.sin(F*v-N),a=n?1<n?2<n?3<n?Math.sin((a%d)**3):Math.max(Math.min(Math.tan(a),1),-1):1-(2*a/d%2+2)%2:1-4*Math.abs(Math.round(a/d)-a/d):Math.sin(a),a=C(a)*Math.abs(a)**K,a*=I*zzfxV*(c<f?c/f:c<f+h?1:c<l-e?1-(c-f-h)/m:0),a=e?a/2+(e>c?0:(c<l-e?1:(c-l)/e)*q[c-e]/2):a),E+=1+w(B),F+=1+w(B),g+=r+=z,k&&++k>A&&(D+=t,g+=t,k=0),u&&++G>u&&(g=D,r=M,G=1,k=k||1);return OS13k.PlaySamples(q)}
 
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Init
@@ -605,7 +609,13 @@ class _OS13k
         // init web audio
         this.audioContext = new (window.AudioContext || webkitAudioContext);
         this.audioContext._createBufferSource = this.audioContext.createBufferSource;
-        this.audioContext.createBufferSource=(s=this.audioContext._createBufferSource())=>(s.start=s.start||(t=>zzfxX.noteOn(t)),s);
+        this.audioContext.createBufferSource =
+        (s = audioContext._createBufferSource())=>
+        (
+            s.start = s.start || (t => audioContext.noteOn (t)),
+            s.stop  = s.stop  || (t => audioContext.noteOff(t)),
+            s
+        );
     }
     
     Medal(gameName, medalName, icon, score)
@@ -637,11 +647,71 @@ class _OS13k
             this.lastActiveElement = activeElement;
         }
     }
+    
+    CreateShader(canvas, code)
+    {
+        const x = canvas.getContext('webgl');
+
+        // create simple pass through vertex shader
+        const vertexShader = x.createShader(x.VERTEX_SHADER);
+        x.shaderSource(vertexShader,"attribute vec4 p;void main(){gl_Position=p;}");
+        x.compileShader(vertexShader);
+        
+        // create vertex buffer that is a giant triangle to cover the viewport
+        const vertexBuffer = x.ARRAY_BUFFER;
+        x.bindBuffer(vertexBuffer,x.createBuffer());
+        x.bufferData(vertexBuffer,new Int8Array([-3,1,1,-3,1,1]),x.STATIC_DRAW);
+        x.enableVertexAttribArray(0);
+        x.vertexAttribPointer(0,2,x.BYTE,0,0,0); // 2D vertex
+        
+        // create shadertoy compatible pixel shader
+        const pixelShader = x.createShader(x.FRAGMENT_SHADER)
+        const shaderProgramCode = 
+            'precision mediump float;'
+            + `uniform vec3 iResolution;`
+            + `uniform float iTime;`
+            + code
+            + '\nvoid main()'
+            + '{mainImage(gl_FragColor,gl_FragCoord.xy);gl_FragColor.a=1.;}'
+        x.shaderSource(pixelShader, shaderProgramCode)
+        x.compileShader(pixelShader);
+
+        // check for errors
+        const compiled = x.getShaderParameter(pixelShader, x.COMPILE_STATUS);
+        if (!compiled)
+        {
+            console.log(x.getShaderInfoLog(pixelShader));
+            return;
+        }
+
+        // create program
+        const shaderProgram = x.createProgram();
+        x.attachShader(shaderProgram, vertexShader);
+        x.attachShader(shaderProgram, pixelShader);
+        x.linkProgram(shaderProgram);
+        x.useProgram(shaderProgram);
+        return shaderProgram;
+    }
+    
+    RenderShader(canvas, shaderProgram, time=0)
+    {
+        const x = canvas.getContext('webgl');
+        
+        // set uniforms
+        x.uniform3f(x.getUniformLocation(shaderProgram,"iResolution"),
+            canvas.width, canvas.height, 0);
+        x.uniform1f(x.getUniformLocation(shaderProgram,"iTime"), time);
+        
+        // render shader
+        x.viewport(0, 0, canvas.width, canvas.height);
+        return x.drawArrays(x.TRIANGLE_FAN, 0, 3);
+    }
+    
 }; // _OS13k
 
 const OS13k = new _OS13k;
 
-setInterval(OS13k.Update,100);
+setInterval(OS13k.Update, 99);
 InitDesktop();
 
 </script>

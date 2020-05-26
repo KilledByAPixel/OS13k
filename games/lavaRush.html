@@ -1,0 +1,325 @@
+<style>
+body,canvas
+{
+    margin:0;
+    font-family:monospace;
+    width:100%;
+    height:100%;
+    image-rendering:pixelated;
+    image-rendering:crisp-edges;
+    overflow:hidden;
+}
+h1
+{
+    color:#fff;
+    position:absolute;
+    left:20px;
+    top:0
+}
+</style>
+<h1 id=s></h1>
+<canvas id=a width=320 height=200>
+<script>
+
+// lava rush by jaburns
+// https://github.com/jaburns/lava-rush-2k
+
+OS13kInit=()=>
+{
+    $shader = OS13k.CreateShader(a, shaderCode);
+    $init();
+    $main();
+}
+
+$init = $a => (
+    $shaderWriteBuffer = [0,0,0,-30,0,40,0,0,0,0,0,0],
+    $shaderReadBuffer = new Uint8Array(8),
+    $vx =
+    $vy =
+    $vz =
+    $vx1 =
+    $vz1 =
+    $score =
+    $canJump = 0,
+    $keys = {}
+),
+
+$sensitivity = .003,
+
+a.onclick = $a => (
+    a.requestPointerLock(),
+    a.onmousemove = a.onmousemove || ($a => !$shaderWriteBuffer[DEAD_FRAMES] && $shaderWriteBuffer[WON_FRAMES] < 1 && (
+        $shaderWriteBuffer[PLAYER_YAW] += $sensitivity*$a.movementX,
+        $shaderWriteBuffer[PLAYER_PITCH] -= $sensitivity*$a.movementY
+    ))
+),
+
+document.onkeydown = $a => (
+    $a.keyCode > 48 && $a.keyCode < 58 && ($sensitivity = .0005*($a.keyCode-48)),
+    $keys[$a.keyCode] = 1
+),
+
+document.onkeyup = $a => $keys[$a.keyCode] = 0,
+
+$readFloat = $a => ($shaderReadBuffer[$a]/255 + $shaderReadBuffer[$a+1]/255/255)*2 - 1,
+
+PLAYER_YAW=   0,
+PLAYER_PITCH= 1,
+LAVA_LEVEL=   2,
+DEAD_FRAMES=  3,
+PLAYER_X=     4,
+PLAYER_Y=     5,
+PLAYER_Z=     6,
+WON_FRAMES=   7,
+HEAD_BOB=     8,
+
+$main = $a => {
+
+    $shaderWriteBuffer[DEAD_FRAMES] > 180 && $init();
+    
+    g = a.getContext('webgl');
+    
+    $vy -= .02;
+    $shaderWriteBuffer[PLAYER_Y] += $vy;
+
+    $vx = $vz = 0;
+
+    yaw = $shaderWriteBuffer[PLAYER_YAW];
+    $shaderWriteBuffer[WON_FRAMES] < 1 && (
+        $keys[87] && ($vx += Math.sin(yaw), $vz += Math.cos(yaw)),
+        $keys[83] && ($vx -= Math.sin(yaw), $vz -= Math.cos(yaw)),
+        $keys[68] && ($vx += Math.cos(yaw), $vz -= Math.sin(yaw)),
+        $keys[65] && ($vx -= Math.cos(yaw), $vz += Math.sin(yaw)),
+        $keys[32] && $canJump && ($shaderWriteBuffer[PLAYER_Y] += ($vy = .5), $canJump = 0),
+        $vx && $vz && (
+            $vx /= Math.sqrt($vz*$vz + $vx*$vx),
+            $vz /= Math.sqrt($vz*$vz + $vx*$vx)),
+
+        $shaderWriteBuffer[LAVA_LEVEL] += .05
+    );
+    
+    $shaderReadBuffer[6] && $vx && $vz && $shaderWriteBuffer[HEAD_BOB]++;
+
+    $shaderWriteBuffer[PLAYER_X] += .4*($vx1 += ($vx - $vx1)/5);
+    $shaderWriteBuffer[PLAYER_Z] += .4*($vz1 += ($vz - $vz1)/5);
+
+    ($shaderWriteBuffer[PLAYER_Y] < $shaderWriteBuffer[LAVA_LEVEL] + 1 || $shaderWriteBuffer[DEAD_FRAMES] < 0)
+        && $shaderWriteBuffer[DEAD_FRAMES]++
+        || (s.innerText = ($score = $shaderWriteBuffer[PLAYER_Y] > $score ? $shaderWriteBuffer[PLAYER_Y]|0 : $score));
+
+    g.uniform4fv(g.getUniformLocation($shader, 'g'), $shaderWriteBuffer);
+
+    OS13k.RenderShader(a, $shader);
+    
+    g.readPixels(0,0, 2, 1, g.RGBA, g.UNSIGNED_BYTE, $shaderReadBuffer );
+
+    $shaderWriteBuffer[PLAYER_X] += $readFloat(0);
+    $shaderWriteBuffer[PLAYER_Y] += $readFloat(2);
+    $shaderWriteBuffer[PLAYER_Z] += $readFloat(4);
+    $shaderReadBuffer[6] && (
+        $vy = 0,
+        $canJump = 1,
+        !$shaderWriteBuffer[WON_FRAMES] && $score > 308 && (
+            ++$shaderWriteBuffer[WON_FRAMES],
+            $score = $shaderWriteBuffer[LAVA_LEVEL]/.05,
+            $score = ($score/60|0) + '.' + ($score=$score/.6%100|0, $score>9?$score:'0'+$score) + '#s'
+        )
+    );
+
+    $shaderWriteBuffer[WON_FRAMES] && $shaderWriteBuffer[WON_FRAMES]++;
+
+    requestAnimationFrame($main);
+}
+
+shaderCode=`
+
+uniform vec4 g[3];
+
+const float i_SEED = 86.;
+
+mat2 rot( float t )
+{
+    return mat2(cos(t), sin(t), -sin(t), cos(t));
+}
+
+float hash( vec2 n )
+{
+    return fract(sin(dot(n, vec2(12.9, 4.1))) * 43.5);
+}
+
+// ----- From Shane's "Jagged Plain" demo: https://www.shadertoy.com/view/4tSXRm -----
+vec3 tri( vec3 x )
+{
+    return abs(x-floor(x)-.5);
+} 
+float surfFunc( vec3 p )
+{
+    float n = dot(tri(p*.15 + tri(p.yzx*.075)), vec3(.444));
+    p = p*1.5773 - n;
+    p.yz = vec2(p.y + p.z, p.z - p.y) * .866;
+    p.xz = vec2(p.x + p.z, p.z - p.x) * .866;
+    n += dot(tri(p*.225 + tri(p.yzx*.1125)), vec3(.222));     
+    return abs(n-.5)*1.9 + (1.-abs(sin(n*9.)))*.05;
+}
+// -----------------------------------------------------------------------------------
+
+const int i_MAPMODE_RENDERING    = 0;
+const int i_MAPMODE_XZ_COLLISION = 1;
+const int i_MAPMODE_Y_COLLISION  = 2;
+int mapMode;
+
+float map( vec3 p0 )
+{
+    const float i_ROUNDING = 1.;
+    const float i_CELL_SIZE = 20.;
+    const float i_CELL_HALF = 10.;
+
+    float d = 200.;
+
+    for( float dx = -1.; dx <= 1.; dx++ ) {
+        for( float dy = -1.; dy <= 1.; dy++ )
+        {
+            vec2 id = vec2(dx,dy) + floor((p0.xz+i_CELL_HALF)/i_CELL_SIZE);
+
+            vec3 p = p0 - vec3(id.x,-100./i_CELL_SIZE,id.y)*i_CELL_SIZE;
+
+            p.xz *= rot(6.3*hash(id+i_SEED*4.));
+
+            vec3 q = abs(p) - vec3(
+                5.+8.*hash(id+i_SEED),
+                min( 400., 
+                    id.y < -1.
+                        ? 0.
+                        : mapMode != i_MAPMODE_XZ_COLLISION
+                            ? 100. + 20.*hash(id+i_SEED*2.) + 5.*id.y
+                            : p0.y > 20.*hash(id+i_SEED*2.) + 5.*id.y
+                                ? 0.
+                                : 1000.
+                ),
+                5.+8.*hash(id+i_SEED*3.)
+            );
+            if (mapMode == i_MAPMODE_RENDERING) q += i_ROUNDING;
+
+            d = min(d, length(max(q,0.))+min(max(q.x,max(q.y,q.z)),0.));
+        }
+    }
+
+    if (mapMode == i_MAPMODE_RENDERING) {
+        d -= i_ROUNDING + surfFunc(p0);
+    }
+
+    return .8*d;
+}
+
+vec3 getNormal(vec3 p)
+{
+    vec2 e = vec2(.001, 0);
+    return normalize(vec3(
+        map(p + e.xyy) - map(p - e.xyy),
+        map(p + e.yxy) - map(p - e.yxy),
+        map(p + e.yyx) - map(p - e.yyx)));
+}
+
+vec2 writeFloat(float a)
+{
+    a = (a + 1.) / 2.;
+    return vec2(
+        floor(a*255.) / 255.,
+        fract(a*255.)
+    );
+}
+
+void mainImage( out vec4 _FragColor, in vec2 _FragCoord )
+{
+    const vec3 i_LAVA = vec3(3,.75,.3);
+    const vec3 i_FOG = vec3(0);
+
+    if (g[0].w > 0.) {
+        _FragColor = vec4(mix(i_LAVA,vec3(0),g[0].w/60.),1);
+        return;
+    }
+
+    float totalDist, dist;
+
+    vec2 uv = (_FragCoord.xy - .5*vec2(320,200))/200.;
+
+    vec3 ro = g[1].xyz;
+    vec3 rd = vec3(0,-1,0);
+
+    mapMode = i_MAPMODE_Y_COLLISION;
+
+// ---- March ----------------------------------------------
+    totalDist = 0.;
+    for( float c = 0.; c < 99.; ++c ) {
+        dist = map( ro );
+        if( dist < .001 || totalDist > 200. ) break;
+        totalDist += dist;
+        ro += rd * dist;
+    }
+// ---------------------------------------------------------
+
+    ro = g[1].xyz; 
+    rd = normalize(vec3(uv, 1));
+
+    mapMode = i_MAPMODE_XZ_COLLISION;
+
+    vec3 pdelta = vec3(0);
+    vec3 roo = ro;
+    float dxz = map( ro - vec3(0,2,0) )/.8; // 2 = player height (3) - collision ring elevation (1)
+    if (totalDist < 3.) pdelta.y = 3.-totalDist; // 3 = player height
+    if (dxz < 2.) pdelta.xz = (2.-dxz) * getNormal( ro - vec3(0,2,0) ).xz; // 2 = player xz radius
+
+    mapMode = i_MAPMODE_RENDERING;
+
+    if (_FragCoord.x <= 2. && _FragCoord.y < 1.) {
+        _FragColor = _FragCoord.x < 1.
+            ? vec4(writeFloat(pdelta.x),writeFloat(pdelta.y))
+            : vec4(writeFloat(pdelta.z), totalDist < 3. ? 1 : 0, 0);
+        return;
+    }
+
+    ro += pdelta;
+
+    ro.y += .3*abs(sin(.2*g[2].x));
+    rd.yz *= rot(g[0].y);
+    rd.xz *= rot(g[0].x);
+
+// ---- March ----------------------------------------------
+    totalDist = 0.;
+    for( float c = 0.; c < 99.; ++c ) {
+        dist = map( ro );
+        if( dist < .001 || totalDist > 200. ) break;
+        totalDist += dist;
+        ro += rd * dist;
+    }
+// ---------------------------------------------------------
+
+    vec3 color = i_FOG;
+
+    float ph = -(roo.y - g[0].z) / rd.y;
+    if ( ph > 0.0 && (ph < totalDist || totalDist > 200.) ) {
+        color = (2.-surfFunc(roo+ph*rd))*i_LAVA;
+        totalDist = ph;
+    } else if (totalDist < 200.) {
+        vec3 albedo = .45+.51*(clamp(abs(mod(fract(  .005*(ro.x+ro.y+ro.z)  )*6.+vec3(0,4,2),6.)-3.)-1.,0.,1.)-.5);
+
+        dist = surfFunc(ro);
+        albedo -= dist;
+        albedo += pow(1.-dist,3.)*vec3(1,.25,.1)*(.75+.25*sin(g[0].z));
+
+        color = albedo * (
+            pow(2.*clamp(1.-.1*(ro.y-g[0].z),0.,1.),2.)*i_LAVA // rising lava glow
+            +
+            .4+.6*dot(normalize(g[1].xyz-ro),getNormal(ro)) // player point light
+        );
+    }
+
+    color = mix(i_FOG, color, exp(-totalDist/40.));
+    color = mix(color, vec3(0), -g[0].w/30. + min(1.,g[1].w/180.));
+
+    _FragColor = vec4(color,1.);
+    //_FragColor = vec4(1.,0.,0,1.); //test
+}
+`; // shader
+
+</script>
