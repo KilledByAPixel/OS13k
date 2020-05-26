@@ -135,6 +135,7 @@ body
 // @js_externs OS13k, OS13kIcon, OS13kWindow, zzfx, zzfxV
 // @js_externs _OS13k.Medal, _OS13k.Medal, _OS13k.GetKeyDirection
 // @js_externs _OS13k.PlaySamples, _OS13k.CreateShader, _OS13k.RenderShader
+// @js_externs _OS13k.Random, _OS13k.randomSeed
 // @output_file_name OS13k.min.js
 // ==/ClosureCompiler==
 
@@ -145,7 +146,7 @@ body
 
 const desktopLayout = 
 [
-{name:'Help', icon:'❓', src:'help.html?2'},
+{name:'Help', icon:'❓', src:'help.html?4', open:1, width:400, height:400},
 {name:'System', icon:'⚙️', folder:
 [
     {name:'Test', icon:'✌️', src:'test.html?2', hideWhenClosed:1},
@@ -169,8 +170,7 @@ const desktopLayout =
 {name:'Toys', icon:'🤖', folder:
 [
     {name:'ZzFX Sounds', icon:'𝐙𝐙', src:'toys/zzfxSoundBoard.html'},
-    {name:'Yin Yangs', icon:'☯️', src:'toys/infiniteYinYangs.html?1'},
-    {name:'Mother Goose', icon:'🦢', src:'stories.html'},
+    {name:'Yin Yangs', icon:'☯️', src:'toys/infiniteYinYangs.html?1'}
 ]},
 {name:'Favorites', folder:[]},
 ];
@@ -195,6 +195,7 @@ class _OS13k
         
         // startup os13k
         this.InitDesktop();
+        this.randomSeed = Date.now();
         setInterval(this.Update, 99);
     }
     
@@ -316,7 +317,17 @@ class _OS13k
         // render shader
         x.viewport(0, 0, canvas.width, canvas.height);
         return x.drawArrays(x.TRIANGLE_FAN, 0, 3);
-    } 
+    }
+    
+    Random(max=1, min=0)
+    {
+        // Mersenne Twister
+        this.randomSeed ^= this.randomSeed << 13;
+        this.randomSeed ^= this.randomSeed >> 17;
+        this.randomSeed ^= this.randomSeed << 5;
+        return max + (min-max) * (Math.abs(this.randomSeed) % 1e9 / 1e9);
+    }
+    
 }; // _OS13k
 
 /////////////////////////////////////////////////////////////////////////////
