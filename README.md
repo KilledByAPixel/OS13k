@@ -16,8 +16,8 @@ Top level icons will open on start if they have the flag 'open' (for faster iter
 
 More icon settings
 - width and height of window
-- hideWhenClosed - hides the program window instead of closing it
-- allowMultiple - allows multiple copies of the program to open
+- hideWhenClosed - hides the window instead of closing it
+- allowMultiple - allows multiple copies of the window to open
 
 OS13k System Calls
 - The function OS13kInit is called on child frames when opened
