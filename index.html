@@ -89,6 +89,7 @@ body
     height:100%;
     background:#FFF;
     border:none;
+    overflow:hidden;
 }
 .folder
 {
@@ -374,13 +375,13 @@ class OS13kIcon extends HTMLElement
         this.hideWhenClosed = hideWhenClosed || folder;
         this.allowMultiple = allowMultiple;
         this.maximize = maximize;
-        this.noResize = noResize;
+        this.noResize = noResize || folder;
         this.folder = folder;
         
         // create shadow root
         this.shadowRoot.innerHTML = templateIcon.innerHTML
             +`<span class=icon>${ icon }</span>`
-            +`<span class=name>${ name }</span>`;
+            +`<span class=name style=pointer-events:none>${ name }</span>`;
     }
     
     Open()
@@ -718,10 +719,6 @@ onmousedown=e=>
         return;
     }
     
-    // prevent pointer events while dragging
-    os13kDesktop.style.pointerEvents = 'none';
-    document.body.style.cursor = 'grabbing';
-    
     // get os13k target
     const originalTarget = e.originalTarget || e.path[0];
     let target = e.target;
@@ -748,6 +745,11 @@ onmousedown=e=>
         if (activeWindow)
             activeWindow.SetActive(0);
     }
+    
+    // prevent pointer events while dragging
+    os13kDesktop.style.pointerEvents = 'none';
+    if (selected)
+        document.body.style.cursor = 'grabbing';
 }
 
 onmouseup=e=>
