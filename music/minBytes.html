@@ -1,9 +1,7 @@
 <body style=background:#000;margin:0><canvas id=a><script>
 
-//////////////////////////////////////////////////
 // MinBytes - A Minimal Bytebeat Album in 1k
 // Frank Force 2019
-//////////////////////////////////////////////////
     
 // main loop
 G=t=>
@@ -25,10 +23,10 @@ G=t=>
         
         // hitbox debug
         //c.strokeText((i?i+". ":"") + n,x,y+h/3);
-        //c.strokeStyle ="#F00";c.strokeRect(x-180,y-h/2,360,h);
+        //c.strokeStyle ="#F00";c.strokeRect(x-140,y-h/2,280,h);
 
         // check if clicked on song
-        if ((Math.abs(M.x - x) < 180 && Math.abs(M.y - y) < h/2 || i == N))
+        if ((Math.abs(M.x - x) < 140 && Math.abs(M.y - y) < h/2 || i == N))
         {
             S&&S.stop(); // stop last song
 
@@ -74,7 +72,7 @@ G=t=>
     
     // advance to next song & update stars
     i=(t-u);
-    F&&i>1e5+2e3?C=N=C-9?C+1:0:T+=E/5e3;
+    F&&i>1e5+3e3?C=N=C-9?C+1:0:T+=E/5e3;
     
     // track select menu
     x=a.width/2;
@@ -104,7 +102,6 @@ onunload=_=>S&&S.stop();
 // init
 c=a.getContext`2d`;
 M={x:0};
-G(S=C=N=F=T=E=t=u=0);
 G(S=C=N=F=T=E=t=u=0);
 
 </script>
