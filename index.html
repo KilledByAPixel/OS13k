@@ -132,7 +132,7 @@ body
 
 const desktopLayout = 
 [
-{name:'Help', icon:'❓', src:'help.html?6', open:1, width:380, height:340, noMaximize:1},
+{name:'Help', icon:'❓', src:'help.html?6', open:1, width:380, height:340, canMaximize:0},
 {name:'System', icon:'⚙️', folder:
 [
     {name:'Test', icon:'😄', src:'system/test.html?3', hideWhenClosed:1},
@@ -140,18 +140,18 @@ const desktopLayout =
 {name:'Games', icon:'🎮', folder:
 [
     {name:'Lava Rush', icon:'🌋', author:'Jeremy Burns', src:'games/lavaRush.html?2', width:640, height:400},
-    {name:'Sn1ke', icon:'👀', src:'games/sn1ke.html', author:'Codegolf Team', width:420, height:330, hideWhenClosed:1},
-    {name:'Tetris', icon:'🆃', author:'Veubeke', src:'games/tetris.html', width:320, height:430},
+    {name:'Sn1ke', icon:'👀', src:'games/sn1ke.html', author:'Codegolf Team', width:420, height:330, hideWhenClosed:1, canMaximize:0},
+    {name:'Tetris', icon:'🆃', author:'Veubeke', src:'games/tetris.html', width:320, height:430, canMaximize:0},
     {name:`Queen's Gambit`, icon:'<span style=color:#f0f>♛</span>', src:'games/queensGambit.html?1', width:1290, height:720},
     {name:'Free Cell', icon:'♠️', src:'games/freeCell.html', width:800, height:1e3, hideWhenClosed:1},
-    {name:'Digit Dilemma', icon:'<span style=font-family:monospace>☻</span>', src:'games/digitDilemma.html'},
+    {name:'Digit Dilemma', icon:'<span style=font-family:monospace>☻</span>', src:'games/digitDilemma.html', canMaximize:0},
     {name:'Hue Jumper', icon:'🌲', src:'games/hueJumper.html', width:1290, height:720},
 ]},
 {name:'Utilities', icon:'🔧', folder:
 [
-    {name:'Photo Booth', icon:'📸', src:'utilities/photoBooth.html', width:1380, height:600},
-    {name:'Unicode Toys', icon:'𝖀', author:'Xem', src:'utilities/unicodeToys.html', width:500, height:800},
-    {name:'Mini Shadertoy', icon:'𝓢', src:'utilities/miniShadertoy.html', width:340, height:400},
+    {name:'Photo Booth', icon:'📸', src:'utilities/photoBooth.html', width:1380, height:600, canMaximize:0},
+    {name:'Unicode Toys', icon:'𝖀', author:'Xem', src:'utilities/unicodeToys.html', width:500, height:800, canMaximize:0},
+    {name:'Mini Shadertoy', icon:'𝓢', src:'utilities/miniShadertoy.html', width:340, height:400, canMaximize:0},
 ]},
 {name:'Toys', icon:'🤖', folder:
 [
@@ -353,7 +353,7 @@ let topIconZ = 0;
 
 class OS13kIcon extends HTMLElement
 {
-	constructor({x, y, name, icon, src, width=720, height=405, author, hideWhenClosed, allowMultiple, folder, noMaximize})
+	constructor({x, y, name, icon, src, width=720, height=405, author, hideWhenClosed, allowMultiple, folder, canMaximize=1})
     {
 		super();
         
@@ -374,7 +374,7 @@ class OS13kIcon extends HTMLElement
         this.author = author;
         this.hideWhenClosed = hideWhenClosed || folder;
         this.allowMultiple = allowMultiple;
-        this.noMaximize = noMaximize || folder;
+        this.canMaximize = canMaximize && !folder;
         this.folder = folder;
         
         // create shadow root
@@ -535,7 +535,7 @@ class OS13kWindow extends HTMLElement
             + icon.name + '&nbsp;' 
             + (icon.author? '(' +icon.author +')': '')
             + '</span>'
-            + `<span id=maximize class=maximize ${icon.noMaximize?'style=display:none':''}>🗖</span>`
+            + `<span id=maximize class=maximize ${icon.canMaximize?'':'style=display:none'}>🗖</span>`
             + '<span id=close class=close>×</span>';
         this.shadowRoot.appendChild(titleBar);
         this.titleBar = titleBar;
@@ -568,12 +568,14 @@ class OS13kWindow extends HTMLElement
         {
             // create iframe
             const iframe = document.createElement('iframe');
+            
             iframe.className = 'frame';
             iframe.sandbox.add('allow-scripts');
             iframe.sandbox.add('allow-same-origin');
             iframe.sandbox.add('allow-popups');
             iframe.sandbox.add('allow-modals');
             iframe.sandbox.add('allow-pointer-lock');
+            iframe.setAttribute('allowFullScreen', '');
             iframe.onload=e=>
             {
                 // init iframe
@@ -667,10 +669,10 @@ class OS13kWindow extends HTMLElement
     
     Maximize()
     {
-        if (this.iframeContent.document.body.webkitRequestFullScreen)
-            this.iframeContent.document.body.webkitRequestFullScreen();
-        else
+        if (this.iframeContent.document.body.mozRequestFullScreen)
             this.iframeContent.document.body.mozRequestFullScreen();
+        else if (this.iframeContent.document.body.webkitRequestFullScreen)
+            this.iframeContent.document.body.webkitRequestFullScreen();
     }
 } // OS13kWindow
 
