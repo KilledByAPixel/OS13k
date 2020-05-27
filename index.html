@@ -132,7 +132,7 @@ body
 
 const desktopLayout = 
 [
-{name:'Help', icon:'❓', src:'help.html?6', open:1, width:380, height:340, canMaximize:0},
+{name:'Help', icon:'❓', src:'help.html?6', open:1, width:380, height:340},
 {name:'System', icon:'⚙️', folder:
 [
     {name:'Test', icon:'😄', src:'system/test.html?3', hideWhenClosed:1},
@@ -140,18 +140,18 @@ const desktopLayout =
 {name:'Games', icon:'🎮', folder:
 [
     {name:'Lava Rush', icon:'🌋', author:'Jeremy Burns', src:'games/lavaRush.html?2', width:640, height:400},
-    {name:'Sn1ke', icon:'👀', src:'games/sn1ke.html', author:'Codegolf Team', width:420, height:330, hideWhenClosed:1, canMaximize:0},
-    {name:'Tetris', icon:'🆃', author:'Veubeke', src:'games/tetris.html', width:320, height:430, canMaximize:0},
+    {name:'Sn1ke', icon:'👀', src:'games/sn1ke.html', author:'Codegolf Team', width:420, height:330, hideWhenClosed:1},
+    {name:'Tetris', icon:'🆃', author:'Veubeke', src:'games/tetris.html', width:320, height:430},
     {name:`Queen's Gambit`, icon:'<span style=color:#f0f>♛</span>', src:'games/queensGambit.html?1', width:1290, height:720},
     {name:'Free Cell', icon:'♠️', src:'games/freeCell.html', width:800, height:1e3, hideWhenClosed:1},
-    {name:'Digit Dilemma', icon:'<span style=font-family:monospace>☻</span>', src:'games/digitDilemma.html', canMaximize:0},
+    {name:'Digit Dilemma', icon:'<span style=font-family:monospace>☻</span>', src:'games/digitDilemma.html'},
     {name:'Hue Jumper', icon:'🌲', src:'games/hueJumper.html', width:1290, height:720},
 ]},
 {name:'Utilities', icon:'🔧', folder:
 [
-    {name:'Photo Booth', icon:'📸', src:'utilities/photoBooth.html', width:1380, height:600, canMaximize:0},
-    {name:'Unicode Toys', icon:'𝖀', author:'Xem', src:'utilities/unicodeToys.html', width:500, height:800, canMaximize:0},
-    {name:'Mini Shadertoy', icon:'𝓢', src:'utilities/miniShadertoy.html', width:340, height:400, canMaximize:0},
+    {name:'Photo Booth', icon:'📸', src:'utilities/photoBooth.html', width:1380, height:600},
+    {name:'Unicode Toys', icon:'𝖀', author:'Xem', src:'utilities/unicodeToys.html', width:500, height:800},
+    {name:'Mini Shadertoy', icon:'𝓢', src:'utilities/miniShadertoy.html', width:340, height:400},
 ]},
 {name:'Toys', icon:'🤖', folder:
 [
@@ -326,7 +326,7 @@ class _OS13k
     {
         // set up document
         document.body.innerHTML = `<canvas id=c width=1920 height=1080 style=background:#FFF;width:100%>`;
-        document.body.style = `background:#111;margin:0;overflow:hidden;display:flex;justify-content:center`;
+        document.body.style = `background:#000;margin:0;overflow:hidden`;
         
         // create dweet
         document.defaultView.eval('function u(t){' + code + '}x=c.getContext`2d`;frame=0;S=Math.sin;C=Math.cos;T=Math.tan;R=(r,g,b,a=1)=>`rgba(${0|r},${0|g},${0|b},${a})`;loop=()=>requestAnimationFrame(loop,document.hasFocus()&&u((60*(frame++/60)-frame-1|0?frame-1:frame)/60),c.style.width=1920/1080>innerWidth/innerHeight?innerWidth:innerHeight*1920/1080);loop()');
@@ -353,7 +353,7 @@ let topIconZ = 0;
 
 class OS13kIcon extends HTMLElement
 {
-	constructor({x, y, name, icon, src, width=720, height=405, author, hideWhenClosed, allowMultiple, folder, canMaximize=1})
+	constructor({x, y, name, icon, src, width=720, height=405, author, hideWhenClosed, allowMultiple, folder})
     {
 		super();
         
@@ -374,7 +374,6 @@ class OS13kIcon extends HTMLElement
         this.author = author;
         this.hideWhenClosed = hideWhenClosed || folder;
         this.allowMultiple = allowMultiple;
-        this.canMaximize = canMaximize && !folder;
         this.folder = folder;
         
         // create shadow root
@@ -516,7 +515,6 @@ class OS13kWindow extends HTMLElement
 		super();
         	
         // set window data
-        this.maximized = 0;
         this.os13kIcon = icon;
         this.style.left = x;
         this.style.top = y;
@@ -535,7 +533,7 @@ class OS13kWindow extends HTMLElement
             + icon.name + '&nbsp;' 
             + (icon.author? '(' +icon.author +')': '')
             + '</span>'
-            + `<span id=maximize class=maximize ${icon.canMaximize?'':'style=display:none'}>🗖</span>`
+            + (icon.folder?'':'<span id=maximize class=maximize>🗖</span>')
             + '<span id=close class=close>×</span>';
         this.shadowRoot.appendChild(titleBar);
         this.titleBar = titleBar;
@@ -551,7 +549,7 @@ class OS13kWindow extends HTMLElement
             folder.className = 'folder frame';
             folder.os13kWindow = this;
             this.folder = folder;
-            this.shadow.appendChild(folder);
+            this.shadowRoot.appendChild(folder);
             this.focus();
 
             // add icons to folder
@@ -568,14 +566,12 @@ class OS13kWindow extends HTMLElement
         {
             // create iframe
             const iframe = document.createElement('iframe');
-            
             iframe.className = 'frame';
             iframe.sandbox.add('allow-scripts');
             iframe.sandbox.add('allow-same-origin');
             iframe.sandbox.add('allow-popups');
             iframe.sandbox.add('allow-modals');
             iframe.sandbox.add('allow-pointer-lock');
-            iframe.setAttribute('allowFullScreen', '');
             iframe.onload=e=>
             {
                 // init iframe
@@ -602,38 +598,12 @@ class OS13kWindow extends HTMLElement
                     iframeContent.OS13kStart();
             };
             iframe.src = icon.src;
-            this.shadow.appendChild(iframe);
-        }
-    }
-    
-    focus()
-    {
-        super.focus();
-        
-        // decative old window
-        if (activeWindow && activeWindow != this)
-            activeWindow.SetActive(0);
-        
-        this.SetActive();
-        
-        if (this.iframeContent)
-            this.iframeContent.focus();
             
-    }
-    
-    SetActive(active=1)
-    {
-        // change title color when active
-        this.titleBar.style.background = active ? '#aac' : '#777';
-        
-        if (active)
-        {
-            // move to top when active
-            this.style.zIndex = ++activeWindowZ;
-            activeWindow = this;
+            const contentWrapper = document.createElement('span');
+            this.contentWrapper = contentWrapper;
+            this.shadowRoot.appendChild(contentWrapper);
+            contentWrapper.appendChild(iframe);
         }
-        else
-            activeWindow = 0;
     }
     
     Close()
@@ -669,10 +639,40 @@ class OS13kWindow extends HTMLElement
     
     Maximize()
     {
-        if (this.iframeContent.document.body.mozRequestFullScreen)
-            this.iframeContent.document.body.mozRequestFullScreen();
-        else if (this.iframeContent.document.body.webkitRequestFullScreen)
-            this.iframeContent.document.body.webkitRequestFullScreen();
+        const fullScreenElement = this.contentWrapper;
+        if (fullScreenElement.mozRequestFullScreen)
+            fullScreenElement.mozRequestFullScreen();
+        else if (fullScreenElement.webkitRequestFullScreen)
+            fullScreenElement.webkitRequestFullScreen();
+    }
+    
+    SetActive(active=1)
+    {
+        // change title color when active
+        this.titleBar.style.background = active ? '#aac' : '#777';
+        
+        if (active)
+        {
+            // move to top when active
+            this.style.zIndex = ++activeWindowZ;
+            activeWindow = this;
+        }
+        else
+            activeWindow = 0;
+    }
+    
+    focus()
+    {
+        super.focus();
+        
+        // decative old window
+        if (activeWindow && activeWindow != this)
+            activeWindow.SetActive(0);
+        
+        this.SetActive();
+        
+        if (this.iframeContent)
+            this.iframeContent.focus();  
     }
 } // OS13kWindow
 
@@ -710,8 +710,8 @@ onmousedown=e=>
     {
         target.MouseDown(originalTarget.id);
         
-        // prevent main document getting refocused if titleBar is clicked
-        if (originalTarget.id == 'titleBar' || originalTarget.id == 'close' || originalTarget.id == 'maximize')
+        // prevent main document getting refocused if title bar is clicked
+        if (originalTarget.id == 'titleBar' || originalTarget.id == 'maximize')
             e.preventDefault();
     }
     else
