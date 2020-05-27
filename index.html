@@ -128,6 +128,7 @@ body
 // @js_externs _OS13k.PlaySamples, _OS13k.CreateShader, _OS13k.RenderShader
 // @js_externs _OS13k.Random, _OS13k.randomSeed, _OS13k.CreateDweet
 // @js_externs _OS13k.Clamp, _OS13k.Percent, _OS13k.Lerp
+// @js_externs iframeContent.OS13k, iframeContent.OS13kStart, iframeContent.zzfx
 // @output_file_name OS13k.min.js
 // ==/ClosureCompiler==
 
@@ -193,8 +194,8 @@ class _OS13k
         this.audioContext.createBufferSource =
         (s = this.audioContext._createBufferSource())=>
         (
-            s.start = s.start || (t => this.audioContext.noteOn (t)),
-            s.stop  = s.stop  || (t => this.audioContext.noteOff(t)),
+            s.start = s.start || s.noteOn,
+            s.stop  = s.stop  || s.noteOff,
             s
         );
         
@@ -273,6 +274,8 @@ class _OS13k
         source.start();
         return source;
     }
+    
+    SetVolume(volume) { zzfxV = volume; }
     
     CreateShader(canvas, code)
     {
