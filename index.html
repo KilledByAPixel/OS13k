@@ -101,6 +101,10 @@ body
     display:flex;
     align-items:flex-start;
     white-space:nowrap;
+}
+.name
+{
+    width:100%;
     cursor:grab;
 }
 .maximize { font-size:24;height:100% }
@@ -111,9 +115,11 @@ body
 </template>
 </head>
 <body>
-<span class=title>OS13k</span>
 <span id=os13kDesktop></span>
+<span class=title>OS13k</span>
 <script>
+
+'use strict';
 
 // ==ClosureCompiler==
 // @compilation_level ADVANCED_OPTIMIZATIONS
@@ -125,10 +131,8 @@ body
 // @output_file_name OS13k.min.js
 // ==/ClosureCompiler==
 
-'use strict';
-
 /////////////////////////////////////////////////////////////////////////////
-// OS13k desktop
+// OS13k Desktop
 
 const desktopLayout = 
 [
@@ -195,8 +199,8 @@ class _OS13k
         );
         
         // startup os13k
-        this.InitDesktop();
         this.randomSeed = Date.now();
+        this.InitDesktop();
         setInterval(this.Update, 99);
     }
     
@@ -210,8 +214,7 @@ class _OS13k
             p.y = iconGridSizeX/4; 
             const icon = new OS13kIcon(p); 
             os13kDesktop.appendChild(icon); 
-            if (p.open)
-                icon.Open();
+            p.open && icon.Open();
             return icon;
         }
         for (const i of desktopLayout)
@@ -226,12 +229,12 @@ class _OS13k
         if (this.lastActiveElement != activeElement)
         {
             if (activeElement.localName == 'os13k-window')
-                activeElement.focus();
+                activeElement.Focus();
             this.lastActiveElement = activeElement;
         }
     }
     
-    Medal(gameName, medalName, difficulty, icon)
+    Medal(gameName, medalName='', difficulty=0)
     {
         // show popup and unlock medal
     }
@@ -266,6 +269,7 @@ class _OS13k
     
     CreateShader(canvas, code)
     {
+        // get webgl context
         const x = canvas.getContext('webgl');
 
         // create simple pass through vertex shader
@@ -280,26 +284,27 @@ class _OS13k
         x.enableVertexAttribArray(0);
         x.vertexAttribPointer(0,2,x.BYTE,0,0,0); // 2D vertex
         
+        // check vertex shader for errors
+        if (!x.getShaderParameter(vertexShader, x.COMPILE_STATUS))
+            return console.log(x.getShaderInfoLog(vertexShader));
+        
         // create shadertoy compatible pixel shader
         const pixelShader = x.createShader(x.FRAGMENT_SHADER)
         const shaderProgramCode = 
             'precision mediump float;'
-            + 'uniform vec3 iResolution;'
             + 'uniform float iTime;\n'
+            + 'uniform vec3 iResolution;'
             + code
             + '\nvoid main()'
             + '{mainImage(gl_FragColor,gl_FragCoord.xy);gl_FragColor.a=1.;}'
         x.shaderSource(pixelShader, shaderProgramCode)
         x.compileShader(pixelShader);
 
-        // check for errors
+        // check pixel shader for errors
         if (!x.getShaderParameter(pixelShader, x.COMPILE_STATUS))
-        {
-            console.log(x.getShaderInfoLog(pixelShader));
-            return;
-        }
+            return console.log(x.getShaderInfoLog(pixelShader));
 
-        // create program
+        // create shader program
         const shaderProgram = x.createProgram();
         x.attachShader(shaderProgram, vertexShader);
         x.attachShader(shaderProgram, pixelShader);
@@ -310,12 +315,13 @@ class _OS13k
     
     RenderShader(canvas, shaderProgram, time=0)
     {
+        // get webgl context
         const x = canvas.getContext('webgl');
         
         // set uniforms
+        x.uniform1f(x.getUniformLocation(shaderProgram,'iTime'), time);
         x.uniform3f(x.getUniformLocation(shaderProgram,'iResolution'),
             canvas.width, canvas.height, 0);
-        x.uniform1f(x.getUniformLocation(shaderProgram,'iTime'), time);
         
         // render shader
         x.viewport(0, 0, canvas.width, canvas.height);
@@ -356,7 +362,7 @@ let topIconZ = 0;
 
 class OS13kIcon extends HTMLElement
 {
-	constructor({x, y, name, icon, src, width=720, height=405, author, hideWhenClosed, allowMultiple, folder})
+	constructor({x, y, name, icon, src, width=720, height=405, author, folder, hideWhenClosed, allowMultiple})
     {
 		super();
         
@@ -405,14 +411,14 @@ class OS13kIcon extends HTMLElement
         }
         
         // set focus to window
-        this.os13kWindow.focus();
+        this.os13kWindow.Focus();
     }
     
     MouseDown()
     {
         // focus on icon's window if it exists
         if (this.parentElement.os13kWindow)
-            this.parentElement.os13kWindow.focus();
+            this.parentElement.os13kWindow.Focus();
         else
         {
             os13kDesktop.focus();
@@ -443,7 +449,8 @@ class OS13kIcon extends HTMLElement
         const element = document.elementFromPoint(e.x, e.y);
         if (!element)
             return;
-            
+        
+        // try to move icon
         let target = os13kDesktop;
         let x = rect.left;
         let y = rect.top;
@@ -458,7 +465,7 @@ class OS13kIcon extends HTMLElement
             if (shadowElement && shadowElement.id)
                 return;
                 
-            // prevent recursive folders
+            // prevent folder self reference
             const DetectSelfReference=icon=>
             {
                 if (icon.os13kWindow == element)
@@ -471,7 +478,7 @@ class OS13kIcon extends HTMLElement
             }
             if (DetectSelfReference(this.realIcon))
             {
-                alert("You can't put a folder inside itself, silly!");
+                alert("You can't put a folder in itself, silly!");
                 return;
             }
             
@@ -488,17 +495,19 @@ class OS13kIcon extends HTMLElement
             target = element;
         }
 
-        // move icon if it is a different folder
-        const targetFolder = target.folder ? target.folder : target;
+        const targetFolder = target.folder || target;
         if (targetFolder != this.realIcon.parentElement)
         {
+            // move icon if it is a different folder
             targetFolder.appendChild(this.realIcon);
 
             // deactivate window if dropped in desktop
             if (activeWindow && targetFolder == os13kDesktop)
                 activeWindow.SetActive(0);
         }
-        target.focus();
+        
+        // focus on target
+        target.Focus ? target.Focus() : target.focus();
             
         // set icon position
         this.realIcon.style.left = x;
@@ -533,9 +542,9 @@ class OS13kWindow extends HTMLElement
         this.shadowRoot.innerHTML = templateWindow.innerHTML;
         
         // create title bar
-        const titleBar = document.createElement('span');
+        const titleBar = this.titleBar = document.createElement('span');
         titleBar.className = 'titleBar';
-        titleBar.innerHTML = '<span id=titleBar style=width:100%>&nbsp;' 
+        titleBar.innerHTML = '<span id=titleBar class=name>&nbsp;' 
             + icon.icon + '&nbsp;' 
             + icon.name + '&nbsp;' 
             + (icon.author? '(' +icon.author +')': '')
@@ -543,7 +552,6 @@ class OS13kWindow extends HTMLElement
             + (icon.folder?'':'<span id=maximize class=maximize>🗖</span>')
             + '<span id=close class=close>×</span>';
         this.shadowRoot.appendChild(titleBar);
-        this.titleBar = titleBar;
         
         // create thin black line below title bar
         const titleBarGap = document.createElement('div');
@@ -553,12 +561,11 @@ class OS13kWindow extends HTMLElement
         if (icon.folder)
         {
             // create folder frame
-            const folder = document.createElement('div');
+            const folder = this.folder = document.createElement('div');
             folder.className = 'folder frame';
             folder.os13kWindow = this;
-            this.folder = folder;
             this.shadowRoot.appendChild(folder);
-            this.focus();
+            this.Focus();
 
             // add icons to folder
             let X = iconGridSizeX/4-iconGridSizeX;
@@ -584,9 +591,8 @@ class OS13kWindow extends HTMLElement
             iframe.onload=e=>
             {
                 // init iframe
-                const iframeContent = e.target.contentWindow;
-                this.iframeContent = iframeContent;
-                this.focus();
+                const iframeContent = this.iframeContent = e.target.contentWindow;
+                this.Focus();
                 
                 // try to pass os13k to iframe
                 try
@@ -602,16 +608,17 @@ class OS13kWindow extends HTMLElement
                     throw e;
                 }
                 
-                // init os13k in iframe
+                // init OS13k in iframe
                 if (iframeContent.OS13kStart)
                     iframeContent.OS13kStart();
             };
             iframe.src = icon.src;
             
-            const contentWrapper = document.createElement('span');
-            this.contentWrapper = contentWrapper;
-            this.shadowRoot.appendChild(contentWrapper);
-            contentWrapper.appendChild(iframe);
+            // create content wrapper for fullscreen support
+            const iframeContentWrapper = document.createElement('span');
+            this.iframeContentWrapper = iframeContentWrapper;
+            this.shadowRoot.appendChild(iframeContentWrapper);
+            iframeContentWrapper.appendChild(iframe);
         }
     }
     
@@ -641,12 +648,13 @@ class OS13kWindow extends HTMLElement
             selected = this;
             
         // set focus
-        this.focus();
+        this.Focus();
     }
     
     Maximize()
     {
-        const fullScreenElement = this.contentWrapper;
+        // set fullscreen
+        const fullScreenElement = this.iframeContentWrapper;
         if (fullScreenElement.webkitRequestFullScreen)
             fullScreenElement.webkitRequestFullScreen();
         else if (fullScreenElement.mozRequestFullScreen)
@@ -672,13 +680,12 @@ class OS13kWindow extends HTMLElement
         activeWindow = active ? this : 0;
     }
     
-    focus()
+    Focus()
     {
-        super.focus();
-        if (this.iframeContent)
-            this.iframeContent.focus();  
-            
         this.SetActive();
+        
+        // set focus
+        this.iframeContent ? this.iframeContent.focus() : this.focus();
     }
 } // OS13kWindow
 
@@ -766,8 +773,7 @@ ondblclick=e=>
 {
     // open icon
     const target = e.originalTarget || e.path[0];
-    if (target.localName == 'os13k-icon')
-        target.Open();
+    target.Open && target.Open();
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -828,13 +834,13 @@ const zzfx =    // play zzfx sound
             s = t * frequency *                          // frequency
                 Math.sin(tm * modulation - modPhase);    // modulation
 
-            s = shape? shape>1? shape>2? shape>3?   // wave shape
-              Math.sin((s%PI2)**3) :                // 4 noise
-              Math.max(Math.min(Math.tan(s),1),-1): // 3 tan
-              1-(2*s/PI2%2+2)%2:                    // 2 saw
-              1-4*Math.abs(Math.round(s/PI2)-s/PI2):// 1 triangle
-              Math.sin(s);                          // 0 sin
-            s = sign(s)*(Math.abs(s)**shapeCurve);  // curve 0=square, 2=pointy
+            s = shape? shape>1? shape>2? shape>3?        // wave shape
+              Math.sin((s%PI2)**3) :                     // 4 noise
+              Math.max(Math.min(Math.tan(s),1),-1):      // 3 tan
+              1-(2*s/PI2%2+2)%2:                         // 2 saw
+              1-4*Math.abs(Math.round(s/PI2)-s/PI2):     // 1 triangle
+              Math.sin(s);                               // 0 sin
+            s = sign(s)*(Math.abs(s)**shapeCurve);       // curve 0=square, 2=pointy
 
             s *= volume * zzfxV * (                      // envelope
                 i<attack ? i/attack :                    // attack
