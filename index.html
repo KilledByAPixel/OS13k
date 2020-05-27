@@ -13,7 +13,6 @@ body
 {
     overflow:hidden;
     background:linear-gradient(#223,#322);
-    background-attachment:fixed;
 }
 *:active
 {
@@ -25,10 +24,10 @@ body
     font-family:impact;
     color:#0002;
     height:100%;
-    user-select:none;
     display:flex;
     align-items:center;
     justify-content:center;
+    user-select:none;
 }
 </style>
 <template id=templateIcon>
@@ -40,8 +39,8 @@ body
     align-items:center;
     flex-direction:column;
     user-select:none;
-    cursor:grab;
     pointer-events:auto;
+    cursor:grab;
 }
 .icon
 {
@@ -50,7 +49,7 @@ body
     font-size:42;
     background:linear-gradient(#fff,#999);
     border-radius:9px;
-    box-shadow:4px 4px 5px #000;
+    box-shadow:4px 4px 5px;
     overflow:hidden;
     white-space:nowrap;
     pointer-events:none;
@@ -75,11 +74,11 @@ body
 {
     position:absolute;
     user-select:none;
-    background:#000;
     display:flex;
     flex-direction:column;
-    border:2px solid #000;
-    box-shadow:9px 9px 9px #000;
+    box-shadow:9px 9px 9px;
+    background:#000;
+    border:2px solid;
     overflow:hidden;
 }
 .frame
@@ -87,9 +86,9 @@ body
     position:relative;
     width:100%;
     height:100%;
-    border:none;
-    overflow:hidden;
     background:#FFF;
+    border:2px solid;
+    overflow:hidden;
 }
 .folder
 {
@@ -97,9 +96,9 @@ body
 }
 .titleBar
 {
+    height:45;
     font-size:32;
     cursor:grab;
-    height:45;
 }
 .resize
 {
@@ -545,10 +544,6 @@ class OS13kWindow extends HTMLElement
         this.shadowRoot.appendChild(titleBar);
         this.titleBar = titleBar;
         
-        const titleBarGap = document.createElement('span');
-        titleBarGap.style.height = 2;
-        this.shadowRoot.appendChild(titleBarGap);
-        
         if (icon.folder)
         {
             // create folder frame
@@ -582,26 +577,27 @@ class OS13kWindow extends HTMLElement
             iframe.onload=e=>
             {
                 // init iframe
-                const iframe_content = e.target.contentWindow;
-                this.iframe_content = iframe_content;
+                const iframeContent = e.target.contentWindow;
+                this.iframeContent = iframeContent;
                 this.focus();
                 
                 // try to pass os13k to iframe
                 try
                 {
-                    iframe_content.OS13k = OS13k;
-                    iframe_content.zzfx = zzfx;
+                    iframeContent.OS13k = OS13k;
+                    iframeContent.zzfx = zzfx;
                 }
                 catch (e)
                 {
+                    // Could not pass OS13k globals to iframe!
                     // This may be due to file:// links being treated as
                     // different origin in some browsers for security reasons.
                     throw e;
                 }
                 
                 // init os13k in iframe
-                if (iframe_content.OS13kStart)
-                    iframe_content.OS13kStart();
+                if (iframeContent.OS13kStart)
+                    iframeContent.OS13kStart();
             };
             iframe.src = icon.src;
             this.shadow.appendChild(iframe);
@@ -617,6 +613,10 @@ class OS13kWindow extends HTMLElement
             activeWindow.SetActive(0);
         
         this.SetActive();
+        
+        if (this.iframeContent)
+            this.iframeContent.focus();
+            
     }
     
     SetActive(active=1)
@@ -629,10 +629,6 @@ class OS13kWindow extends HTMLElement
             // move to top when active
             this.style.zIndex = ++activeWindowZ;
             activeWindow = this;
-            
-            // set focus to iframe
-            if (this.iframe_content)
-                this.iframe_content.focus();
         }
         else
             activeWindow = 0;
@@ -663,7 +659,7 @@ class OS13kWindow extends HTMLElement
         else if (id == 'resize')
             this.Resize();
             
-        // give focus to window
+        // set focus to iframe
         this.focus();
         
         // allow dragging from the title bar
@@ -735,7 +731,13 @@ onmousedown=e=>
     
     // handle mouse down event
     if (target.localName == 'os13k-icon' || target.localName == 'os13k-window')
+    {
         target.MouseDown(originalTarget.id);
+        
+        // prevent main document getting refocused if titleBar is clicked
+        if (originalTarget.id == 'titleBar')
+            e.preventDefault();
+    }
     else
     {
         // deactivate window if not clicked on
