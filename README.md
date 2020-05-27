@@ -28,6 +28,7 @@ Programming Notes
 - hideWhenClosed - hides the window instead of closing it
 - allowMultiple - allows multiple copies of the window to open
 - open - starts open (only for top level icons)
+- background - set background color for iframe (white by default)
 
 ### OS13k System Calls
 - The function OS13kInit is called on child frames when opened
