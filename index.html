@@ -98,7 +98,7 @@ body
     height:44;
     font-size:30;
     display:flex;
-    align-items:flex-start;
+    align-items:center;
     white-space:nowrap;
 }
 .name
@@ -234,11 +234,6 @@ class _OS13k
         }
     }
     
-    Medal(gameName, medalName='', difficulty=0)
-    {
-        // show popup and unlock medal
-    }
-    
     GetKeyDirection(keyCode)
     {
         // get direction from wasd or arrow keys
@@ -253,6 +248,17 @@ class _OS13k
         if (keyCode == 65 || keyCode == 38) // left
             x -= 1;
         return {x, y}
+    }
+    
+    
+    Medal(gameName, medalName='', difficulty=0)
+    {
+        // todo: show popup and unlock medal
+    }
+    
+    PlaySoundSeed(seed)
+    {
+        // todo: play seeded sound
     }
     
     PlaySamples(samples, sampleRate=44100)
@@ -754,6 +760,8 @@ ondblclick=e=>
     const target = e.originalTarget || e.path[0];
     target.Open && target.Open();
 }
+
+oncontextmenu=e=> e.preventDefault();
 
 /////////////////////////////////////////////////////////////////////////////
 // ZzFXMicro - Zuper Zmall Zound Zynth 
