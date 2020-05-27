@@ -486,10 +486,16 @@ class OS13kIcon extends HTMLElement
             
             // clamp icon to window so icon is not unreachable
             x = OS13k.Clamp(x, -32, rect.width-32);
-            y = OS13k.Clamp(y, -32, rect.height-80);
+            y = OS13k.Clamp(y, -32, rect.height-32-46);
             
             // put icon in folder
             target = element;
+        }
+        else
+        {
+            // clamp icon to window so icon is not unreachable
+            x = OS13k.Clamp(x, -32, innerWidth-32);
+            y = OS13k.Clamp(y, -32, innerHeight-32);
         }
 
         const targetFolder = target.folder || target;
