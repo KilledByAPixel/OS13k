@@ -44,6 +44,7 @@ G=t=>
                 for(k=0;k<r*100;++k)
                     s[k] = (e=f(k)*2-1, e>1?1:e)/8;
                 S=OS13k.PlaySamples(s, R=r);
+            u=t;
             }
         }
         y+=h; // next line
@@ -72,7 +73,8 @@ G=t=>
     }
     
     // advance to next song & update stars
-    F&&1e5<t-2e3?C=N=C-9?C+1:0:T+=E/5e3;
+    i=(t-u);
+    F&&i>1e5+2e3?C=N=C-9?C+1:0:T+=E/5e3;
     
     // track select menu
     x=a.width/2;
@@ -102,6 +104,7 @@ onunload=_=>S&&S.stop();
 // init
 c=a.getContext`2d`;
 M={x:0};
-G(S=C=N=F=T=E=0);
+G(S=C=N=F=T=E=t=u=0);
+G(S=C=N=F=T=E=t=u=0);
 
 </script>
