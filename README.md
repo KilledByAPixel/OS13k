@@ -21,7 +21,7 @@ More icon settings
 - author - name of creator
 - hideWhenClosed - hides the window instead of closing it
 - allowMultiple - allows multiple copies of the window to open
-- noResize - don't show the resize icon
+- noMaximize - don't show the maximize icon
 
 OS13k System Calls
 - The function OS13kInit is called on child frames when opened
