@@ -21,7 +21,7 @@ For faster iteration, top level icons will open on start if they have the flag '
 Programming Notes
 - OS13k and zzfx features will not work on when browsing localling in Firefox!
 - To force a page to refresh you can add ?<version> to the src link... {src:'help.html?1'}
-- you do not need to set charset=utf-8, it will be applied automatically
+- you do not need charset=utf-8, it will be applied automatically
 
 ### Icon settings
 - width and height of window
