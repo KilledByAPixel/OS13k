@@ -21,6 +21,7 @@ More icon settings
 - author - name of creator
 - hideWhenClosed - hides the window instead of closing it
 - allowMultiple - allows multiple copies of the window to open
+- maximize - opens maximized window
 
 OS13k System Calls
 - The function OS13kInit is called on child frames when opened
