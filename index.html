@@ -87,8 +87,7 @@ body
     width:100%;
     height:100%;
     background:#FFF;
-    border:2px solid;
-    overflow:hidden;
+    border:none;
 }
 .folder
 {
@@ -184,7 +183,7 @@ const desktopLayout =
 ]},
 {name:'Music', icon:'🎶', folder:
 [
-    {name:'Min Bytes', icon:'<span style=color:#f00>𝓜</span>', width:500, height:500, src:'music/minBytes.html'},
+    {name:'Min Bytes', icon:'<span style=color:#f00>𝓜</span>', width:500, height:500, src:'music/minBytes.html?2'},
 ]},
 {name:'Favorites', folder:[]},
 ];
@@ -549,6 +548,10 @@ class OS13kWindow extends HTMLElement
             + (icon.author? ' (' +icon.author +')': '');
         this.shadowRoot.appendChild(titleBar);
         this.titleBar = titleBar;
+        
+        const titleBarGap = document.createElement('span');
+        titleBarGap.style.height = 2;
+        this.shadowRoot.appendChild(titleBarGap);
         
         if (icon.folder)
         {
