@@ -144,7 +144,7 @@ const desktopLayout =
 ]},
 {name:'Games', icon:'🎮', folder:
 [
-    {name:'Lava Rush', icon:'🌋', author:'Jeremy Burns', src:'games/lavaRush.html?2', width:640, height:400},
+    {name:'Lava Rush', icon:'🌋', author:'Jeremy Burns', src:'games/lavaRush.html?2', width:640, height:400, background:'#000'},
     {name:'Sn1ke', icon:'👀', src:'games/sn1ke.html', author:'Codegolf Team', width:420, height:330, hideWhenClosed:1},
     {name:'Tetris', icon:'🆃', author:'Veubeke', src:'games/tetris.html', width:320, height:430},
     {name:`Queen's Gambit`, icon:'<span style=color:#f0f>♛</span>', src:'games/queensGambit.html?1', width:1290, height:720},
@@ -363,7 +363,7 @@ let topIconZ = 0;
 
 class OS13kIcon extends HTMLElement
 {
-	constructor({x, y, name, icon, src, width=720, height=405, author, folder, hideWhenClosed, allowMultiple})
+	constructor({x, y, name, icon, src, width=720, height=405, author, folder, hideWhenClosed, allowMultiple, background})
     {
 		super();
         
@@ -385,6 +385,7 @@ class OS13kIcon extends HTMLElement
         this.hideWhenClosed = hideWhenClosed || folder;
         this.allowMultiple = allowMultiple;
         this.folder = folder;
+        this.background = background;
         
         // create shadow root
         this.shadowRoot.innerHTML = templateIcon.innerHTML
@@ -583,6 +584,7 @@ class OS13kWindow extends HTMLElement
         {
             // create iframe
             const iframe = document.createElement('iframe');
+            icon.background && (iframe.style.background = icon.background);
             iframe.className = 'frame';
             iframe.sandbox.add('allow-scripts');
             iframe.sandbox.add('allow-same-origin');
