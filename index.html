@@ -131,7 +131,7 @@ body
 
 const desktopLayout = 
 [
-{name:'Help', icon:'❓', src:'help.html?6', open:1, width:400, height:380},
+{name:'Help', icon:'❓', src:'help.html?6', open:1, width:380, height:340, noResize:1},
 {name:'System', icon:'⚙️', folder:
 [
     {name:'Test', icon:'😄', src:'system/test.html?3', hideWhenClosed:1},
@@ -352,7 +352,7 @@ let topIconZ = 0;
 
 class OS13kIcon extends HTMLElement
 {
-	constructor({x, y, name, icon, src, width=720, height=405, author, hideWhenClosed, allowMultiple, folder, maximize})
+	constructor({x, y, name, icon, src, width=720, height=405, author, hideWhenClosed, allowMultiple, folder, maximize, noResize})
     {
 		super();
         
@@ -374,6 +374,7 @@ class OS13kIcon extends HTMLElement
         this.hideWhenClosed = hideWhenClosed || folder;
         this.allowMultiple = allowMultiple;
         this.maximize = maximize;
+        this.noResize = noResize;
         this.folder = folder;
         
         // create shadow root
@@ -536,7 +537,7 @@ class OS13kWindow extends HTMLElement
             + icon.name + '&nbsp;' 
             + (icon.author? '(' +icon.author +')': '')
             + '</span>'
-            + '<span id=resize class=resize>🗖</span>'
+            + `<span id=resize class=resize ${icon.noResize?'style=display:none':''}>🗖</span>`
             + '<span id=close class=close>×</span>';
         this.shadowRoot.appendChild(titleBar);
         this.titleBar = titleBar;
