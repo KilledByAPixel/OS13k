@@ -773,7 +773,7 @@ onmousemove=e=>
     if (selected)
     {
         // clamp to window
-        const x = e.x < 9 ? 9 : e.x > innerHeight-9 ? innerHeight-9 : e.x;
+        const x = e.x < 9 ? 9 : e.x > innerWidth-9 ? innerWidth-9 : e.x;
         const y = e.y < 9 ? 9 : e.y > innerHeight-9 ? innerHeight-9 : e.y;
         selected.style.left = x - seletOffsetX;
         selected.style.top = y - seletOffsetY;
