@@ -15,7 +15,7 @@ Add an icon config to desktopLayout to create a new program
 - {name:'Free Cell', icon:'♠️', src:'games/freeCell.html', width:800, height:1e3, hideWhenClosed:1}
 - {src:'help.html'}
 
-Top level icons will open on start if they have the flag 'open' (for faster iteration)
+For faster iteration, top level icons will open on start if they have the flag 'open'
 - {src:'help.html', open:1}
 
 Programming Notes
