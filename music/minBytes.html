@@ -22,8 +22,7 @@ G=()=>
         c.fillText(i?i+'. '+n:F&&((t/1e3|0)%8<4)?F:n,x,y+h/3);
         
         // hitbox debug
-        //c.strokeText((i?i+". ":"") + n,x,y+h/3);
-        //c.strokeStyle ="#F00";c.strokeRect(x-140,y-h/2,280,h);
+        //c.strokeRect(x-140,y-h/2,280,h,c.strokeStyle ="#F00");
 
         // check if clicked on song
         if ((Math.abs(M.x - x) < 140 && Math.abs(M.y - y) < h/2 || i == N))
@@ -31,9 +30,9 @@ G=()=>
             S&&S.stop(); // stop last song
 
             // init song
-            F=f; // function
+            F=f;  // function
+            E=e;  // star speed
             N=-1; // wait for song to end
-            E=e; // star speed
 
             if (C=i)
             {
@@ -56,21 +55,24 @@ G=()=>
     c.textAlign='center'; // center text
     
     // stars effect
-    if (document.hasFocus())
-        for(i=1e3;i--;c.fillRect((Math.sin(i)*1e9-T*i)%a.width*2-9,i*9%a.height,j=i%4+2,j))
-            c.fillStyle=`hsl(${i*20},99%,85%)`;
+    for(i=1e3; document.hasFocus() && i--;)
+    {
+        c.fillStyle=`hsl(${i*20},99%,85%)`;
+        c.fillRect((Math.sin(i)*1e9-T*i)%a.width*2-9,i*9%a.height,j=i%4+2,j);
+    }
         
     // visualizer
-    for(i=32;F&&1e5>t&&i--;c.fillRect(a.width/2-i*q*a.height/40,0,i*q*a.height/20,a.height))
+    for(i=32;F&&1e5>t&&i--;)
     {
         for(j=R/10;j--;)
             q+=(F(t*R/1e3+j)&1<<i)>>i
         q/=R/9;
 
         c.fillStyle=`hsl(${i*20},99%,50%,.1)`;
+        c.fillRect(a.width/2-i*q*a.height/40,0,i*q*a.height/20,a.height);
     }
     
-    // advance to next song & update stars
+    // advance to next song and update stars
     t=Date.now()-u;
     F&&t>1e5+2e3?C=N=C-9?C+1:0:T+=E/5e3;
     
@@ -78,7 +80,7 @@ G=()=>
     x=a.width/2;
     y=h=59;
     i=-1;
-    A(0,0,.5,                     '𝓜𝓲𝓷𝓑𝔂𝓽𝓮𝓼');
+    A(0,                  0,  .5, '𝓜𝓲𝓷𝓑𝔂𝓽𝓮𝓼');
     h=40;
     A(t=>t&t>>8,          1e5, 2, 'TAKEOFF');
     A(t=>t&t>>11,         1e4, 1, 'BINARY');

@@ -137,7 +137,7 @@ body
 // @output_file_name OS13k.min.js
 // ==/ClosureCompiler==
 
-"use strict";
+'use strict';
 
 /////////////////////////////////////////////////////////////////////////////
 // OS13k desktop
@@ -152,9 +152,9 @@ const desktopLayout =
 {name:'Games', icon:'🎮', folder:
 [
     {name:'Lava Rush', icon:'🌋', author:'Jeremy Burns', src:'games/lavaRush.html?2'},
-    {name:"Sn1ke", icon:'👀', src:'games/sn1ke.html', author:'Xem', width:400, height:330, hideWhenClosed:1},
-    {name:"Tetris", icon:'🆃', author:'Veubeke', src:'games/tetris.html', width:220, height:430},
-    {name:"Queen's Gambit", icon:'<span style=color:#f0f>♛</span>', src:'games/queensGambit.html?1', width:1290, height:720},
+    {name:'Sn1ke', icon:'👀', src:'games/sn1ke.html', author:'Xem', width:400, height:330, hideWhenClosed:1},
+    {name:'Tetris', icon:'🆃', author:'Veubeke', src:'games/tetris.html', width:220, height:430},
+    {name:`Queen's Gambit`, icon:'<span style=color:#f0f>♛</span>', src:'games/queensGambit.html?1', width:1290, height:720},
     {name:'Free Cell', icon:'♠️', src:'games/freeCell.html', width:800, height:1e3, hideWhenClosed:1},
     {name:'Digit Dilemma', icon:'<span style=font-family:monospace>☻</span>', src:'games/digitDilemma.html'},
     {name:'Hue Jumper', icon:'🌲', src:'games/hueJumper.html', width:1290, height:720},
@@ -282,7 +282,7 @@ class _OS13k
 
         // create simple pass through vertex shader
         const vertexShader = x.createShader(x.VERTEX_SHADER);
-        x.shaderSource(vertexShader,"attribute vec4 p;void main(){gl_Position=p;}");
+        x.shaderSource(vertexShader,'attribute vec4 p;void main(){gl_Position=p;}');
         x.compileShader(vertexShader);
         
         // create vertex buffer that is a giant triangle to cover the viewport
@@ -325,9 +325,9 @@ class _OS13k
         const x = canvas.getContext('webgl');
         
         // set uniforms
-        x.uniform3f(x.getUniformLocation(shaderProgram,"iResolution"),
+        x.uniform3f(x.getUniformLocation(shaderProgram,'iResolution'),
             canvas.width, canvas.height, 0);
-        x.uniform1f(x.getUniformLocation(shaderProgram,"iTime"), time);
+        x.uniform1f(x.getUniformLocation(shaderProgram,'iTime'), time);
         
         // render shader
         x.viewport(0, 0, canvas.width, canvas.height);
