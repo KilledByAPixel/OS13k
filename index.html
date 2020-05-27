@@ -80,6 +80,7 @@ body
     background:#000;
     border:2px solid;
     overflow:hidden;
+    display:block;
 }
 .frame
 {
@@ -95,35 +96,21 @@ body
 }
 .titleBar
 {
-    height:45;
-    font-size:32;
+    height:44;
+    font-size:30;
+    overflow:hidden;
+    display:flex;
+    align-items:flex-start;
+    white-space:nowrap;
     cursor:grab;
 }
-.resize
-{
-    position:absolute;
-    right:23;
-    font-size:25;
-}
-.resize:hover
-{
-    background:#fff;
-}
-.close
-{
-    position:absolute;
-    right:0;
-    font-size:36;
-}
-.close:hover
-{
-    background:#f00;
-}
+.resize { font-size:24;height:100% }
+.close  { font-size:34;height:100% }
+.resize:hover { background:#fff }
+.close:hover  { background:#f00 }
 </style>
-<span id=resize class=resize>🗖</span>
-<span id=close class=close>×</span>
 </template>
-<span class=title>OS13k</span>
+<span class=title style=user-select:none>OS13k</span>
 <span id=os13kDesktop></span>
 <script>
 
@@ -151,7 +138,7 @@ const desktopLayout =
 ]},
 {name:'Games', icon:'🎮', folder:
 [
-    {name:'Lava Rush', icon:'🌋', author:'Jeremy Burns', src:'games/lavaRush.html?2'},
+    {name:'Lava Rush', icon:'🌋', author:'Jeremy Burns', src:'games/lavaRush.html?2', width:640, height:400},
     {name:'Sn1ke', icon:'👀', src:'games/sn1ke.html', author:'Xem', width:400, height:330, hideWhenClosed:1},
     {name:'Tetris', icon:'🆃', author:'Veubeke', src:'games/tetris.html', width:220, height:430},
     {name:`Queen's Gambit`, icon:'<span style=color:#f0f>♛</span>', src:'games/queensGambit.html?1', width:1290, height:720},
@@ -183,9 +170,10 @@ const desktopLayout =
 ]},
 {name:'Music', icon:'🎶', folder:
 [
-    {name:'Min Bytes', icon:'<span style=color:#f00>𝓜</span>', width:500, height:500, src:'music/minBytes.html?3'},
+    {name:'Min Bytes', icon:'<span style=color:#f00>𝓜</span>', width:500, height:500, src:'music/minBytes.html?4'},
 ]},
 {name:'Favorites', folder:[]},
+    {name:'Black Hole', icon:'🌌', src:'dweets/blackHole.html',open},
 ];
 
 /////////////////////////////////////////////////////////////////////////////
@@ -337,8 +325,8 @@ class _OS13k
     CreateDweet(document, code)
     {
         // set up document
-        document.body.innerHTML = '<canvas id=c width=1920 height=1080 style=background:#FFF>';
-        document.body.style = 'background:#111;margin:0;display:flex;align-items:center;justify-content:center;overflow:hidden';
+        document.body.innerHTML = `<canvas id=c width=1920 height=1080 style=background:#FFF;width:100%>`;
+        document.body.style = `background:#111;margin:0;overflow:hidden;display:flex;justify-content:center`;
         
         // create dweet
         document.defaultView.eval('function u(t){' + code + '}x=c.getContext`2d`;frame=0;S=Math.sin;C=Math.cos;T=Math.tan;R=(r,g,b,a=1)=>`rgba(${0|r},${0|g},${0|b},${a})`;loop=()=>requestAnimationFrame(loop,document.hasFocus()&&u((60*(frame++/60)-frame-1|0?frame-1:frame)/60),c.style.width=1920/1080>innerWidth/innerHeight?innerWidth:innerHeight*1920/1080);loop()');
@@ -365,7 +353,7 @@ let topIconZ = 0;
 
 class OS13kIcon extends HTMLElement
 {
-	constructor({x, y, name, icon, src, width=720, height=450, author, hideWhenClosed, allowMultiple, folder})
+	constructor({x, y, name, icon, src, width=720, height=405, author, hideWhenClosed, allowMultiple, folder})
     {
 		super();
         
@@ -380,7 +368,7 @@ class OS13kIcon extends HTMLElement
         this.icon = icon;
         this.src = src;
         this.windowWidth = width;
-        this.windowHeight = height;
+        this.windowHeight = height + 46; // add title bar height
         this.style.left = x;
         this.style.top = y;
         this.author = author;
@@ -404,9 +392,9 @@ class OS13kIcon extends HTMLElement
         else
         {
             // stager open positions
-            windowOpenOffset += 45;
+            windowOpenOffset += 42;
             if (windowOpenOffset > 300)
-                windowOpenOffset = 99+22;
+                windowOpenOffset = 99+20;
 
             // open the window
             this.os13kWindow = new OS13kWindow({x:windowOpenOffset, y:windowOpenOffset, icon:this});
@@ -541,15 +529,17 @@ class OS13kWindow extends HTMLElement
         // create title bar
         const titleBar = document.createElement('span');
         titleBar.className = 'titleBar';
-        titleBar.id = 'titleBar';
-        titleBar.innerHTML = '&nbsp;' 
-            + icon.icon + ' ' 
-            + icon.name + ' ' 
-            + (icon.author? ' (' +icon.author +')': '');
+        titleBar.innerHTML = '<span id=titleBar style=width:100%>&nbsp;' 
+            + icon.icon + '&nbsp;' 
+            + icon.name + '&nbsp;' 
+            + (icon.author? ' (' +icon.author +')': '')
+            + '</span>'
+            + '<span id=resize class=resize>🗖</span>'
+            + '<span id=close class=close>×</span>';
         this.shadowRoot.appendChild(titleBar);
         this.titleBar = titleBar;
         
-        const titleBarGap = document.createElement('span');
+        const titleBarGap = document.createElement('div');
         titleBarGap.style.height = 2;
         this.shadowRoot.appendChild(titleBarGap);
         
@@ -668,7 +658,7 @@ class OS13kWindow extends HTMLElement
         else if (id == 'resize')
             this.Resize();
             
-        // set focus to iframe
+        // set focus
         this.focus();
         
         // allow dragging from the title bar
@@ -731,7 +721,9 @@ onmousedown=e=>
     
     // get os13k target
     const originalTarget = e.originalTarget || e.path[0];
-    const target = originalTarget.parentNode.host || originalTarget;
+    let target = e.target;
+    if (originalTarget.localName == 'os13k-icon')
+        target = originalTarget;
     
     // set selected offset
     const rect = target.getBoundingClientRect();
@@ -744,7 +736,7 @@ onmousedown=e=>
         target.MouseDown(originalTarget.id);
         
         // prevent main document getting refocused if titleBar is clicked
-        if (originalTarget.id == 'titleBar')
+        if (originalTarget.id == 'titleBar' || originalTarget.id == 'close' || originalTarget.id == 'resize')
             e.preventDefault();
     }
     else
