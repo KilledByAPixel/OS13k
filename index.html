@@ -1,9 +1,6 @@
-<html>
 <head>
 <title>OS13k - A tiny pseudo operating system for JS13k</title>
 <meta charset=utf-8>
-</head>
-<body>
 <style>
 *
 {
@@ -28,6 +25,7 @@ body
     align-items:center;
     justify-content:center;
     user-select:none;
+    pointer-events:none;
 }
 </style>
 <template id=templateIcon>
@@ -111,7 +109,9 @@ body
 .close:hover  { background:#f00 }
 </style>
 </template>
-<span class=title style=user-select:none>OS13k</span>
+</head>
+<body>
+<span class=title>OS13k</span>
 <span id=os13kDesktop></span>
 <script>
 
@@ -332,15 +332,18 @@ class _OS13k
         document.defaultView.eval('function u(t){' + code + '}x=c.getContext`2d`;frame=0;S=Math.sin;C=Math.cos;T=Math.tan;R=(r,g,b,a=1)=>`rgba(${0|r},${0|g},${0|b},${a})`;loop=()=>requestAnimationFrame(loop,document.hasFocus()&&u((60*(frame++/60)-frame-1|0?frame-1:frame)/60),c.style.width=1920/1080>innerWidth/innerHeight?innerWidth:innerHeight*1920/1080);loop()');
     }
     
+    // math functions
+    Clamp(a, min=0, max=1) { return Math.min(Math.max(a, min),max); }
+    Percent(v, a, b)       { return b-a? this.Clamp((v-a)/(b-a), 0, 1) : 0; }
+    Lerp(p, a, b)          { return a + this.Clamp(p, 0, 1) * (b-a); }
     Random(max=1, min=0)
     {
-        // Mersenne Twister
+        // seeded random numbers - Mersenne Twister
         this.randomSeed ^= this.randomSeed << 13;
         this.randomSeed ^= this.randomSeed >> 17;
         this.randomSeed ^= this.randomSeed << 5;
         return max + (min-max) * (Math.abs(this.randomSeed) % 1e9 / 1e9);
     }
-    
 }; // _OS13k
 
 /////////////////////////////////////////////////////////////////////////////
@@ -397,7 +400,7 @@ class OS13kIcon extends HTMLElement
                 windowOpenOffset = 99+20;
 
             // open the window
-            this.os13kWindow = new OS13kWindow({x:windowOpenOffset, y:windowOpenOffset, icon:this});
+            this.os13kWindow = new OS13kWindow(windowOpenOffset, windowOpenOffset, this);
             os13kDesktop.appendChild(this.os13kWindow);
         }
         
@@ -468,7 +471,7 @@ class OS13kIcon extends HTMLElement
             }
             if (DetectSelfReference(this.realIcon))
             {
-                alert('Self referential folders detected!');
+                alert("You can't put a folder inside itself, silly!");
                 return;
             }
             
@@ -476,6 +479,10 @@ class OS13kIcon extends HTMLElement
             const rect = element.folder.getBoundingClientRect();
             x -= rect.left;
             y -= rect.top;
+            
+            // clamp icon to window so icon is not unreachable
+            x = OS13k.Clamp(x, -32, rect.width-32);
+            y = OS13k.Clamp(y, -32, rect.height-80);
             
             // put icon in folder
             target = element;
@@ -510,7 +517,7 @@ let activeWindowZ = 1e7;
 
 class OS13kWindow extends HTMLElement
 {
-	constructor({x, y, icon})
+	constructor(x, y, icon)
     {
 		super();
         	
@@ -538,6 +545,7 @@ class OS13kWindow extends HTMLElement
         this.shadowRoot.appendChild(titleBar);
         this.titleBar = titleBar;
         
+        // create thin black line below title bar
         const titleBarGap = document.createElement('div');
         titleBarGap.style.height = 2;
         this.shadowRoot.appendChild(titleBarGap);
@@ -556,7 +564,8 @@ class OS13kWindow extends HTMLElement
             let X = iconGridSizeX/4-iconGridSizeX;
             const AddIcon=p=>
             {
-                p.x=X+=iconGridSizeX; p.y=iconGridSizeX/4; 
+                p.x = X+=iconGridSizeX;
+                p.y = iconGridSizeX/4; //todo: wrap icons
                 folder.appendChild(new OS13kIcon(p));
             }
             for (const i of icon.folder)
@@ -626,53 +635,50 @@ class OS13kWindow extends HTMLElement
         // check for title bar buttons
         if (id == 'close')
             this.Close();
-        else if (id == 'maximize')
+        if (id == 'maximize')
             this.Maximize();
+        if (id == 'titleBar')
+            selected = this;
             
         // set focus
         this.focus();
-        
-        // allow dragging from the title bar
-        if (id == 'titleBar')
-            selected = this;
     }
     
     Maximize()
     {
         const fullScreenElement = this.contentWrapper;
-        if (fullScreenElement.mozRequestFullScreen)
-            fullScreenElement.mozRequestFullScreen();
-        else if (fullScreenElement.webkitRequestFullScreen)
+        if (fullScreenElement.webkitRequestFullScreen)
             fullScreenElement.webkitRequestFullScreen();
+        else if (fullScreenElement.mozRequestFullScreen)
+            fullScreenElement.mozRequestFullScreen();
     }
     
     SetActive(active=1)
     {
-        // change title color when active
-        this.titleBar.style.background = active ? '#aac' : '#777';
-        
         if (active)
         {
             // move to top when active
             this.style.zIndex = ++activeWindowZ;
-            activeWindow = this;
+            
+            // deactivate old window
+            if (activeWindow && activeWindow != this)
+                activeWindow.SetActive(0);
         }
-        else
-            activeWindow = 0;
+        
+        // change title color when active
+        this.titleBar.style.background = active ? '#aac' : '#777';
+        
+        // set active
+        activeWindow = active ? this : 0;
     }
     
     focus()
     {
         super.focus();
-        
-        // decative old window
-        if (activeWindow && activeWindow != this)
-            activeWindow.SetActive(0);
-        
-        this.SetActive();
-        
         if (this.iframeContent)
             this.iframeContent.focus();  
+            
+        this.SetActive();
     }
 } // OS13kWindow
 
@@ -697,6 +703,8 @@ onmousedown=e=>
     // get os13k target
     const originalTarget = e.originalTarget || e.path[0];
     let target = e.target;
+    
+    // if icon was clicked on, used that instead of target which may be window
     if (originalTarget.localName == 'os13k-icon')
         target = originalTarget;
     
@@ -705,9 +713,9 @@ onmousedown=e=>
     seletOffsetX = e.x - rect.left;
     seletOffsetY = e.y - rect.top;
     
-    // handle mouse down event
     if (target.localName == 'os13k-icon' || target.localName == 'os13k-window')
     {
+        // target mouse down event
         target.MouseDown(originalTarget.id);
         
         // prevent main document getting refocused if title bar is clicked
@@ -733,9 +741,11 @@ onmouseup=e=>
     os13kDesktop.style.pointerEvents = '';
     document.body.style.cursor = '';
     
-    // release selected
+    // selected mouse up event
     if (selected && selected.MouseUp)
         selected.MouseUp(e);
+        
+    // release selected
     selected = 0;
 }
 
@@ -745,8 +755,8 @@ onmousemove=e=>
     if (selected)
     {
         // clamp to window
-        const x = e.x < 9 ? 9 : e.x > innerWidth-9 ? innerWidth-9 : e.x;
-        const y = e.y < 9 ? 9 : e.y > innerHeight-9 ? innerHeight-9 : e.y;
+        const x = OS13k.Clamp(e.x, 9, innerWidth-9);
+        const y = OS13k.Clamp(e.y, 9, innerHeight-9);
         selected.style.left = x - seletOffsetX;
         selected.style.top = y - seletOffsetY;
     }
@@ -754,9 +764,8 @@ onmousemove=e=>
 
 ondblclick=e=>
 {
-    // get os13k target
-    const originalTarget = e.originalTarget || e.path[0];
-    const target = originalTarget.parentNode.host || originalTarget;
+    // open icon
+    const target = e.originalTarget || e.path[0];
     if (target.localName == 'os13k-icon')
         target.Open();
 }
@@ -765,14 +774,106 @@ ondblclick=e=>
 // ZzFXMicro - Zuper Zmall Zound Zynth 
 
 let zzfxV = .3; // volume
-const zzfx =    // play sound
-(I=1,J=.05,g=220,f=0,h=0,m=.1,n=0,K=1,r=0,z=0,t=0,A=0,u=0,B=0,v=0,L=0,e=0,d=2*Math.PI,b=44100,w=p=>2*p*Math.random()-p,C=p=>0<p?1:-1,M=r*=500*d/b**2,D=g*=(1+w(J))*d/b,N=C(v)*d/4,q=[],E=0,F=0,c=0,k=1,G=0,H=0,a=0,O,l)=>{f=99+f*b|0;h=h*b|0;m=m*b|0;e=e*b|0;z*=500*d/b**3;l=f+h+m+e;v*=d/b;t*=d/b;A*=b;for(u*=b;c<l;q[c++]=a)++H>100*L&&(H=0,a=E*g*Math.sin(F*v-N),a=n?1<n?2<n?3<n?Math.sin((a%d)**3):Math.max(Math.min(Math.tan(a),1),-1):1-(2*a/d%2+2)%2:1-4*Math.abs(Math.round(a/d)-a/d):Math.sin(a),a=C(a)*Math.abs(a)**K,a*=I*zzfxV*(c<f?c/f:c<f+h?1:c<l-e?1-(c-f-h)/m:0),a=e?a/2+(e>c?0:(c<l-e?1:(c-l)/e)*q[c-e]/2):a),E+=1+w(B),F+=1+w(B),g+=r+=z,k&&++k>A&&(D+=t,g+=t,k=0),u&&++G>u&&(g=D,r=M,G=1,k=k||1);return OS13k.PlaySamples(q)}
+const zzfx =    // play zzfx sound
+(
+    volume = 1, 
+    randomness = .05,
+    frequency = 220,
+    attack = 0,
+    sustain = 0,
+    release = .1,
+    shape = 0,
+    shapeCurve = 1,
+    slide = 0, 
+    deltaSlide = 0, 
+    pitchJump = 0, 
+    pitchJumpTime = 0, 
+    repeatTime = 0, 
+    noise = 0,
+    modulation = 0,
+    bitCrush = 0,
+    delay = 0,
+
+    // locals
+    PI2 = Math.PI*2,
+    sampleRate = 44100,
+    random = r => r*2*Math.random()-r,
+    sign = v => v>0?1:-1,
+    startSlide = slide *= 500 * PI2 / sampleRate**2,
+    startFrequency = frequency *= 
+        (1 + random(randomness)) * PI2 / sampleRate,
+    modPhase = sign(modulation) * PI2/4,
+    b=[], t=0, tm=0, i=0, j=1, r=0, c=0, s=0, d=.5,
+    length, buffer
+) =>
+{
+    // init parameters
+    attack = 99 + attack * sampleRate | 0;
+    sustain = sustain * sampleRate | 0;
+    release = release * sampleRate | 0;
+    delay = delay * sampleRate | 0;
+    deltaSlide *= 500 * PI2 / sampleRate**3;
+    length = attack + sustain + release + delay;
+    modulation *= PI2 / sampleRate;
+    pitchJump *= PI2 / sampleRate;
+    pitchJumpTime = pitchJumpTime * sampleRate;
+    repeatTime = repeatTime * sampleRate;
+
+    // generate waveform
+    for(; i < length;b[i++] = s)
+    {
+        if (++c>bitCrush*100)                            // bit crush
+        {
+            c = 0;
+            s = t * frequency *                          // frequency
+                Math.sin(tm * modulation - modPhase);    // modulation
+
+            s = shape? shape>1? shape>2? shape>3?   // wave shape
+              Math.sin((s%PI2)**3) :                // 4 noise
+              Math.max(Math.min(Math.tan(s),1),-1): // 3 tan
+              1-(2*s/PI2%2+2)%2:                    // 2 saw
+              1-4*Math.abs(Math.round(s/PI2)-s/PI2):// 1 triangle
+              Math.sin(s);                          // 0 sin
+            s = sign(s)*(Math.abs(s)**shapeCurve);  // curve 0=square, 2=pointy
+
+            s *= volume * zzfxV * (                      // envelope
+                i<attack ? i/attack :                    // attack
+                i<attack+sustain ? 1 :                   // sustain
+                i<length-delay ?                         // post release
+                1 - (i-attack-sustain)/release : 0);     // release
+                
+            s = delay ?                                  // delay
+                s/2 + (delay > i ? 0 :
+                (i<length-delay? 1 : (i-length)/delay) * // release delay 
+                b[i-delay]/2) : s;
+        }
+
+        t += 1 + random(noise);             // noise
+        tm += 1 + random(noise);            // modulation noise
+        frequency += slide += deltaSlide;   // frequency slide
+
+        if (j && ++j > pitchJumpTime)       // pitch jump
+        {
+            frequency += pitchJump;         // apply pitch jump
+            startFrequency += pitchJump;    // also apply to start
+            j = 0;                          // reset pitch jump time
+        };
+
+        if (repeatTime && ++r > repeatTime) // repeat
+        {
+            frequency = startFrequency;     // reset frequency
+            slide = startSlide;             // reset slide
+            r = 1;                          // reset repeat time
+            j = j||1;                       // reset pitch jump time
+        }
+    }
+    
+    return OS13k.PlaySamples(b);
+}
 
 /////////////////////////////////////////////////////////////////////////////
-// OS13k startup!
+// Start OS13k!
 
 const OS13k = new _OS13k;
 
 </script>
-</body>
-</html>
