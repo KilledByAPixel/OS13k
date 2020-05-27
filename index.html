@@ -207,11 +207,12 @@ class _OS13k
     InitDesktop()
     {
         // add icons to desktop
-        let X = iconGridSizeX/4 - iconGridSizeX;
+        let X = iconGridSizeX/4;
         const AddIcon=p=>
         {
-            p.x = X+=iconGridSizeX;
+            p.x = X;
             p.y = iconGridSizeX/4; 
+            X += iconGridSizeX;
             const icon = new OS13kIcon(p); 
             os13kDesktop.appendChild(icon); 
             p.open && icon.Open();
@@ -577,11 +578,19 @@ class OS13kWindow extends HTMLElement
             this.Focus();
 
             // add icons to folder
-            let X = iconGridSizeX/4-iconGridSizeX;
+            let X = iconGridSizeX/4;
+            let Y = iconGridSizeX/4;
             const AddIcon=p=>
             {
-                p.x = X+=iconGridSizeX;
-                p.y = iconGridSizeX/4; //todo: wrap icons
+                p.x = X;
+                p.y = Y;
+                X += iconGridSizeX;
+                if (X > iconGridSizeX*7)
+                {
+                    // wrap icons
+                    X = iconGridSizeX/4;
+                    Y += iconGridSizeY;
+                }
                 folder.appendChild(new OS13kIcon(p));
             }
             for (const i of icon.folder)
