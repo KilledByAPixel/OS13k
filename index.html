@@ -11,7 +11,7 @@ body
     overflow:hidden;
     background:linear-gradient(#223,#322);
 }
-*:active
+body:active
 {
     cursor:grabbing;
 }
@@ -367,6 +367,7 @@ class _OS13k
 
 const iconGridSizeX = 99;
 const iconGridSizeY = 130;
+const titleBarHeight = 46;
 let windowOpenOffset = 99;
 let topIconZ = 0;
 
@@ -387,7 +388,7 @@ class OS13kIcon extends HTMLElement
         this.icon = icon;
         this.src = src;
         this.windowWidth = width;
-        this.windowHeight = height + 46; // add title bar height
+        this.windowHeight = height + titleBarHeight;
         this.style.left = x;
         this.style.top = y;
         this.author = author;
@@ -412,7 +413,7 @@ class OS13kIcon extends HTMLElement
         else
         {
             // stager open positions
-            windowOpenOffset += 42;
+            windowOpenOffset += titleBarHeight;
             if (windowOpenOffset > 300)
                 windowOpenOffset = 99+20;
 
@@ -496,7 +497,7 @@ class OS13kIcon extends HTMLElement
             
             // clamp icon to window so icon is not unreachable
             x = OS13k.Clamp(x, -32, rect.width-32);
-            y = OS13k.Clamp(y, -32, rect.height-32-46);
+            y = OS13k.Clamp(y, -32, rect.height-32-titleBarHeight);
             
             // put icon in folder
             target = element;
