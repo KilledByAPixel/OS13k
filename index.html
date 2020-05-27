@@ -139,8 +139,8 @@ const desktopLayout =
 {name:'Games', icon:'🎮', folder:
 [
     {name:'Lava Rush', icon:'🌋', author:'Jeremy Burns', src:'games/lavaRush.html?2', width:640, height:400},
-    {name:'Sn1ke', icon:'👀', src:'games/sn1ke.html', author:'Xem', width:400, height:330, hideWhenClosed:1},
-    {name:'Tetris', icon:'🆃', author:'Veubeke', src:'games/tetris.html', width:220, height:430},
+    {name:'Sn1ke', icon:'👀', src:'games/sn1ke.html', author:'Codegolf Team', width:420, height:330, hideWhenClosed:1},
+    {name:'Tetris', icon:'🆃', author:'Veubeke', src:'games/tetris.html', width:320, height:430},
     {name:`Queen's Gambit`, icon:'<span style=color:#f0f>♛</span>', src:'games/queensGambit.html?1', width:1290, height:720},
     {name:'Free Cell', icon:'♠️', src:'games/freeCell.html', width:800, height:1e3, hideWhenClosed:1},
     {name:'Digit Dilemma', icon:'<span style=font-family:monospace>☻</span>', src:'games/digitDilemma.html'},
@@ -534,7 +534,7 @@ class OS13kWindow extends HTMLElement
         titleBar.innerHTML = '<span id=titleBar style=width:100%>&nbsp;' 
             + icon.icon + '&nbsp;' 
             + icon.name + '&nbsp;' 
-            + (icon.author? ' (' +icon.author +')': '')
+            + (icon.author? '(' +icon.author +')': '')
             + '</span>'
             + '<span id=resize class=resize>🗖</span>'
             + '<span id=close class=close>×</span>';
