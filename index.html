@@ -106,10 +106,10 @@ body
     width:100%;
     cursor:grab;
 }
-.full { font-size:30;height:100% }
-.close  { font-size:43;height:100% }
-.full:hover { background:#fff }
-.close:hover  { background:#f00 }
+.full         { font-size:30; height:100%; }
+.close        { font-size:43; height:100%; }
+.full:hover   { background:#fff; }
+.close:hover  { background:#f00; }
 </style>
 </template>
 </head>
@@ -594,35 +594,22 @@ class OS13kWindow extends HTMLElement
             iframe.sandbox.add('allow-pointer-lock');
             iframe.onload=e=>
             {
-                // init iframe
-                const iframeContent = this.iframeContent = e.target.contentWindow;
-                this.Focus();
-                
                 // try to pass os13k to iframe
-                try
-                {
-                    iframeContent.OS13k = OS13k;
-                    iframeContent.zzfx = zzfx;
-                }
-                catch (e)
-                {
-                    // Could not pass OS13k globals to iframe!
-                    // This may be due to file:// links being treated as
-                    // different origin in some browsers for security reasons.
-                    throw e;
-                }
-                
-                // init OS13k in iframe
-                if (iframeContent.OS13kStart)
-                    iframeContent.OS13kStart();
+                const iframeContent = this.iframeContent = e.target.contentWindow;
+                iframeContent.OS13k = OS13k;
+                iframeContent.zzfx = zzfx;
+                iframeContent.OS13kStart && iframeContent.OS13kStart();
+                    
+                // set focus
+                this.Focus();
             };
-            iframe.src = icon.src;
             
             // create content wrapper for fullscreen support
             const iframeContentWrapper = document.createElement('span');
             this.iframeContentWrapper = iframeContentWrapper;
             this.shadowRoot.appendChild(iframeContentWrapper);
             iframeContentWrapper.appendChild(iframe);
+            iframe.src = icon.src;
         }
     }
     
