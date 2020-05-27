@@ -4,7 +4,7 @@
 // Frank Force 2019
     
 // main loop
-G=t=>
+G=()=>
 {
     requestAnimationFrame(G);
     
@@ -42,7 +42,7 @@ G=t=>
                 for(k=0;k<r*100;++k)
                     s[k] = (e=f(k)*2-1, e>1?1:e)/8;
                 S=OS13k.PlaySamples(s, R=r);
-            u=t;
+                u=Date.now();
             }
         }
         y+=h; // next line
@@ -71,8 +71,8 @@ G=t=>
     }
     
     // advance to next song & update stars
-    i=(t-u);
-    F&&i>1e5+3e3?C=N=C-9?C+1:0:T+=E/5e3;
+    t=Date.now()-u;
+    F&&t>1e5+2e3?C=N=C-9?C+1:0:T+=E/5e3;
     
     // track select menu
     x=a.width/2;
