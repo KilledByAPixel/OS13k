@@ -21,7 +21,6 @@ More icon settings
 - author - name of creator
 - hideWhenClosed - hides the window instead of closing it
 - allowMultiple - allows multiple copies of the window to open
-- maximize - opens maximized window
 - noResize - don't show the resize icon
 
 OS13k System Calls
