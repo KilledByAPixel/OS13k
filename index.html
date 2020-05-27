@@ -353,7 +353,7 @@ let topIconZ = 0;
 
 class OS13kIcon extends HTMLElement
 {
-	constructor({x, y, name, icon, src, width=720, height=405, author, hideWhenClosed, allowMultiple, folder, maximize, noResize})
+	constructor({x, y, name, icon, src, width=720, height=405, author, hideWhenClosed, allowMultiple, folder, noResize})
     {
 		super();
         
@@ -374,7 +374,6 @@ class OS13kIcon extends HTMLElement
         this.author = author;
         this.hideWhenClosed = hideWhenClosed || folder;
         this.allowMultiple = allowMultiple;
-        this.maximize = maximize;
         this.noResize = noResize || folder;
         this.folder = folder;
         
@@ -400,8 +399,6 @@ class OS13kIcon extends HTMLElement
 
             // open the window
             this.os13kWindow = new OS13kWindow({x:windowOpenOffset, y:windowOpenOffset, icon:this});
-            if (this.maximize)
-                this.os13kWindow.Resize();
             os13kDesktop.appendChild(this.os13kWindow);
         }
         
@@ -645,6 +642,8 @@ class OS13kWindow extends HTMLElement
             this.style.display = 'none';
             if (this.maximized)
                 this.Resize();
+                
+            document.exitFullscreen();
         }
         else
         {
@@ -674,27 +673,14 @@ class OS13kWindow extends HTMLElement
     {
         if (this.maximized = !this.maximized)
         {
-            // save old values
-            this.oldLeft = this.style.left;
-            this.oldTop = this.style.top;
-            this.oldWidth = this.style.width;
-            this.oldHeight = this.style.height;
-            
-            // set to max size
-            this.style.left = 5;
-            this.style.top = 5;
-            this.style.width = innerWidth-18;
-            this.style.height = innerHeight-18;
+            if (this.webkitRequestFullScreen)
+                this.webkitRequestFullScreen();
+            else
+                this.mozRequestFullScreen();
         }
         else
-        {
-            // reset to old values
-            this.style.left = this.oldLeft;
-            this.style.top = this.oldTop;
-            this.style.width = this.oldWidth;
-            this.style.height = this.oldHeight;
-        }
-        
+            document.exitFullscreen();
+            
         // set resize icon on titlebar
         this.shadowRoot.getElementById('resize').innerHTML = 
             this.maximized ? '🗗' : '🗖';
