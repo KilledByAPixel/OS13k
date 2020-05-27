@@ -107,9 +107,9 @@ body
     width:100%;
     cursor:grab;
 }
-.maximize { font-size:24;height:100% }
-.close  { font-size:34;height:100% }
-.maximize:hover { background:#fff }
+.full { font-size:30;height:100% }
+.close  { font-size:42;height:100% }
+.full:hover { background:#fff }
 .close:hover  { background:#f00 }
 </style>
 </template>
@@ -331,7 +331,7 @@ class _OS13k
     
     CreateDweet(document, code)
     {
-        // set up document
+        // set up document for dweet
         document.body.innerHTML = `<canvas id=c width=1920 height=1080 style=background:#FFF;width:100%>`;
         document.body.style = `background:#000;margin:0;overflow:hidden`;
         
@@ -423,9 +423,9 @@ class OS13kIcon extends HTMLElement
             this.parentElement.os13kWindow.Focus();
         else
         {
+            // focus on desktop
             os13kDesktop.focus();
-            if (activeWindow)
-                activeWindow.SetActive(0);
+            activeWindow && activeWindow.SetActive(0);
         }
         
         // create move icon that is temporary copy
@@ -472,17 +472,13 @@ class OS13kIcon extends HTMLElement
             {
                 if (icon.os13kWindow == element)
                     return 1;
-                
                 if (icon.os13kWindow && icon.os13kWindow.folder)
                     for( const c of icon.os13kWindow.folder.children)
                         if (DetectSelfReference(c))
                             return 1;
             }
             if (DetectSelfReference(this.realIcon))
-            {
-                alert("You can't put a folder in itself, silly!");
-                return;
-            }
+                return alert("You can't put a folder in itself, silly!");
             
             // adjust position to local space of parent
             const rect = element.folder.getBoundingClientRect();
@@ -551,7 +547,7 @@ class OS13kWindow extends HTMLElement
             + icon.name + '&nbsp;' 
             + (icon.author? '(' +icon.author +')': '')
             + '</span>'
-            + (icon.folder?'':'<span id=maximize class=maximize>🗖</span>')
+            + (icon.folder?'':'<span id=full class=full>&nbsp;🗖&nbsp;</span>')
             + '<span id=close class=close>×</span>';
         this.shadowRoot.appendChild(titleBar);
         
@@ -643,18 +639,15 @@ class OS13kWindow extends HTMLElement
     MouseDown(id)
     {
         // check for title bar buttons
-        if (id == 'close')
-            this.Close();
-        if (id == 'maximize')
-            this.Maximize();
-        if (id == 'titleBar')
-            selected = this;
+        (id == 'close') && this.Close();
+        (id == 'full') && this.FullScreen();
+        (id == 'titleBar') && (selected = this);
             
         // set focus
         this.Focus();
     }
     
-    Maximize()
+    FullScreen()
     {
         // set fullscreen
         const fullScreenElement = this.iframeContentWrapper;
@@ -685,10 +678,9 @@ class OS13kWindow extends HTMLElement
     
     Focus()
     {
-        this.SetActive();
-        
         // set focus
         this.iframeContent ? this.iframeContent.focus() : this.focus();
+        this.SetActive();
     }
 } // OS13kWindow
 
@@ -703,46 +695,39 @@ let seletOffsetY;
 
 onmousedown=e=>
 {
+    // prevent getting stuck
     if (selected)
-    {
-        // prevent getting stuck
-        onmouseup(e);
-        return;
-    }
+        return onmouseup(e);
     
     // get os13k target
     const originalTarget = e.originalTarget || e.path[0];
-    let target = e.target;
     
-    // if icon was clicked on, used that instead of target which may be window
-    if (originalTarget.localName == 'os13k-icon')
-        target = originalTarget;
+    // if icon was clicked on, used that instead of target which may be a window
+    const target = (originalTarget.localName == 'os13k-icon') ? originalTarget : e.target;
     
     // set selected offset
     const rect = target.getBoundingClientRect();
     seletOffsetX = e.x - rect.left;
     seletOffsetY = e.y - rect.top;
     
-    if (target.localName == 'os13k-icon' || target.localName == 'os13k-window')
+    if (target.MouseDown)
     {
         // target mouse down event
         target.MouseDown(originalTarget.id);
         
         // prevent main document getting refocused if title bar is clicked
-        if (originalTarget.id == 'titleBar' || originalTarget.id == 'maximize')
+        if (originalTarget.id == 'titleBar' || originalTarget.id == 'full')
             e.preventDefault();
     }
     else
     {
         // deactivate window if not clicked on
-        if (activeWindow)
-            activeWindow.SetActive(0);
+        activeWindow && activeWindow.SetActive(0);
     }
     
     // prevent pointer events while dragging
     os13kDesktop.style.pointerEvents = 'none';
-    if (selected)
-        document.body.style.cursor = 'grabbing';
+    selected && (document.body.style.cursor = 'grabbing');
 }
 
 onmouseup=e=>
@@ -752,8 +737,7 @@ onmouseup=e=>
     document.body.style.cursor = '';
     
     // selected mouse up event
-    if (selected && selected.MouseUp)
-        selected.MouseUp(e);
+    selected && selected.MouseUp && selected.MouseUp(e);
         
     // release selected
     selected = 0;
