@@ -1,1 +1,0 @@
-for(j=48,z=540;j--;)for(i=2e3,A=T(B=T(T=Math.random)*4-2)*3-2,X=A,Y=B;X*i--;x.fillRect(t?800-X*z:0,t?Y*z+540:0,W=t?(x.fillStyle=`hsl(${i/3},99%,${99-i/39}%,1`,1):2e3,W))X=X*X-Y*Y+(Y=2*X*Y+B,A)
