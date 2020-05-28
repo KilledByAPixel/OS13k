@@ -321,6 +321,8 @@ class _OS13k
 
         // create texture
         x.bindTexture(x.TEXTURE_2D, x.createTexture());
+        x.pixelStorei(x.UNPACK_FLIP_Y_WEBGL, true); 
+        x.texParameteri(x.TEXTURE_2D, x.TEXTURE_MIN_FILTER, x.LINEAR);
         
         // create shader program
         const shaderProgram = x.createProgram();
@@ -331,7 +333,7 @@ class _OS13k
         return shaderProgram;
     }
     
-    RenderShader(canvas, shaderProgram, time=0, texture=canvas)
+    RenderShader(canvas, shaderProgram, time=0)
     {
         // get webgl context
         const x = canvas.getContext('webgl2');
@@ -342,14 +344,12 @@ class _OS13k
         x.uniform3f(x.getUniformLocation(shaderProgram,'iResolution'),
             canvas.width, canvas.height, 1);
         
-        // set texture
-        x.texImage2D(x.TEXTURE_2D, 0, x.RGBA, x.RGBA, x.UNSIGNED_BYTE, texture);
-        x.pixelStorei(x.UNPACK_FLIP_Y_WEBGL, true); 
-        x.texParameteri(x.TEXTURE_2D, x.TEXTURE_MIN_FILTER, x.LINEAR);
-        
         // render shader
         x.viewport(0, 0, canvas.width, canvas.height);
         x.drawArrays(x.TRIANGLE_FAN, 0, 3);
+        
+        // set texture
+        x.texImage2D(x.TEXTURE_2D, 0, x.RGBA, x.RGBA, x.UNSIGNED_BYTE, canvas);
     }
     
     // math functions
