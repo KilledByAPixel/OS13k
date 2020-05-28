@@ -121,8 +121,7 @@ body
 // @language_out ECMASCRIPT_2019
 // @js_externs OS13k, OS13kIcon, OS13kWindow, zzfx, zzfxV
 // @js_externs _OS13k.Medal, _OS13k.GetKeyDirection
-// @js_externs _OS13k.CreateShader, _OS13k.RenderShader, _OS13k.CreateShadertoy
-// @js_externs _OS13k.CreateDweet, _OS13k.CreateCanvas
+// @js_externs _OS13k.CreateShader, _OS13k.RenderShader
 // @js_externs _OS13k.PlaySamples, _OS13k.SetVolume
 // @js_externs _OS13k.Random, _OS13k.randomSeed 
 // @js_externs _OS13k.Clamp, _OS13k.Percent, _OS13k.Lerp
@@ -159,18 +158,18 @@ const desktopLayout =
 {name:'Toys', icon:'🤖', folder:
 [
     {name:'ZzFX Sounds', icon:'𝐙𝐙', src:'toys/zzfxSoundBoard.html'},
-    {name:'Yin Yangs', icon:'☯️', src:'toys/infiniteYinYangs.html?2'},
+    {name:'Yin Yangs', icon:'☯️', src:'toys/infiniteYinYangs.shader'},
     {name:'Meta OS13k', icon:'𝐎𝐒', src:'index.html'},
 ]},
 {name:'Dweets', icon:'<b>III</b>', folder:
 [
-    {name:'Black Hole', icon:'🌌', src:'dweets/blackHole.html'},
-    {name:'Mandelbrot Nebula', icon:'🌟', src:'dweets/mandelbrotNebula.html'},
-    {name:'Bogus Roads', icon:'🛣️', src:'dweets/bogusRoads.html'},
-    {name:'Automatic Breakout', icon:'●', src:'dweets/breakout.html'},
-    {name:'Underwater Cavern', icon:'🌊', author:'Pavel', src:'dweets/underwaterCavern.html'},
-    {name:'City Traffic', icon:'🚌', author:'Tomxor', src:'dweets/cityTraffic.html'},
-    {name:'Train Set', icon:'🚂', author:'jylikangas', src:'dweets/trainSet.html'},
+    {name:'Black Hole', icon:'🌌', src:'dweets/blackHole.dweet'},
+    {name:'Mandelbrot Nebula', icon:'🌟', src:'dweets/mandelbrotNebula.dweet'},
+    {name:'Bogus Roads', icon:'🛣️', src:'dweets/bogusRoads.dweet'},
+    {name:'Automatic Breakout', icon:'●', src:'dweets/breakout.dweet'},
+    {name:'Underwater Cavern', icon:'🌊', author:'Pavel', src:'dweets/underwaterCavern.dweet'},
+    {name:'City Traffic', icon:'🚌', author:'Tomxor', src:'dweets/cityTraffic.dweet'},
+    {name:'Train Set', icon:'🚂', author:'jylikangas', src:'dweets/trainSet.dweet'},
 ]},
 {name:'Music', icon:'🎶', folder:
 [
@@ -300,8 +299,8 @@ class _OS13k
         const pixelShader = x.createShader(x.FRAGMENT_SHADER)
         const shaderProgramCode = 
             'precision mediump float;'
-            + 'uniform float iTime;\n'
-            + 'uniform vec3 iResolution;'
+            + 'uniform float iTime;'
+            + 'uniform vec3 iResolution;\n'
             + code
             + '\nvoid main()'
             + '{mainImage(gl_FragColor,gl_FragCoord.xy);gl_FragColor.a=1.;}'
@@ -336,33 +335,6 @@ class _OS13k
         return x.drawArrays(x.TRIANGLE_FAN, 0, 3);
     }
     
-    CreateCanvas(document, color='#fff')
-    {
-        // set up full body canvas
-        document.body.innerHTML = `<canvas id=c width=1920 height=1080 style=width:100%>`;
-        document.body.style = `background:${color};margin:0;overflow:hidden`;
-    }
-    
-    CreateShadertoy(document, code)
-    {
-        // create shader
-        this.CreateCanvas(document, '#000');
-        document.defaultView.eval(
-            's=OS13k.CreateShader(c,`' +
-            code + 
-            '`);loop=t=>requestAnimationFrame(loop,c.width=innerWidth,c.height=innerWidth,document.hasFocus()&&OS13k.RenderShader(c,s,t/1e3));loop()')
-    }
-    
-    CreateDweet(document, code)
-    {
-        // create dweet
-        this.CreateCanvas(document);
-        document.defaultView.eval(
-            'u=t=>{' + 
-            code + 
-            '};x=c.getContext`2d`;S=Math.sin;C=Math.cos;T=Math.tan;R=(r,g,b,a=1)=>`rgba(${0|r},${0|g},${0|b},${a})`;loop=()=>requestAnimationFrame(loop,document.hasFocus()&&u((60*(frame++/60)-frame-1|0?frame-1:frame)/60));loop(frame=0)');
-    }
-    
     // math functions
     Clamp(a, min=0, max=1) { return Math.min(Math.max(a, min),max); }
     Percent(v, a, b)       { return b-a? this.Clamp((v-a)/(b-a), 0, 1) : 0; }
@@ -393,9 +365,11 @@ class OS13kIcon extends HTMLElement
 		super();
         
         // set defaults
+        this.extension = src? src.split('.')[1] : '';
         src = src || '';
         name = name || src.split('.')[0];
         icon = icon || ( folder ? '📁' : name[0]? name[0].toUpperCase() : '' );
+        background = background || this.extension == 'shader' && '#000';
         
         // set icon data
 		this.shadow = this.attachShadow({mode: 'open'});
@@ -634,6 +608,25 @@ class OS13kWindow extends HTMLElement
                 iframeContent.zzfx = zzfx;
                 iframeContent.OS13kStart && iframeContent.OS13kStart();
                 
+                const extension = this.os13kIcon.extension;
+                const iframeDocument = iframeContent.document;
+                const iframeText = iframeDocument.body.innerText;
+                
+                if (extension == 'dweet' || extension == 'shader')
+                {
+                    // set up full body canvas
+                    iframeDocument.body.innerHTML = `<canvas id=c width=1920 height=1080 style=width:100%;background:#fff>`;
+                    iframeDocument.body.style = `background:#000;margin:0;overflow:hidden`;
+
+                    // create dweet
+                    (extension == 'dweet') && iframeDocument.defaultView.eval(
+                            'u=t=>{' + iframeText + '};x=c.getContext`2d`;S=Math.sin;C=Math.cos;T=Math.tan;R=(r,g,b,a=1)=>`rgba(${0|r},${0|g},${0|b},${a})`;loop=()=>requestAnimationFrame(loop,document.hasFocus()&&u((60*(frame++/60)-frame-1|0?frame-1:frame)/60));loop(frame=0)');
+                    
+                    // create shader
+                    (extension == 'shader') && iframeDocument.defaultView.eval(
+                            's=OS13k.CreateShader(c,`' + iframeText + '`);loop=t=>requestAnimationFrame(loop,c.width=innerWidth,c.height=innerWidth,document.hasFocus()&&OS13k.RenderShader(c,s,t/1e3));loop()');
+                }
+                
                 // set focus
                 this.Focus();
             };
@@ -789,7 +782,7 @@ ondblclick=e=>
     target.Open && target.Open();
 }
 
-oncontextmenu=e=> e.preventDefault();
+//oncontextmenu=e=>e.preventDefault();
 
 /////////////////////////////////////////////////////////////////////////////
 // ZzFXMicro - Zuper Zmall Zound Zynth 
