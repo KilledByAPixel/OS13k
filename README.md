@@ -49,7 +49,7 @@ For faster iteration, top level icons will open on start if they have the flag '
 - OS13k.GetKeyDirection(key) handles getting and {x, y} position from a key code
 - OS13k.PlaySamples(samples, sampleRate=44100) - play audio samples
 - OS13k.PlaySeedSound(seed, lengthScale=.5, volume=1, randomness=.05) - Plays a zzfx sound from seed
-- OS13k.Speak(text) - Plays speech of the text.
+- OS13k.Speak(text) - Plays speech of the text
 
 ### OS13k Math Functions
 - OS13k.Random(max=1, min=0) - get a seeded random value, OS13k.randomSeed to set the seed
