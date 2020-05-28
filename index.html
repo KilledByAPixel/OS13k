@@ -109,6 +109,7 @@ body { overflow:hidden; background:linear-gradient(#223,#322); }
 // @js_externs _OS13k.Medal, _OS13k.GetKeyDirection
 // @js_externs _OS13k.CreateShader, _OS13k.RenderShader
 // @js_externs _OS13k.PlaySamples, _OS13k.SetVolume
+// @js_externs _OS13k.PlaySeedSound, _OS13k.GetSeedSound
 // @js_externs _OS13k.Random, _OS13k.randomSeed 
 // @js_externs _OS13k.Clamp, _OS13k.Percent, _OS13k.Lerp
 // @js_externs iframeContent.OS13k, iframeContent.OS13kStart, iframeContent.zzfx
@@ -145,7 +146,7 @@ const desktopLayout =
 [
     {name:'ZzFX Sounds', icon:'𝐙𝐙', src:'toys/zzfxSoundBoard.html'},
     {name:'Yin Yangs', icon:'☯️', src:'toys/infiniteYinYangs.shader.txt'},
-    {name:'Vogel Spiral', icon:'🌀', src:'toys/vogelSpiral.shader.txt'},
+    {name:'Vogel Spiral', icon:'🌀', src:'toys/vogelSpiral.shader.txt?1'},
     {name:'Meta OS13k', icon:'𝐎𝐒', src:'index.html'},
     {name:'ZzArt Landscape', icon:'𝓩', src:'toys/zzart.shader.txt'},
 ]},
@@ -252,9 +253,43 @@ class _OS13k
         // todo: show popup and unlock medal
     }
     
-    PlaySoundSeed(seed)
+    PlaySeedSound(seed, lengthScale=.5, volume=1, randomness=.05)
     {
-        // todo: play seeded sound
+        // create sound and play with zzfx
+        return zzfx(...this.GetSeedSound(seed, lengthScale, volume, randomness));
+    }
+    
+    GetSeedSound(seed, lengthScale=.5, volume=1, randomness=.05)
+    {
+        const R=()=> this.Random();
+        this.randomSeed = seed;
+        const attack = R()**3*lengthScale;
+        const sustain = R()**3*lengthScale;
+        const release = R()**3*lengthScale;
+        const length = attack + sustain + release;
+        
+        // create random sound
+        const sound =
+        [
+           volume,                               // volume
+           randomness,                           // randomness
+           R()**2*2e3,                           // frequency
+           attack,                               // attack
+           sustain,                              // sustain
+           release,                              // release
+           R()*5|0,                              // shape
+           R()**2*3,                             // shapeCurve
+           R()<.5?0: R()**3*(R()<.5?-99:99),     // slide
+           R()<.5?0: R()**3*(R()<.5?-99:99),     // deltaSlide
+           R()<.5?0: R()**2*(R()<.5?-1e3:1e3),   // pitchJump
+           R()**2*length,                        // pitchJumpTime
+           R()<.5?0: R()*length,                 // repeatTime
+           R()<.5?0: R()**4,                     // noise
+           R()<.5?0: R()**3*(R()<.5?-9:9),       // modulation
+           R()<.5?0: R()**4,                     // bitCrush
+           R()<.5?0: R()**3/2,                   // delay
+        ];
+        return sound;
     }
     
     PlaySamples(samples, sampleRate=44100)
@@ -633,7 +668,7 @@ class OS13kWindow extends HTMLElement
                     // create shader
                     (extension == 'shader') && iframeContent.eval(
                         'x=y=z=w=0,' +
-                        'onmousemove=e=>(x=e.x,y=c.height-e.y),' +
+                        'onmousemove=e=>e.buttons&&(x=e.x,y=c.height-e.y),' +
                         'onmousedown=e=>(z=e.x,w=c.height-e.y),' +
                         'onmouseup=e=>z=w=0,' +
                         'loop=t=>requestAnimationFrame(loop,' +
