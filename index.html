@@ -625,11 +625,11 @@ class OS13kWindow extends HTMLElement
 
                     // create dweet
                     (extension == 'dweet') && iframeDocument.defaultView.eval(
-                            'u=t=>{' + iframeText + '};x=c.getContext`2d`;S=Math.sin;C=Math.cos;T=Math.tan;R=(r,g,b,a=1)=>`rgba(${0|r},${0|g},${0|b},${a})`;loop=()=>requestAnimationFrame(loop,document.hasFocus()&&u((60*(frame++/60)-frame-1|0?frame-1:frame)/60));loop(frame=0)');
+                        'u=t=>{' + iframeText + '};x=c.getContext`2d`;S=Math.sin;C=Math.cos;T=Math.tan;R=(r,g,b,a=1)=>`rgba(${0|r},${0|g},${0|b},${a})`;loop=()=>requestAnimationFrame(loop,document.hasFocus()&&u((60*(frame++/60)-frame-1|0?frame-1:frame)/60));loop(frame=0)');
                     
                     // create shader
                     (extension == 'shader') && iframeDocument.defaultView.eval(
-                            's=OS13k.CreateShader(c,`' + iframeText + '`);loop=t=>requestAnimationFrame(loop,c.width=innerWidth,c.height=innerWidth,document.hasFocus()&&OS13k.RenderShader(c,s,t/1e3));loop()');
+                        'loop=t=>requestAnimationFrame(loop,c.width=innerWidth,c.height=innerWidth,document.hasFocus()&&OS13k.RenderShader(c,s,t/1e3));loop(s=OS13k.CreateShader(c,`' + iframeText + '`))');
                 }
                 
                 // set focus
