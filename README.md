@@ -37,7 +37,9 @@ Programming Notes
 - ZzFx sounds can played by calling zzfx, volume is controlled by the system
 - OS13k.CreateShader(canvas, shaderCode) - create a shadertoy compatible webgl shader
 - OS13k.RenderShader(canvas, shaderProgram, time=0) - render a shader
+- OS13k.CreateShadertoy(document, shaderCode) - set up a shadertoy program
 - OS13k.CreateDweet(document, dwitterCode) - set up a dwitter program
+- OS13k.CreateCanvas(document, color='#fff') - set up a full body canvas c
 - OS13k.Medal(gameName, medalName='', difficulty=0) - register a medal for your game as complete
 - OS13k.GetKeyDirection(key) handles getting and {x, y} position from a key code
 - OS13k.PlaySamples(samples) - play audio samples
