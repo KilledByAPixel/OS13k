@@ -247,7 +247,6 @@ class _OS13k
         return {x, y}
     }
     
-    
     Medal(gameName, medalName='', difficulty=0)
     {
         // todo: show popup and unlock medal
@@ -305,6 +304,7 @@ class _OS13k
     }
     
     SetVolume(volume) { zzfxV = volume; }
+    Speak(text) { speechSynthesis.speak(new SpeechSynthesisUtterance(text)); }
     
     CreateShader(canvas, code)
     {
