@@ -339,7 +339,7 @@ class _OS13k
         const x = canvas.getContext('webgl2');
         
         // set uniforms
-        x.uniform1i(x.getUniformLocation(shaderProgram,"iChannel0"),0);
+        x.uniform1i(x.getUniformLocation(shaderProgram,'iChannel0'), 0);
         x.uniform1f(x.getUniformLocation(shaderProgram,'iTime'), time);
         x.uniform3f(x.getUniformLocation(shaderProgram,'iResolution'),
             canvas.width, canvas.height, 1);
@@ -386,7 +386,8 @@ class OS13kIcon extends HTMLElement
         src = src || '';
         name = name || src.split('.')[0];
         icon = icon || ( folder ? '📁' : name[0]? name[0].toUpperCase() : '' );
-        background = background || this.extension == 'shader' && '#000';
+        background = background || 
+        (this.extension == 'dweet' || this.extension == 'shader') && '#000';
         
         // set icon data
 		this.shadow = this.attachShadow({mode: 'open'});
@@ -494,7 +495,7 @@ class OS13kIcon extends HTMLElement
                             return 1;
             }
             if (DetectSelfReference(this.realIcon))
-                return alert("You can't put a folder in itself, silly!");
+                return alert(`You can't put a folder in itself, silly!`);
             
             // adjust position to local space of parent
             const rect = element.folder.getBoundingClientRect();
@@ -617,11 +618,16 @@ class OS13kWindow extends HTMLElement
             iframe.sandbox.add('allow-modals');
             iframe.sandbox.add('allow-pointer-lock');
             
-            // set color to black of loading dweet or shader
-            const extension = this.os13kIcon.extension;
-            if (icon.background || extension == 'dweet' || extension == 'shader')
-                iframe.style.background = icon.background || '#000';
+            // create content wrapper for fullscreen support
+            const iframeContentWrapper = document.createElement('span');
+            this.iframeContentWrapper = iframeContentWrapper;
+            this.shadowRoot.appendChild(iframeContentWrapper);
+            iframeContentWrapper.appendChild(iframe);
             
+            // set background color before frame loads
+            icon.background && (iframe.style.background = icon.background);
+            
+            // load frame
             iframe.onload=e=>
             {
                 // try to pass os13k to iframe
@@ -633,12 +639,12 @@ class OS13kWindow extends HTMLElement
                 const iframeDocument = iframeContent.document;
                 const iframeText = iframeDocument.body.innerText;
                 
+                const extension = this.os13kIcon.extension;
                 if (extension == 'dweet' || extension == 'shader')
                 {
                     // create full body canvas
-                    iframeDocument.body.innerHTML = `<canvas id=c width=1920 height=1080 style=width:100%;background:#fff>`;
-                    iframeDocument.body.style = `background:#000;margin:0;overflow:hidden`;
-                    iframe.style.background = '#fff';
+                    iframeDocument.body.innerHTML = '<canvas id=c width=1920 height=1080 style=width:100%;background:#fff>';
+                    iframeDocument.body.style = 'margin:0;overflow:hidden';
 
                     // create dweet
                     (extension == 'dweet') && iframeContent.eval(
@@ -646,18 +652,12 @@ class OS13kWindow extends HTMLElement
                     
                     // create shader
                     (extension == 'shader') && iframeContent.eval(
-                    'x=y=z=w=0,onmousemove=e=>(x=e.x,y=c.height-e.y),onmousedown=e=>(z=e.x,w=c.height-e.y),onmouseup=e=>z=w=0,loop=t=>requestAnimationFrame(loop,c.width=innerWidth,c.height=innerHeight-' + titleBarHeight + ',g=c.getContext`webgl2`,g.uniform4f(g.getUniformLocation(s,"iMouse"),x,y,z,w),document.hasFocus()&&OS13k.RenderShader(c,s,t/1e3));loop(s=OS13k.CreateShader(c,`' + iframeText + '`))');
+                        'x=y=z=w=0,onmousemove=e=>(x=e.x,y=c.height-e.y),onmousedown=e=>(z=e.x,w=c.height-e.y),onmouseup=e=>z=w=0,loop=t=>requestAnimationFrame(loop,c.width=innerWidth,c.height=innerHeight-' + titleBarHeight + ',g=c.getContext`webgl2`,g.uniform4f(g.getUniformLocation(s,`iMouse`),x,y,z,w),document.hasFocus()&&OS13k.RenderShader(c,s,t/1e3));loop(s=OS13k.CreateShader(c,`' + iframeText + '`))');
                 }
                 
                 // set focus
                 this.Focus();
             };
-            
-            // create content wrapper for fullscreen support
-            const iframeContentWrapper = document.createElement('span');
-            this.iframeContentWrapper = iframeContentWrapper;
-            this.shadowRoot.appendChild(iframeContentWrapper);
-            iframeContentWrapper.appendChild(iframe);
             iframe.src = icon.src;
         }
     }
