@@ -159,6 +159,7 @@ const desktopLayout =
 [
     {name:'ZzFX Sounds', icon:'𝐙𝐙', src:'toys/zzfxSoundBoard.html'},
     {name:'Yin Yangs', icon:'☯️', src:'toys/infiniteYinYangs.shader.txt'},
+    {name:'Vogel Spiral', icon:'🌀', src:'toys/vogelSpiral.shader.txt'},
     {name:'Meta OS13k', icon:'𝐎𝐒', src:'index.html'},
 ]},
 {name:'Dweets', icon:'<b>III</b>', folder:
@@ -300,7 +301,10 @@ class _OS13k
         const shaderProgramCode = 
             'precision mediump float;'
             + 'uniform float iTime;'
-            + 'uniform vec3 iResolution;\n'
+            + 'uniform vec4 iMouse;'
+            + 'uniform vec3 iResolution;'
+            + 'const float pi = 3.14159265359;'
+            + 'const float e = 2.718281828459;\n'
             + code
             + '\nvoid main()'
             + '{mainImage(gl_FragColor,gl_FragCoord.xy);gl_FragColor.a=1.;}'
@@ -328,7 +332,7 @@ class _OS13k
         // set uniforms
         x.uniform1f(x.getUniformLocation(shaderProgram,'iTime'), time);
         x.uniform3f(x.getUniformLocation(shaderProgram,'iResolution'),
-            canvas.width, canvas.height, 0);
+            canvas.width, canvas.height, 1);
         
         // render shader
         x.viewport(0, 0, canvas.width, canvas.height);
@@ -624,12 +628,12 @@ class OS13kWindow extends HTMLElement
                     iframe.style.background = '#fff';
 
                     // create dweet
-                    (extension == 'dweet') && iframeDocument.defaultView.eval(
+                    (extension == 'dweet') && iframeContent.eval(
                         'u=t=>{' + iframeText + '};x=c.getContext`2d`;S=Math.sin;C=Math.cos;T=Math.tan;R=(r,g,b,a=1)=>`rgba(${0|r},${0|g},${0|b},${a})`;loop=()=>requestAnimationFrame(loop,document.hasFocus()&&u((60*(frame++/60)-frame-1|0?frame-1:frame)/60));loop(frame=0)');
                     
                     // create shader
-                    (extension == 'shader') && iframeDocument.defaultView.eval(
-                        'loop=t=>requestAnimationFrame(loop,c.width=innerWidth,c.height=innerWidth,document.hasFocus()&&OS13k.RenderShader(c,s,t/1e3));loop(s=OS13k.CreateShader(c,`' + iframeText + '`))');
+                    (extension == 'shader') && iframeContent.eval(
+                    'x=y=z=w=0,onmousemove=e=>(x=e.x,y=c.height-e.y),onmousedown=e=>(z=e.x,w=c.height-e.y),onmouseup=e=>z=w=0,loop=t=>requestAnimationFrame(loop,c.width=innerWidth,c.height=innerHeight-' + titleBarHeight + ',g=c.getContext`webgl`,g.uniform4f(g.getUniformLocation(s,"iMouse"),x,y,z,w),document.hasFocus()&&OS13k.RenderShader(c,s,t/1e3));loop(s=OS13k.CreateShader(c,`' + iframeText + '`))');
                 }
                 
                 // set focus
