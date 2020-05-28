@@ -25,19 +25,6 @@ For faster iteration, top level icons will open on start if they have the flag '
 - you do not need charset=utf-8, it will be applied automatically
 - programs with the extension .dweet.js will load as dweets
 - programs with the extension .shader.txt will load as shadertoy shaders
-  
- ### Shadertoy Shaders
- - supports iTime, iMouse, iResolution, and iChannel0
- - iChannel0 is an image of the previous frame
- - pi and e are also exposed as constants
-
-### Icon settings
-- width and height of window
-- author - name of creator
-- hideWhenClosed - hides the window instead of closing it
-- allowMultiple - allows multiple copies of the window to open
-- open - starts open (only for top level icons)
-- background - set background color for iframe (white by default)
 
 ### OS13k System Calls
 - The function OS13kInit is called on child frames when opened
@@ -56,3 +43,16 @@ For faster iteration, top level icons will open on start if they have the flag '
 - OS13k.Clamp(a, min=0, max=1) - clamp value between min and max
 - OS13k.Percent(v, a, b) - get clamped percent between a and b
 - OS13k.Lerp(p, a, b) - lerp clamped percent between a and b
+
+### Icon settings
+- width and height of window
+- author - name of creator
+- hideWhenClosed - hides the window instead of closing it
+- allowMultiple - allows multiple copies of the window to open
+- open - starts open (only for top level icons)
+- background - set background color for iframe (white by default)
+
+### Shadertoy Shaders
+ - supports iTime, iMouse, iResolution, and iChannel0
+ - iChannel0 is an image of the previous frame
+ - pi and e are also exposed as constants
