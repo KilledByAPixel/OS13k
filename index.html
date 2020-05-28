@@ -49,7 +49,7 @@ body { overflow:hidden; background:linear-gradient(#223,#322); }
     position:absolute;
     top:70;
     text-align:center;
-    font-size:18;
+    font-size:17;
     color:#fff;
     text-shadow:1px 1px 5px #000;
 }
@@ -107,7 +107,7 @@ body { overflow:hidden; background:linear-gradient(#223,#322); }
 // @language_out ECMASCRIPT_2019
 // @js_externs OS13k, OS13kIcon, OS13kWindow, zzfx, zzfxV
 // @js_externs _OS13k.Medal, _OS13k.GetKeyDirection
-// @js_externs _OS13k.CreateShader, _OS13k.RenderShader
+// @js_externs _OS13k.CreateShader, _OS13k.RenderShader, _OS13k.CreateCanvas
 // @js_externs _OS13k.PlaySamples, _OS13k.SetVolume
 // @js_externs _OS13k.PlaySeedSound, _OS13k.GetSeedSound
 // @js_externs _OS13k.Random, _OS13k.randomSeed 
@@ -121,7 +121,8 @@ body { overflow:hidden; background:linear-gradient(#223,#322); }
 
 const desktopLayout = 
 [
-{name:'Help', icon:'❓', src:'help.html?6', open:1, width:380, height:340},
+{name:'Help', icon:'❓', src:'help.html?7', open:1, width:380, height:340},
+{name:'Code Info', icon:'👨‍💻', src:'codeInfo.html'},
 {name:'System', icon:'⚙️', folder:
 [
     {name:'Test', icon:'😄', src:'system/test.html?3', hideWhenClosed:1},
@@ -144,7 +145,7 @@ const desktopLayout =
 ]},
 {name:'Toys', icon:'🤖', folder:
 [
-    {name:'ZzFX Sounds', icon:'𝐙𝐙', src:'toys/zzfxSoundBoard.html'},
+    {name:'ZzFX Soundboard', icon:'𝐙𝐙', src:'toys/zzfxSoundBoard.html'},
     {name:'Yin Yangs', icon:'☯️', src:'toys/infiniteYinYangs.shader.txt'},
     {name:'Vogel Spiral', icon:'🌀', src:'toys/vogelSpiral.shader.txt?1'},
     {name:'Meta OS13k', icon:'𝐎𝐒', src:'index.html'},
@@ -252,13 +253,7 @@ class _OS13k
         // todo: show popup and unlock medal
     }
     
-    PlaySeedSound(seed, lengthScale=.5, volume=1, randomness=.05)
-    {
-        // create sound and play with zzfx
-        return zzfx(...this.GetSeedSound(seed, lengthScale, volume, randomness));
-    }
-    
-    GetSeedSound(seed, lengthScale=1, volume=1, randomness=.05)
+    PlaySeedSound(seed, lengthScale=1, volume=1, randomness=.05)
     {
         this.randomSeed = seed;
         const R=()=> this.Random();
@@ -268,7 +263,7 @@ class _OS13k
         const length = attack + sustain + release;
         
         // create random sound
-        const sound =
+        zzfx(...
         [
            volume,                               // volume
            randomness,                           // randomness
@@ -287,8 +282,7 @@ class _OS13k
            R()<.5?0: R()**3*(R()<.5?-9:9),       // modulation
            R()<.5?0: R()**4,                     // bitCrush
            R()<.5?0: R()**3/2,                   // delay
-        ];
-        return sound;
+        ]);
     }
     
     PlaySamples(samples, sampleRate=44100)
@@ -380,6 +374,12 @@ class _OS13k
         
         // set texture
         x.texImage2D(x.TEXTURE_2D, 0, x.RGBA, x.RGBA, x.UNSIGNED_BYTE, canvas);
+    }
+    
+    CreateCanvas(iframeDocument)
+    {
+        iframeDocument.body.innerHTML = '<canvas id=c width=1920 height=1080 style=width:100%;background:#fff>';
+        iframeDocument.body.style = 'margin:0;overflow:hidden';
     }
     
     // math functions
@@ -656,8 +656,7 @@ class OS13kWindow extends HTMLElement
                 if (extension == 'dweet' || extension == 'shader')
                 {
                     // create full body canvas
-                    iframeDocument.body.innerHTML = '<canvas id=c width=1920 height=1080 style=width:100%;background:#fff>';
-                    iframeDocument.body.style = 'margin:0;overflow:hidden';
+                    OS13k.CreateCanvas(iframeDocument);
 
                     // create dweet
                     (extension == 'dweet') && iframeContent.eval(
