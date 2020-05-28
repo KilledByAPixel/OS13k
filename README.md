@@ -32,7 +32,6 @@ For faster iteration, top level icons will open on start if they have the flag '
 - ZzFx sounds can played by calling zzfx, volume is controlled by the system
 - OS13k.CreateShader(canvas, shaderCode) - create a shadertoy compatible webgl shader
 - OS13k.RenderShader(canvas, shaderProgram, time=0) - render a shader
-- OS13k.CreateCanvas(iframeDocument) - create a full body canvas c
 - OS13k.Medal(gameName, medalName='', difficulty=0) - register a medal for your game as complete
 - OS13k.GetKeyDirection(key) handles getting and {x, y} position from a key code
 - OS13k.PlaySamples(samples, sampleRate=44100) - play audio samples
