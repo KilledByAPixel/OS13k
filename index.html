@@ -141,7 +141,7 @@ const desktopLayout =
 ]},
 {name:'Games', icon:'🎮', folder:
 [
-    {name:'Lava Rush', icon:'🌋', author:'Jeremy Burns', src:'games/lavaRush.html?2', width:640, height:400, background:'#000'},
+    {name:'Lava Rush', icon:'🌋', author:'Jeremy Burns', src:'games/lavaRush.html?3', width:640, height:400, background:'#000'},
     {name:'Sn1ke', icon:'👀', src:'games/sn1ke.html', author:'Codegolf Team', width:450, height:330, hideWhenClosed:1},
     {name:'Tetris', icon:'🆃', author:'Veubeke', src:'games/tetris.html', width:340, height:430},
     {name:`Queen's Gambit`, icon:'<span style=color:#f0f>♛</span>', src:'games/queensGambit.html?1', width:1290, height:720},
@@ -161,6 +161,7 @@ const desktopLayout =
     {name:'Yin Yangs', icon:'☯️', src:'toys/infiniteYinYangs.shader.txt'},
     {name:'Vogel Spiral', icon:'🌀', src:'toys/vogelSpiral.shader.txt'},
     {name:'Meta OS13k', icon:'𝐎𝐒', src:'index.html'},
+    {name:'ZzArt Landscape', icon:'𝓩', src:'toys/zzart.shader.txt'},
 ]},
 {name:'Dweets', icon:'<b>III</b>', folder:
 [
@@ -278,11 +279,11 @@ class _OS13k
     CreateShader(canvas, code)
     {
         // get webgl context
-        const x = canvas.getContext('webgl');
+        const x = canvas.getContext('webgl2');
 
-        // create simple pass through vertex shader
+        // create a simple pass through vertex shader
         const vertexShader = x.createShader(x.VERTEX_SHADER);
-        x.shaderSource(vertexShader,'attribute vec4 p;void main(){gl_Position=p;}');
+        x.shaderSource(vertexShader,'#version 300 es\nin vec4 p;void main(){gl_Position=p;}');
         x.compileShader(vertexShader);
         
         // create vertex buffer that is a giant triangle to cover the viewport
@@ -299,15 +300,18 @@ class _OS13k
         // create shadertoy compatible pixel shader
         const pixelShader = x.createShader(x.FRAGMENT_SHADER)
         const shaderProgramCode = 
-            'precision mediump float;'
-            + 'uniform float iTime;'
-            + 'uniform vec4 iMouse;'
-            + 'uniform vec3 iResolution;'
-            + 'const float pi = 3.14159265359;'
-            + 'const float e = 2.718281828459;\n'
-            + code
-            + '\nvoid main()'
-            + '{mainImage(gl_FragColor,gl_FragCoord.xy);gl_FragColor.a=1.;}'
+            '#version 300 es\n' +
+            'precision mediump float;' +
+            'uniform float iTime;' +
+            'uniform vec4 iMouse;' +
+            'uniform vec3 iResolution;' +
+            'uniform sampler2D iChannel0;' +
+            'const float pi = 3.14159265359;' +
+            'const float e = 2.718281828459;' +
+            'out vec4 outColor;\n' +
+            code +
+            '\nvoid main()' +
+            '{mainImage(outColor,gl_FragCoord.xy);outColor.a=1.;}';
         x.shaderSource(pixelShader, shaderProgramCode)
         x.compileShader(pixelShader);
 
@@ -315,6 +319,9 @@ class _OS13k
         if (!x.getShaderParameter(pixelShader, x.COMPILE_STATUS))
             return console.log(x.getShaderInfoLog(pixelShader));
 
+        // create texture
+        x.bindTexture(x.TEXTURE_2D, x.createTexture());
+        
         // create shader program
         const shaderProgram = x.createProgram();
         x.attachShader(shaderProgram, vertexShader);
@@ -324,19 +331,25 @@ class _OS13k
         return shaderProgram;
     }
     
-    RenderShader(canvas, shaderProgram, time=0)
+    RenderShader(canvas, shaderProgram, time=0, texture=canvas)
     {
         // get webgl context
-        const x = canvas.getContext('webgl');
+        const x = canvas.getContext('webgl2');
         
         // set uniforms
+        x.uniform1i(x.getUniformLocation(shaderProgram,"iChannel0"),0);
         x.uniform1f(x.getUniformLocation(shaderProgram,'iTime'), time);
         x.uniform3f(x.getUniformLocation(shaderProgram,'iResolution'),
             canvas.width, canvas.height, 1);
         
+        // set texture
+        x.texImage2D(x.TEXTURE_2D, 0, x.RGBA, x.RGBA, x.UNSIGNED_BYTE, texture);
+        x.pixelStorei(x.UNPACK_FLIP_Y_WEBGL, true); 
+        x.texParameteri(x.TEXTURE_2D, x.TEXTURE_MIN_FILTER, x.LINEAR);
+        
         // render shader
         x.viewport(0, 0, canvas.width, canvas.height);
-        return x.drawArrays(x.TRIANGLE_FAN, 0, 3);
+        x.drawArrays(x.TRIANGLE_FAN, 0, 3);
     }
     
     // math functions
@@ -633,7 +646,7 @@ class OS13kWindow extends HTMLElement
                     
                     // create shader
                     (extension == 'shader') && iframeContent.eval(
-                    'x=y=z=w=0,onmousemove=e=>(x=e.x,y=c.height-e.y),onmousedown=e=>(z=e.x,w=c.height-e.y),onmouseup=e=>z=w=0,loop=t=>requestAnimationFrame(loop,c.width=innerWidth,c.height=innerHeight-' + titleBarHeight + ',g=c.getContext`webgl`,g.uniform4f(g.getUniformLocation(s,"iMouse"),x,y,z,w),document.hasFocus()&&OS13k.RenderShader(c,s,t/1e3));loop(s=OS13k.CreateShader(c,`' + iframeText + '`))');
+                    'x=y=z=w=0,onmousemove=e=>(x=e.x,y=c.height-e.y),onmousedown=e=>(z=e.x,w=c.height-e.y),onmouseup=e=>z=w=0,loop=t=>requestAnimationFrame(loop,c.width=innerWidth,c.height=innerHeight-' + titleBarHeight + ',g=c.getContext`webgl2`,g.uniform4f(g.getUniformLocation(s,"iMouse"),x,y,z,w),document.hasFocus()&&OS13k.RenderShader(c,s,t/1e3));loop(s=OS13k.CreateShader(c,`' + iframeText + '`))');
                 }
                 
                 // set focus
