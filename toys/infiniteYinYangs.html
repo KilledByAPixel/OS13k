@@ -1,6 +1,0 @@
-<script>OS13kStart=()=>OS13k.CreateShadertoy(document,`
-#define T iTime
-#define R iResolution
-#define P(i)vec2(-(step(.5,fract(3.7*sin(i)))-.5)*sin(A(i)),(step(.5,fract(3.7*sin(i)))-.5)*cos(A(i)))
-#define A(i)(6.283*fract(3.7*sin(i))+.7*mix(-1.,1.,fract(3.7*sin(i)))*T)
-void mainImage( out vec4 U, in vec2 Z ){vec2 p=(2.*Z.rg-R.rg)/R.g+.5*vec2(sin(.2*T),sin(.3*T));float i=floor(T-length(p)),m=T-i-length(p),z=pow(2.718,-log(3.333)*m)*.08,v=0.;p=p*z+P(i);for(float r=0.;r<9.;++r)p+=P(i+r+1.)/3.333*pow(.3,r);for(float r=0.;r<9.;++r){m=-A(i);p=vec2(p.r*cos(m)-p.g*sin(m),p.r*sin(m)+p.g*cos(m));float b=5.*z/min(R.g,R.r),c=1.,l=length(2.*p+vec2(0,1)),d=l;if(p.r<0.)c=mix(c,0.,smoothstep(1.-b,1.+b,l));l=length(2.*p-vec2(0,1));if(p.r>0.)c=mix(0.,c,smoothstep(1.-b,1.+b,l));if(p.g>0.)d=l;v=mix(c,v,smoothstep(1.-b,1.,length(p)));if(d>.6){v=mix(step(0.,p.g),v,smoothstep(.72,.72+b,d));if(d<.72+b&&p.g>0.)++i;break;}p.g+=mix(.5,-.5,v=step(0.,p.g));z*=2./.6;p*=2./.6;m=A(i);p=vec2(p.r*cos(m)-p.g*sin(m),p.r*sin(m)+p.g*cos(m));++i;}U=vec4(v*vec3(1.+sin(i+T+i),1.+sin(i+T+1.),1.+sin(i+T+2.)),1.);}`)</script>
