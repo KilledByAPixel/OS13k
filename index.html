@@ -121,7 +121,7 @@ body { overflow:hidden; background:linear-gradient(#223,#322); }
 
 const desktopLayout = 
 [
-{name:'Help', icon:'❓', src:'help.html?7', open:1, width:380, height:340},
+{name:'Help', icon:'❓', src:'help.html?8', open:1, width:380, height:340},
 {name:'Code Info', icon:'👨‍💻', src:'codeInfo.html'},
 {name:'System', icon:'⚙️', folder:
 [
@@ -661,19 +661,26 @@ class OS13kWindow extends HTMLElement
                     // create dweet
                     (extension == 'dweet') && iframeContent.eval(
                         'u=t=>{' + iframeText + '};' +
-                        'x=c.getContext`2d`;S=Math.sin;C=Math.cos;T=Math.tan;R=(r,g,b,a=1)=>`rgba(${0|r},${0|g},${0|b},${a})`;' +
-                        'loop=()=>requestAnimationFrame(loop,document.hasFocus()&&u((60*(frame++/60)-frame-1|0?frame-1:frame)/60));loop(frame=0)');
+                        'x=c.getContext`2d`;' +
+                        'S=Math.sin;' +
+                        'C=Math.cos;' +
+                        'T=Math.tan;' +
+                        'R=(r,g,b,a=1)=>`rgba(${0|r},${0|g},${0|b},${a})`;' +
+                        'loop=t=>requestAnimationFrame(loop,' +
+                        'document.hasFocus()&&' +
+                        'u((60*(frame++/60)-frame-1|0?frame-1:frame)/60));' +
+                        'loop(frame=0)');
                     
                     // create shader
                     (extension == 'shader') && iframeContent.eval(
-                        'x=y=z=w=0,' +
-                        'onmousemove=e=>e.buttons&&(x=e.x,y=c.height-e.y),' +
-                        'onmousedown=e=>(z=e.x,w=c.height-e.y),' +
-                        'onmouseup=e=>z=w=0,' +
+                        'g=c.getContext`webgl2`;' +
+                        'x=y=z=w=0;' +
+                        'onmousemove=e=>e.buttons&&(x=e.x,y=c.height-e.y);' +
+                        'onmousedown=e=>(z=e.x,w=c.height-e.y);' +
+                        'onmouseup=e=>z=w=0;' +
                         'loop=t=>requestAnimationFrame(loop,' +
                         'c.width=innerWidth,' + 
                         'c.height=innerHeight,' + 
-                        'g=c.getContext`webgl2`,' +
                         'g.uniform4f(g.getUniformLocation(s,`iMouse`),x,y,z,w),' +
                         'document.hasFocus()&&OS13k.RenderShader(c,s,t/1e3));' + 
                         'loop(s=OS13k.CreateShader(c,`' + iframeText + '`))');
