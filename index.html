@@ -258,13 +258,13 @@ class _OS13k
         return zzfx(...this.GetSeedSound(seed, lengthScale, volume, randomness));
     }
     
-    GetSeedSound(seed, lengthScale=.5, volume=1, randomness=.05)
+    GetSeedSound(seed, lengthScale=1, volume=1, randomness=.05)
     {
-        const R=()=> this.Random();
         this.randomSeed = seed;
-        const attack = R()**3*lengthScale;
-        const sustain = R()**3*lengthScale;
-        const release = R()**3*lengthScale;
+        const R=()=> this.Random();
+        const attack = R()**3*lengthScale/2;
+        const sustain = R()**3*lengthScale/2;
+        const release = R()**3*lengthScale/2;
         const length = attack + sustain + release;
         
         // create random sound
