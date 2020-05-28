@@ -166,6 +166,15 @@ const desktopLayout =
 {name:'Favorites', folder:[]},
 ];
 
+os13kDesktop.Focus=()=>
+{
+    // deavtivate window if desktop is clicked on
+    activeWindow && activeWindow.SetActive(0);
+    
+    // set focus
+    this.focus();
+}
+
 /////////////////////////////////////////////////////////////////////////////
 // OS13k System
 
@@ -292,8 +301,8 @@ class _OS13k
             'uniform vec4 iMouse;' +
             'uniform vec3 iResolution;' +
             'uniform sampler2D iChannel0;' +
-            'const float pi = 3.14159265359;' +
-            'const float e = 2.718281828459;' +
+            'const float pi=' + Math.PI + ';' +
+            'const float e='  + Math.E  + ';' +
             'out vec4 outColor;\n' +
             code +
             '\nvoid main()' +
@@ -381,7 +390,7 @@ class OS13kIcon extends HTMLElement
         this.icon = icon;
         this.src = src;
         this.windowWidth = width;
-        this.windowHeight = height + titleBarHeight;
+        this.windowHeight = height;
         this.style.left = x;
         this.style.top = y;
         this.author = author;
@@ -422,14 +431,8 @@ class OS13kIcon extends HTMLElement
     MouseDown()
     {
         // focus on icon's window if it exists
-        if (this.parentElement.os13kWindow)
-            this.parentElement.os13kWindow.Focus();
-        else
-        {
-            // focus on desktop
-            os13kDesktop.focus();
-            activeWindow && activeWindow.SetActive(0);
-        }
+        const parent = this.parentElement && this.parentElement.offsetParent;
+        parent.Focus ? parent.Focus() : os13kDesktop.Focus();
         
         // create move icon that is temporary copy
         const rect = this.getBoundingClientRect();
@@ -475,8 +478,8 @@ class OS13kIcon extends HTMLElement
             {
                 if (icon.os13kWindow == element)
                     return 1;
-                if (icon.os13kWindow && icon.os13kWindow.folder)
-                    for( const c of icon.os13kWindow.folder.children)
+                if (icon.os13kWindow && icon.os13kWindow.contentWrapper)
+                    for( const c of icon.os13kWindow.contentWrapper.children)
                         if (DetectSelfReference(c))
                             return 1;
             }
@@ -484,7 +487,7 @@ class OS13kIcon extends HTMLElement
                 return alert(`You can't put a folder in itself, silly!`);
             
             // adjust position to local space of parent
-            const rect = element.folder.getBoundingClientRect();
+            const rect = element.contentWrapper.getBoundingClientRect();
             x -= rect.left;
             y -= rect.top;
             
@@ -502,19 +505,13 @@ class OS13kIcon extends HTMLElement
             y = OS13k.Clamp(y, -32, innerHeight-32);
         }
 
-        const targetFolder = target.folder || target;
+        // move icon if it is a different folder
+        const targetFolder = target.contentWrapper || target;
         if (targetFolder != this.realIcon.parentElement)
-        {
-            // move icon if it is a different folder
             targetFolder.appendChild(this.realIcon);
-
-            // deactivate window if dropped in desktop
-            if (activeWindow && targetFolder == os13kDesktop)
-                activeWindow.SetActive(0);
-        }
         
         // focus on target
-        target.Focus ? target.Focus() : target.focus();
+        target.Focus();
             
         // set icon position
         this.realIcon.style.left = x;
@@ -541,15 +538,13 @@ class OS13kWindow extends HTMLElement
         this.os13kIcon = icon;
         this.style.left = x;
         this.style.top = y;
-        this.style.width = icon.windowWidth;
-        this.style.height = icon.windowHeight;
         
         // create shadow root
 		this.shadow = this.attachShadow({mode: 'open'});
         this.shadowRoot.innerHTML = templateWindow.innerHTML;
         
         // create title bar
-        const titleBar = this.titleBar = document.createElement('span');
+        const titleBar = this.titleBar = document.createElement('div');
         titleBar.className = 'titleBar';
         titleBar.innerHTML = '<span id=titleBar class=name>&nbsp;' 
             + icon.icon + '&nbsp;' 
@@ -564,16 +559,17 @@ class OS13kWindow extends HTMLElement
         const titleBarGap = document.createElement('div');
         titleBarGap.style.height = 2;
         this.shadowRoot.appendChild(titleBarGap);
+
+        // create content wrapper
+        const contentWrapper = document.createElement('div');
+        contentWrapper.className = 'folder frame';
+        contentWrapper.style.width = icon.windowWidth;
+        contentWrapper.style.height = icon.windowHeight;
+        this.contentWrapper = contentWrapper;
+        this.shadowRoot.appendChild(contentWrapper);
         
         if (icon.folder)
         {
-            // create folder frame
-            const folder = this.folder = document.createElement('div');
-            folder.className = 'folder frame';
-            folder.os13kWindow = this;
-            this.shadowRoot.appendChild(folder);
-            this.Focus();
-
             // add icons to folder
             let X = iconGridSizeX/4;
             let Y = iconGridSizeX/4;
@@ -588,10 +584,13 @@ class OS13kWindow extends HTMLElement
                     X = iconGridSizeX/4;
                     Y += iconGridSizeY;
                 }
-                folder.appendChild(new OS13kIcon(p));
+                contentWrapper.appendChild(new OS13kIcon(p));
             }
             for (const i of icon.folder)
                 AddIcon(i);
+            
+            // set focus
+            this.Focus();
         }
         else if (icon.src)
         {
@@ -603,15 +602,8 @@ class OS13kWindow extends HTMLElement
             iframe.sandbox.add('allow-popups');
             iframe.sandbox.add('allow-modals');
             iframe.sandbox.add('allow-pointer-lock');
-            
-            // create content wrapper for fullscreen support
-            const iframeContentWrapper = document.createElement('span');
-            this.iframeContentWrapper = iframeContentWrapper;
-            this.shadowRoot.appendChild(iframeContentWrapper);
-            iframeContentWrapper.appendChild(iframe);
-            
-            // set background color before frame loads
             icon.background && (iframe.style.background = icon.background);
+            contentWrapper.appendChild(iframe);
             
             // load frame
             iframe.onload=e=>
@@ -622,9 +614,9 @@ class OS13kWindow extends HTMLElement
                 iframeContent.zzfx = zzfx;
                 iframeContent.OS13kStart && iframeContent.OS13kStart();
                 
+                // check for extensions
                 const iframeDocument = iframeContent.document;
                 const iframeText = iframeDocument.body.innerText;
-                
                 const extension = this.os13kIcon.extension;
                 if (extension == 'dweet' || extension == 'shader')
                 {
@@ -634,11 +626,23 @@ class OS13kWindow extends HTMLElement
 
                     // create dweet
                     (extension == 'dweet') && iframeContent.eval(
-                        'u=t=>{' + iframeText + '};x=c.getContext`2d`;S=Math.sin;C=Math.cos;T=Math.tan;R=(r,g,b,a=1)=>`rgba(${0|r},${0|g},${0|b},${a})`;loop=()=>requestAnimationFrame(loop,document.hasFocus()&&u((60*(frame++/60)-frame-1|0?frame-1:frame)/60));loop(frame=0)');
+                        'u=t=>{' + iframeText + '};' +
+                        'x=c.getContext`2d`;S=Math.sin;C=Math.cos;T=Math.tan;R=(r,g,b,a=1)=>`rgba(${0|r},${0|g},${0|b},${a})`;' +
+                        'loop=()=>requestAnimationFrame(loop,document.hasFocus()&&u((60*(frame++/60)-frame-1|0?frame-1:frame)/60));loop(frame=0)');
                     
                     // create shader
                     (extension == 'shader') && iframeContent.eval(
-                        'x=y=z=w=0,onmousemove=e=>(x=e.x,y=c.height-e.y),onmousedown=e=>(z=e.x,w=c.height-e.y),onmouseup=e=>z=w=0,loop=t=>requestAnimationFrame(loop,c.width=innerWidth,c.height=innerHeight-' + titleBarHeight + ',g=c.getContext`webgl2`,g.uniform4f(g.getUniformLocation(s,`iMouse`),x,y,z,w),document.hasFocus()&&OS13k.RenderShader(c,s,t/1e3));loop(s=OS13k.CreateShader(c,`' + iframeText + '`))');
+                        'x=y=z=w=0,' +
+                        'onmousemove=e=>(x=e.x,y=c.height-e.y),' +
+                        'onmousedown=e=>(z=e.x,w=c.height-e.y),' +
+                        'onmouseup=e=>z=w=0,' +
+                        'loop=t=>requestAnimationFrame(loop,' +
+                        'c.width=innerWidth,' + 
+                        'c.height=innerHeight,' + 
+                        'g=c.getContext`webgl2`,' +
+                        'g.uniform4f(g.getUniformLocation(s,`iMouse`),x,y,z,w),' +
+                        'document.hasFocus()&&OS13k.RenderShader(c,s,t/1e3));' + 
+                        'loop(s=OS13k.CreateShader(c,`' + iframeText + '`))');
                 }
                 
                 // set focus
@@ -677,7 +681,7 @@ class OS13kWindow extends HTMLElement
     FullScreen()
     {
         // set fullscreen
-        const fullScreenElement = this.iframeContentWrapper;
+        const fullScreenElement = this.contentWrapper;
         if (fullScreenElement.webkitRequestFullScreen)
             fullScreenElement.webkitRequestFullScreen();
         else if (fullScreenElement.mozRequestFullScreen)
@@ -749,7 +753,7 @@ onmousedown=e=>
     else
     {
         // deactivate window if not clicked on
-        activeWindow && activeWindow.SetActive(0);
+        os13kDesktop.Focus();
     }
     
     // prevent pointer events while dragging
