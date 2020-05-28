@@ -1,6 +1,6 @@
 # Welcome to OS13k!
 
-OS13k is a tiny pseudo operating system designed for a JS13k community project. It includes support for webgl shaders, zzfx, dweets, medals, fullscreen, and more. The OS (incuding zzfx and shader support) is only about 4k when zipped.
+OS13k is a tiny pseudo operating system designed for a JS13k community project. It includes support for webgl shaders, zzfx, dweets, medals, fullscreen, and more. The OS (incuding zzfx and shader support) is only about 5k when zipped.
 
 ## Please keep this project confidential!
 
