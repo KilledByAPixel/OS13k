@@ -74,6 +74,10 @@ HEAD_BOB=     8,
 
 $main = $a => {
 
+    requestAnimationFrame($main);
+    if (!document.hasFocus())
+        return;
+
     $shaderWriteBuffer[DEAD_FRAMES] > 180 && $init();
     
     g = a.getContext('webgl2');
@@ -126,8 +130,6 @@ $main = $a => {
     );
 
     $shaderWriteBuffer[WON_FRAMES] && $shaderWriteBuffer[WON_FRAMES]++;
-
-    requestAnimationFrame($main);
 }
 
 shaderCode=`
