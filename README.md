@@ -19,12 +19,17 @@ Add an icon config to desktopLayout to create a new program
 For faster iteration, top level icons will open on start if they have the flag 'open'
 - {src:'help.html', open:1}
 
-Programming Notes
+### Programming Notes
 - OS13k and zzfx features will not work on when browsing localling in Firefox!
 - To force a page to refresh you can add ?<version> to the src link... {src:'help.html?1'}
 - you do not need charset=utf-8, it will be applied automatically
 - programs with the extension .dweet.js will load as dweets
 - programs with the extension .shader.txt will load as shadertoy shaders
+  
+ ### Shadertoy Shaders
+ - supports iTime, iMouse, iResolution, and iChannel0
+ - iChannel0 is an image of the previous frame
+ - pi and e are also exposed as constants
 
 ### Icon settings
 - width and height of window
