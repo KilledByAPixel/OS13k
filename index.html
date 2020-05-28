@@ -593,13 +593,18 @@ class OS13kWindow extends HTMLElement
         {
             // create iframe
             const iframe = document.createElement('iframe');
-            icon.background && (iframe.style.background = icon.background);
             iframe.className = 'frame';
             iframe.sandbox.add('allow-scripts');
             iframe.sandbox.add('allow-same-origin');
             iframe.sandbox.add('allow-popups');
             iframe.sandbox.add('allow-modals');
             iframe.sandbox.add('allow-pointer-lock');
+            
+            // set color to black of loading dweet or shader
+            const extension = this.os13kIcon.extension;
+            if (icon.background || extension == 'dweet' || extension == 'shader')
+                iframe.style.background = icon.background || '#000';
+            
             iframe.onload=e=>
             {
                 // try to pass os13k to iframe
@@ -608,13 +613,12 @@ class OS13kWindow extends HTMLElement
                 iframeContent.zzfx = zzfx;
                 iframeContent.OS13kStart && iframeContent.OS13kStart();
                 
-                const extension = this.os13kIcon.extension;
                 const iframeDocument = iframeContent.document;
                 const iframeText = iframeDocument.body.innerText;
                 
                 if (extension == 'dweet' || extension == 'shader')
                 {
-                    // set up full body canvas
+                    // create full body canvas
                     iframeDocument.body.innerHTML = `<canvas id=c width=1920 height=1080 style=width:100%;background:#fff>`;
                     iframeDocument.body.style = `background:#000;margin:0;overflow:hidden`;
 
