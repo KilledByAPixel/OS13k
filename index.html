@@ -2,15 +2,8 @@
 <title>OS13k - A tiny pseudo operating system for JS13k</title>
 <meta charset=utf-8>
 <style>
-*
-{
-    font-family:arial;
-}
-body
-{
-    overflow:hidden;
-    background:linear-gradient(#223,#322);
-}
+*    { font-family:arial; }
+body { overflow:hidden; background:linear-gradient(#223,#322); }
 .title
 {
     font-size:300;
@@ -85,10 +78,6 @@ body
     background:#fff;
     overflow:hidden;
 }
-.folder
-{
-    background:#222;
-}
 .titleBar
 {
     height:44;
@@ -97,17 +86,10 @@ body
     align-items:center;
     white-space:nowrap;
 }
-.name
-{
-    width:100%;
-    cursor:grab;
-}
-#full,
-#close
-{
-    font-size:40;
-    height:100%
-}
+.name         { width:100%; cursor:grab; }
+.folder       { background:#222; }
+.full         { height:100%; font-size:28; }
+.close        { height:100%; font-size:40; }
 .full:hover   { background:#fff; }
 .close:hover  { background:#f00; }
 </style>
@@ -574,7 +556,7 @@ class OS13kWindow extends HTMLElement
             + icon.name + '&nbsp;' 
             + (icon.author ? '(' + icon.author + ')' : '')
             + '</span>'
-            + (icon.folder ? '' : '<span id=full class=full>◻</span>')
+            + (icon.folder ? '' : '<span id=full class=full>&nbsp;🗖&nbsp;</span>')
             + '<span id=close class=close>×</span>';
         this.shadowRoot.appendChild(titleBar);
         
