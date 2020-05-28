@@ -96,46 +96,17 @@ body
     display:flex;
     align-items:center;
     white-space:nowrap;
-    padding-right:5px;
 }
 .name
 {
-    flex:1;
+    width:100%;
     cursor:grab;
 }
-
-#full, 
-#close
-{
-    width:20px;
-    height:20px;
-    padding:6px;
-}
-span svg 
-{
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-}
+.full         { font-size:40; height:100%; }
+.close        { font-size:40; height:100%; }
 .full:hover   { background:#fff; }
 .close:hover  { background:#f00; }
 </style>
-
-<svg width="0" height="0">
-    <symbol id="icon-full" viewBox="0 0 10 10">
-        <rect 
-            fill="none" stroke="currentCOlor" stroke-width="1.5"
-            x=".5" y=".5" width="9" height="9"
-        />
-    </symbol>
-    <symbol id="icon-close" viewBox="0 0 10 10">
-        <path 
-            stroke-width="1.5" stroke="currentColor"
-            d="M 5 5 L .5 .5M 5 5 L 9.5 9.5M 5 5 L 9.5 .5M 5 5 L .5 9.5"
-        />
-    </symbol> 
-</svg>
-
 </template>
 </head>
 <body>
@@ -597,10 +568,10 @@ class OS13kWindow extends HTMLElement
         titleBar.innerHTML = '<span id=titleBar class=name>&nbsp;' 
             + icon.icon + '&nbsp;' 
             + icon.name + '&nbsp;' 
-            + (icon.author? '(' +icon.author +')': '')
+            + (icon.author ? '(' + icon.author + ')' : '')
             + '</span>'
-            + (icon.folder?'':'<span id=full class=full><svg><use xlink:href="#icon-full"></use></svg></span>')
-            + '<span id=close class=close><svg><use xlink:href="#icon-close"></use></svg></span>';
+            + (icon.folder ? '' : '<span id=full class=full>◻</span>')
+            + '<span id=close class=close>×</span>';
         this.shadowRoot.appendChild(titleBar);
         
         // create thin black line below title bar
