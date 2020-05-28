@@ -376,12 +376,6 @@ class _OS13k
         x.texImage2D(x.TEXTURE_2D, 0, x.RGBA, x.RGBA, x.UNSIGNED_BYTE, canvas);
     }
     
-    CreateCanvas(iframeDocument)
-    {
-        iframeDocument.body.innerHTML = '<canvas id=c width=1920 height=1080 style=width:100%;background:#fff>';
-        iframeDocument.body.style = 'margin:0;overflow:hidden';
-    }
-    
     // math functions
     Clamp(a, min=0, max=1) { return Math.min(Math.max(a, min),max); }
     Percent(v, a, b)       { return b-a? this.Clamp((v-a)/(b-a), 0, 1) : 0; }
@@ -656,8 +650,9 @@ class OS13kWindow extends HTMLElement
                 if (extension == 'dweet' || extension == 'shader')
                 {
                     // create full body canvas
-                    OS13k.CreateCanvas(iframeDocument);
-
+                    iframeDocument.body.innerHTML = '<canvas id=c width=1920 height=1080 style=width:100%;background:#fff>';
+                    iframeDocument.body.style = 'margin:0;overflow:hidden';
+    
                     // create dweet
                     (extension == 'dweet') && iframeContent.eval(
                         'u=t=>{' + iframeText + '};' +
