@@ -1,12 +1,12 @@
 #define M iMouse
 #define R iResolution
 #define T iTime
-void mainImage(out vec4 fragColor,in vec2 fragCoord){
-vec2 m=M.xy/R.xy,u=160.*m.g*(gl_FragCoord.rg-R.rg/2.)/R.r;
+#define pi 3.14
+void mainImage(out vec4 fragColor,in vec2 fragCoord)
+{vec2 m=(M.xy)/R.xy+.5,u=99.*m.x*(gl_FragCoord.rg-R.rg/2.)/R.r;
 float d=pow(10.*length(u),.7),
-t=.005*(T+400.*m.r),
+t=.005*(T+200.*m.x),
 i=floor(d-atan(u.g,u.r)/pi/2.+.5),
 a=atan(u.g,u.r)+pi*2.*i,h=.002*a+1.5*t,
 s=fract(a*.5*t)<.5?1.:0.,v=fract(a*t)<.5?0.:1.;
-fragColor=vec4(vec3(v-s*v*.5)+vec3(s*v)*cos(pi*2.*(h+vec3(1.,.666,.333))),1.);
-}
+fragColor=vec4(vec3(v-s*v*.5)+vec3(s*v)*cos(pi*2.*(h+vec3(1.,.666,.333))),1.);}
