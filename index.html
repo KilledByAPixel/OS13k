@@ -90,7 +90,7 @@ body { overflow:hidden; background:linear-gradient(#223,#322); }
     background:#fff;
     overflow:hidden;
 }
-.name         { width:100%; cursor:grab; display:flex; align-items:center;}
+.name         { width:100%; cursor:grab; display:flex; align-items:center; }
 .folder       { background:#222; }
 #full,#reload { width:40; }
 .close        { width:28; }
@@ -122,10 +122,10 @@ span svg
 <script src=desktop.js></script>
 <script>
 
-'use strict';
-
-// test program - uncomment and change to your file to open on start
+// Startup Program - uncomment and change to your file to open on start
 //desktopLayout.unshift({src:'system/test.html'});
+
+'use strict';
 
 // ==ClosureCompiler==
 // @compilation_level ADVANCED_OPTIMIZATIONS
@@ -183,8 +183,7 @@ class _OS13k
             // create icon
             const os13kicon = new OS13kIcon(icon);
             os13kDesktop.appendChild(os13kicon);
-            open && os13kicon.Open();
-            open = 0;
+            open && os13kicon.Open(open = 0);
         }
     }
     
@@ -329,8 +328,8 @@ class _OS13k
 
         // create texture
         x.bindTexture(x.TEXTURE_2D, x.createTexture());
-        x.pixelStorei(x.UNPACK_FLIP_Y_WEBGL, true); 
         x.texParameteri(x.TEXTURE_2D, x.TEXTURE_MIN_FILTER, x.LINEAR);
+        x.pixelStorei(x.UNPACK_FLIP_Y_WEBGL, 1); 
         
         // create shader program
         const shaderProgram = x.createProgram();
@@ -347,16 +346,16 @@ class _OS13k
         const x = canvas.getContext('webgl2');
         
         // set uniforms
-        x.uniform1i(x.getUniformLocation(shaderProgram,'iChannel0'), 0);
-        x.uniform1f(x.getUniformLocation(shaderProgram,'iTime'), time);
-        x.uniform3f(x.getUniformLocation(shaderProgram,'iResolution'),
-            canvas.width, canvas.height, 1);
+        const uniformLocation=name=>x.getUniformLocation(shaderProgram, name);
+        x.uniform3f(uniformLocation('iResolution'), canvas.width, canvas.height, 1);
+        x.uniform1f(uniformLocation('iTime'), time);
+        x.uniform1i(uniformLocation('iChannel0'), 0);
         
         // render shader
         x.viewport(0, 0, canvas.width, canvas.height);
         x.drawArrays(x.TRIANGLE_FAN, 0, 3);
         
-        // set texture
+        // set texture to previous frame
         x.texImage2D(x.TEXTURE_2D, 0, x.RGBA, x.RGBA, x.UNSIGNED_BYTE, canvas);
     }
     
@@ -434,12 +433,12 @@ class OS13kIcon extends HTMLElement
         let window = this.os13kWindow;
         if (window)
         {
-            // reopen the old window
+            // show the old window
             window.style.display = '';
         }
         else
         {
-            // open the window
+            // create the window
             window = new OS13kWindow(this);
             if (!this.allowMultiple)
                 this.os13kWindow = window;
@@ -830,18 +829,18 @@ const zzfx =    // play zzfx sound
                 Math.sin(tm * modulation - modPhase);    // modulation
 
             s = shape? shape>1? shape>2? shape>3?        // wave shape
-              Math.sin((s%PI2)**3) :                     // 4 noise
-              Math.max(Math.min(Math.tan(s),1),-1):      // 3 tan
-              1-(2*s/PI2%2+2)%2:                         // 2 saw
-              1-4*Math.abs(Math.round(s/PI2)-s/PI2):     // 1 triangle
-              Math.sin(s);                               // 0 sin
+                Math.sin((s%PI2)**3) :                   // 4 noise
+                Math.max(Math.min(Math.tan(s),1),-1):    // 3 tan
+                1-(2*s/PI2%2+2)%2:                       // 2 saw
+                1-4*Math.abs(Math.round(s/PI2)-s/PI2):   // 1 triangle
+                Math.sin(s);                             // 0 sin
             s = sign(s)*(Math.abs(s)**shapeCurve);       // curve 0=square, 2=pointy
 
             s *= volume * zzfxV * (                      // envelope
                 i < attack ? i/attack :                  // attack
-                i < attack+sustain ? 1 :                 // sustain
-                i < length-delay ?                       // post release
-                1 - (i-attack-sustain)/release : 0);     // release
+                i < attack + sustain ? 1 :               // sustain
+                i < length - delay ?                     // post release
+                1 - (i - attack - sustain)/release : 0); // release
                 
             s = delay ?                                  // delay
                 s/2 + (delay > i ? 0 :
@@ -865,7 +864,7 @@ const zzfx =    // play zzfx sound
             frequency = startFrequency;     // reset frequency
             slide = startSlide;             // reset slide
             r = 1;                          // reset repeat time
-            j = j||1;                       // reset pitch jump time
+            j = j || 1;                     // reset pitch jump time
         }
     }
     
