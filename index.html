@@ -68,15 +68,6 @@ body { overflow:hidden; background:linear-gradient(#223,#322); }
     overflow:hidden;
     display:block;
 }
-.frame
-{
-    position:relative;
-    width:100%;
-    height:100%;
-    border:none;
-    background:#fff;
-    overflow:hidden;
-}
 .titleBar
 {
     height:44;
@@ -86,6 +77,15 @@ body { overflow:hidden; background:linear-gradient(#223,#322); }
     white-space:nowrap;
     overflow:hidden;
     vertical-align: middle;
+}
+.frame
+{
+    position:relative;
+    width:100%;
+    height:100%;
+    border:none;
+    background:#fff;
+    overflow:hidden;
 }
 .name         { width:100%; height:100%; cursor:grab; display:flex; align-items:center;}
 .folder       { background:#222; }
@@ -613,8 +613,7 @@ class OS13kWindow extends HTMLElement
                     const iframeDocument = iframeContent.document;
                     const iframeText = iframeDocument.body.innerText;
                     iframeDocument.body.innerHTML = `<canvas id=c width=1920 height=1080 style=width:100%;background:${ this.os13kIcon.isDweet ? '#fff' : '#000' }>`;
-                    iframeDocument.body.style = `overflow:hidden;margin:0;background:#000;display:flex;align-items:center;
-    `;
+                    iframeDocument.body.style = 'background:#000;overflow:hidden;margin:0;display:flex;align-items:center';
 
                     // create dweet
                     this.os13kIcon.isDweet && iframeContent.eval(
