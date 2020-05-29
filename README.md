@@ -16,7 +16,7 @@ Add an icon config to desktopLayout to register a new program
 - {name:'Free Cell', icon:'♠️', src:'games/freeCell.html', width:800, height:1e3, hideWhenClosed:1}
 - {src:'help.html'}
 
-For faster iteration, the first icon in desktopLayout added opens on start
+For faster iteration, the first icon in desktopLayout opens on start
 - you can also change the line desktopLayout.unshift({src:'system/test.html'});
 
 ### Programming
