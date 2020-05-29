@@ -13,6 +13,28 @@ Hello OS13k!
 <canvas id=c style='border:1px solid'></canvas>
 <script>
 
+// load local storage text area
+localStorage.OS13kTest && (a.value = localStorage.OS13kTest);
+
+// init variables
+z=0
+r=Date.now()
+onkeydown=e=>
+{
+    p = OS13k.KeyDirection(e.keyCode); 
+    move.value = p.x + ', ' + p.y;
+}
+
+// main loop
+loop=t=>
+{
+    requestAnimationFrame(loop);
+    
+    // render shader if focused
+    document.hasFocus() && OS13k.RenderShader(c, s, t/1e3);
+}
+
+// wait for os13k start
 OS13kStart=()=>
 {
     // create a shader
@@ -26,17 +48,4 @@ OS13kStart=()=>
     loop();
 }
 
-// load local storage
-localStorage.OS13kTest && (a.value = localStorage.OS13kTest);
-
-z=0
-r=Date.now()
-onkeydown=e=>{p=OS13k.KeyDirection(e.keyCode);move.value=p.x+', '+p.y}
-loop=t=>
-{
-    requestAnimationFrame(loop);
-    
-    // render shader if focused
-    document.hasFocus() && OS13k.RenderShader(c, s, t/1e3);
-}
 </script>
