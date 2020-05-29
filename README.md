@@ -50,7 +50,7 @@ For faster iteration, the first icon in desktopLayout opens on start
 ### Icon settings
 - width and height of window
 - author - Name of creator
-- hideWhenClosed - Hides the window instead of closing it
+- hideWhenClosed - Hides the window instead of closing it (for light weight apps)
 - allowMultiple - Allows multiple copies of the window to open
 - showReload - Shows the reload page icon that will reload your program
 
