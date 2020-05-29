@@ -155,6 +155,10 @@ const desktopLayout =
     {name:'Digit Dilemma', icon:'<span style=font-family:monospace>☻</span>', src:'games/digitDilemma.html?2'},
     {name:'Hue Jumper', icon:'🌲', src:'games/hueJumper.html', width:1290, height:720, showReload:1},
 ]},
+{name:'Music', icon:'🎶', folder:
+[
+    {name:'Min Bytes', icon:'<span style=color:#f00>𝓜</span>', width:500, height:500, src:'music/minBytes.html?4'},
+]},
 {name:'Utilities', icon:'🔧', folder:
 [
     {name:'Photo Booth', icon:'📸', src:'utilities/photoBooth.html', width:1380, height:600},
@@ -179,11 +183,6 @@ const desktopLayout =
     {name:'City Traffic', icon:'🚌', author:'Tomxor', src:'dweets/cityTraffic.dweet.js'},
     {name:'Train Set', icon:'🚂', author:'jylikangas', src:'dweets/trainSet.dweet.js'},
 ]},
-{name:'Music', icon:'🎶', folder:
-[
-    {name:'Min Bytes', icon:'<span style=color:#f00>𝓜</span>', width:500, height:500, src:'music/minBytes.html?4'},
-]},
-{name:'Favorites', folder:[]},
 ];
 
 /////////////////////////////////////////////////////////////////////////////
@@ -214,16 +213,17 @@ class _OS13k
     InitDesktop()
     {
         // add icons to desktop
-        let X = iconGridSizeX/4;
-        const AddIcon=p=>
+        let x = iconGridSizeX/4;
+        let y = iconGridSizeX/4;
+        const AddIcon=i=>
         {
-            p.x = X;
-            p.y = iconGridSizeX/4; 
-            X += iconGridSizeX;
-            const icon = new OS13kIcon(p); 
-            os13kDesktop.appendChild(icon); 
-            p.open && icon.Open();
-            return icon;
+            // set icon position
+            i.x = x;
+            i.y = y; 
+            x += iconGridSizeX;
+            
+            // create icon
+            os13kDesktop.appendChild(new OS13kIcon(i)); 
         }
         for (const i of desktopLayout)
             AddIcon(i);
@@ -262,8 +262,11 @@ class _OS13k
     
     PlaySeedSound(seed, lengthScale=1, volume=1, randomness=.05)
     {
+        // set random seed
         this.randomSeed = seed;
         const R=()=> this.Random();
+        
+        // randomize sound length
         const attack = R()**3*lengthScale/2;
         const sustain = R()**3*lengthScale/2;
         const release = R()**3*lengthScale/2;
@@ -339,8 +342,8 @@ class _OS13k
         x.vertexAttribPointer(0,2,x.BYTE,0,0,0); // 2D vertex
         
         // check vertex shader for errors
-        if (!x.getShaderParameter(vertexShader, x.COMPILE_STATUS))
-            return console.log(x.getShaderInfoLog(vertexShader));
+        //if (!x.getShaderParameter(vertexShader, x.COMPILE_STATUS))
+        //    return console.log(x.getShaderInfoLog(vertexShader));
         
         // create shadertoy compatible pixel shader
         const pixelShader = x.createShader(x.FRAGMENT_SHADER)
@@ -356,7 +359,8 @@ class _OS13k
             'out vec4 outColor;\n' +
             code +
             '\nvoid main()' +
-            '{mainImage(outColor,gl_FragCoord.xy);outColor.a=1.;}';
+            '{mainImage(outColor,gl_FragCoord.xy);' +
+            'outColor.a=1.;}';
         x.shaderSource(pixelShader, shaderProgramCode)
         x.compileShader(pixelShader);
 
@@ -407,7 +411,7 @@ class _OS13k
         this.randomSeed ^= this.randomSeed << 13;
         this.randomSeed ^= this.randomSeed >> 17;
         this.randomSeed ^= this.randomSeed << 5;
-        return max + (min-max) * (Math.abs(this.randomSeed) % 1e9 / 1e9);
+        return this.Percent(Math.abs(this.randomSeed) % 1e9 / 1e9, min, max);
     }
 }; // _OS13k
 
@@ -416,19 +420,17 @@ class _OS13k
 
 const iconGridSizeX = 99;
 const iconGridSizeY = 130;
-const titleBarHeight = 46;
-let windowOpenOffset = 99;
 
 class OS13kIcon extends HTMLElement
 {
-	constructor({x, y, name, icon, src, width=720, height=405, author, folder, hideWhenClosed, allowMultiple, background, showReload})
+	constructor({x, y, name, icon, src, width=720, height=405, author, folder, hideWhenClosed, allowMultiple, background, showReload, open})
     {
 		super();
         
         // set defaults
         src = src || '';
         name = name || src.split('.')[0];
-        icon = icon || ( folder ? '📁' : name[0]? name[0].toUpperCase() : '' );
+        icon = icon || (name[0] ? name[0].toUpperCase() : '' );
         background = background || '#000';
         
         // set icon data
@@ -436,10 +438,10 @@ class OS13kIcon extends HTMLElement
         this.name = name;
         this.icon = icon;
         this.src = src;
-        this.windowWidth = width;
-        this.windowHeight = height;
         this.style.left = x;
         this.style.top = y;
+        this.windowWidth = width;
+        this.windowHeight = height;
         this.author = author;
         this.hideWhenClosed = hideWhenClosed || folder;
         this.allowMultiple = allowMultiple;
@@ -458,29 +460,30 @@ class OS13kIcon extends HTMLElement
         this.shadowRoot.innerHTML = templateIcon.innerHTML
             +`<span class=icon>${ icon }</span>`
             +`<span class=name style=pointer-events:none>${ name }</span>`;
+        
+        // open icon
+        open && this.Open();
     }
     
     Open()
     {
-        if (this.os13kWindow && !this.allowMultiple)
+        let window = this.os13kWindow;
+        if (window)
         {
             // reopen the old window
-            this.os13kWindow.style.display = '';
+            window.style.display = '';
         }
         else
         {
-            // stager open positions
-            windowOpenOffset += titleBarHeight;
-            if (windowOpenOffset > 300)
-                windowOpenOffset = 99+20;
-
             // open the window
-            this.os13kWindow = new OS13kWindow(windowOpenOffset, windowOpenOffset, this);
-            os13kDesktop.appendChild(this.os13kWindow);
+            window = new OS13kWindow(this);
+            if (!this.allowMultiple)
+                this.os13kWindow = window;
+            os13kDesktop.appendChild(window);
         }
         
         // set focus to window
-        this.os13kWindow.Focus();
+        window.Focus();
     }
     
     MouseDown()
@@ -499,17 +502,20 @@ customElements.define('os13k-icon', OS13kIcon);
 
 let activeWindow;
 let activeWindowZ = 1e7;
+let windowOpenPosition = 99;
 
 class OS13kWindow extends HTMLElement
 {
-	constructor(x, y, icon)
+	constructor(icon)
     {
 		super();
-        	
-        // set window data
-        this.os13kIcon = icon;
-        this.style.left = x;
-        this.style.top = y;
+        
+        // set window position
+        windowOpenPosition += 46;
+        if (windowOpenPosition > 300)
+            windowOpenPosition = 99+23;
+        this.style.left = windowOpenPosition;
+        this.style.top = windowOpenPosition;
         
         // create shadow root
 		this.shadow = this.attachShadow({mode: 'open'});
@@ -519,13 +525,16 @@ class OS13kWindow extends HTMLElement
         const titleBar = this.titleBar = document.createElement('div');
         titleBar.className = 'titleBar';
         titleBar.innerHTML = '<span id=titleBar class=name>&nbsp;' +
-            icon.icon + '&nbsp;' +
-            icon.name + '&nbsp;' +
+            icon.icon + ' ' +
+            icon.name + ' ' +
             (icon.author ? '(' + icon.author + ')' : '') +
             '</span>' +
             (icon.folder ? '' : 
                 '<span id=full class=full><svg><use href=#icon-full></use></svg></span>' +
-                (icon.showReload? '<span id=reload class=reload><svg><use href=#icon-reload></use></svg></span>':'')
+                (icon.showReload ? 
+                    '<span id=reload class=reload><svg><use href=#icon-reload></use></svg></span>' :
+                    ''
+                )
             ) +
             '<span id=close class=close><svg><use href=#icon-close></use></svg></span>' +
             '</span>';
@@ -544,21 +553,23 @@ class OS13kWindow extends HTMLElement
         this.contentWrapper = contentWrapper;
         this.shadowRoot.appendChild(contentWrapper);
         
+        // open icon
+        this.os13kIcon = icon;
         if (icon.folder)
         {
             // add icons to folder
-            let X = iconGridSizeX/4;
-            let Y = iconGridSizeX/4;
+            let x = iconGridSizeX/4;
+            let y = iconGridSizeX/4;
             const AddIcon=p=>
             {
-                p.x = X;
-                p.y = Y;
-                X += iconGridSizeX;
-                if (X > iconGridSizeX*7)
+                p.x = x;
+                p.y = y;
+                x += iconGridSizeX;
+                if (x > iconGridSizeX*7)
                 {
                     // wrap icons
-                    X = iconGridSizeX/4;
-                    Y += iconGridSizeY;
+                    x = iconGridSizeX/4;
+                    y += iconGridSizeY;
                 }
                 contentWrapper.appendChild(new OS13kIcon(p));
             }
@@ -751,9 +762,6 @@ onmouseup=e=>
     // allow pointer events and reset cursor
     os13kDesktop.style.pointerEvents = '';
     document.body.style.cursor = '';
-    
-    // selected mouse up event
-    selected && selected.MouseUp && selected.MouseUp(e);
         
     // release selected
     selected = 0;
