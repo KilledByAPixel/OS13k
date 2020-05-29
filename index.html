@@ -651,15 +651,17 @@ class OS13kWindow extends HTMLElement
                 // check for extensions
                 const src = this.os13kIcon.src;
                 const extension = src? src.split('.')[1] : '';
-                if (extension == 'dweet' || extension == 'shader')
+                const isDweet = extension == 'dweet';
+                const isShader = extension == 'shader';
+                if (isDweet || isShader)
                 {
                     // create full body canvas
                     const iframeText = iframeDocument.body.innerText;
-                    iframeDocument.body.innerHTML = '<canvas id=c width=1920 height=1080 style=width:100%;background:#fff>';
+                    iframeDocument.body.innerHTML = `<canvas id=c width=1920 height=1080 style=width:100%;background:${ isDweet ? '#fff' : '#000' }>`;
                     iframeDocument.body.style = 'overflow:hidden;margin:0';
     
                     // create dweet
-                    (extension == 'dweet') && iframeContent.eval(
+                    isDweet && iframeContent.eval(
                         'u=t=>{' + iframeText + '};' +
                         'x=c.getContext`2d`;' +
                         'S=Math.sin;' +
@@ -672,7 +674,7 @@ class OS13kWindow extends HTMLElement
                         'loop(frame=0)');
                     
                     // create shader
-                    (extension == 'shader') && iframeContent.eval(
+                    isShader && iframeContent.eval(
                         'g=c.getContext`webgl2`;' +
                         'x=y=z=w=0;' +
                         'onmousemove=e=>e.buttons&&(x=e.x,y=c.height-e.y);' +
