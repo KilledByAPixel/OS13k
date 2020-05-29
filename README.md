@@ -7,9 +7,9 @@ OS13k is a tiny pseudo operating system designed for a JS13k community project. 
 # [Live Demo](https://killedbyapixel.github.io/OS13k)
 # [Trello Board](https://trello.com/b/1PNeOZfM/os13k)
 
-## Programming Info
+## Desktop and Icons
 
-Add an icon config to desktopLayout to create a new program
+Add an icon config to desktopLayout to register a new program
 - {name:'Test', icon:'✌️', src:'system/test.html'}
 - {name:'Underwater Cavern', icon:'🌊', author:'Pavel', src:'dweets/underwaterCavern.dweet.js'}
 - {name:'Yin Yangs', icon:'☯️', src:'toys/infiniteYinYangs.shader.txt'}
