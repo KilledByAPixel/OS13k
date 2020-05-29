@@ -90,7 +90,14 @@ body { overflow:hidden; background:linear-gradient(#223,#322); }
     background:#fff;
     overflow:hidden;
 }
-.name         { width:100%; cursor:grab; display:flex; align-items:center; }
+.name         
+{
+    width:100%; 
+    cursor:grab; 
+    display:flex; 
+    align-items:center; 
+    overflow:hidden;
+}
 .folder       { background:#222; }
 #full,#reload { width:40; }
 .close        { width:28; }
@@ -497,7 +504,10 @@ class OS13kWindow extends HTMLElement
         // create title bar
         const titleBar = this.titleBar = document.createElement('div');
         titleBar.className = 'titleBar';
+        titleBar.style.maxWidth = icon.windowWidth;
+        this.shadowRoot.appendChild(titleBar);
         
+        // create title bar name
         const titleBarName = document.createElement('span');
         titleBarName.className = 'name';
         titleBarName.innerHTML = 
@@ -505,7 +515,6 @@ class OS13kWindow extends HTMLElement
             icon.name + '&nbsp;' +
             (icon.author ? '(' + icon.author + ')' : '');
         titleBar.appendChild(titleBarName);
-        this.shadowRoot.appendChild(titleBar);
         
         if (!icon.folder)
         {
