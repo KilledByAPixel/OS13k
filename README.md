@@ -33,7 +33,7 @@ For faster iteration, top level icons will open on start if they have the flag '
 - OS13k.CreateShader(canvas, shaderCode) - Create a shadertoy compatible webgl shader
 - OS13k.RenderShader(canvas, shaderProgram, time=0) - Render a shader
 - OS13k.Medal(gameName, medalName='', difficulty=0) - Register a medal for your game as complete
-- OS13k.GetKeyDirection(key) handles getting and {x, y} - Get position from a key code
+- OS13k.GetKeyDirection(key) - Get position from a key code
 - OS13k.PlaySamples(samples, sampleRate=44100) - Play audio samples
 - OS13k.PlaySeedSound(seed, lengthScale=1, volume=1, randomness=.05) - Play a zzfx sound from seed
 - OS13k.Speak(text) - Play speech of the text
