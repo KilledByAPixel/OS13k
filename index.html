@@ -147,7 +147,7 @@ const desktopLayout =
 ]},
 {name:'Games', icon:'🎮', folder:
 [
-    {name:'Lava Rush', icon:'🌋', author:'Jeremy Burns', src:'games/lavaRush.html?4', width:640, height:400, background:'#000'},
+    {name:'Lava Rush', icon:'🌋', author:'Jeremy Burns', src:'games/lavaRush.html?4', width:640, height:400},
     {name:'Sn1ke', icon:'👀', src:'games/sn1ke.html', author:'Codegolf Team', width:450, height:330, hideWhenClosed:1},
     {name:'Tetris', icon:'🆃', author:'Veubeke', src:'games/tetris.html', width:340, height:430},
     {name:`Queen's Gambit`, icon:'<span style=color:#f0f>♛</span>', src:'games/queensGambit.html?1', width:1290, height:720, showReload:1},
@@ -423,7 +423,7 @@ const iconGridSizeY = 130;
 
 class OS13kIcon extends HTMLElement
 {
-	constructor({x, y, name, icon, src, width=720, height=405, author, folder, hideWhenClosed, allowMultiple, background, showReload, open})
+	constructor({x, y, name, icon, src, width=720, height=405, author, folder, hideWhenClosed, allowMultiple, showReload, open})
     {
 		super();
         
@@ -431,7 +431,6 @@ class OS13kIcon extends HTMLElement
         src = src || '';
         name = name || src.split('.')[0];
         icon = icon || (name[0] ? name[0].toUpperCase() : '' );
-        background = background || '#000';
         
         // set icon data
 		this.shadow = this.attachShadow({mode: 'open'});
@@ -446,7 +445,6 @@ class OS13kIcon extends HTMLElement
         this.hideWhenClosed = hideWhenClosed || folder;
         this.allowMultiple = allowMultiple;
         this.folder = folder;
-        this.background = background;
         this.showReload = showReload;
         
         // check for extension
@@ -591,7 +589,7 @@ class OS13kWindow extends HTMLElement
             iframe.sandbox.add('allow-pointer-lock');
             iframe.style.display = 'none';
             iframe.src = icon.src;
-            icon.background && (contentWrapper.style.background = icon.background);
+            contentWrapper.style.background = '#000';
             contentWrapper.appendChild(iframe);
         
             // load frame
