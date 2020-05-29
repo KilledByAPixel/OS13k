@@ -100,7 +100,7 @@ span svg
     width: 100%;
     pointer-events: none;
 }
-</style>
+</style>    
 <svg width=0 height=0>
     <symbol id=icon-full viewBox='0 0 10 10'>
         <rect stroke=#000 stroke-width=.8 fill=none x=1 y=2 width=8 height=6 />
@@ -206,17 +206,6 @@ class _OS13k
 {
     constructor()
     {
-        // init web audio
-        this.audioContext = new (AudioContext || webkitAudioContext);
-        this.audioContext._createBufferSource = this.audioContext.createBufferSource;
-        this.audioContext.createBufferSource =
-        (s = this.audioContext._createBufferSource())=>
-        (
-            s.start = s.start || s.noteOn,
-            s.stop  = s.stop  || s.noteOff,
-            s
-        );
-        
         // startup os13k
         this.randomSeed = Date.now();
         this.InitDesktop();
@@ -306,6 +295,20 @@ class _OS13k
     
     PlaySamples(samples, sampleRate=44100)
     {
+        // init web audio
+        if (!this.audioContext)
+        {
+            this.audioContext = new (AudioContext || webkitAudioContext);
+            this.audioContext._createBufferSource = this.audioContext.createBufferSource;
+            this.audioContext.createBufferSource =
+            (s = this.audioContext._createBufferSource())=>
+            (
+                s.start = s.start || s.noteOn,
+                s.stop  = s.stop  || s.noteOff,
+                s
+            );
+        }
+    
         // play raw audio sample data
         const buffer = this.audioContext.createBuffer(1, samples.length, sampleRate);
         const source = this.audioContext.createBufferSource();
