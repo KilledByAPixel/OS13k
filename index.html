@@ -150,10 +150,10 @@ const desktopLayout =
     {name:'Lava Rush', icon:'🌋', author:'Jeremy Burns', src:'games/lavaRush.html?4', width:640, height:400, background:'#000'},
     {name:'Sn1ke', icon:'👀', src:'games/sn1ke.html', author:'Codegolf Team', width:450, height:330, hideWhenClosed:1},
     {name:'Tetris', icon:'🆃', author:'Veubeke', src:'games/tetris.html', width:340, height:430},
-    {name:`Queen's Gambit`, icon:'<span style=color:#f0f>♛</span>', src:'games/queensGambit.html?1', width:1290, height:720},
+    {name:`Queen's Gambit`, icon:'<span style=color:#f0f>♛</span>', src:'games/queensGambit.html?1', width:1290, height:720, showReload:1},
     {name:'Free Cell', icon:'♠️', src:'games/freeCell.html', width:800, height:1e3, hideWhenClosed:1},
     {name:'Digit Dilemma', icon:'<span style=font-family:monospace>☻</span>', src:'games/digitDilemma.html'},
-    {name:'Hue Jumper', icon:'🌲', src:'games/hueJumper.html', width:1290, height:720},
+    {name:'Hue Jumper', icon:'🌲', src:'games/hueJumper.html', width:1290, height:720, showReload:1},
 ]},
 {name:'Utilities', icon:'🔧', folder:
 [
@@ -422,7 +422,7 @@ let topIconZ = 0;
 
 class OS13kIcon extends HTMLElement
 {
-	constructor({x, y, name, icon, src, width=720, height=405, author, folder, hideWhenClosed, allowMultiple, background})
+	constructor({x, y, name, icon, src, width=720, height=405, author, folder, hideWhenClosed, allowMultiple, background, showReload})
     {
 		super();
         
@@ -446,6 +446,14 @@ class OS13kIcon extends HTMLElement
         this.allowMultiple = allowMultiple;
         this.folder = folder;
         this.background = background;
+        this.showReload = showReload;
+        
+        // check for extension
+        const extension = src? src.split('.')[1] : '';
+        this.isDweet = extension == 'dweet';
+        this.isShader = extension == 'shader';
+        if (this.isDweet || this.isShader)
+            this.showReload = 1;
         
         // create shadow root
         this.shadowRoot.innerHTML = templateIcon.innerHTML
@@ -601,7 +609,8 @@ class OS13kWindow extends HTMLElement
             '</span>' +
             (icon.folder ? '' : 
                 '<span id=full class=full><svg><use href=#icon-full></use></svg></span>' +
-                '<span id=reload class=reload><svg><use href=#icon-reload></use></svg></span>') +
+                (icon.showReload? '<span id=reload class=reload><svg><use href=#icon-reload></use></svg></span>':'')
+            ) +
             '<span id=close class=close><svg><use href=#icon-close></use></svg></span>' +
             '</span>';
         this.shadowRoot.appendChild(titleBar);
@@ -672,19 +681,16 @@ class OS13kWindow extends HTMLElement
 
                 // check for extensions
                 const src = this.os13kIcon.src;
-                const extension = src? src.split('.')[1] : '';
-                const isDweet = extension == 'dweet';
-                const isShader = extension == 'shader';
-                if (isDweet || isShader)
+                if (this.os13kIcon.isDweet || this.os13kIcon.isShader)
                 {
                     // create full body canvas
                     const iframeDocument = iframeContent.document;
                     const iframeText = iframeDocument.body.innerText;
-                    iframeDocument.body.innerHTML = `<canvas id=c width=1920 height=1080 style=width:100%;background:${ isDweet ? '#fff' : '#000' }>`;
+                    iframeDocument.body.innerHTML = `<canvas id=c width=1920 height=1080 style=width:100%;background:${ this.os13kIcon.isDweet ? '#fff' : '#000' }>`;
                     iframeDocument.body.style = 'overflow:hidden;margin:0;background:#000';
 
                     // create dweet
-                    isDweet && iframeContent.eval(
+                    this.os13kIcon.isDweet && iframeContent.eval(
                         'u=t=>{' + iframeText + '};' +
                         'x=c.getContext`2d`;' +
                         'S=Math.sin;' +
@@ -697,7 +703,7 @@ class OS13kWindow extends HTMLElement
                         'loop(frame=0)');
                     
                     // create shader
-                    isShader && iframeContent.eval(
+                    this.os13kIcon.isShader && iframeContent.eval(
                         'g=c.getContext`webgl2`;' +
                         'x=y=z=w=0;' +
                         'onmousemove=e=>e.buttons&&(x=e.x,y=c.height-e.y);' +
