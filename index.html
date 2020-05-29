@@ -521,6 +521,7 @@ class OS13kWindow extends HTMLElement
             // full screen icon
             const titleBarIconFull = document.createElement('span');
             titleBarIconFull.className = titleBarIconFull.id = 'full';
+            titleBarIconFull.title = 'Fullscreen';
             titleBarIconFull.innerHTML = '<svg><use href=#iconFull></use></svg>';
             titleBar.appendChild(titleBarIconFull);
         }
@@ -530,6 +531,7 @@ class OS13kWindow extends HTMLElement
             // reload icon
             const titleBarIconReload = document.createElement('span');
             titleBarIconReload.className = titleBarIconReload.id = 'reload';
+            titleBarIconReload.title = 'Reload';
             titleBarIconReload.innerHTML = '<svg><use href=#iconReload></use></svg>';
             titleBar.appendChild(titleBarIconReload);
         }
@@ -537,6 +539,7 @@ class OS13kWindow extends HTMLElement
         // close icon
         const titleBarIconClose = document.createElement('span');
         titleBarIconClose.className = titleBarIconClose.id = 'close';
+        titleBarIconClose.title = 'Close';
         titleBarIconClose.innerHTML = '<svg><use href=#iconClose></use></svg>';
         titleBar.appendChild(titleBarIconClose);
         
