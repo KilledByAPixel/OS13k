@@ -631,16 +631,20 @@ class OS13kWindow extends HTMLElement
             iframe.sandbox.add('allow-popups');
             iframe.sandbox.add('allow-modals');
             iframe.sandbox.add('allow-pointer-lock');
-            icon.background && (iframe.style.background = icon.background);
+            iframe.style.display = 'none'
+            iframe.src = icon.src;
+            icon.background && (contentWrapper.style.background = icon.background);
             contentWrapper.appendChild(iframe);
             
             // load frame
             iframe.onload=e=>
             {
+                // set up iframe            
                 const iframeContent = this.iframeContent = e.target.contentWindow;
                 const iframeDocument = iframeContent.document;
                 iframeDocument.body.style = 'overflow:hidden';
                 iframeContent.oncontextmenu=e=>e.preventDefault();
+                iframe.style.display = '';
 
                 // try to pass os13k to iframe
                 iframeContent.OS13k = OS13k;
@@ -687,7 +691,6 @@ class OS13kWindow extends HTMLElement
                 // set focus
                 this.Focus();
             };
-            iframe.src = icon.src;
         }
     }
     
