@@ -51,7 +51,7 @@ For faster iteration, top level icons will open on start if they have the flag '
 - hideWhenClosed - Hides the window instead of closing it
 - allowMultiple - Allows multiple copies of the window to open
 - open - Starts open (only for top level icons)
-- background - Set background color for iframe (white by default)
+- background - Set background color for iframe (black by default)
 - showReload - Shows the reload page icon that will reload your program
 
 ### Shadertoy Shaders
