@@ -735,23 +735,24 @@ onmousedown=e=>
         return onmouseup(e);
     e.preventDefault();
     
-    // get os13k target
-    const originalTarget = e.originalTarget || e.path[0];
-    
-    // if icon was clicked on, used that instead of target which may be a window
-    const target = (originalTarget.localName == 'os13k-icon') ? originalTarget : e.target;
-    
     // set selected offset
-    const rect = target.getBoundingClientRect();
+    const rect = e.target.getBoundingClientRect();
     seletOffsetX = e.x - rect.left;
     seletOffsetY = e.y - rect.top;
     
     // target mouse down event
-    target.MouseDown ? target.MouseDown(originalTarget.id) : os13kDesktop.MouseDown();
+    const originalTarget = e.originalTarget || e.path[0];
+    if (e.target.MouseDown)
+        e.target.MouseDown(originalTarget.id)
+    else
+        os13kDesktop.MouseDown();
     
-    // prevent pointer events while dragging
-    os13kDesktop.style.pointerEvents = 'none';
-    selected && (document.body.style.cursor = 'grabbing');
+    if (selected)
+    {
+        // set grabbing mode
+        document.body.style.cursor = 'grabbing';
+        os13kDesktop.style.pointerEvents = 'none';
+    }
 }
 
 onmouseup=e=>
