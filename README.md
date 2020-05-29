@@ -9,7 +9,7 @@ OS13k is a tiny pseudo operating system designed for a JS13k community project. 
 
 ## Programming Info
 
-Add an icon config to desktopLayout to register a new program
+Add an icon config to desktop.js to register a new program
 - {name:'Test', icon:'✌️', src:'system/test.html'}
 - {name:'Underwater Cavern', icon:'🌊', author:'Pavel', src:'dweets/underwaterCavern.dweet.js'}
 - {name:'Yin Yangs', icon:'☯️', src:'toys/infiniteYinYangs.shader.txt'}
@@ -17,7 +17,6 @@ Add an icon config to desktopLayout to register a new program
 - {src:'help.html'}
 
 For faster iteration, the first icon in desktopLayout opens on start
-- you can also change the line desktopLayout.unshift({src:'system/test.html'});
 
 ### Programming
 - All programs must run in strict mode, though for the 13k build we will disable strict
