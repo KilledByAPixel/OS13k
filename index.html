@@ -631,6 +631,7 @@ class OS13kWindow extends HTMLElement
             iframe.sandbox.add('allow-popups');
             iframe.sandbox.add('allow-modals');
             iframe.sandbox.add('allow-pointer-lock');
+            iframe.style.overflow = 'hidden';
             icon.background && (iframe.style.background = icon.background);
             contentWrapper.appendChild(iframe);
             
