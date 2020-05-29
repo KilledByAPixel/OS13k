@@ -30,29 +30,29 @@ For faster iteration, top level icons will open on start if they have the flag '
 - The function OS13kInit is called on child frames when opened
 - To acces OS13k features, use the OS13k object
 - ZzFx sounds can played by calling zzfx, volume is controlled by the system
-- OS13k.CreateShader(canvas, shaderCode) - create a shadertoy compatible webgl shader
-- OS13k.RenderShader(canvas, shaderProgram, time=0) - render a shader
-- OS13k.Medal(gameName, medalName='', difficulty=0) - register a medal for your game as complete
-- OS13k.GetKeyDirection(key) handles getting and {x, y} position from a key code
-- OS13k.PlaySamples(samples, sampleRate=44100) - play audio samples
-- OS13k.PlaySeedSound(seed, lengthScale=1, volume=1, randomness=.05) - Plays a zzfx sound from seed
-- OS13k.Speak(text) - Plays speech of the text
+- OS13k.CreateShader(canvas, shaderCode) - Create a shadertoy compatible webgl shader
+- OS13k.RenderShader(canvas, shaderProgram, time=0) - Render a shader
+- OS13k.Medal(gameName, medalName='', difficulty=0) - Register a medal for your game as complete
+- OS13k.GetKeyDirection(key) handles getting and {x, y} - Get position from a key code
+- OS13k.PlaySamples(samples, sampleRate=44100) - Play audio samples
+- OS13k.PlaySeedSound(seed, lengthScale=1, volume=1, randomness=.05) - Play a zzfx sound from seed
+- OS13k.Speak(text) - Play speech of the text
 
 ### OS13k Math Functions
-- OS13k.Random(max=1, min=0) - get a seeded random value, OS13k.randomSeed to set the seed
-- OS13k.Clamp(a, min=0, max=1) - clamp value between min and max
-- OS13k.Percent(v, a, b) - get clamped percent between a and b
-- OS13k.Lerp(p, a, b) - lerp clamped percent between a and b
+- OS13k.Random(max=1, min=0) - Get a seeded random value, OS13k.randomSeed to set the seed
+- OS13k.Clamp(a, min=0, max=1) - Clamp value between min and max
+- OS13k.Percent(v, a, b) - Get clamped percent between a and b
+- OS13k.Lerp(p, a, b) - Lerp clamped percent between a and b
 
 ### Icon settings
 - width and height of window
-- author - name of creator
-- hideWhenClosed - hides the window instead of closing it
-- allowMultiple - allows multiple copies of the window to open
-- open - starts open (only for top level icons)
-- background - set background color for iframe (white by default)
+- author - Name of creator
+- hideWhenClosed - Hides the window instead of closing it
+- allowMultiple - Allows multiple copies of the window to open
+- open - Starts open (only for top level icons)
+- background - Set background color for iframe (white by default)
 
 ### Shadertoy Shaders
- - supports iTime, iMouse, iResolution, and iChannel0
+ - Supports iTime, iMouse, iResolution, and iChannel0
  - iChannel0 is an image of the previous frame
  - pi and e are also exposed as constants
