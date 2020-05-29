@@ -104,13 +104,13 @@ span svg
 }
 </style>    
 <svg width=0 height=0>
-    <symbol id=icon-full viewBox='0 0 10 10'>
+    <symbol id=iconFull viewBox='0 0 10 10'>
         <rect stroke=#000 stroke-width=.7 fill=none x=1 y=2 width=8 height=6 />
     </symbol>
-    <symbol id=icon-reload viewBox='0 0 10 10'>
+    <symbol id=iconReload viewBox='0 0 10 10'>
         <circle stroke=#000 stroke-width=.7 fill=none cx=5 cy=5 r=3 />
     </symbol>  
-    <symbol id=icon-close viewBox='0 0 10 10'>
+    <symbol id=iconClose viewBox='0 0 10 10'>
         <path stroke=#000 d='M1 1L9 9M9 1L1 9' />
     </symbol> 
 </svg>
@@ -497,21 +497,39 @@ class OS13kWindow extends HTMLElement
         // create title bar
         const titleBar = this.titleBar = document.createElement('div');
         titleBar.className = 'titleBar';
-        titleBar.innerHTML = '<span id=titleBar class=name>&nbsp;' +
+        
+        const titleBarName = document.createElement('span');
+        titleBarName.className = 'name';
+        titleBarName.innerHTML = 
             icon.icon + '&nbsp;' +
             icon.name + '&nbsp;' +
-            (icon.author ? '(' + icon.author + ')' : '') +
-            '</span>' +
-            (icon.folder ? '' : 
-                '<span id=full class=full><svg><use href=#icon-full></use></svg></span>' +
-                (icon.showReload ? 
-                    '<span id=reload class=reload><svg><use href=#icon-reload></use></svg></span>' :
-                    ''
-                )
-            ) +
-            '<span id=close class=close><svg><use href=#icon-close></use></svg></span>' +
-            '</span>';
+            (icon.author ? '(' + icon.author + ')' : '');
+        titleBar.appendChild(titleBarName);
         this.shadowRoot.appendChild(titleBar);
+        
+        if (!icon.folder)
+        {
+            // full screen icon
+            const titleBarIconFull = document.createElement('span');
+            titleBarIconFull.className = titleBarIconFull.id = 'full';
+            titleBarIconFull.innerHTML = '<svg><use href=#iconFull></use></svg>';
+            titleBar.appendChild(titleBarIconFull);
+        }
+        
+        if (icon.showReload)
+        {
+            // reload icon
+            const titleBarIconReload = document.createElement('span');
+            titleBarIconReload.className = titleBarIconReload.id = 'reload';
+            titleBarIconReload.innerHTML = '<svg><use href=#iconReload></use></svg>';
+            titleBar.appendChild(titleBarIconReload);
+        }
+        
+        // close icon
+        const titleBarIconClose = document.createElement('span');
+        titleBarIconClose.className = titleBarIconClose.id = 'close';
+        titleBarIconClose.innerHTML = '<svg><use href=#iconClose></use></svg>';
+        titleBar.appendChild(titleBarIconClose);
         
         // create thin black line below title bar
         const titleBarGap = document.createElement('div');
