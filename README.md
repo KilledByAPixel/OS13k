@@ -7,7 +7,7 @@ OS13k is a tiny pseudo operating system designed for a JS13k community project. 
 # [Live Demo](https://killedbyapixel.github.io/OS13k)
 # [Trello Board](https://trello.com/b/1PNeOZfM/os13k)
 
-## Desktop and Icons
+## Programming Info
 
 Add an icon config to desktopLayout to register a new program
 - {name:'Test', icon:'✌️', src:'system/test.html'}
@@ -19,7 +19,6 @@ Add an icon config to desktopLayout to register a new program
 For faster iteration, top level icons will open on start if they have the flag 'open'
 - {src:'help.html', open:1}
 
-### Programming Notes
 - All programs must run in strict mode, though for the 13k build we will disable strict
 - Programs with the extension .dweet.js or .shader.txt will automatically load as dweets or shadertoys
 - OS13k and zzfx features will not work on when browsing localling in Firefox
@@ -28,6 +27,7 @@ For faster iteration, top level icons will open on start if they have the flag '
 - Make use of the built in features of OS13k to save space in your code
 
 ### OS13k System Calls
+
 - The function OS13kInit is called on child frames when opened
 - To acces OS13k features, use the OS13k object
 - ZzFx sounds can played by calling zzfx, volume is controlled by the system
