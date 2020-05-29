@@ -20,6 +20,7 @@ For faster iteration, top level icons will open on start if they have the flag '
 - {src:'help.html', open:1}
 
 ### Programming Notes
+- All programs must run in strict mode
 - Programs with the extension .dweet.js or .shader.txt will automatically load as dweets or shadertoys
 - OS13k and zzfx features will not work on when browsing localling in Firefox
 - To force a page to refresh you can add ?<version> to the src link... {src:'help.html?1'}
