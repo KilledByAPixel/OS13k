@@ -523,8 +523,8 @@ class OS13kWindow extends HTMLElement
         const titleBar = this.titleBar = document.createElement('div');
         titleBar.className = 'titleBar';
         titleBar.innerHTML = '<span id=titleBar class=name>&nbsp;' +
-            icon.icon + ' ' +
-            icon.name + ' ' +
+            icon.icon + '&nbsp;' +
+            icon.name + '&nbsp;' +
             (icon.author ? '(' + icon.author + ')' : '') +
             '</span>' +
             (icon.folder ? '' : 
