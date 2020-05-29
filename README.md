@@ -21,8 +21,9 @@ For faster iteration, top level icons will open on start if they have the flag '
 
 ### Programming
 - All programs must run in strict mode, though for the 13k build we will disable strict
+- Chrome is recommended for development
+- Firefox will not work in local mode because it treats local files as cross-origin
 - Programs with the extension .dweet.js or .shader.txt will automatically load as dweets or shadertoys
-- OS13k and zzfx features will not work on when browsing localling in Firefox
 - To force a page to refresh you can add ?<version> to the src link... {src:'help.html?1'}
 - You do not need charset=utf-8, it will be applied automatically
 - Make use of the built in features of OS13k to save space in your code
