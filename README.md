@@ -38,7 +38,7 @@ For faster iteration, top level icons will open on start if they have the flag '
 - OS13k.PlaySeedSound(seed, lengthScale=1, volume=1, randomness=.05) - Play a zzfx sound from seed
 - OS13k.Speak(text) - Play speech of the text
 
-### OS13k Math Functions
+### OS13k Math Library
 - OS13k.Random(max=1, min=0) - Get a seeded random value, OS13k.randomSeed to set the seed
 - OS13k.Clamp(a, min=0, max=1) - Clamp value between min and max
 - OS13k.Percent(v, a, b) - Get clamped percent between a and b
