@@ -1,5 +1,5 @@
-<h2 id="programming-info">OS13k Programming Info</h2>
-<p>Add an icon config to desktopLayout to create a new program</p>
+<h2 id="programming-info">Programming Info</h2>
+<p>Add an icon config to desktopLayout to register a new program</p>
 <ul>
 <li>{name:&#39;Test&#39;, icon:&#39;✌️&#39;, src:&#39;system/test.html&#39;}</li>
 <li>{name:&#39;Underwater Cavern&#39;, icon:&#39;🌊&#39;, author:&#39;Pavel&#39;, src:&#39;dweets/underwaterCavern.dweet.js&#39;}</li>
@@ -7,35 +7,36 @@
 <li>{name:&#39;Free Cell&#39;, icon:&#39;♠️&#39;, src:&#39;games/freeCell.html&#39;, width:800, height:1e3, hideWhenClosed:1}</li>
 <li>{src:&#39;help.html&#39;}</li>
 </ul>
-<p>For faster iteration, top level icons will open on start if they have the flag &#39;open&#39;</p>
+<p>For faster iteration, the first icon in desktopLayout added opens on start</p>
 <ul>
-<li>{src:&#39;help.html&#39;, open:1}</li>
+<li>you can also change the line desktopLayout.unshift({src:&#39;system/test.html&#39;});</li>
 </ul>
-<h3 id="programming-notes">Programming</h3>
+<h3 id="programming">Programming</h3>
 <ul>
 <li>All programs must run in strict mode, though for the 13k build we will disable strict</li>
-<li>Programs with the extension .dweet.js or .shader.txt will load as dweets or shadertoys</li>
-<li>OS13k and zzfx features will not work on when browsing localling in Firefox</li>
-<li>To force a page to refresh you can add ?(version) to the src link... {src:&#39;help.html?1&#39;}</li>
+<li>Chrome is recommended for development</li>
+<li>Firefox will not work in local mode because it treats local files as cross-origin</li>
+<li>Programs with the extension .dweet.js or .shader.txt will automatically load as dweets or shadertoys</li>
+<li>To force a page to refresh you can add ?<version> to the src link... {src:&#39;help.html?1&#39;}</li>
 <li>You do not need charset=utf-8, it will be applied automatically</li>
 <li>Make use of the built in features of OS13k to save space in your code</li>
 </ul>
-<h3 id="os13k-system-calls">OS13k System Calls</h3>
+<h3 id="system-calls">System Calls</h3>
 <ul>
 <li>The function OS13kInit is called on child frames when opened</li>
 <li>To acces OS13k features, use the OS13k object</li>
 <li>ZzFx sounds can played by calling zzfx, volume is controlled by the system</li>
 <li>OS13k.CreateShader(canvas, shaderCode) - Create a shadertoy compatible webgl shader</li>
 <li>OS13k.RenderShader(canvas, shaderProgram, time=0) - Render a shader</li>
-<li>OS13k.Medal(gameName, medalName=&#39;&#39;, difficulty=0) - Register a medal for your game</li>
+<li>OS13k.Medal(gameName, medalName=&#39;&#39;, difficulty=0) - Register a medal for your game as complete</li>
 <li>OS13k.KeyDirection(key) - Get position from a key code</li>
 <li>OS13k.PlaySamples(samples, sampleRate=44100) - Play audio samples</li>
-<li>OS13k.PlaySeedSound(seed, lengthScale=1) - Play zzfx sound from seed</li>
+<li>OS13k.PlaySeedSound(seed, lengthScale=1, volume=1, randomness=.05) - Play a zzfx sound from seed</li>
 <li>OS13k.Speak(text) - Play speech of the text</li>
 </ul>
-<h3 id="os13k-math-functions">OS13k Math Library</h3>
+<h3 id="math-library">Math Library</h3>
 <ul>
-<li>OS13k.Random(max=1, min=0) - Get seeded random value, OS13k.randomSeed sets the seed</li>
+<li>OS13k.Random(max=1, min=0) - Get a seeded random value, OS13k.randomSeed to set the seed</li>
 <li>OS13k.Clamp(a, min=0, max=1) - Clamp value between min and max</li>
 <li>OS13k.Percent(v, a, b) - Get clamped percent between a and b</li>
 <li>OS13k.Lerp(p, a, b) - Lerp clamped percent between a and b</li>
@@ -46,8 +47,7 @@
 <li>author - Name of creator</li>
 <li>hideWhenClosed - Hides the window instead of closing it</li>
 <li>allowMultiple - Allows multiple copies of the window to open</li>
-<li>open - Starts open (only for top level icons)</li>
-<li>showReload - Shows the reload page icon</li>
+<li>showReload - Shows the reload page icon that will reload your program</li>
 </ul>
 <h3 id="shadertoy-shaders">Shadertoy Shaders</h3>
 <ul>

@@ -116,9 +116,13 @@ span svg
 <body>
 <span id=os13kDesktop></span>
 <span class=title>OS13k</span>
+<script src=desktop.js></script>
 <script>
 
 'use strict';
+
+// test program - uncomment and change to your file to open on start
+//desktopLayout.unshift({src:'system/test.html'});
 
 // ==ClosureCompiler==
 // @compilation_level ADVANCED_OPTIMIZATIONS
@@ -133,57 +137,6 @@ span svg
 // @js_externs iframeContent.OS13k, iframeContent.OS13kStart, iframeContent.zzfx
 // @output_file_name OS13k.min.js
 // ==/ClosureCompiler==
-
-/////////////////////////////////////////////////////////////////////////////
-// OS13k Desktop Layout
-
-const desktopLayout = 
-[
-{name:'Help', icon:'❓', src:'help.html?9', open:1, width:380, height:340},
-{name:'Code Info', icon:'👨‍💻', src:'codeInfo.html?3'},
-{name:'System', icon:'⚙️', folder:
-[
-    {name:'Test', icon:'😄', src:'system/test.html?5'},
-]},
-{name:'Games', icon:'🎮', folder:
-[
-    {name:'Lava Rush', icon:'🌋', author:'Jeremy Burns', src:'games/lavaRush.html?4', width:640, height:400},
-    {name:'Sn1ke', icon:'👀', src:'games/sn1ke.html', author:'Codegolf Team', width:450, height:330, hideWhenClosed:1},
-    {name:'Tetris', icon:'🆃', author:'Veubeke', src:'games/tetris.html', width:340, height:430},
-    {name:`Queen's Gambit`, icon:'<span style=color:#f0f>♛</span>', src:'games/queensGambit.html?1', width:1290, height:720, showReload:1},
-    {name:'Free Cell', icon:'♠️', src:'games/freeCell.html', width:800, height:1e3, hideWhenClosed:1},
-    {name:'Digit Dilemma', icon:'<span style=font-family:monospace>☻</span>', src:'games/digitDilemma.html?2'},
-    {name:'Hue Jumper', icon:'🌲', src:'games/hueJumper.html', width:1290, height:720, showReload:1},
-]},
-{name:'Music', icon:'🎶', folder:
-[
-    {name:'Min Bytes', icon:'<span style=color:#f00>𝓜</span>', width:500, height:500, src:'music/minBytes.html?4'},
-]},
-{name:'Utilities', icon:'🔧', folder:
-[
-    {name:'Photo Booth', icon:'📸', src:'utilities/photoBooth.html', width:1380, height:600},
-    {name:'Unicode Toys', icon:'𝖀', author:'Xem', src:'utilities/unicodeToys.html', width:500, height:800},
-    {name:'Mini Shadertoy', icon:'𝓢', src:'utilities/miniShadertoy.html', width:340, height:400},
-]},
-{name:'Toys', icon:'🤖', folder:
-[
-    {name:'ZzFX Soundboard', icon:'𝐙𝐙', src:'toys/zzfxSoundBoard.html'},
-    {name:'Yin Yangs', icon:'☯️', src:'toys/infiniteYinYangs.shader.txt'},
-    {name:'Vogel Spiral', icon:'🌀', src:'toys/vogelSpiral.shader.txt?2'},
-    {name:'Meta OS13k', icon:'𝐎𝐒', src:'index.html'},
-    {name:'ZzArt Landscape', icon:'𝓩', src:'toys/zzart.shader.txt'},
-]},
-{name:'Dweets', icon:'<b>III</b>', folder:
-[
-    {name:'Black Hole', icon:'🌌', src:'dweets/blackHole.dweet.js'},
-    {name:'Mandelbrot Nebula', icon:'🌟', src:'dweets/mandelbrotNebula.dweet.js'},
-    {name:'Bogus Roads', icon:'🛣️', src:'dweets/bogusRoads.dweet.js'},
-    {name:'Automatic Breakout', icon:'●', src:'dweets/breakout.dweet.js'},
-    {name:'Underwater Cavern', icon:'🌊', author:'Pavel', src:'dweets/underwaterCavern.dweet.js'},
-    {name:'City Traffic', icon:'🚌', author:'Tomxor', src:'dweets/cityTraffic.dweet.js'},
-    {name:'Train Set', icon:'🚂', author:'jylikangas', src:'dweets/trainSet.dweet.js'},
-]},
-];
 
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Desktop
@@ -215,18 +168,20 @@ class _OS13k
         // add icons to desktop
         let x = iconGridSizeX/4;
         let y = iconGridSizeX/4;
-        const AddIcon=i=>
+        let open = 1;
+        for (const icon of desktopLayout)
         {
             // set icon position
-            i.x = x;
-            i.y = y; 
+            icon.x = x;
+            icon.y = y;
             x += iconGridSizeX;
             
             // create icon
-            os13kDesktop.appendChild(new OS13kIcon(i)); 
+            const os13kicon = new OS13kIcon(icon);
+            os13kDesktop.appendChild(os13kicon);
+            open && os13kicon.Open();
+            open = 0;
         }
-        for (const i of desktopLayout)
-            AddIcon(i);
     }
     
     Update()
@@ -423,7 +378,7 @@ const iconGridSizeY = 130;
 
 class OS13kIcon extends HTMLElement
 {
-	constructor({x, y, name, icon, src, width=720, height=405, author, folder, hideWhenClosed, allowMultiple, showReload, open})
+	constructor({x, y, name, icon, src, width=720, height=405, author, folder, hideWhenClosed, allowMultiple, showReload})
     {
 		super();
         
@@ -457,9 +412,6 @@ class OS13kIcon extends HTMLElement
         this.shadowRoot.innerHTML = templateIcon.innerHTML
             +`<span class=icon>${ icon }</span>`
             +`<span class=name>${ name }</span>`;
-        
-        // open icon
-        open && this.Open();
     }
     
     Open()
@@ -550,17 +502,17 @@ class OS13kWindow extends HTMLElement
         this.contentWrapper = contentWrapper;
         this.shadowRoot.appendChild(contentWrapper);
         
-        // open icon
+        // open the icon
         this.os13kIcon = icon;
         if (icon.folder)
         {
             // add icons to folder
             let x = iconGridSizeX/4;
             let y = iconGridSizeX/4;
-            const AddIcon=p=>
+            for (const folderIcon of icon.folder)
             {
-                p.x = x;
-                p.y = y;
+                folderIcon.x = x;
+                folderIcon.y = y;
                 x += iconGridSizeX;
                 if (x > iconGridSizeX*7)
                 {
@@ -568,10 +520,8 @@ class OS13kWindow extends HTMLElement
                     x = iconGridSizeX/4;
                     y += iconGridSizeY;
                 }
-                contentWrapper.appendChild(new OS13kIcon(p));
+                contentWrapper.appendChild(new OS13kIcon(folderIcon));
             }
-            for (const i of icon.folder)
-                AddIcon(i);
             
             // set focus
             this.Focus();
@@ -594,14 +544,14 @@ class OS13kWindow extends HTMLElement
             // load frame
             iframe.onload=e=>
             {
-                // set up iframe            
+                // set up iframe          
                 const iframeContent = this.iframeContent = e.target.contentWindow;
-                iframeContent.oncontextmenu=e=>e.preventDefault();
-                
+
                 // try to pass os13k to iframe
                 iframeContent.OS13k = OS13k;
                 iframeContent.zzfx = zzfx;
                 iframeContent.OS13kStart && iframeContent.OS13kStart();
+                iframeContent.oncontextmenu=e=>e.preventDefault();
 
                 // check for extensions
                 if (this.os13kIcon.isDweet || this.os13kIcon.isShader)
@@ -624,7 +574,7 @@ class OS13kWindow extends HTMLElement
                         'document.hasFocus()&&' +
                         'u((60*(frame++/60)-frame-1|0?frame-1:frame)/60));' +
                         'loop(frame=0)');
-                    
+
                     // create shader
                     this.os13kIcon.isShader && iframeContent.eval(
                         'g=c.getContext`webgl2`;' +
@@ -644,7 +594,7 @@ class OS13kWindow extends HTMLElement
                 // show iframe and set focus
                 iframe.style.display = '';
                 this.Focus();
-            };
+            }
         }
     }
     
