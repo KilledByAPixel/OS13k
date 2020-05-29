@@ -433,7 +433,6 @@ class OS13kIcon extends HTMLElement
         icon = icon || (name[0] ? name[0].toUpperCase() : '' );
         
         // set icon data
-		this.shadow = this.attachShadow({mode: 'open'});
         this.name = name;
         this.icon = icon;
         this.src = src;
@@ -442,22 +441,22 @@ class OS13kIcon extends HTMLElement
         this.windowWidth = width;
         this.windowHeight = height;
         this.author = author;
-        this.hideWhenClosed = hideWhenClosed || folder;
-        this.allowMultiple = allowMultiple;
         this.folder = folder;
+        this.hideWhenClosed = hideWhenClosed;
+        this.allowMultiple = allowMultiple;
         this.showReload = showReload;
         
         // check for extension
         const extension = src? src.split('.')[1] : '';
         this.isDweet = extension == 'dweet';
         this.isShader = extension == 'shader';
-        if (this.isDweet || this.isShader)
-            this.showReload = 1;
+        (this.isDweet || this.isShader) && (this.showReload = 1);
         
         // create shadow root
+		this.shadow = this.attachShadow({mode: 'open'});
         this.shadowRoot.innerHTML = templateIcon.innerHTML
             +`<span class=icon>${ icon }</span>`
-            +`<span class=name style=pointer-events:none>${ name }</span>`;
+            +`<span class=name>${ name }</span>`;
         
         // open icon
         open && this.Open();
@@ -856,9 +855,9 @@ const zzfx =    // play zzfx sound
             s = sign(s)*(Math.abs(s)**shapeCurve);       // curve 0=square, 2=pointy
 
             s *= volume * zzfxV * (                      // envelope
-                i<attack ? i/attack :                    // attack
-                i<attack+sustain ? 1 :                   // sustain
-                i<length-delay ?                         // post release
+                i < attack ? i/attack :                  // attack
+                i < attack+sustain ? 1 :                 // sustain
+                i < length-delay ?                       // post release
                 1 - (i-attack-sustain)/release : 0);     // release
                 
             s = delay ?                                  // delay
