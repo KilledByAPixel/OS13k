@@ -406,12 +406,10 @@ class OS13kIcon extends HTMLElement
 		super();
         
         // set defaults
-        this.extension = src? src.split('.')[1] : '';
         src = src || '';
         name = name || src.split('.')[0];
         icon = icon || ( folder ? '📁' : name[0]? name[0].toUpperCase() : '' );
-        background = background || 
-        (this.extension == 'dweet' || this.extension == 'shader') && '#000';
+        background = background || '#000';
         
         // set icon data
 		this.shadow = this.attachShadow({mode: 'open'});
@@ -635,7 +633,7 @@ class OS13kWindow extends HTMLElement
             iframe.src = icon.src;
             icon.background && (contentWrapper.style.background = icon.background);
             contentWrapper.appendChild(iframe);
-            
+        
             // load frame
             iframe.onload=e=>
             {
@@ -652,11 +650,12 @@ class OS13kWindow extends HTMLElement
                 iframeContent.OS13kStart && iframeContent.OS13kStart();
 
                 // check for extensions
-                const iframeText = iframeDocument.body.innerText;
-                const extension = this.os13kIcon.extension;;
+                const src = this.os13kIcon.src;
+                const extension = src? src.split('.')[1] : '';
                 if (extension == 'dweet' || extension == 'shader')
                 {
                     // create full body canvas
+                    const iframeText = iframeDocument.body.innerText;
                     iframeDocument.body.innerHTML = '<canvas id=c width=1920 height=1080 style=width:100%;background:#fff>';
                     iframeDocument.body.style = 'overflow:hidden;margin:0';
     
