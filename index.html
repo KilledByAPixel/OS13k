@@ -117,7 +117,7 @@ body { overflow:hidden; background:linear-gradient(#223,#322); }
 // ==/ClosureCompiler==
 
 /////////////////////////////////////////////////////////////////////////////
-// OS13k Desktop
+// OS13k Desktop Layout
 
 const desktopLayout = 
 [
@@ -168,14 +168,19 @@ const desktopLayout =
 {name:'Favorites', folder:[]},
 ];
 
+/////////////////////////////////////////////////////////////////////////////
+// OS13k Desktop
+
 os13kDesktop.Focus=()=>
 {
     // deavtivate window if desktop is clicked on
-    activeWindow && activeWindow.SetActive(0);
+    activeWindow && activeWindow.SetActive(activeWindow = 0);
     
     // set focus
     this.focus();
 }
+
+os13kDesktop.MouseDown=()=>this.Focus();
 
 /////////////////////////////////////////////////////////////////////////////
 // OS13k System
@@ -753,7 +758,7 @@ class OS13kWindow extends HTMLElement
     Focus()
     {
         // set focus
-        this.iframeContent ? this.iframeContent.focus() : this.focus();
+        this.iframeContent ? this.iframeContent.focus() : os13kDesktop.Focus();
         this.SetActive();
     }
 } // OS13kWindow
@@ -784,24 +789,13 @@ onmousedown=e=>
     seletOffsetX = e.x - rect.left;
     seletOffsetY = e.y - rect.top;
     
-    if (target.MouseDown)
-    {
-        // target mouse down event
-        target.MouseDown(originalTarget.id);
-        
-        // prevent main document getting refocused if title bar is clicked
-        if (originalTarget.id == 'titleBar' || originalTarget.id == 'full')
-            e.preventDefault();
-    }
-    else
-    {
-        // deactivate window if not clicked on
-        os13kDesktop.Focus();
-    }
+    // target mouse down event
+    target.MouseDown(originalTarget.id);
     
     // prevent pointer events while dragging
     os13kDesktop.style.pointerEvents = 'none';
     selected && (document.body.style.cursor = 'grabbing');
+    e.preventDefault();
 }
 
 onmouseup=e=>
