@@ -26,8 +26,7 @@ body { overflow:hidden; background:linear-gradient(#223,#322); }
     align-items:center;
     flex-direction:column;
     user-select:none;
-    pointer-events:auto;
-    cursor:grab;
+    pointer-events:auto
 }
 .icon
 {
@@ -419,7 +418,6 @@ const iconGridSizeX = 99;
 const iconGridSizeY = 130;
 const titleBarHeight = 46;
 let windowOpenOffset = 99;
-let topIconZ = 0;
 
 class OS13kIcon extends HTMLElement
 {
@@ -490,86 +488,8 @@ class OS13kIcon extends HTMLElement
         // focus on icon's window if it exists
         const parent = this.parentElement && this.parentElement.offsetParent;
         parent.Focus ? parent.Focus() : os13kDesktop.Focus();
-        
-        // create move icon that is temporary copy
-        const rect = this.getBoundingClientRect();
-        const moveIcon = new OS13kIcon({x:rect.left, y:rect.top, name:this.name, icon:this.icon});
-        moveIcon.realIcon = this;
-        moveIcon.style.opacity = .5;
-        moveIcon.style.zIndex = ++activeWindowZ;
-        moveIcon.style.pointerEvents = 'none';
-        os13kDesktop.appendChild(moveIcon);
-        selected = moveIcon;
     }
     
-    MouseUp(e)
-    {
-        // get rect before it is removed
-        const rect = this.getBoundingClientRect();
-        
-        // get rid of this temporary move icon
-        os13kDesktop.removeChild(this);
-        
-        // get element under mouse
-        const element = document.elementFromPoint(e.x, e.y);
-        if (!element)
-            return;
-        
-        // try to move icon
-        let target = os13kDesktop;
-        let x = rect.left;
-        let y = rect.top;
-        if (element.localName == 'os13k-window')
-        {
-            // only allow dropping into folders
-            if (!element.os13kIcon.folder)
-                return;
-               
-            // prevent folder self reference
-            const DetectSelfReference=icon=>
-            {
-                if (icon.os13kWindow == element)
-                    return 1;
-                if (icon.os13kWindow && icon.os13kWindow.contentWrapper)
-                    for( const c of icon.os13kWindow.contentWrapper.children)
-                        if (DetectSelfReference(c))
-                            return 1;
-            }
-            if (DetectSelfReference(this.realIcon))
-                return alert(`You can't put a folder in itself, silly!`);
-            
-            // adjust position to local space of parent
-            const rect = element.contentWrapper.getBoundingClientRect();
-            x -= rect.left;
-            y -= rect.top;
-            
-            // clamp icon to window so icon is not unreachable
-            x = OS13k.Clamp(x, -32, rect.width-32);
-            y = OS13k.Clamp(y, -32, rect.height-32-titleBarHeight);
-            
-            // put icon in folder
-            target = element;
-        }
-        else
-        {
-            // clamp icon to window so icon is not unreachable
-            x = OS13k.Clamp(x, -32, innerWidth-32);
-            y = OS13k.Clamp(y, -32, innerHeight-32);
-        }
-
-        // move icon if it is a different folder
-        const targetFolder = target.contentWrapper || target;
-        if (targetFolder != this.realIcon.parentElement)
-            targetFolder.appendChild(this.realIcon);
-        
-        // focus on target
-        target.Focus();
-            
-        // set icon position
-        this.realIcon.style.left = x;
-        this.realIcon.style.top = y;
-        this.realIcon.style.zIndex = ++topIconZ;
-    }
 } // OS13kIcon
 
 customElements.define('os13k-icon', OS13kIcon);
