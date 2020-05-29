@@ -509,7 +509,7 @@ class OS13kWindow extends HTMLElement
         
         // create title bar name
         const titleBarName = document.createElement('span');
-        titleBarName.className = 'name';
+        titleBarName.className = titleBarName.id = 'name';
         titleBarName.innerHTML = 
             icon.icon + '&nbsp;' +
             icon.name + '&nbsp;' +
@@ -655,7 +655,7 @@ class OS13kWindow extends HTMLElement
         (id == 'close') && this.Close();
         (id == 'reload') && this.Reload();
         (id == 'full') && this.FullScreen();
-        selected = this;
+        (id == 'name') && (selected = this);
             
         // set focus
         this.Focus();
