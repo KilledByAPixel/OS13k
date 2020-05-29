@@ -247,6 +247,7 @@ class _OS13k
         const activeElement = document.activeElement;
         if (this.lastActiveElement != activeElement)
         {
+            // set focus to new active element
             if (activeElement.localName == 'os13k-window')
                 activeElement.Focus();
             this.lastActiveElement = activeElement;
@@ -258,14 +259,10 @@ class _OS13k
         // get direction from wasd or arrow keys
         let x = 0;
         let y = 0;
-        if (keyCode == 87 || keyCode == 38) // up
-            y += 1;
-        if (keyCode == 83 || keyCode == 40) // down
-            y -= 1;
-        if (keyCode == 68 || keyCode == 39) // right
-            x += 1;
-        if (keyCode == 65 || keyCode == 37) // left
-            x -= 1;
+        if (keyCode == 87 || keyCode == 38) y += 1; // up
+        if (keyCode == 83 || keyCode == 40) y -= 1; // down
+        if (keyCode == 68 || keyCode == 39) x += 1; // right
+        if (keyCode == 65 || keyCode == 37) x -= 1; // left
         return {x, y}
     }
     
@@ -524,11 +521,6 @@ class OS13kIcon extends HTMLElement
             if (!element.os13kIcon.folder)
                 return;
                
-            // prevent dropping on title bar
-            const shadowElement = element.shadowRoot.elementFromPoint(e.x, e.y);
-            if (shadowElement && shadowElement.id)
-                return;
-                
             // prevent folder self reference
             const DetectSelfReference=icon=>
             {
@@ -680,7 +672,6 @@ class OS13kWindow extends HTMLElement
                 iframeContent.OS13kStart && iframeContent.OS13kStart();
 
                 // check for extensions
-                const src = this.os13kIcon.src;
                 if (this.os13kIcon.isDweet || this.os13kIcon.isShader)
                 {
                     // create full body canvas
@@ -754,6 +745,7 @@ class OS13kWindow extends HTMLElement
     
     Reload()
     {
+        // hide iframe and reload it
         this.iframe.style.display = 'none';
         this.iframeContent.location.reload();
     }
@@ -845,12 +837,13 @@ onmouseup=e=>
 
 onmousemove=e=>
 {
-    // update selected position
     if (selected)
     {
         // clamp to window
         const x = OS13k.Clamp(e.x, 9, innerWidth-9);
         const y = OS13k.Clamp(e.y, 9, innerHeight-9);
+        
+        // update selected position
         selected.style.left = x - seletOffsetX;
         selected.style.top = y - seletOffsetY;
     }
