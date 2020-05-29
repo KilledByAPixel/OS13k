@@ -12,24 +12,31 @@ Hello O-S-13-k!
 <br>
 <canvas id=c style='border:1px solid'></canvas>
 <script>
-r=Date.now()
-z=0
-onkeydown=e=> {p=OS13k.KeyDirection(e.keyCode);move.value=p.x+', '+p.y}
-localStorage.OS13kTest && (a.value = localStorage.OS13kTest);
 
 OS13kStart=()=>
 {
+    // create a shader
     s = OS13k.CreateShader
     (
         c, 
         'void mainImage(out vec4 c,vec2 p){for(int i;++i<35;)c.xy=mat2(-c.g,c.r,c)*c.gr+((0.5-p/iResolution.y)*(1.1+sin(iTime))-.6);}'
     );
+    
+    // start the loop
     loop();
 }
 
+// load local storage
+localStorage.OS13kTest && (a.value = localStorage.OS13kTest);
+
+z=0
+r=Date.now()
+onkeydown=e=>{p=OS13k.KeyDirection(e.keyCode);move.value=p.x+', '+p.y}
 loop=t=>
 {
     requestAnimationFrame(loop);
-    document.hasFocus() && OS13k.RenderShader(c,s,t/1e3);
+    
+    // render shader if focused
+    document.hasFocus() && OS13k.RenderShader(c, s, t/1e3);
 }
 </script>
