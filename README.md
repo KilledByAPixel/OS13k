@@ -16,8 +16,8 @@ Add an icon config to desktopLayout to register a new program
 - {name:'Free Cell', icon:'♠️', src:'games/freeCell.html', width:800, height:1e3, hideWhenClosed:1}
 - {src:'help.html'}
 
-For faster iteration, top level icons will open on start if they have the flag 'open'
-- {src:'help.html', open:1}
+For faster iteration, the first icon in desktopLayout added opens on start
+- you can also change the line desktopLayout.unshift({src:'system/test.html'});
 
 ### Programming
 - All programs must run in strict mode, though for the 13k build we will disable strict
@@ -49,7 +49,6 @@ For faster iteration, top level icons will open on start if they have the flag '
 ### Icon settings
 - width and height of window
 - author - Name of creator
-- open - Starts open (only for top level icons)
 - hideWhenClosed - Hides the window instead of closing it
 - allowMultiple - Allows multiple copies of the window to open
 - showReload - Shows the reload page icon that will reload your program
