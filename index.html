@@ -658,7 +658,7 @@ class OS13kWindow extends HTMLElement
                     const iframeText = iframeDocument.body.innerText;
                     iframeDocument.body.innerHTML = `<canvas id=c width=1920 height=1080 style=width:100%;background:${ isDweet ? '#fff' : '#000' }>`;
                     iframeDocument.body.style = 'overflow:hidden;margin:0';
-    
+
                     // create dweet
                     isDweet && iframeContent.eval(
                         'u=t=>{' + iframeText + '};' +
@@ -680,10 +680,11 @@ class OS13kWindow extends HTMLElement
                         'onmousedown=e=>(z=e.x,w=c.height-e.y);' +
                         'onmouseup=e=>z=w=0;' +
                         'loop=t=>requestAnimationFrame(loop,' +
+                        'document.hasFocus()&&(' +
                         'c.width=innerWidth,' + 
                         'c.height=innerHeight,' + 
                         'g.uniform4f(g.getUniformLocation(s,`iMouse`),x,y,z,w),' +
-                        'document.hasFocus()&&OS13k.RenderShader(c,s,t/1e3));' + 
+                        'OS13k.RenderShader(c,s,t/1e3)));' + 
                         'loop(s=OS13k.CreateShader(c,`' + iframeText + '`))');
                 }
                 
