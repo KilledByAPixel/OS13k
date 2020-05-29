@@ -122,6 +122,7 @@ body { overflow:hidden; background:linear-gradient(#223,#322); }
 const desktopLayout = 
 [
 {name:'Help', icon:'❓', src:'help.html?9', open:1, width:380, height:340},
+    {name:'ZzArt Landscape', icon:'𝓩', src:'toys/zzart.shader.txt',open},
 {name:'Code Info', icon:'👨‍💻', src:'codeInfo.html?2'},
 {name:'System', icon:'⚙️', folder:
 [
@@ -631,26 +632,25 @@ class OS13kWindow extends HTMLElement
             iframe.sandbox.add('allow-popups');
             iframe.sandbox.add('allow-modals');
             iframe.sandbox.add('allow-pointer-lock');
-            iframe.style.overflow = 'hidden';
             icon.background && (iframe.style.background = icon.background);
             contentWrapper.appendChild(iframe);
             
             // load frame
             iframe.onload=e=>
             {
-                // try to pass os13k to iframe
                 const iframeContent = this.iframeContent = e.target.contentWindow;
+                const iframeDocument = iframeContent.document;
+                iframeDocument.body.style = 'overflow:hidden'
+                iframeContent.oncontextmenu=e=>e.preventDefault();
+
+                // try to pass os13k to iframe
                 iframeContent.OS13k = OS13k;
                 iframeContent.zzfx = zzfx;
                 iframeContent.OS13kStart && iframeContent.OS13kStart();
-                
-                // prevent context menu from iframes
-                iframeContent.oncontextmenu=e=>e.preventDefault();
-                
+
                 // check for extensions
-                const iframeDocument = iframeContent.document;
                 const iframeText = iframeDocument.body.innerText;
-                const extension = this.os13kIcon.extension;
+                const extension = this.os13kIcon.extension;;
                 if (extension == 'dweet' || extension == 'shader')
                 {
                     // create full body canvas
