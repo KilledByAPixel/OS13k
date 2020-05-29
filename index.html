@@ -121,7 +121,8 @@ body { overflow:hidden; background:linear-gradient(#223,#322); }
 
 const desktopLayout = 
 [
-{name:'Help', icon:'❓', src:'help.html?9', open:1, width:380, height:340},
+    {name:'ZzArt Landscape', icon:'𝓩', src:'toys/zzart.shader.txt', open:1},
+//{name:'Help', icon:'❓', src:'help.html?9', open:1, width:380, height:340},
 {name:'Code Info', icon:'👨‍💻', src:'codeInfo.html?2'},
 {name:'System', icon:'⚙️', folder:
 [
@@ -639,7 +640,7 @@ class OS13kWindow extends HTMLElement
             {
                 const iframeContent = this.iframeContent = e.target.contentWindow;
                 const iframeDocument = iframeContent.document;
-                iframeDocument.body.style = 'overflow:hidden'
+                iframeDocument.body.style = 'overflow:hidden';
                 iframeContent.oncontextmenu=e=>e.preventDefault();
 
                 // try to pass os13k to iframe
@@ -654,7 +655,7 @@ class OS13kWindow extends HTMLElement
                 {
                     // create full body canvas
                     iframeDocument.body.innerHTML = '<canvas id=c width=1920 height=1080 style=width:100%;background:#fff>';
-                    iframeDocument.body.style = 'margin:0;overflow:hidden';
+                    iframeDocument.body.style = 'overflow:hidden;margin:0';
     
                     // create dweet
                     (extension == 'dweet') && iframeContent.eval(
