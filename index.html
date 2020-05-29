@@ -173,14 +173,12 @@ const desktopLayout =
 
 os13kDesktop.Focus=()=>
 {
-    // deavtivate window if desktop is clicked on
+    // deavtivate window
     activeWindow && activeWindow.SetActive(activeWindow = 0);
-    
-    // set focus
     this.focus();
 }
 
-os13kDesktop.MouseDown=()=>this.Focus();
+os13kDesktop.MouseDown=()=>os13kDesktop.Focus();
 
 /////////////////////////////////////////////////////////////////////////////
 // OS13k System
@@ -790,7 +788,7 @@ onmousedown=e=>
     seletOffsetY = e.y - rect.top;
     
     // target mouse down event
-    target.MouseDown(originalTarget.id);
+    target.MouseDown ? target.MouseDown(originalTarget.id) : os13kDesktop.MouseDown();
     
     // prevent pointer events while dragging
     os13kDesktop.style.pointerEvents = 'none';
