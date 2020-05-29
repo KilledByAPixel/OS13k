@@ -19,6 +19,7 @@ Add an icon config to desktopLayout to register a new program
 For faster iteration, top level icons will open on start if they have the flag 'open'
 - {src:'help.html', open:1}
 
+### Programming
 - All programs must run in strict mode, though for the 13k build we will disable strict
 - Programs with the extension .dweet.js or .shader.txt will automatically load as dweets or shadertoys
 - OS13k and zzfx features will not work on when browsing localling in Firefox
@@ -26,8 +27,7 @@ For faster iteration, top level icons will open on start if they have the flag '
 - You do not need charset=utf-8, it will be applied automatically
 - Make use of the built in features of OS13k to save space in your code
 
-### OS13k System Calls
-
+### System Calls
 - The function OS13kInit is called on child frames when opened
 - To acces OS13k features, use the OS13k object
 - ZzFx sounds can played by calling zzfx, volume is controlled by the system
@@ -39,7 +39,7 @@ For faster iteration, top level icons will open on start if they have the flag '
 - OS13k.PlaySeedSound(seed, lengthScale=1, volume=1, randomness=.05) - Play a zzfx sound from seed
 - OS13k.Speak(text) - Play speech of the text
 
-### OS13k Math Library
+### Math Library
 - OS13k.Random(max=1, min=0) - Get a seeded random value, OS13k.randomSeed to set the seed
 - OS13k.Clamp(a, min=0, max=1) - Clamp value between min and max
 - OS13k.Percent(v, a, b) - Get clamped percent between a and b
