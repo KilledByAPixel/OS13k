@@ -1,4 +1,35 @@
-<button onClick=zzfx(...[,,537,.02,.02,.22,1,1.59,-6.98,4.97])>Test ZzFX</button>
-<button onClick=alert('test')>Test Alert</button>
-<br><br>Notepad
-<br><textarea rows=20 cols=50 id=textstyle=resize:none></textarea>
+Text area with local storage persistance.
+<br>
+<textarea rows=5 cols=30 id=a style=resize:none oninput=localStorage.OS13kTest=a.value>
+Hello O-S-13-k!
+</textarea>
+<br><button onClick=OS13k.Speak(a.value)>Test Speech</button>
+<button onClick=z&&z.stop();s=OS13k.PlaySeedSound(r++)>Test ZzFX</button>
+<br>
+<br>Test WASD input direction <input id=move readonly style=width:100>
+<br>
+<br>Test Shader
+<br>
+<canvas id=c style='border:1px solid'></canvas>
+<script>
+r=Date.now()
+z=0
+onkeydown=e=> {p=OS13k.KeyDirection(e.keyCode);move.value=p.x+', '+p.y}
+localStorage.OS13kTest && (a.value = localStorage.OS13kTest);
+
+OS13kStart=()=>
+{
+    s = OS13k.CreateShader
+    (
+        c, 
+        'void mainImage(out vec4 c,vec2 p){for(int i;++i<35;)c.xy=mat2(-c.g,c.r,c)*c.gr+((0.5-p/iResolution.y)*(1.1+sin(iTime))-.6);}'
+    );
+    loop();
+}
+
+loop=t=>
+{
+    requestAnimationFrame(loop);
+    document.hasFocus() && OS13k.RenderShader(c,s,t/1e3);
+}
+</script>

@@ -13,7 +13,7 @@
 </ul>
 <h3 id="programming-notes">Programming Notes</h3>
 <ul>
-<li>Programs with the extension .dweet.js or .shader.txt will automatically load as dweets or shadertoys</li>
+<li>Programs with the extension .dweet.js or .shader.txt will load as dweets or shadertoys</li>
 <li>OS13k and zzfx features will not work on when browsing localling in Firefox</li>
 <li>To force a page to refresh you can add ?(version) to the src link... {src:&#39;help.html?1&#39;}</li>
 <li>You do not need charset=utf-8, it will be applied automatically</li>
@@ -24,33 +24,33 @@
 <li>The function OS13kInit is called on child frames when opened</li>
 <li>To acces OS13k features, use the OS13k object</li>
 <li>ZzFx sounds can played by calling zzfx, volume is controlled by the system</li>
-<li>OS13k.CreateShader(canvas, shaderCode) - create a shadertoy compatible webgl shader</li>
-<li>OS13k.RenderShader(canvas, shaderProgram, time=0) - render a shader</li>
-<li>OS13k.Medal(gameName, medalName=&#39;&#39;, difficulty=0) - register a medal for your game as complete</li>
-<li>OS13k.GetKeyDirection(key) handles getting and {x, y} position from a key code</li>
-<li>OS13k.PlaySamples(samples, sampleRate=44100) - play audio samples</li>
-<li>OS13k.PlaySeedSound(seed, lengthScale=1, volume=1, randomness=.05) - Plays a zzfx sound from seed</li>
-<li>OS13k.Speak(text) - Plays speech of the text</li>
+<li>OS13k.CreateShader(canvas, shaderCode) - Create a shadertoy compatible webgl shader</li>
+<li>OS13k.RenderShader(canvas, shaderProgram, time=0) - Render a shader</li>
+<li>OS13k.Medal(gameName, medalName=&#39;&#39;, difficulty=0) - Register a medal for your game</li>
+<li>OS13k.KeyDirection(key) - Get position from a key code</li>
+<li>OS13k.PlaySamples(samples, sampleRate=44100) - Play audio samples</li>
+<li>OS13k.PlaySeedSound(seed, lengthScale=1) - Play zzfx sound from seed</li>
+<li>OS13k.Speak(text) - Play speech of the text</li>
 </ul>
 <h3 id="os13k-math-functions">OS13k Math Functions</h3>
 <ul>
-<li>OS13k.Random(max=1, min=0) - get a seeded random value, OS13k.randomSeed to set the seed</li>
-<li>OS13k.Clamp(a, min=0, max=1) - clamp value between min and max</li>
-<li>OS13k.Percent(v, a, b) - get clamped percent between a and b</li>
-<li>OS13k.Lerp(p, a, b) - lerp clamped percent between a and b</li>
+<li>OS13k.Random(max=1, min=0) - Get seeded random value, OS13k.randomSeed sets the seed</li>
+<li>OS13k.Clamp(a, min=0, max=1) - Clamp value between min and max</li>
+<li>OS13k.Percent(v, a, b) - Get clamped percent between a and b</li>
+<li>OS13k.Lerp(p, a, b) - Lerp clamped percent between a and b</li>
 </ul>
 <h3 id="icon-settings">Icon settings</h3>
 <ul>
 <li>width and height of window</li>
-<li>author - name of creator</li>
-<li>hideWhenClosed - hides the window instead of closing it</li>
-<li>allowMultiple - allows multiple copies of the window to open</li>
-<li>open - starts open (only for top level icons)</li>
-<li>background - set background color for iframe (white by default)</li>
+<li>author - Name of creator</li>
+<li>hideWhenClosed - Hides the window instead of closing it</li>
+<li>allowMultiple - Allows multiple copies of the window to open</li>
+<li>open - Starts open (only for top level icons)</li>
+<li>background - Set background color for iframe (white by default)</li>
 </ul>
 <h3 id="shadertoy-shaders">Shadertoy Shaders</h3>
 <ul>
-<li>supports iTime, iMouse, iResolution, and iChannel0</li>
+<li>Supports iTime, iMouse, iResolution, and iChannel0</li>
 <li>iChannel0 is an image of the previous frame</li>
 <li>pi and e are also exposed as constants</li>
 </ul>
