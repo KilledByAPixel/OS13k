@@ -207,7 +207,7 @@ class _OS13k
         // startup os13k
         this.randomSeed = Date.now();
         this.InitDesktop();
-        setInterval(this.Update, 99);
+        setInterval(this.Update, 16);
     }
     
     InitDesktop()
@@ -613,7 +613,8 @@ class OS13kWindow extends HTMLElement
                     const iframeDocument = iframeContent.document;
                     const iframeText = iframeDocument.body.innerText;
                     iframeDocument.body.innerHTML = `<canvas id=c width=1920 height=1080 style=width:100%;background:${ this.os13kIcon.isDweet ? '#fff' : '#000' }>`;
-                    iframeDocument.body.style = 'overflow:hidden;margin:0;background:#000';
+                    iframeDocument.body.style = `overflow:hidden;margin:0;background:#000;display:flex;align-items:center;
+    `;
 
                     // create dweet
                     this.os13kIcon.isDweet && iframeContent.eval(
@@ -657,7 +658,7 @@ class OS13kWindow extends HTMLElement
         (id == 'close') && this.Close();
         (id == 'reload') && this.Reload();
         (id == 'full') && this.FullScreen();
-        (id == 'titleBar') && (selected = this);
+        selected = this;
             
         // set focus
         this.Focus();
@@ -736,6 +737,7 @@ onmousedown=e=>
     // prevent getting stuck
     if (selected)
         return onmouseup(e);
+    e.preventDefault();
     
     // get os13k target
     const originalTarget = e.originalTarget || e.path[0];
@@ -754,7 +756,6 @@ onmousedown=e=>
     // prevent pointer events while dragging
     os13kDesktop.style.pointerEvents = 'none';
     selected && (document.body.style.cursor = 'grabbing');
-    e.preventDefault();
 }
 
 onmouseup=e=>
