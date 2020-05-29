@@ -643,6 +643,9 @@ class OS13kWindow extends HTMLElement
                 iframeContent.zzfx = zzfx;
                 iframeContent.OS13kStart && iframeContent.OS13kStart();
                 
+                // prevent context menu from iframes
+                iframeContent.oncontextmenu=e=>e.preventDefault();
+                
                 // check for extensions
                 const iframeDocument = iframeContent.document;
                 const iframeText = iframeDocument.body.innerText;
