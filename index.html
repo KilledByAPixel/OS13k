@@ -642,8 +642,7 @@ class OS13kWindow extends HTMLElement
                 const iframeDocument = iframeContent.document;
                 iframeDocument.body.style = 'overflow:hidden';
                 iframeContent.oncontextmenu=e=>e.preventDefault();
-                iframe.style.display = '';
-
+                
                 // try to pass os13k to iframe
                 iframeContent.OS13k = OS13k;
                 iframeContent.zzfx = zzfx;
@@ -687,7 +686,8 @@ class OS13kWindow extends HTMLElement
                         'loop(s=OS13k.CreateShader(c,`' + iframeText + '`))');
                 }
                 
-                // set focus
+                // show iframe and set focus
+                iframe.style.display = '';
                 this.Focus();
             };
         }
