@@ -639,8 +639,6 @@ class OS13kWindow extends HTMLElement
             {
                 // set up iframe            
                 const iframeContent = this.iframeContent = e.target.contentWindow;
-                const iframeDocument = iframeContent.document;
-                iframeDocument.body.style = 'overflow:hidden';
                 iframeContent.oncontextmenu=e=>e.preventDefault();
                 
                 // try to pass os13k to iframe
@@ -656,6 +654,7 @@ class OS13kWindow extends HTMLElement
                 if (isDweet || isShader)
                 {
                     // create full body canvas
+                    const iframeDocument = iframeContent.document;
                     const iframeText = iframeDocument.body.innerText;
                     iframeDocument.body.innerHTML = `<canvas id=c width=1920 height=1080 style=width:100%;background:${ isDweet ? '#fff' : '#000' }>`;
                     iframeDocument.body.style = 'overflow:hidden;margin:0';
