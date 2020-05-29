@@ -26,7 +26,7 @@ For faster iteration, the first icon in desktopLayout added opens on start
 - Programs with the extension .dweet.js or .shader.txt will automatically load as dweets or shadertoys
 - To force a page to refresh you can add ?<version> to the src link... {src:'help.html?1'}
 - You do not need charset=utf-8, it will be applied automatically
-- prefix local storage keys with OS13k(program name) to prevent collisions
+- Prefix local storage keys with OS13k(program name) to prevent collisions
 - Make use of the built in features of OS13k to save space in your code
 
 ### System Calls
