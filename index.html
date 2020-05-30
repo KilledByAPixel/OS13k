@@ -208,7 +208,7 @@ class _OS13k
     {
         // add close all icon
         const icon = {icon:'❌', name:'Close All'};
-        taskbar.appendChild(this.taskbarIcon = new OS13kTaskbarIcon(desktop, icon));
+        this.taskbarIcon = new OS13kTaskbarIcon(desktop, icon);
         
         // add icons to desktop
         let x = 30, y = 80, open = 1;
@@ -226,7 +226,6 @@ class _OS13k
             
             // create icon
             const os13kicon = new OS13kIcon(icon);
-            desktop.appendChild(os13kicon);
             open && os13kicon.Open(open = 0);
         }
     }
@@ -430,6 +429,9 @@ class OS13kTaskbarIcon extends HTMLElement
     {
 		super();
         
+        // add to taskbar
+        taskbar.appendChild(this);
+        
         // create icon
         this.window = window;
         this.className = 'icon';
@@ -478,6 +480,9 @@ class OS13kIcon extends HTMLElement
 	constructor({x, y, name, icon, src, width=720, height=405, author, folder, allowMultiple, showReload})
     {
 		super();
+        
+        // add to desktop
+        desktop.appendChild(this);
         
         // set icon defaults
         src = src || '';
@@ -529,7 +534,6 @@ class OS13kIcon extends HTMLElement
             const window = new OS13kWindow(this);
             if (!this.allowMultiple)
                 this.window = window;
-            desktop.appendChild(window);
         }
         
         // set focus to window
@@ -566,12 +570,12 @@ class OS13kWindow extends HTMLElement
     {
 		super();
         
-        // set icon data
-        this.icon = icon;
+        // add to desktop
+        desktop.appendChild(this);
         
         // create taskbar icon
+        this.icon = icon;
         this.taskbarIcon = new OS13kTaskbarIcon(this, icon);
-        taskbar.appendChild(this.taskbarIcon);
         
         // set window position
         this.style.left = windowOpenX;
