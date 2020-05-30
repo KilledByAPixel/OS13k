@@ -184,6 +184,17 @@ class _OS13k
 {
     constructor()
     {
+        // init web audio
+        this.audioContext = new (AudioContext || webkitAudioContext);
+        this.audioContext.Z = this.audioContext.createBufferSource;
+        this.audioContext.createBufferSource =
+        (s = this.audioContext.Z())=>
+        (
+            s.start = s.start || s.noteOn,
+            s.stop  = s.stop  || s.noteOff,
+            s
+        );
+        
         // startup os13k
         this.randomSeed = Date.now();
         this.InitDesktop();
@@ -281,20 +292,6 @@ class _OS13k
     
     PlaySamples(samples, sampleRate=44100)
     {
-        // init web audio
-        if (!this.audioContext)
-        {
-            this.audioContext = new (AudioContext || webkitAudioContext);
-            this.audioContext.Z = this.audioContext.createBufferSource;
-            this.audioContext.createBufferSource =
-            (s = this.audioContext.Z())=>
-            (
-                s.start = s.start || s.noteOn,
-                s.stop  = s.stop  || s.noteOff,
-                s
-            );
-        }
-    
         // play raw audio sample data
         const buffer = this.audioContext.createBuffer(1, samples.length, sampleRate);
         const source = this.audioContext.createBufferSource();
