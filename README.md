@@ -28,7 +28,7 @@ Add an icon config to desktop.js to register a new program
 - Make use of the built in features of OS13k to save space in your code
 
 ### System Calls
-- The function OS13kInit(icon) is called on child frames when opened
+- The function OS13kStart(icon) is called on child frames when opened
 - To acces OS13k features, use the OS13k object
 - ZzFx sounds can played by calling zzfx, volume is controlled by the system
 - OS13k.CreateShader(canvas, shaderCode) - Create a shadertoy compatible webgl shader
