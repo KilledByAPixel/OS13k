@@ -530,7 +530,7 @@ class OS13kWindow extends HTMLElement
         this.style.top = windowOpenPositionY;
         windowOpenPositionY += 46;
         if (windowOpenPositionY > 400)
-            windowOpenPositionY = 160;
+            windowOpenPositionY = 200;
         windowOpenPositionX += 46;
         if (windowOpenPositionX > 1e3)
             windowOpenPositionX = 99;
@@ -799,6 +799,10 @@ class OS13kTaskbarIcon extends HTMLElement
                 c.Close && closeWindows.push(c);
             for( const w of closeWindows)
                 w.Close();
+                
+            // reset window open position
+            windowOpenPositionX = 99;
+            windowOpenPositionY = 200;
         }
     }
     
