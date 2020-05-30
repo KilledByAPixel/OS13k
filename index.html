@@ -24,6 +24,7 @@ body
     height:44;
     background:linear-gradient(#999,#444);
     border:2px solid;
+    z-index: 10000;
 }
 .icon
 {
@@ -184,7 +185,7 @@ div svg       { width:100%; pointer-events:none; }
 
 class _OS13k
 {
-    constructor()
+    Start()
     {
         // init web audio
         this.audioContext = new (AudioContext || webkitAudioContext);
@@ -758,6 +759,11 @@ class OS13kWindow extends HTMLElement
             if (activeWindow && activeWindow != this)
                 activeWindow.SetActive(0);
                 
+            // clamp window to screen
+            const rect = this.getBoundingClientRect();
+            this.style.left = OS13k.Clamp(rect.x, 0, innerWidth-rect.width);
+            this.style.top = OS13k.Clamp(rect.y, 46, innerHeight-rect.height);
+                
             // move z to top and display
             this.style.zIndex = ++activeWindowZ;
             this.style.display = '';
@@ -802,8 +808,8 @@ onmousedown=e=>
     
     // save selected offset
     const rect = e.target.getBoundingClientRect();
-    seletOffsetX = e.x - rect.left;
-    seletOffsetY = e.y - rect.top;
+    seletOffsetX = e.x - rect.x;
+    seletOffsetY = e.y - rect.y;
     
     // mouse down event
     if (e.target.MouseDown)
@@ -838,14 +844,9 @@ onmousemove=e=>
 {
     if (selected)
     {
-        // clamp to window
-        const rect = selected.getBoundingClientRect();
-        const x = OS13k.Clamp(e.x - seletOffsetX, 130-rect.width, innerWidth-99);
-        const y = OS13k.Clamp(e.y - seletOffsetY, 46, innerHeight-48);
-        
         // update selected position
-        selected.style.left = x;
-        selected.style.top = y;
+        selected.style.left = e.x - seletOffsetX;
+        selected.style.top = e.y - seletOffsetY;
     }
 }
 
@@ -885,11 +886,6 @@ try
 
     // set all touch events
     ontouchstart = ontouchmove = ontouchcancel = ontouchend = ProcessTouch;
-    
-    // try to lock orientation
-    screen.lockOrientation ?
-        screen.lockOrientation('landscape') :
-        screen.orientation.lock().catch(()=>0);
 }
 catch (e) {}
 
@@ -997,5 +993,6 @@ const zzfx =     // play zzfx sound
 // Start OS13k!
 
 const OS13k = new _OS13k;
+OS13k.Start();
 
 </script>
