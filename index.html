@@ -670,11 +670,6 @@ class OS13kWindow extends HTMLElement
             // create iframe
             const iframe = this.iframe = document.createElement('iframe');
             iframe.className = 'frame';
-            iframe.sandbox.add('allow-scripts');
-            iframe.sandbox.add('allow-same-origin');
-            iframe.sandbox.add('allow-popups');
-            iframe.sandbox.add('allow-modals');
-            iframe.sandbox.add('allow-pointer-lock');
             iframe.style.display = 'none';
             iframe.src = icon.src;
             contentWrapper.style.background = '#000';
