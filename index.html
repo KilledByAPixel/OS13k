@@ -267,6 +267,9 @@ class _OS13k
         this.randomSeed = seed;
         const R=()=> this.Random();
         
+        // warm up random generator
+        R(R(R()));
+        
         // randomize sound length
         lengthScale /= 2;
         const attack  = R()**3*lengthScale;
@@ -399,7 +402,7 @@ class _OS13k
     Random(max=1, min=0)
     {
         // seeded random numbers - Mersenne Twister
-        this.randomSeed ^= this.randomSeed << 13;
+        this.randomSeed ^= (this.randomSeed||-1) << 13;
         this.randomSeed ^= this.randomSeed >> 17;
         this.randomSeed ^= this.randomSeed << 5;
         return this.Percent(Math.abs(this.randomSeed) % 1e9 / 1e9, min, max);

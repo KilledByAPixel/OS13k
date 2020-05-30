@@ -4,7 +4,7 @@ Text area with local storage persistance.
 Hello OS13k!
 </textarea>
 <br><button onClick=OS13k.Speak(a.value)>Test Speech</button>
-<button onClick=z&&z.stop();z=OS13k.PlaySeedSound(r++)>Test ZzFX</button>
+<button onClick=z&&z.stop();z=OS13k.PlaySeedSound(seed.innerHTML=(++r)%1e4)>Test ZzFX</button> Seed: <span id=seed>0</span>
 <br>
 <br>Test WASD input direction <input id=move readonly style=width:100>
 <br>
