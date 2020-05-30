@@ -887,7 +887,9 @@ try
     ontouchstart = ontouchmove = ontouchcancel = ontouchend = ProcessTouch;
     
     // try to lock orientation
-    screen.lockOrientation('landscape');
+    screen.lockOrientation ?
+        screen.lockOrientation('landscape') :
+        screen.orientation.lock().catch(()=>0);
 }
 catch (e) {}
 
