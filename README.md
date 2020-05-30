@@ -46,10 +46,10 @@ Add an icon config to desktop.js to register a new program
 - OS13k.Lerp(p, a, b) - Lerp clamped percent between a and b
 
 ### Icon settings
-- width and height of window
+- width and height - Size of window
 - author - Name of creator
 - allowMultiple - Allows multiple copies of the window to open
-- showReload - Shows the reload page icon that will reload your program
+- showReload - Shows the reload page icon to reload your program
 
 ### Shadertoy Shaders
  - Supports iTime, iMouse, iResolution, and iChannel0
