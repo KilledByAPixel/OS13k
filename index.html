@@ -869,19 +869,24 @@ if (typeof ontouchend != 'undefined')
     const ProcessTouch=e=>
     {
         const touching = e.touches.length;
+        e =
+        {
+            x: touching? e.touches[0].clientX : 0,
+            y: touching? e.touches[0].clientY : 0,
+            target: e.target,
+            originalTarget: e.originalTarget || e.path[0]
+        }
+
         if (touching)
         {
             const touchTime = Date.now();
-            e.x = e.touches[0].clientX;
-            e.y = e.touches[0].clientY;
             if (!wasTouching)
                 touchTime - lastTouchTime < 300 ? ondblclick(e) : onmousedown(e);
             onmousemove(e);
             lastTouchTime = touchTime;
         }
-        else if (wasTouching)
-            onmouseup(e);
-        
+        else
+            wasTouching && onmouseup(e);
         wasTouching = touching;
     }
 
