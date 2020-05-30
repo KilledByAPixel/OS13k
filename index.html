@@ -89,8 +89,8 @@ body
     font-size:17;
     color:#fff;
     text-shadow:2px 2px 5px #000;
+    white-space:normal;
 }
-.iconSelected { background:linear-gradient(#99f,#fff); }
 </style>
 </template>
 <template id=templateWindow>
@@ -218,7 +218,7 @@ class _OS13k
             // set icon position
             icon.x = x;
             icon.y = y;
-            if ((x += iconGridSizeX) > innerWidth - 70)
+            if ((x += iconGridSizeX) > Math.max(300, innerWidth - 70))
             {
                 // wrap icons to fit window
                 x = 30;
@@ -418,7 +418,6 @@ desktop.Focus=()=>
     // deavtivate window and icons
     document.activeElement.blur();
     activeWindow && activeWindow.SetActive(activeWindow = 0);
-    selectedIcon && selectedIcon.SetActive(selectedIcon = 0);
     selectedTaskbarIcon && selectedTaskbarIcon.SetActive(selectedTaskbarIcon = 0);
     this.focus();
 }
@@ -443,7 +442,7 @@ class OS13kTaskbarIcon extends HTMLElement
         this.window = window;
         this.className = 'icon';
         this.innerHTML = '<div style=pointer-events:none>' + icon.icon;
-        this.title = icon.name + (icon.title ? '\n' + icon.title : '');
+        this.title = icon.title;
     }
     
     MouseDown()
@@ -479,7 +478,6 @@ customElements.define('os13k-taskbar-icon', OS13kTaskbarIcon);
 /////////////////////////////////////////////////////////////////////////////
 // OS13kIcon
 
-let selectedIcon;
 const iconGridSizeX = 99, iconGridSizeY = 120;
 
 class OS13kIcon extends HTMLElement
@@ -508,7 +506,7 @@ class OS13kIcon extends HTMLElement
         this.folder = folder;
         this.allowMultiple = allowMultiple;
         this.showReload = showReload;
-        author && (this.title = 'By ' + author);
+        this.title = name + (author ? '\nBy ' + author : '');
         
         // check for special extensions
         const extension = src? src.split('.')[1] : '';
@@ -518,19 +516,9 @@ class OS13kIcon extends HTMLElement
         
         // create shadow root
 		this.shadow = this.attachShadow({mode: 'open'});
-        this.shadowRoot.innerHTML = templateIcon.innerHTML;
-        
-        // create icon
-        const iconElement = this.iconElement = document.createElement('div');
-        iconElement.className = 'icon';
-        iconElement.innerHTML = icon;
-        this.shadowRoot.appendChild(iconElement);
-        
-        // create name
-        const nameElement = document.createElement('div');
-        nameElement.className = 'name';
-        nameElement.innerHTML = name;
-        this.shadowRoot.appendChild(nameElement);
+        this.shadowRoot.innerHTML = templateIcon.innerHTML +
+            '<div class=icon>' + icon  +
+            '<div class=name>' + name;
     }
     
     Open()
@@ -552,16 +540,8 @@ class OS13kIcon extends HTMLElement
         // focus on icon window if it exists and set active
         const parent = this.parentElement && this.parentElement.offsetParent;
         parent.Focus ? parent.Focus() : desktop.Focus();
-        this.SetActive();
     }
     
-    SetActive(active=1)
-    {
-        // unselect old icon and set style
-        selectedIcon && selectedIcon.SetActive(selectedIcon = 0);
-        selectedIcon = this;
-        this.iconElement.className = 'icon' + (active ? ' iconSelected' : '');
-    }
 } // OS13kIcon
 
 customElements.define('os13k-icon', OS13kIcon);
@@ -788,15 +768,10 @@ class OS13kWindow extends HTMLElement
             this.style.display = '';
         }
         
-        // set titlebar style
-        this.titleBar.className = 'titleBar' + (active ? ' titleBarSelected' : '');
-        
         // set active
         activeWindow = active && this;
-        
-        // deactivate icon
-        selectedIcon && selectedIcon.SetActive(selectedIcon = 0);
         this.taskbarIcon.SetActive(1);
+        this.titleBar.className = 'titleBar' + (active ? ' titleBarSelected' : '');
     }
     
     FullScreen()
@@ -832,12 +807,7 @@ onmousedown=e=>
     
     // mouse down event
     if (e.target.MouseDown)
-    {
-        const originalTarget = e.originalTarget || e.path[0];
-        e.target.MouseDown(originalTarget.id)
-        if (originalTarget != e.target && originalTarget.MouseDown)
-            originalTarget.MouseDown();
-    }
+        e.target.MouseDown((e.originalTarget || e.path[0]).id)
     else
         desktop.MouseDown();
     
@@ -869,7 +839,7 @@ onmousemove=e=>
     }
 }
 
-ondblclick=e=>
+onclick=e=>
 {
     // open icon
     const target = e.originalTarget || e.path[0];
@@ -896,12 +866,12 @@ try
             
             // pass event on to mouse input
             if (!wasTouching)
-                Date.now() - lastTouchTime < 500 ? ondblclick(e) : onmousedown(e);
+                onmousedown(e);
             onmousemove(e);
             lastTouchTime = Date.now();
         }
         else
-            wasTouching && onmouseup(e);
+            wasTouching && (onmouseup(e), onclick(e));
         wasTouching = touching;
     }
 
