@@ -43,7 +43,6 @@ body
 }
 .title
 {
-    font-size:300;
     font-family:impact;
     color:#0002;
     height:100%;
@@ -157,8 +156,8 @@ div svg       { width:100%; pointer-events:none; }
 </head>
 <body>
 <div id=taskbar class=taskbar></div>
+<div id=title class=title>OS13k</div>
 <div id=desktop></div>
-<div class=title>OS13k</div>
 <script src=desktop.js?6></script>
 <script>
 
@@ -232,6 +231,9 @@ class _OS13k
     
     Update()
     {
+        // fit title to desktop
+        title.style.fontSize = Math.min(300, innerWidth/3);
+    
         // listen for iframe becomming new active element
         const activeElement = document.activeElement;
         if (this.lastActiveElement != activeElement)
