@@ -229,11 +229,11 @@ class _OS13k
         }
     }
     
-    Update()
+    Update() 
     {
         // fit title to desktop
-        title.style.fontSize = Math.min(300, innerWidth/3);
-    
+        title.style.fontSize = innerWidth/5;
+        
         // listen for iframe becomming new active element
         const activeElement = document.activeElement;
         if (this.lastActiveElement != activeElement)
