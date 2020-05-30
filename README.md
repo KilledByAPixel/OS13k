@@ -13,7 +13,7 @@ Add an icon config to desktop.js to register a new program
 - {name:'Test', icon:'✌️', src:'system/test.html'}
 - {name:'Underwater Cavern', icon:'🌊', author:'Pavel', src:'dweets/underwaterCavern.dweet.js'}
 - {name:'Yin Yangs', icon:'☯️', src:'toys/infiniteYinYangs.shader.txt'}
-- {name:'Free Cell', icon:'♠️', src:'games/freeCell.html', width:800, height:1e3, hideWhenClosed:1}
+- {name:'Free Cell', icon:'♠️', src:'games/freeCell.html', width:800, height:1e3, allowMultiple:1}
 - {src:'help.html'}
 
 For faster iteration, the first icon in desktopLayout opens on start
@@ -49,7 +49,6 @@ For faster iteration, the first icon in desktopLayout opens on start
 ### Icon settings
 - width and height of window
 - author - Name of creator
-- hideWhenClosed - Hides the window instead of closing it (for light weight apps)
 - allowMultiple - Allows multiple copies of the window to open
 - showReload - Shows the reload page icon that will reload your program
 
