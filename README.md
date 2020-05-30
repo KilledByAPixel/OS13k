@@ -22,6 +22,7 @@ Add an icon config to desktop.js to register a new program
 - Firefox will not work in local mode because it treats local files as cross-origin
 - Programs with the extension .dweet.js or .shader.txt will automatically load as dweets or shadertoys
 - To force a page to refresh you can add ?<version> to the src link... {src:'help.html?1'}
+- Your program should be paused or light on cpu when it does not have focus, !document.hasFocus() 
 - You do not need charset=utf-8, it will be applied automatically
 - Prefix local storage keys with OS13k(program name) to prevent collisions
 - Make use of the built in features of OS13k to save space in your code
