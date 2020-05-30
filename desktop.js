@@ -11,7 +11,7 @@ const desktopLayout =
     {name:'Lava Rush', icon:'🌋', author:'Jeremy Burns', src:'games/lavaRush.html?4', width:640, height:400},
     {name:'Sn1ke', icon:'👀', src:'games/sn1ke.html', author:'Codegolf Team', width:450, height:330},
     {name:'Tetris', icon:'<span style=font-size:22>▀█▀</span>', author:'Veubeke', src:'games/tetris.html', width:340, height:430},
-    {name:`Queen's Gambit`, icon:'<span style=color:#f0f>♛</span>', src:'games/queensGambit.html?3', width:1e3, height:600, showReload:1},
+    {name:`Queen's Gambit`, icon:'<span style=color:#f0f>♛</span>', src:'games/queensGambit.html?4', showReload:1},
     {name:'Free Cell', icon:'♠️', src:'games/freeCell.html', width:800, height:1e3},
     {name:'Digit Dilemma', icon:'<span style=font-family:monospace>☻</span>', src:'games/digitDilemma.html?2'},
     {name:'Hue Jumper', icon:'🌲', src:'games/hueJumper.html', showReload:1},
