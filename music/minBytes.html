@@ -40,8 +40,8 @@ G=()=>
                 s=[]
                 for(k=0;k<r*100;++k)
                     s[k] = (e=f(k)*2-1, e>1?1:e)/8;
-                S=OS13k.PlaySamples(s, R=r);
                 u=Date.now();
+                try{S=OS13k.PlaySamples(s, R=r);} catch(e) {}
             }
         }
         y+=h; // next line

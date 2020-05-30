@@ -1,7 +1,7 @@
 const desktopLayout = 
 [
 {name:'Help', icon:'<span style=color:#0f0>?</span>', src:'help.html?10', width:380, height:360},
-{name:'Code Info', icon:'👨‍💻', src:'codeInfo.html?5'},
+{name:'Code Info', icon:'👨‍💻', src:'codeInfo.html?6'},
 {name:'System', icon:'⚙️', folder:
 [
     {name:'Test', icon:'😄', src:'system/test.html?5'},
@@ -18,7 +18,7 @@ const desktopLayout =
 ]},
 {name:'Music', icon:'🎶', folder:
 [
-    {name:'Min Bytes', icon:'<span style=color:#f00>𝓜</span>', width:500, height:500, src:'music/minBytes.html?4'},
+    {name:'Min Bytes', icon:'<span style=color:#f00>𝓜</span>', width:500, height:500, src:'music/minBytes.html?5'},
 ]},
 {name:'Utilities', icon:'🔧', folder:
 [
