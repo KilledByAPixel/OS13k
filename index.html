@@ -453,17 +453,6 @@ class OS13kTaskbarIcon extends HTMLElement
         }
     }
     
-    Open()
-    {
-        if (this.window != desktop)
-        {
-            // bring to center
-            const rect = this.window.getBoundingClientRect();
-            this.window.style.left = innerWidth/2 - rect.width/2;
-            this.window.style.top = innerHeight/2 - rect.height/2;
-        }
-    }
-    
     SetActive(active=1)
     {
         // unselect old icon and set style
