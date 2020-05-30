@@ -4,20 +4,17 @@
 <li>{name:&#39;Test&#39;, icon:&#39;✌️&#39;, src:&#39;system/test.html&#39;}</li>
 <li>{name:&#39;Underwater Cavern&#39;, icon:&#39;🌊&#39;, author:&#39;Pavel&#39;, src:&#39;dweets/underwaterCavern.dweet.js&#39;}</li>
 <li>{name:&#39;Yin Yangs&#39;, icon:&#39;☯️&#39;, src:&#39;toys/infiniteYinYangs.shader.txt&#39;}</li>
-<li>{name:&#39;Free Cell&#39;, icon:&#39;♠️&#39;, src:&#39;games/freeCell.html&#39;, width:800, height:1e3, hideWhenClosed:1}</li>
+<li>{name:&#39;Free Cell&#39;, icon:&#39;♠️&#39;, src:&#39;games/freeCell.html&#39;, width:800, height:1e3, allowMultiple:1}</li>
 <li>{src:&#39;help.html&#39;}</li>
 </ul>
 <p>For faster iteration, the first icon in desktopLayout added opens on start</p>
-<ul>
-<li>you can also change the line desktopLayout.unshift({src:&#39;system/test.html&#39;});</li>
-</ul>
 <h3 id="programming">Programming</h3>
 <ul>
 <li>All programs must run in strict mode, though for the 13k build we will disable strict</li>
 <li>Chrome is recommended for development</li>
 <li>Firefox will not work in local mode because it treats local files as cross-origin</li>
 <li>Programs with the extension .dweet.js or .shader.txt will automatically load as dweets or shadertoys</li>
-<li>To force a page to refresh you can add ?<version> to the src link... {src:&#39;help.html?1&#39;}</li>
+<li>To force a page to refresh you can add ?(version) to the src link... {src:&#39;help.html?1&#39;}</li>
 <li>You do not need charset=utf-8, it will be applied automatically</li>
 <li>Make use of the built in features of OS13k to save space in your code</li>
 </ul>
@@ -45,7 +42,6 @@
 <ul>
 <li>width and height of window</li>
 <li>author - Name of creator</li>
-<li>hideWhenClosed - Hides the window instead of closing it</li>
 <li>allowMultiple - Allows multiple copies of the window to open</li>
 <li>showReload - Shows the reload page icon that will reload your program</li>
 </ul>

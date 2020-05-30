@@ -1,7 +1,7 @@
 const desktopLayout = 
 [
-{name:'Help', icon:'❓', src:'help.html?10', width:380, height:360},
-{name:'Code Info', icon:'👨‍💻', src:'codeInfo.html?4'},
+{name:'Help', icon:'<span style=color:#0f0>?</span>', src:'help.html?10', width:380, height:360},
+{name:'Code Info', icon:'👨‍💻', src:'codeInfo.html?5'},
 {name:'System', icon:'⚙️', folder:
 [
     {name:'Test', icon:'😄', src:'system/test.html?5'},
@@ -9,10 +9,10 @@ const desktopLayout =
 {name:'Games', icon:'🎮', folder:
 [
     {name:'Lava Rush', icon:'🌋', author:'Jeremy Burns', src:'games/lavaRush.html?4', width:640, height:400},
-    {name:'Sn1ke', icon:'👀', src:'games/sn1ke.html', author:'Codegolf Team', width:450, height:330, hideWhenClosed:1},
+    {name:'Sn1ke', icon:'👀', src:'games/sn1ke.html', author:'Codegolf Team', width:450, height:330},
     {name:'Tetris', icon:'🆃', author:'Veubeke', src:'games/tetris.html', width:340, height:430},
     {name:`Queen's Gambit`, icon:'<span style=color:#f0f>♛</span>', src:'games/queensGambit.html?1', width:1290, height:720, showReload:1},
-    {name:'Free Cell', icon:'♠️', src:'games/freeCell.html', width:800, height:1e3, hideWhenClosed:1},
+    {name:'Free Cell', icon:'♠️', src:'games/freeCell.html', width:800, height:1e3},
     {name:'Digit Dilemma', icon:'<span style=font-family:monospace>☻</span>', src:'games/digitDilemma.html?2'},
     {name:'Hue Jumper', icon:'🌲', src:'games/hueJumper.html', width:1290, height:720, showReload:1},
 ]},

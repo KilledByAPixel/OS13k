@@ -2,8 +2,38 @@
 <title>OS13k - A tiny pseudo operating system for JS13k</title>
 <meta charset=utf-8>
 <style>
-*    { font-family:arial; }
-body { overflow:hidden; background:linear-gradient(#223,#322); }
+*    { font-family:arial; user-select:none;}
+body { margin:0; overflow:hidden; background:linear-gradient(#223,#322); }
+.desktop
+{
+}
+.taskbar
+{
+    position:absolute;
+    width:100%;
+    height:44;
+    background:linear-gradient(#777,#222);
+    border:2px solid;
+    z-index:10000;
+    display:flex;
+    align-items:center;
+}
+.icon
+{
+    margin:2;
+    width:44;
+    height:35;
+    font-size:22;
+    border:2px solid;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-shadow:2px 2px 3px #000;
+    border-radius:9px;
+    box-shadow:0px 0px 3px;
+    background:linear-gradient(#fff,#777);
+}
+.iconSelected { background:linear-gradient(#ddd,#88f); }
 .title
 {
     font-size:300;
@@ -13,7 +43,6 @@ body { overflow:hidden; background:linear-gradient(#223,#322); }
     display:flex;
     align-items:center;
     justify-content:center;
-    user-select:none;
     pointer-events:none;
 }
 </style>
@@ -25,8 +54,7 @@ body { overflow:hidden; background:linear-gradient(#223,#322); }
     display:flex;
     align-items:center;
     flex-direction:column;
-    user-select:none;
-    pointer-events:auto
+    pointer-events:auto;
 }
 .icon
 {
@@ -42,8 +70,8 @@ body { overflow:hidden; background:linear-gradient(#223,#322); }
     display:flex;
     align-items:center;
     justify-content:center;
+    text-shadow:2px 2px 4px #000;
 }
-.iconSelected { background:linear-gradient(#99f,#fff); }
 .name
 {
     position:absolute;
@@ -51,8 +79,9 @@ body { overflow:hidden; background:linear-gradient(#223,#322); }
     text-align:center;
     font-size:17;
     color:#fff;
-    text-shadow:1px 1px 5px #000;
+    text-shadow:2px 2px 5px #000;
 }
+.iconSelected { background:linear-gradient(#99f,#fff); }
 </style>
 </template>
 <template id=templateWindow>
@@ -60,7 +89,6 @@ body { overflow:hidden; background:linear-gradient(#223,#322); }
 :host
 {
     position:absolute;
-    user-select:none;
     display:flex;
     flex-direction:column;
     box-shadow:9px 9px 9px;
@@ -75,12 +103,11 @@ body { overflow:hidden; background:linear-gradient(#223,#322); }
     font-size:30;
     display:flex;
     align-items:center;
+    justify-content:center;
     white-space:nowrap;
     overflow:hidden;
-    vertical-align: middle;
     background:linear-gradient(#999,#444);
 }
-.titleBarSelected { background:linear-gradient(#ddd,#88f); }
 .frame
 {
     position:relative;
@@ -98,13 +125,14 @@ body { overflow:hidden; background:linear-gradient(#223,#322); }
     align-items:center; 
     overflow:hidden;
 }
+.titleBarSelected { background:linear-gradient(#ddd,#88f); }
 .folder       { background:#222; }
 #full,#reload { width:40; }
 .close        { width:28; }
 .full:hover   { background:#fff; }
 .reload:hover { background:#ff0; }
 .close:hover  { background:#f00; }
-span svg 
+div svg 
 {
     width: 100%;
     pointer-events: none;
@@ -116,16 +144,17 @@ span svg
     </symbol>
     <symbol id=iconReload viewBox='0 0 10 10'>
         <circle stroke=#000 stroke-width=.7 fill=none cx=5 cy=5 r=3 />
-    </symbol>  
+    </symbol>
     <symbol id=iconClose viewBox='0 0 10 10'>
         <path stroke=#000 d='M1 1L9 9M9 1L1 9' />
-    </symbol> 
+    </symbol>
 </svg>
 </template>
 </head>
 <body>
-<span id=os13kDesktop></span>
-<span class=title>OS13k</span>
+<div id=taskbar class=taskbar></div>
+<div id=desktop class=desktop></div>
+<div class=title>OS13k</div>
 <script src=desktop.js></script>
 <script>
 
@@ -137,7 +166,7 @@ span svg
 // ==ClosureCompiler==
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // @language_out ECMASCRIPT_2019
-// @js_externs OS13k, OS13kIcon, OS13kWindow, zzfx, zzfxV
+// @js_externs OS13k, OS13kIcon, OS13kWindow, OS13kTaskbarIcon, zzfx, zzfxV
 // @js_externs _OS13k.Medal, _OS13k.KeyDirection
 // @js_externs _OS13k.CreateShader, _OS13k.RenderShader, _OS13k.CreateCanvas
 // @js_externs _OS13k.PlaySamples, _OS13k.SetVolume
@@ -151,15 +180,16 @@ span svg
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Desktop
 
-os13kDesktop.Focus=()=>
+desktop.Focus=()=>
 {
     // deavtivate window and icon
     activeWindow && activeWindow.SetActive(activeWindow = 0);
     selectedIcon && selectedIcon.SetActive(selectedIcon = 0);
+    selectedTaskbarIcon && selectedTaskbarIcon.SetActive(selectedTaskbarIcon = 0);
     this.focus();
 }
 
-os13kDesktop.MouseDown=()=>os13kDesktop.Focus();
+desktop.MouseDown=()=>desktop.Focus();
 
 /////////////////////////////////////////////////////////////////////////////
 // OS13k System
@@ -176,9 +206,12 @@ class _OS13k
     
     InitDesktop()
     {
+        const icon = {icon:'❌', name:'Close All'};
+        taskbar.appendChild(this.taskbarIcon = new OS13kTaskbarIcon(desktop, icon));
+        
         // add icons to desktop
-        let x = iconGridSizeX/4;
-        let y = iconGridSizeX/4;
+        let x = 30;
+        let y = 80;
         let open = 1;
         for (const icon of desktopLayout)
         {
@@ -189,7 +222,7 @@ class _OS13k
             
             // create icon
             const os13kicon = new OS13kIcon(icon);
-            os13kDesktop.appendChild(os13kicon);
+            desktop.appendChild(os13kicon);
             open && os13kicon.Open(open = 0);
         }
     }
@@ -383,13 +416,13 @@ class _OS13k
 /////////////////////////////////////////////////////////////////////////////
 // OS13kIcon
 
+let selectedIcon;
 const iconGridSizeX = 99;
 const iconGridSizeY = 130;
-let selectedIcon;
 
 class OS13kIcon extends HTMLElement
 {
-	constructor({x, y, name, icon, src, width=720, height=405, author, folder, hideWhenClosed, allowMultiple, showReload})
+	constructor({x, y, name, icon, src, width=720, height=405, author, folder, allowMultiple, showReload})
     {
 		super();
         
@@ -408,7 +441,6 @@ class OS13kIcon extends HTMLElement
         this.windowHeight = height;
         this.author = author;
         this.folder = folder;
-        this.hideWhenClosed = hideWhenClosed;
         this.allowMultiple = allowMultiple;
         this.showReload = showReload;
         
@@ -437,19 +469,14 @@ class OS13kIcon extends HTMLElement
     
     Open()
     {
-        let window = this.os13kWindow;
-        if (window)
-        {
-            // show the old window
-            window.style.display = '';
-        }
-        else
+        let window = this.window;
+        if (!window)
         {
             // create the window
             window = new OS13kWindow(this);
             if (!this.allowMultiple)
-                this.os13kWindow = window;
-            os13kDesktop.appendChild(window);
+                this.window = window;
+            desktop.appendChild(window);
         }
         
         // set focus to window
@@ -460,15 +487,16 @@ class OS13kIcon extends HTMLElement
     {
         // focus on icon window if it exists
         const parent = this.parentElement && this.parentElement.offsetParent;
-        parent.Focus ? parent.Focus() : os13kDesktop.Focus();
+        parent.Focus ? parent.Focus() : desktop.Focus();
         
         // set active
-        selectedIcon && selectedIcon.SetActive(selectedIcon = 0);
         this.SetActive();
     }
     
     SetActive(active=1)
     {
+        // unselect old icon and change class
+        selectedIcon && selectedIcon.SetActive(selectedIcon = 0);
         selectedIcon = this;
         this.iconElement.className = 'icon' + (active ? ' iconSelected' : '');
     }
@@ -481,7 +509,7 @@ customElements.define('os13k-icon', OS13kIcon);
 // OS13kWindow
 
 let activeWindow;
-let activeWindowZ = 1e7;
+let activeWindowZ = 0;
 let windowOpenPosition = 99;
 
 class OS13kWindow extends HTMLElement
@@ -489,6 +517,13 @@ class OS13kWindow extends HTMLElement
 	constructor(icon)
     {
 		super();
+        
+        // set icon data
+        this.icon = icon;
+        
+        // create taskbar icon
+        this.taskbarIcon = new OS13kTaskbarIcon(this, icon);
+        taskbar.appendChild(this.taskbarIcon);
         
         // set window position
         windowOpenPosition += 46;
@@ -508,10 +543,11 @@ class OS13kWindow extends HTMLElement
         this.shadowRoot.appendChild(titleBar);
         
         // create title bar name
-        const titleBarName = document.createElement('span');
+        const titleBarName = document.createElement('div');
         titleBarName.className = titleBarName.id = 'name';
         titleBarName.innerHTML = 
-            icon.icon + '&nbsp;' +
+            `&nbsp;<span style='text-shadow:2px 2px 3px #000'>` + 
+            icon.icon + '</span>&nbsp;' +
             icon.name + '&nbsp;' +
             (icon.author ? '(' + icon.author + ')' : '');
         titleBar.appendChild(titleBarName);
@@ -519,17 +555,16 @@ class OS13kWindow extends HTMLElement
         if (!icon.folder)
         {
             // full screen icon
-            const titleBarIconFull = document.createElement('span');
+            const titleBarIconFull = document.createElement('div');
             titleBarIconFull.className = titleBarIconFull.id = 'full';
-            titleBarIconFull.title = 'Fullscreen';
+            titleBarIconFull.title = 'Full Screen';
             titleBarIconFull.innerHTML = '<svg><use href=#iconFull></use></svg>';
             titleBar.appendChild(titleBarIconFull);
         }
-        
         if (icon.showReload)
         {
             // reload icon
-            const titleBarIconReload = document.createElement('span');
+            const titleBarIconReload = document.createElement('div');
             titleBarIconReload.className = titleBarIconReload.id = 'reload';
             titleBarIconReload.title = 'Reload';
             titleBarIconReload.innerHTML = '<svg><use href=#iconReload></use></svg>';
@@ -537,7 +572,7 @@ class OS13kWindow extends HTMLElement
         }
         
         // close icon
-        const titleBarIconClose = document.createElement('span');
+        const titleBarIconClose = document.createElement('div');
         titleBarIconClose.className = titleBarIconClose.id = 'close';
         titleBarIconClose.title = 'Close';
         titleBarIconClose.innerHTML = '<svg><use href=#iconClose></use></svg>';
@@ -557,12 +592,12 @@ class OS13kWindow extends HTMLElement
         this.shadowRoot.appendChild(contentWrapper);
         
         // open the icon
-        this.os13kIcon = icon;
+        this.icon = icon;
         if (icon.folder)
         {
             // add icons to folder
-            let x = iconGridSizeX/4;
-            let y = iconGridSizeX/4;
+            let x = 30;
+            let y = 30;
             for (const folderIcon of icon.folder)
             {
                 folderIcon.x = x;
@@ -608,16 +643,23 @@ class OS13kWindow extends HTMLElement
                 iframeContent.oncontextmenu=e=>e.preventDefault();
 
                 // check for extensions
-                if (this.os13kIcon.isDweet || this.os13kIcon.isShader)
+                if (this.icon.isDweet || this.icon.isShader)
                 {
                     // create full body canvas
                     const iframeDocument = iframeContent.document;
                     const iframeText = iframeDocument.body.innerText;
-                    iframeDocument.body.innerHTML = `<canvas id=c width=1920 height=1080 style=width:100%;background:${ this.os13kIcon.isDweet ? '#fff' : '#000' }>`;
-                    iframeDocument.body.style = 'background:#000;overflow:hidden;margin:0;display:flex;align-items:center';
+                    iframeDocument.body.innerHTML = 
+                        '<canvas id=c width=1920 height=1080 style=' +
+                        `width:100%;background:#${ this.icon.isDweet ? 'fff' : '000' }>`;
+                    iframeDocument.body.style = 
+                        'background:#000;' +
+                        'overflow:hidden;' +
+                        'margin:0;' +
+                        'display:flex;' +
+                        'align-items:center';
 
                     // create dweet
-                    this.os13kIcon.isDweet && iframeContent.eval(
+                    this.icon.isDweet && iframeContent.eval(
                         'u=t=>{' + iframeText + '};' +
                         'x=c.getContext`2d`;' +
                         'S=Math.sin;' +
@@ -630,7 +672,7 @@ class OS13kWindow extends HTMLElement
                         'loop(frame=0)');
 
                     // create shader
-                    this.os13kIcon.isShader && iframeContent.eval(
+                    this.icon.isShader && iframeContent.eval(
                         'g=c.getContext`webgl2`;' +
                         'x=y=z=w=0;' +
                         'onmousemove=e=>e.buttons&&(x=e.x,y=c.height-e.y);' +
@@ -661,22 +703,15 @@ class OS13kWindow extends HTMLElement
         (id == 'name') && (selected = this);
             
         // set focus
-        this.Focus();
+        (id != 'close') && this.Focus();
     }
     
     Close()
     {
-        if (this.os13kIcon.hideWhenClosed)
-        {
-            // hide window so it can be reopened
-            this.style.display = 'none';
-        }
-        else
-        {
-            // destroy window
-            this.os13kIcon.os13kWindow = 0;
-            this.remove();
-        }
+        // destroy window
+        this.icon.window = 0;
+        this.taskbarIcon.remove();
+        this.remove();
     }
     
     Reload()
@@ -686,22 +721,20 @@ class OS13kWindow extends HTMLElement
         this.iframeContent.location.reload();
     }
     
-    FullScreen()
+    Focus()
     {
-        // set fullscreen
-        const fullScreenElement = this.contentWrapper;
-        if (fullScreenElement.webkitRequestFullScreen)
-            fullScreenElement.webkitRequestFullScreen();
-        else if (fullScreenElement.mozRequestFullScreen)
-            fullScreenElement.mozRequestFullScreen();
+        // set focus
+        this.iframeContent ? this.iframeContent.focus() : desktop.Focus();
+        this.SetActive();
     }
     
     SetActive(active=1)
     {
         if (active)
         {
-            // move to top when active
+            // move to top and display
             this.style.zIndex = ++activeWindowZ;
+            this.style.display = '';
             
             // deactivate old window
             if (activeWindow && activeWindow != this)
@@ -716,17 +749,66 @@ class OS13kWindow extends HTMLElement
         
         // deactivate icon
         selectedIcon && selectedIcon.SetActive(selectedIcon = 0);
+        this.taskbarIcon.SetActive(1);
     }
     
-    Focus()
+    FullScreen()
     {
-        // set focus
-        this.iframeContent ? this.iframeContent.focus() : os13kDesktop.Focus();
-        this.SetActive();
+        // set fullscreen
+        const fullScreenElement = this.contentWrapper;
+        if (fullScreenElement.webkitRequestFullScreen)
+            fullScreenElement.webkitRequestFullScreen();
+        else if (fullScreenElement.mozRequestFullScreen)
+            fullScreenElement.mozRequestFullScreen();
     }
 } // OS13kWindow
 
 customElements.define('os13k-window', OS13kWindow);
+
+/////////////////////////////////////////////////////////////////////////////
+// OS13kIcon
+
+let selectedTaskbarIcon;
+
+class OS13kTaskbarIcon extends HTMLElement
+{
+	constructor(window, icon)
+    {
+		super();
+        
+        // create icon
+        this.window = window;
+        this.className = 'icon';
+        this.innerHTML = '<div style=pointer-events:none>' + icon.icon + '</span>';
+        this.title = icon.name;
+    }
+    
+    MouseDown()
+    {
+        // focus on window
+        this.window.Focus();
+        if (this.window == desktop)
+        {
+            // close all windows
+            const closeWindows = [];
+            for( const c of desktop.children)
+                c.Close && closeWindows.push(c);
+            for( const w of closeWindows)
+                w.Close();
+        }
+    }
+    
+    SetActive(active=1)
+    {
+        // unselect old icon and change class
+        selectedTaskbarIcon && selectedTaskbarIcon.SetActive(selectedTaskbarIcon = 0);
+        selectedTaskbarIcon = this;
+        this.className = 'icon' + (active ? ' iconSelected' : '');
+    }
+    
+} // OS13kTitlebarIcon
+
+customElements.define('os13k-taskbar-icon', OS13kTaskbarIcon);
 
 /////////////////////////////////////////////////////////////////////////////
 // Input
@@ -756,20 +838,20 @@ onmousedown=e=>
             originalTarget.MouseDown();
     }
     else
-        os13kDesktop.MouseDown();
+        desktop.MouseDown();
     
     if (selected)
     {
         // set grabbing mode
         document.body.style.cursor = 'grabbing';
-        os13kDesktop.style.pointerEvents = 'none';
+        desktop.style.pointerEvents = 'none';
     }
 }
 
 onmouseup=e=>
 {
     // allow pointer events and reset cursor
-    os13kDesktop.style.pointerEvents = '';
+    desktop.style.pointerEvents = '';
     document.body.style.cursor = '';
         
     // release selected
