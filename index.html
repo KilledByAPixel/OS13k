@@ -861,7 +861,8 @@ oncontextmenu=e=>e.preventDefault();
 
 /////////////////////////////////////////////////////////////////////////////////////
 // Touch Input
-if (typeof ontouchend != 'undefined')
+
+try
 {
     let wasTouching;
     let lastTouchTime;
@@ -885,11 +886,9 @@ if (typeof ontouchend != 'undefined')
     }
 
     // set all touch events
-    addEventListener('touchstart',  ProcessTouch, false);
-    addEventListener('touchmove',   ProcessTouch, false);
-    addEventListener('touchcancel', ProcessTouch, false);
-    addEventListener('touchend',    ProcessTouch, false);
+    ontouchstart = ontouchmove = ontouchcancel = ontouchend = ProcessTouch;
 }
+catch (e) {}
 
 /////////////////////////////////////////////////////////////////////////////
 // ZzFXMicro - Zuper Zmall Zound Zynth 
