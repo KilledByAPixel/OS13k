@@ -16,7 +16,7 @@ Add an icon config to desktop.js to register a new program
 - {name:'Free Cell', icon:'♠️', src:'games/freeCell.html', width:800, height:1e3, allowMultiple:1}
 - {src:'help.html'}
 
-For faster iteration, the first icon in desktopLayout opens on start
+The first icon in desktopLayout opens on start
 
 ### Programming
 - All programs must run in strict mode, though for the 13k build we will disable strict
