@@ -1,6 +1,7 @@
 <head>
 <title>OS13k - A tiny pseudo operating system for JS13k</title>
 <meta charset=utf-8>
+<meta name=viewport content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0'>
 <style>
 *    
 { 
@@ -862,24 +863,17 @@ oncontextmenu=e=>e.preventDefault();
 /////////////////////////////////////////////////////////////////////////////////////
 // Touch Input
 
-if (typeof ontouchend != 'undefined')
+try
 {
-    let wasTouching;
-    let lastTouchTime;
+    let wasTouching, lastTouchTime;
     const ProcessTouch=e=>
     {
         const touching = e.touches.length;
-        e =
-        {
-            x: touching? e.touches[0].clientX : 0,
-            y: touching? e.touches[0].clientY : 0,
-            target: e.target,
-            originalTarget: e.originalTarget || e.path[0]
-        }
-
         if (touching)
         {
             const touchTime = Date.now();
+            e.x = e.touches[0].clientX;
+            e.y = e.touches[0].clientY;
             if (!wasTouching)
                 touchTime - lastTouchTime < 300 ? ondblclick(e) : onmousedown(e);
             onmousemove(e);
@@ -891,11 +885,9 @@ if (typeof ontouchend != 'undefined')
     }
 
     // set all touch events
-    addEventListener('touchstart',  ProcessTouch, false);
-    addEventListener('touchmove',   ProcessTouch, false);
-    addEventListener('touchcancel', ProcessTouch, false);
-    addEventListener('touchend',    ProcessTouch, false);
+    ontouchstart = ontouchmove = ontouchcancel = ontouchend = ProcessTouch;
 }
+catch (e) {}
 
 /////////////////////////////////////////////////////////////////////////////
 // ZzFXMicro - Zuper Zmall Zound Zynth 
