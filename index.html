@@ -155,7 +155,7 @@ div svg
 <div id=taskbar class=taskbar></div>
 <div id=desktop class=desktop></div>
 <div class=title>OS13k</div>
-<script src=desktop.js></script>
+<script src=desktop.js?1></script>
 <script>
 
 // Startup Program - uncomment and change to your file to open on start
@@ -341,7 +341,7 @@ class _OS13k
         
         // check vertex shader for errors
         //if (!x.getShaderParameter(vertexShader, x.COMPILE_STATUS))
-        //    return console.log(x.getShaderInfoLog(vertexShader));
+        //    throw x.getShaderInfoLog(vertexShader);
         
         // create shadertoy compatible pixel shader
         const pixelShader = x.createShader(x.FRAGMENT_SHADER)
@@ -364,7 +364,7 @@ class _OS13k
 
         // check pixel shader for errors
         if (!x.getShaderParameter(pixelShader, x.COMPILE_STATUS))
-            return console.log(x.getShaderInfoLog(pixelShader));
+            throw x.getShaderInfoLog(pixelShader);
 
         // create texture
         x.bindTexture(x.TEXTURE_2D, x.createTexture());
@@ -510,7 +510,8 @@ customElements.define('os13k-icon', OS13kIcon);
 
 let activeWindow;
 let activeWindowZ = 0;
-let windowOpenPosition = 99;
+let windowOpenPositionX = 99;
+let windowOpenPositionY = 200;
 
 class OS13kWindow extends HTMLElement
 {
@@ -526,11 +527,14 @@ class OS13kWindow extends HTMLElement
         taskbar.appendChild(this.taskbarIcon);
         
         // set window position
-        windowOpenPosition += 46;
-        if (windowOpenPosition > 300)
-            windowOpenPosition = 99+23;
-        this.style.left = windowOpenPosition;
-        this.style.top = windowOpenPosition;
+        this.style.left = windowOpenPositionX;
+        this.style.top = windowOpenPositionY;
+        windowOpenPositionY += 46;
+        if (windowOpenPositionY > 400)
+            windowOpenPositionY = 160;
+        windowOpenPositionX += 46;
+        if (windowOpenPositionX > 1e3)
+            windowOpenPositionX = 99;
         
         // create shadow root
 		this.shadow = this.attachShadow({mode: 'open'});
@@ -546,10 +550,12 @@ class OS13kWindow extends HTMLElement
         const titleBarName = document.createElement('div');
         titleBarName.className = titleBarName.id = 'name';
         titleBarName.innerHTML = 
+            '<div style=pointer-events:none>' +
             `&nbsp;<span style='text-shadow:2px 2px 3px #000'>` + 
             icon.icon + '</span>&nbsp;' +
             icon.name + '&nbsp;' +
-            (icon.author ? '(' + icon.author + ')' : '');
+            (icon.author ? '(' + icon.author + ')' : '') +
+            '</div>';
         titleBar.appendChild(titleBarName);
         
         if (!icon.folder)
@@ -798,6 +804,17 @@ class OS13kTaskbarIcon extends HTMLElement
         }
     }
     
+    Open()
+    {
+        if (this.window != desktop)
+        {
+            // bring to center
+            const rect = this.window.getBoundingClientRect();
+            this.window.style.left = innerWidth/2 - rect.width/2;
+            this.window.style.top = innerHeight/2 - rect.height/2;
+        }
+    }
+    
     SetActive(active=1)
     {
         // unselect old icon and change class
@@ -834,7 +851,7 @@ onmousedown=e=>
     {
         const originalTarget = e.originalTarget || e.path[0];
         e.target.MouseDown(originalTarget.id)
-        if (originalTarget.MouseDown)
+        if (originalTarget != e.target && originalTarget.MouseDown)
             originalTarget.MouseDown();
     }
     else
@@ -863,12 +880,13 @@ onmousemove=e=>
     if (selected)
     {
         // clamp to window
-        const x = OS13k.Clamp(e.x, 9, innerWidth-9);
-        const y = OS13k.Clamp(e.y, 9, innerHeight-9);
+        const rect = selected.getBoundingClientRect();
+        const x = OS13k.Clamp(e.x - seletOffsetX, 130-rect.width, innerWidth-99);
+        const y = OS13k.Clamp(e.y - seletOffsetY, 46, innerHeight-48);
         
         // update selected position
-        selected.style.left = x - seletOffsetX;
-        selected.style.top = y - seletOffsetY;
+        selected.style.left = x;
+        selected.style.top = y;
     }
 }
 
