@@ -1,10 +1,187 @@
-<body style=background:#000;margin:0;overflow:hidden><canvas id=a><script>
-d=document;b=d.body;c=a.getContext`2d`
-a.width=innerWidth
-a.height=innerHeight
-onresize=e=>location.reload()
-for(_=`=>F=nFEkeyDa-oZe-sY],Xr[W9,V?-U0>)+onc.fillText())n.0,push(new C(?0:),)+=Style="w(a.heighta.width/2,/2,map(nF&&	this)**2<(f+c)**2	(==p	(s,o,U.5:!p|3==p?.8:1,EWDCode%37]=2)U4:4splice(indexOf(C=functi(t,l,f,p){.b=(iF{e1<p,c.ft=2*f+"px'",hsl("+80*(p-2?4+p:h/9" 90%"+(-1<p?50:99"%)",p-2?"❀♛♥♛♞1♟♜♝"[m>93+p]:" "+m,s-f,o+f/2st*=s+t>|s+tol*=o+l>|o+lp|1f*=13<fU1>p?.9:.99:1p||("♛x"+I,V49tW2]-W0XlW3]-W1X0==h%5	(u-s)/V(v-o)/V18,-1)a(f,p,}.a=((e,a,c,d,u)F{0<p&-3<d&1>d&(!!d|9<h)	(!d&60<h&!x)	(3tYU9:VlZU9:9440<++f	f=25,3l=(t=2))59)||(Y)/8(Z)/851t=,l=(YZ2*f,-3d+2	u11dy=--I})},setInterval(tF{if(#0005",Rect(,e=b(0==++h%50	9<x	--x,!e||y	0<I)for(i=e||25*++m,x=40-m,y=h=n=[X9>=m	25,/V-2;i--;)25+92!3!32},16Ddown2,DupmousemoveE{u=x,v=y},r=[m=h=u=v=y=n=[X0XI=3,wEMath.random()*n|0`;G=/[-U-ZD-F]/.exec(_);)with(_.split(G))_=join(shift());eval(_)
+<body style=margin:0>
+<canvas id=a>
+<script>
+
+
+// init shim variables 
+const b = document.body;
+const c = a.getContext`2d`;
+onresize = e => location.reload();
+
+//////////////////////////////////////////////////
+// Queen's Gambit - AKA Chesstron 1024
+// Frank Force 2019
+//////////////////////////////////////////////////
+
+// game object
+A=function(vx, vy, x, y, s, type)
+{
+    // object types...
+    //  5 ♝ bishop - moves randomly diagonals, shoots at player
+    //  4 ♜ rook - moves randomly at right angles, spawns pawns
+    //  3 ♟ pawn - moves towards player in short steps
+    //  2 number - stationary enemy, shows level number
+    //  1 ♞ horse - enemy bullet
+    // >0 enemies
+    // <=0 player stuff
+    //  0 ♛ player
+    // -1 ♥ heart - player bullet
+    // -2 ♛ enemy killbox at start of round
+    // -3 ❀ explosion effect
+    
+    this.U=()=>   // object update
+    {
+        // update enemy count
+        enemycount += type > 1;
+
+        // draw object
+        c.font = 2*s+"px'";
+        c.fillStyle=`hsl(${80*(type-2?4+type:framecount/9)} 90%${type>-1?50:99}%)`;
+        c.fillText(type-2?"❀♛♥♛♞1♟♜♝"[level>9?0:3+type]:" "+level,x-s,y+s/2);
+        //c.strokeStyle ="#F00";c.strokeRect(x-s/2,y-s/2,s,s); // debug hitbox
+        //c.fillText(agro,9,199); // debug agro
+
+        // update position, bounce off walls, and apply damping
+        x += vx *=x+vx > a.width  | x+vx < 0?-.5:(!type | type == 3)?.8:1;
+        y += vy *=y+vy > a.height | y+vy < 0?-.5:(!type | type == 3)?.8:1;
+
+        // get smaller and die over time
+        if (type < 0 | type == 1) // ♥ heart, ❀ explosion, ♛ killbox, and ♞ horse
+            s *= s>13?(type<-1?.9:.99):actorList.splice(actorList.indexOf(this),1);
+        
+        if (!type) // ♛ player update
+        {
+            // show player lives
+            c.fillText("♛x"+lives,9,49);
+        
+            // movement controls
+            vx += inputIsDown[2] - inputIsDown[0];
+            vy += inputIsDown[3] - inputIsDown[1];
+
+            // auto shoot in direction of mouse
+            if (framecount%5==0)
+                actorList.push(new A((mouseX - x)/9,(mouseY - y)/9,x,y,18, -1));
+        }
+
+        // cross update with each other actor
+        actorList.map(a=>a.C(x,y,s,type,this));
+    }
+    
+    this.C=(ox,oy,os,otype,that)=>    // cross update
+    {
+        // check enemy vs bullet or player
+        if (type > 0 & otype > -3 & otype < 1 & (!!otype|framecount>9))
+        {
+            // update enemies periodically
+            if (!otype & framecount > 60 & !R(agro))
+            {
+                if (type == 3)  // ♟ pawn
+                {
+                    // move towards player
+                    vx += ox-x<0?-9:9;
+                    vy += oy-y<0?-9:9;
+                }
+                if (type == 4) // ♜ rook
+                {
+                    // get larger and split into smaller copy of self and pawn at max size
+                    if (++s>40)
+                        actorList.push(new A(0,0,x,y,s=25,3));
+                     
+                    // move randomly in 90 degree angles
+                    vx = R(2)?0:R(2)?-4:4;
+                    vy = vx?0:R(2)?-4:4;
+                } 
+                if (type == 5)    // ♝ bishop
+                {
+                    // shoot at player
+                    if (!R(9))
+                        actorList.push(new A((ox - x)/80,(oy - y)/80,x,y,50, 1));
+                    
+                    // move randomly on diagonals
+                    vx = R(2)?-4:4;
+                    vy = R(2)?-4:4;
+                }
+            }
+            
+            // object collision check
+            if ((ox-x)**2 < (s+os)**2 && (oy-y)**2 < (s+os)**2)
+            {
+                // ❀ spawn hit effect
+                actorList.push(new A(0,0,x,y,2*s,-3));
+                
+                // remove dead actors (except for kill box)
+                if (otype+2)
+                    actorList.splice(actorList.indexOf(that),1);
+                actorList.splice(actorList.indexOf(this),1);
+                
+                // check if player died
+                otype?0:playerDead=--lives;
+            }
+        }
+    }
+}
+
+L=()=> // main game loop
+{
+    // clear screen
+    c.fillStyle="#0005";
+    c.fillRect(0,0,a.width,a.height);
+     
+    // actor update
+    enemycount = 0;
+    actorList.map(a=>a.U());
+    
+    // increase agro over time
+    agro-= ++framecount%50==0&agro>9;
+    
+    // check if all enemies or player is dead
+    if (!enemycount||playerDead&&lives>0)    
+    {
+        // reset player dead and frame count
+        playerDead = framecount=0;
+        
+        // increase enemy count each level
+        i = enemycount? enemycount : ++level*25;
+        
+        // more agro as level increases
+        agro = 40-level;
+        
+        // reset actor list
+        actorList = [];
+        
+        // spawn player & killbox if not final level
+        level<=9&&actorList.push(
+            new A(0,0,a.width/2,a.height/2,25,0), 
+            new A(0,0,a.width/2,a.height/2,a.width/9,-2)
+        );
+        
+        // spawn random enemies
+        for(;i--;)
+            actorList.push(new A(0,0,R(a.width),R(a.height),25+R(9), R(2)+!R(3)+!R(3)+2));
+    }
+}
+    
+// input
+onkeydown   = x=> inputIsDown[x.keyCode%37]=2;
+onkeyup     = x=> inputIsDown[x.keyCode%37]=0;
+onmousemove = x=> {mouseX = x.x; mouseY = x.y }
+
+// init 
+let actorList=[], inputIsDown=[0,0,0,0], level=0, framecount=0, mouseX=0, mouseY=0, playerDead=0, lives=3;
+let R=m=>Math.random()*m|0; // random integer
+let enemycount, agro;       // can be removed from minified
+
+/////////////////////////////////////////////////////////////////////////////////////
+// ENHANCE - wasd control
 WASD=x=>x==87?1:x==83?3:x==65?0:x==68?2:4
-onkeydown=x=>{r[WASD(x.keyCode)]=2;r[x.keyCode%37]=2;}
-onkeyup=x=>{r[WASD(x.keyCode)]=0;r[x.keyCode%37]=0;}
+onkeydown=x=>{inputIsDown[WASD(x.keyCode)]=2;inputIsDown[x.keyCode%37]=2;}
+onkeyup  =x=>{inputIsDown[WASD(x.keyCode)]=0;inputIsDown[x.keyCode%37]=0;}
+
+OS13kStart=()=>
+{
+    a.width = innerWidth;
+    a.height = innerHeight;
+    setInterval(L,16);
+}
+
 </script>
