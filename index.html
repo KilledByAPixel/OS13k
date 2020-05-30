@@ -786,18 +786,18 @@ class OS13kWindow extends HTMLElement
 customElements.define('os13k-window', OS13kWindow);
 
 /////////////////////////////////////////////////////////////////////////////
-// Input
+// Mouse Input
 
 let selected, seletOffsetX, seletOffsetY;
 
 onmousedown=e=>
 {
+    // prevent main window from getting focus
+    e.cancelable && e.preventDefault();
+    
     // prevent getting stuck
     if (selected)
         return onmouseup(e);
-        
-    // prevent main window from getting focus
-    e.preventDefault();
     
     // save selected offset
     const rect = e.target.getBoundingClientRect();
@@ -857,6 +857,36 @@ ondblclick=e=>
 
 // disable context menu
 oncontextmenu=e=>e.preventDefault();
+
+/////////////////////////////////////////////////////////////////////////////////////
+// Touch Input
+try
+{
+    let wasTouching;
+    let lastTouchTime;
+    const ProcessTouch=e=>
+    {
+        const touching = e.touches.length;
+        if (touching)
+        {
+            const touchTime = Date.now();
+            e.x = e.touches[0].clientX;
+            e.y = e.touches[0].clientY;
+            if (!wasTouching)
+                touchTime - lastTouchTime < 300 ? ondblclick(e) : onmousedown(e);
+            onmousemove(e);
+            lastTouchTime = touchTime;
+        }
+        else if (wasTouching)
+            onmouseup(e);
+        
+        wasTouching = touching;
+    }
+
+    // set all touch events
+    ontouchstart = ontouchmove = ontouchcancel = ontouchend = ProcessTouch;
+}
+catch (e) {}
 
 /////////////////////////////////////////////////////////////////////////////
 // ZzFXMicro - Zuper Zmall Zound Zynth 
