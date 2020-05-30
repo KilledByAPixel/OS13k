@@ -17,7 +17,6 @@ Add an icon config to desktop.js to register a new program
 - {src:'help.html'}
 
 ### Programming
-- All programs must run in strict mode, though for the 13k build we will disable strict
 - Chrome is recommended for development
 - Firefox will not work in local mode because it treats local files as cross-origin
 - Programs with the extension .dweet.js or .shader.txt will automatically load as dweets or shadertoys
