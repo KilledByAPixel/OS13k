@@ -168,10 +168,9 @@ div svg       { width:100%; pointer-events:none; }
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // @language_out ECMASCRIPT_2019
 // @js_externs OS13k, OS13kIcon, OS13kWindow, OS13kTaskbarIcon, zzfx, zzfxV
-// @js_externs _OS13k.Medal, _OS13k.KeyDirection
+// @js_externs _OS13k.Medal, _OS13k.KeyDirection, _OS13k.Speak
 // @js_externs _OS13k.CreateShader, _OS13k.RenderShader, _OS13k.CreateCanvas
-// @js_externs _OS13k.PlaySamples, _OS13k.SetVolume
-// @js_externs _OS13k.PlaySeedSound, _OS13k.GetSeedSound, _OS13k.Speak
+// @js_externs _OS13k.PlaySamples, _OS13k.PlaySeedSound, _OS13k.GetSeedSound
 // @js_externs _OS13k.Random, _OS13k.randomSeed 
 // @js_externs _OS13k.Clamp, _OS13k.Percent, _OS13k.Lerp
 // @js_externs iframeContent.OS13k, iframeContent.OS13kStart, iframeContent.zzfx
@@ -306,8 +305,6 @@ class _OS13k
         return source;
     }
     
-    SetVolume(volume) { zzfxV = volume; }
-    
     Speak(text) { speechSynthesis.speak(new SpeechSynthesisUtterance(text)); }
     
     CreateShader(canvas, code)
@@ -434,7 +431,7 @@ class OS13kTaskbarIcon extends HTMLElement
         this.window = window;
         this.className = 'icon';
         this.innerHTML = '<div style=pointer-events:none>' + icon.icon;
-        this.title = icon.name;
+        this.title = icon.name + '\n' + icon.title;
     }
     
     MouseDown()
