@@ -2,7 +2,6 @@
 <title>OS13k - A tiny pseudo operating system for JS13k</title>
 <meta charset=utf-8>
 <meta name=viewport content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0'>
-<meta http-equiv=ScreenOrientation content=autoRotate:disabled>
 <style>
 *    
 { 
@@ -886,6 +885,9 @@ try
 
     // set all touch events
     ontouchstart = ontouchmove = ontouchcancel = ontouchend = ProcessTouch;
+    
+    // try to lock orientation
+    screen.lockOrientation('landscape');
 }
 catch (e) {}
 
