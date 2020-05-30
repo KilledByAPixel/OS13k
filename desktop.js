@@ -1,6 +1,6 @@
 const desktopLayout = 
 [
-{name:'Help', icon:'<span style=color:#0f0>?</span>', src:'help.html?10', width:380, height:360},
+{name:'Help', icon:'<span style=color:#0f0>?</span>', src:'help.html?10', width:380, height:380},
 {name:'Code Info', icon:'👨‍💻', src:'codeInfo.html?6'},
 {name:'System', icon:'⚙️', folder:
 [
