@@ -1,12 +1,10 @@
 <body style=margin:0>
-<canvas id=a>
+<canvas id=a style=width:100%;height:100%>
 <script>
-
 
 // init shim variables 
 const b = document.body;
 const c = a.getContext`2d`;
-onresize = e => location.reload();
 
 //////////////////////////////////////////////////
 // Queen's Gambit - AKA Chesstron 1024
@@ -179,8 +177,8 @@ onkeyup  =x=>{inputIsDown[WASD(x.keyCode)]=0;inputIsDown[x.keyCode%37]=0;}
 
 OS13kStart=()=>
 {
-    a.width = innerWidth;
-    a.height = innerHeight;
+    a.width = innerWidth*2;
+    a.height = innerHeight*2;
     setInterval(L,16);
 }
 
