@@ -431,7 +431,7 @@ class OS13kTaskbarIcon extends HTMLElement
         this.window = window;
         this.className = 'icon';
         this.innerHTML = '<div style=pointer-events:none>' + icon.icon;
-        this.title = icon.name + '\n' + icon.title;
+        this.title = icon.name + (icon.title ? '\n' + icon.title : '');
     }
     
     MouseDown()
