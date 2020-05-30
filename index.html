@@ -1,7 +1,7 @@
 <head>
 <title>OS13k - A tiny pseudo operating system for JS13k</title>
 <meta charset=utf-8>
-<meta name=viewport content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0'>
+<meta name=viewport content='width=device-width,initial-scale=2,user-scalable=0'>
 <style>
 *    
 { 
@@ -217,7 +217,12 @@ class _OS13k
             // set icon position
             icon.x = x;
             icon.y = y;
-            x += iconGridSizeX;
+            if ((x += iconGridSizeX) > innerWidth - 90)
+            {
+                // wrap icons to fit window
+                x = 30;
+                y += iconGridSizeY;
+            }
             
             // create icon
             const os13kicon = new OS13kIcon(icon);
@@ -466,7 +471,7 @@ customElements.define('os13k-taskbar-icon', OS13kTaskbarIcon);
 // OS13kIcon
 
 let selectedIcon;
-const iconGridSizeX = 99, iconGridSizeY = 130;
+const iconGridSizeX = 99, iconGridSizeY = 120;
 
 class OS13kIcon extends HTMLElement
 {
@@ -485,8 +490,8 @@ class OS13kIcon extends HTMLElement
         this.src = src;
         this.style.left = x;
         this.style.top = y;
-        this.windowWidth = width;
-        this.windowHeight = height;
+        this.width = folder ? 420 : width;
+        this.height = height;
         this.author = author;
         this.folder = folder;
         this.allowMultiple = allowMultiple;
@@ -581,7 +586,6 @@ class OS13kWindow extends HTMLElement
         // create title bar
         const titleBar = this.titleBar = document.createElement('div');
         titleBar.className = 'titleBar';
-        titleBar.style.maxWidth = icon.windowWidth;
         this.shadowRoot.appendChild(titleBar);
         
         // create title bar name
@@ -615,11 +619,10 @@ class OS13kWindow extends HTMLElement
         this.shadowRoot.appendChild(titleBarGap);
 
         // create content wrapper
-        const contentWrapper = document.createElement('div');
+        const contentWrapper = this.contentWrapper = document.createElement('div');
         contentWrapper.className = 'frame folder';
-        contentWrapper.style.width = icon.windowWidth;
-        contentWrapper.style.height = icon.windowHeight;
-        this.contentWrapper = contentWrapper;
+        contentWrapper.style.width = icon.width;
+        contentWrapper.style.height = icon.height;
         this.shadowRoot.appendChild(contentWrapper);
         
         // open the icon
@@ -632,7 +635,7 @@ class OS13kWindow extends HTMLElement
             {
                 folderIcon.x = x;
                 folderIcon.y = y;
-                if ((x += iconGridSizeX) > icon.windowWidth - 90)
+                if ((x += iconGridSizeX) > icon.width - 90)
                 {
                     // wrap icons to fit window
                     x = 30;
@@ -759,6 +762,10 @@ class OS13kWindow extends HTMLElement
             if (activeWindow && activeWindow != this)
                 activeWindow.SetActive(0);
                 
+            // limit window size to inner size
+            this.contentWrapper.style.width  = Math.min(this.icon.width,  innerWidth);
+            this.contentWrapper.style.height = Math.min(this.icon.height, innerHeight);
+
             // clamp window to screen
             const rect = this.getBoundingClientRect();
             this.style.left = OS13k.Clamp(rect.x, 0, innerWidth-rect.width);
