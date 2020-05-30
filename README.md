@@ -1,6 +1,6 @@
 # Welcome to OS13k!
 
-OS13k is a tiny pseudo operating system designed for a JS13k community project. It includes native support for webgl shaders, zzfx, dweets, medals, fullscreen, and more. The OS (incuding zzfx and shader support) is under 6k when zipped.
+OS13k is a tiny pseudo operating system designed for a JS13k community project. It includes native support for webgl shaders, zzfx, dweets, medals, fullscreen, mobile support, and more. The OS (incuding zzfx and shader support) is under 6k when zipped.
 
 ## Please keep this project confidential!
 
@@ -25,6 +25,7 @@ Add an icon config to desktop.js to register a new program
 - You do not need charset=utf-8, it will be applied automatically
 - Your program may have 0 inner height and width on startup in Firefox
 - Prefix local storage keys with OS13k(program name) to prevent collisions
+- OS13k works well on mobile devices, so we can have a different entry for the JS13k mobile category
 - Make use of the built in features of OS13k to save space in your code
 
 ### System Calls
