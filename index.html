@@ -822,7 +822,6 @@ onmousedown=e=>
     // prevent getting stuck
     if (selected)
         return onmouseup(e);
-    e.preventDefault();
     
     // save selected offset
     const rect = e.target.getBoundingClientRect();
