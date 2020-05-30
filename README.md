@@ -23,11 +23,12 @@ Add an icon config to desktop.js to register a new program
 - To force a page to refresh you can add ?<version> to the src link... {src:'help.html?1'}
 - Your program should be paused or light on cpu when it does not have focus, !document.hasFocus() 
 - You do not need charset=utf-8, it will be applied automatically
+- Your program will have 0 inner height and width on startup
 - Prefix local storage keys with OS13k(program name) to prevent collisions
 - Make use of the built in features of OS13k to save space in your code
 
 ### System Calls
-- The function OS13kInit is called on child frames when opened
+- The function OS13kInit(icon) is called on child frames when opened
 - To acces OS13k features, use the OS13k object
 - ZzFx sounds can played by calling zzfx, volume is controlled by the system
 - OS13k.CreateShader(canvas, shaderCode) - Create a shadertoy compatible webgl shader
