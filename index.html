@@ -2,10 +2,16 @@
 <title>OS13k - A tiny pseudo operating system for JS13k</title>
 <meta charset=utf-8>
 <style>
-*    { font-family:arial; user-select:none;}
-body { margin:0; overflow:hidden; background:linear-gradient(#223,#322); }
-.desktop
-{
+*    
+{ 
+    font-family:arial; 
+    user-select:none;
+}
+body 
+{ 
+    margin:0;
+    overflow:hidden;
+    background:linear-gradient(#223,#322);
 }
 .taskbar
 {
@@ -32,7 +38,6 @@ body { margin:0; overflow:hidden; background:linear-gradient(#223,#322); }
     box-shadow:0px 0px 3px;
     background:linear-gradient(#eee,#444);
 }
-.iconSelected { background:linear-gradient(#ff8,#fff); }
 .title
 {
     font-size:300;
@@ -44,6 +49,7 @@ body { margin:0; overflow:hidden; background:linear-gradient(#223,#322); }
     justify-content:center;
     pointer-events:none;
 }
+.iconSelected { background:linear-gradient(#ff8,#fff); }
 </style>
 <template id=templateIcon>
 <style>
@@ -131,13 +137,9 @@ body { margin:0; overflow:hidden; background:linear-gradient(#223,#322); }
 .full:hover   { background:#fff; }
 .reload:hover { background:#ff0; }
 .close:hover  { background:#f00; }
-div svg 
-{
-    width: 100%;
-    pointer-events: none;
-}
+div svg       { width:100%; pointer-events:none; }
 </style>    
-<svg width=0 height=0>
+<svg height=0>
     <symbol id=iconFull viewBox='0 0 10 10'>
         <rect stroke=#000 stroke-width=.7 fill=none x=1 y=2 width=8 height=6 />
     </symbol>
@@ -152,7 +154,7 @@ div svg
 </head>
 <body>
 <div id=taskbar class=taskbar></div>
-<div id=desktop class=desktop></div>
+<div id=desktop></div>
 <div class=title>OS13k</div>
 <script src=desktop.js?1></script>
 <script>
@@ -175,20 +177,6 @@ div svg
 // @js_externs iframeContent.OS13k, iframeContent.OS13kStart, iframeContent.zzfx
 // @output_file_name OS13k.min.js
 // ==/ClosureCompiler==
-
-/////////////////////////////////////////////////////////////////////////////
-// OS13k Desktop
-
-desktop.Focus=()=>
-{
-    // deavtivate window and icon
-    activeWindow && activeWindow.SetActive(activeWindow = 0);
-    selectedIcon && selectedIcon.SetActive(selectedIcon = 0);
-    selectedTaskbarIcon && selectedTaskbarIcon.SetActive(selectedTaskbarIcon = 0);
-    this.focus();
-}
-
-desktop.MouseDown=()=>desktop.Focus();
 
 /////////////////////////////////////////////////////////////////////////////
 // OS13k System
@@ -234,8 +222,7 @@ class _OS13k
         if (this.lastActiveElement != activeElement)
         {
             // set focus to new active element
-            if (activeElement.localName == 'os13k-window')
-                activeElement.Focus();
+            activeElement.Focus && activeElement.Focus();
             this.lastActiveElement = activeElement;
         }
     }
@@ -264,31 +251,32 @@ class _OS13k
         const R=()=> this.Random();
         
         // randomize sound length
-        const attack = R()**3*lengthScale/2;
-        const sustain = R()**3*lengthScale/2;
-        const release = R()**3*lengthScale/2;
-        const length = attack + sustain + release;
+        lengthScale /= 2;
+        const attack  = R()**3*lengthScale;
+        const sustain = R()**3*lengthScale;
+        const release = R()**3*lengthScale;
+        const length  = attack + sustain + release;
         
         // create random sound
         return zzfx(...
         [
-           volume,                               // volume
-           randomness,                           // randomness
-           R()**2*2e3,                           // frequency
-           attack,                               // attack
-           sustain,                              // sustain
-           release,                              // release
-           R()*5|0,                              // shape
-           R()**2*3,                             // shapeCurve
-           R()<.5?0: R()**3*(R()<.5?-99:99),     // slide
-           R()<.5?0: R()**3*(R()<.5?-99:99),     // deltaSlide
-           R()<.5?0: R()**2*(R()<.5?-1e3:1e3),   // pitchJump
-           R()**2*length,                        // pitchJumpTime
-           R()<.5?0: R()*length,                 // repeatTime
-           R()<.5?0: R()**4,                     // noise
-           R()<.5?0: R()**3*(R()<.5?-9:9),       // modulation
-           R()<.5?0: R()**4,                     // bitCrush
-           R()<.5?0: R()**3/2,                   // delay
+           volume,                              // volume
+           randomness,                          // randomness
+           R()**2*2e3,                          // frequency
+           attack,                              // attack
+           sustain,                             // sustain
+           release,                             // release
+           R()*5|0,                             // shape
+           R()**2*3,                            // shapeCurve
+           (R()<.5) * R()**3*99*(R()<.5?-1:1),  // slide
+           (R()<.5) * R()**3*99*(R()<.5?-1:1),  // deltaSlide
+           (R()<.5) * R()**2*1e3*(R()<.5?-1:1), // pitchJump
+           R()**2 * length,                     // pitchJumpTime
+           (R()<.5) * R() * length,             // repeatTime
+           (R()<.5) * R()**4,                   // noise
+           (R()<.5) * R()**3*9*(R()<.5?-1:1),   // modulation
+           (R()<.5) * R()**4,                   // bitCrush
+           (R()<.5) * R()**3/2,                 // delay
         ]);
     }
     
@@ -298,9 +286,9 @@ class _OS13k
         if (!this.audioContext)
         {
             this.audioContext = new (AudioContext || webkitAudioContext);
-            this.audioContext._createBufferSource = this.audioContext.createBufferSource;
+            this.audioContext.Z = this.audioContext.createBufferSource;
             this.audioContext.createBufferSource =
-            (s = this.audioContext._createBufferSource())=>
+            (s = this.audioContext.Z())=>
             (
                 s.start = s.start || s.noteOn,
                 s.stop  = s.stop  || s.noteOff,
@@ -319,6 +307,7 @@ class _OS13k
     }
     
     SetVolume(volume) { zzfxV = volume; }
+    
     Speak(text) { speechSynthesis.speak(new SpeechSynthesisUtterance(text)); }
     
     CreateShader(canvas, code)
@@ -328,10 +317,14 @@ class _OS13k
 
         // create a simple pass through vertex shader
         const vertexShader = x.createShader(x.VERTEX_SHADER);
-        x.shaderSource(vertexShader,'#version 300 es\nin vec4 p;void main(){gl_Position=p;}');
+        x.shaderSource(vertexShader,
+            '#version 300 es\n' +
+            'in vec4 p;' +
+            'void main()' +
+            '{gl_Position=p;}');
         x.compileShader(vertexShader);
         
-        // create vertex buffer that is a giant triangle to cover the viewport
+        // create vertex buffer that is a big triangle
         const vertexBuffer = x.ARRAY_BUFFER;
         x.bindBuffer(vertexBuffer,x.createBuffer());
         x.bufferData(vertexBuffer,new Int8Array([-3,1,1,-3,1,1]),x.STATIC_DRAW);
@@ -413,6 +406,79 @@ class _OS13k
 }; // _OS13k
 
 /////////////////////////////////////////////////////////////////////////////
+// OS13k Desktop
+
+desktop.Focus=()=>
+{
+    // deavtivate window and icons
+    activeWindow && activeWindow.SetActive(activeWindow = 0);
+    selectedIcon && selectedIcon.SetActive(selectedIcon = 0);
+    selectedTaskbarIcon && selectedTaskbarIcon.SetActive(selectedTaskbarIcon = 0);
+    this.focus();
+}
+
+desktop.MouseDown=()=>desktop.Focus();
+
+/////////////////////////////////////////////////////////////////////////////
+// OS13kTaskbarIcon
+
+let selectedTaskbarIcon;
+
+class OS13kTaskbarIcon extends HTMLElement
+{
+	constructor(window, icon)
+    {
+		super();
+        
+        // create icon
+        this.window = window;
+        this.className = 'icon';
+        this.innerHTML = '<div style=pointer-events:none>' + icon.icon;
+        this.title = icon.name;
+    }
+    
+    MouseDown()
+    {
+        // focus on window
+        this.window.Focus();
+        if (this.window == desktop)
+        {
+            // close all windows
+            const closeWindows = [];
+            for( const c of desktop.children)
+                c.Close && closeWindows.push(c);
+            for( const w of closeWindows)
+                w.Close();
+                
+            // reset window open position
+            windowOpenPositionX = 99;
+            windowOpenPositionY = 200;
+        }
+    }
+    
+    Open()
+    {
+        if (this.window != desktop)
+        {
+            // bring to center
+            const rect = this.window.getBoundingClientRect();
+            this.window.style.left = innerWidth/2 - rect.width/2;
+            this.window.style.top = innerHeight/2 - rect.height/2;
+        }
+    }
+    
+    SetActive(active=1)
+    {
+        // unselect old icon and set style
+        selectedTaskbarIcon && selectedTaskbarIcon.SetActive(selectedTaskbarIcon = 0);
+        selectedTaskbarIcon = this;
+        this.className = 'icon' + (active ? ' iconSelected' : '');
+    }
+} // OS13kTaskbarIcon
+
+customElements.define('os13k-taskbar-icon', OS13kTaskbarIcon);
+
+/////////////////////////////////////////////////////////////////////////////
 // OS13kIcon
 
 let selectedIcon;
@@ -425,7 +491,7 @@ class OS13kIcon extends HTMLElement
     {
 		super();
         
-        // set defaults
+        // set icon defaults
         src = src || '';
         name = name || src.split('.')[0];
         icon = icon || (name[0] ? name[0].toUpperCase() : '' );
@@ -442,8 +508,9 @@ class OS13kIcon extends HTMLElement
         this.folder = folder;
         this.allowMultiple = allowMultiple;
         this.showReload = showReload;
+        author && (this.title = 'By ' + author);
         
-        // check for extension
+        // check for special extensions
         const extension = src? src.split('.')[1] : '';
         this.isDweet = extension == 'dweet';
         this.isShader = extension == 'shader';
@@ -468,18 +535,17 @@ class OS13kIcon extends HTMLElement
     
     Open()
     {
-        let window = this.window;
-        if (!window)
+        if (!this.window)
         {
             // create the window
-            window = new OS13kWindow(this);
+            const window = new OS13kWindow(this);
             if (!this.allowMultiple)
                 this.window = window;
             desktop.appendChild(window);
         }
         
         // set focus to window
-        window.Focus();
+        this.window.Focus();
     }
     
     MouseDown()
@@ -494,12 +560,11 @@ class OS13kIcon extends HTMLElement
     
     SetActive(active=1)
     {
-        // unselect old icon and change class
+        // unselect old icon and set style
         selectedIcon && selectedIcon.SetActive(selectedIcon = 0);
         selectedIcon = this;
         this.iconElement.className = 'icon' + (active ? ' iconSelected' : '');
     }
-    
 } // OS13kIcon
 
 customElements.define('os13k-icon', OS13kIcon);
@@ -528,12 +593,8 @@ class OS13kWindow extends HTMLElement
         // set window position
         this.style.left = windowOpenPositionX;
         this.style.top = windowOpenPositionY;
-        windowOpenPositionY += 46;
-        if (windowOpenPositionY > 400)
-            windowOpenPositionY = 200;
-        windowOpenPositionX += 46;
-        if (windowOpenPositionX > 1e3)
-            windowOpenPositionX = 99;
+        ((windowOpenPositionY += 46) > 400) && (windowOpenPositionY = 200);
+        ((windowOpenPositionX += 46) > 1e3) && (windowOpenPositionX = 99);
         
         // create shadow root
 		this.shadow = this.attachShadow({mode: 'open'});
@@ -550,10 +611,10 @@ class OS13kWindow extends HTMLElement
         titleBarName.className = titleBarName.id = 'name';
         titleBarName.innerHTML = 
             '<div style=pointer-events:none>' +
-            `&nbsp;<span style='text-shadow:2px 2px 3px #000'>` + 
+            '&nbsp;<span style="text-shadow:2px 2px 3px #000">' + 
             icon.icon + '</span>&nbsp;' +
-            icon.name + '&nbsp;' +
-            (icon.author ? '(' + icon.author + ')' : '');
+            icon.name +
+            (icon.author ? ' - ' + icon.author : '');
         titleBar.appendChild(titleBarName);
         
         if (!icon.folder)
@@ -606,8 +667,7 @@ class OS13kWindow extends HTMLElement
             {
                 folderIcon.x = x;
                 folderIcon.y = y;
-                x += iconGridSizeX;
-                if (x > iconGridSizeX*7)
+                if ((x += iconGridSizeX) > icon.windowWidth-90)
                 {
                     // wrap icons
                     x = iconGridSizeX/4;
@@ -640,7 +700,7 @@ class OS13kWindow extends HTMLElement
                 // set up iframe          
                 const iframeContent = this.iframeContent = e.target.contentWindow;
 
-                // try to pass os13k to iframe
+                // try to pass OS13k to iframe
                 iframeContent.OS13k = OS13k;
                 iframeContent.zzfx = zzfx;
                 iframeContent.OS13kStart && iframeContent.OS13kStart();
@@ -654,7 +714,8 @@ class OS13kWindow extends HTMLElement
                     const iframeText = iframeDocument.body.innerText;
                     iframeDocument.body.innerHTML = 
                         '<canvas id=c width=1920 height=1080 style=' +
-                        `width:100%;background:#${ this.icon.isDweet ? 'fff' : '000' }>`;
+                        'width:100%;background:#' +
+                        (this.icon.isDweet ? 'fff' : '000') +'>';
                     iframeDocument.body.style = 
                         'background:#000;' +
                         'overflow:hidden;' +
@@ -671,8 +732,8 @@ class OS13kWindow extends HTMLElement
                         'T=Math.tan;' +
                         'R=(r,g,b,a=1)=>`rgba(${0|r},${0|g},${0|b},${a})`;' +
                         'loop=t=>requestAnimationFrame(loop,' +
-                        'document.hasFocus()&&' +
-                        'u((60*(frame++/60)-frame-1|0?frame-1:frame)/60));' +
+                            'document.hasFocus()&&' +
+                            'u((60*(frame++/60)-frame-1|0?frame-1:frame)/60));' +
                         'loop(frame=0)');
 
                     // create shader
@@ -683,11 +744,11 @@ class OS13kWindow extends HTMLElement
                         'onmousedown=e=>(z=e.x,w=c.height-e.y);' +
                         'onmouseup=e=>z=w=0;' +
                         'loop=t=>requestAnimationFrame(loop,' +
-                        'document.hasFocus()&&(' +
-                        'c.width=innerWidth,' + 
-                        'c.height=innerHeight,' + 
-                        'g.uniform4f(g.getUniformLocation(s,`iMouse`),x,y,z,w),' +
-                        'OS13k.RenderShader(c,s,t/1e3)));' + 
+                            'document.hasFocus()&&(' +
+                            'c.width=innerWidth,' + 
+                            'c.height=innerHeight,' + 
+                            'g.uniform4f(g.getUniformLocation(s,"iMouse"),x,y,z,w),' +
+                            'OS13k.RenderShader(c,s,t/1e3)));' + 
                         'loop(s=OS13k.CreateShader(c,`' + iframeText + '`))');
                 }
                 
@@ -701,13 +762,11 @@ class OS13kWindow extends HTMLElement
     MouseDown(id)
     {
         // check for title bar buttons
-        (id == 'close') && this.Close();
+        (id == 'name')   && (selected = this);
+        (id == 'full')   && this.FullScreen();
         (id == 'reload') && this.Reload();
-        (id == 'full') && this.FullScreen();
-        (id == 'name') && (selected = this);
-            
-        // set focus
-        (id != 'close') && this.Focus();
+        (id == 'close')  && this.Close();
+        this.Focus();
     }
     
     Close()
@@ -736,20 +795,20 @@ class OS13kWindow extends HTMLElement
     {
         if (active)
         {
-            // move to top and display
-            this.style.zIndex = ++activeWindowZ;
-            this.style.display = '';
-            
             // deactivate old window
             if (activeWindow && activeWindow != this)
                 activeWindow.SetActive(0);
+                
+            // move z to top and display
+            this.style.zIndex = ++activeWindowZ;
+            this.style.display = '';
         }
         
-        // change title color when active
+        // set titlebar style
         this.titleBar.className = 'titleBar' + (active ? ' titleBarSelected' : '');
         
         // set active
-        activeWindow = active ? this : 0;
+        activeWindow = active && this;
         
         // deactivate icon
         selectedIcon && selectedIcon.SetActive(selectedIcon = 0);
@@ -770,66 +829,6 @@ class OS13kWindow extends HTMLElement
 customElements.define('os13k-window', OS13kWindow);
 
 /////////////////////////////////////////////////////////////////////////////
-// OS13kIcon
-
-let selectedTaskbarIcon;
-
-class OS13kTaskbarIcon extends HTMLElement
-{
-	constructor(window, icon)
-    {
-		super();
-        
-        // create icon
-        this.window = window;
-        this.className = 'icon';
-        this.innerHTML = '<div style=pointer-events:none>' + icon.icon;
-        this.title = icon.name;
-    }
-    
-    MouseDown()
-    {
-        // focus on window
-        this.window.Focus();
-        if (this.window == desktop)
-        {
-            // close all windows
-            const closeWindows = [];
-            for( const c of desktop.children)
-                c.Close && closeWindows.push(c);
-            for( const w of closeWindows)
-                w.Close();
-                
-            // reset window open position
-            windowOpenPositionX = 99;
-            windowOpenPositionY = 200;
-        }
-    }
-    
-    Open()
-    {
-        if (this.window != desktop)
-        {
-            // bring to center
-            const rect = this.window.getBoundingClientRect();
-            this.window.style.left = innerWidth/2 - rect.width/2;
-            this.window.style.top = innerHeight/2 - rect.height/2;
-        }
-    }
-    
-    SetActive(active=1)
-    {
-        // unselect old icon and change class
-        selectedTaskbarIcon && selectedTaskbarIcon.SetActive(selectedTaskbarIcon = 0);
-        selectedTaskbarIcon = this;
-        this.className = 'icon' + (active ? ' iconSelected' : '');
-    }
-    
-} // OS13kTitlebarIcon
-
-customElements.define('os13k-taskbar-icon', OS13kTaskbarIcon);
-
-/////////////////////////////////////////////////////////////////////////////
 // Input
 
 let selected;
@@ -843,12 +842,12 @@ onmousedown=e=>
         return onmouseup(e);
     e.preventDefault();
     
-    // set selected offset
+    // save selected offset
     const rect = e.target.getBoundingClientRect();
     seletOffsetX = e.x - rect.left;
     seletOffsetY = e.y - rect.top;
     
-    // target mouse down event
+    // mouse down event
     if (e.target.MouseDown)
     {
         const originalTarget = e.originalTarget || e.path[0];
@@ -905,26 +904,26 @@ oncontextmenu=e=>e.preventDefault();
 /////////////////////////////////////////////////////////////////////////////
 // ZzFXMicro - Zuper Zmall Zound Zynth 
 
-let zzfxV = .3; // volume
-const zzfx =    // play zzfx sound
+let zzfxV  = .3; // volume
+const zzfx =     // play zzfx sound
 (
-    volume = 1, 
-    randomness = .05,
-    frequency = 220,
-    attack = 0,
-    sustain = 0,
-    release = .1,
-    shape = 0,
-    shapeCurve = 1,
-    slide = 0, 
-    deltaSlide = 0, 
-    pitchJump = 0, 
+    volume        = 1, 
+    randomness    = .05,
+    frequency     = 220,
+    attack        = 0,
+    sustain       = 0,
+    release       = .1,
+    shape         = 0,
+    shapeCurve    = 1,
+    slide         = 0, 
+    deltaSlide    = 0, 
+    pitchJump     = 0, 
     pitchJumpTime = 0, 
-    repeatTime = 0, 
-    noise = 0,
-    modulation = 0,
-    bitCrush = 0,
-    delay = 0,
+    repeatTime    = 0, 
+    noise         = 0,
+    modulation    = 0,
+    bitCrush      = 0,
+    delay         = 0,
 
     // locals
     PI2 = Math.PI*2,
@@ -932,8 +931,7 @@ const zzfx =    // play zzfx sound
     random = r => r*2*Math.random()-r,
     sign = v => v>0?1:-1,
     startSlide = slide *= 500 * PI2 / sampleRate**2,
-    startFrequency = frequency *= 
-        (1 + random(randomness)) * PI2 / sampleRate,
+    startFrequency = frequency *= (1 + random(randomness)) * PI2 / sampleRate,
     modPhase = sign(modulation) * PI2/4,
     b=[], t=0, tm=0, i=0, j=1, r=0, c=0, s=0, d=.5,
     length, buffer
