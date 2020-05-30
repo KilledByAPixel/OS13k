@@ -768,8 +768,9 @@ class OS13kWindow extends HTMLElement
 
             // clamp window to screen
             const rect = this.getBoundingClientRect();
+            const maxHeight = Math.max(46,innerHeight-rect.height);
             this.style.left = OS13k.Clamp(rect.x, 0, innerWidth-rect.width);
-            this.style.top = OS13k.Clamp(rect.y, 46, innerHeight-rect.height);
+            this.style.top = OS13k.Clamp(rect.y, 46, maxHeight);
                 
             // move z to top and display
             this.style.zIndex = ++activeWindowZ;
