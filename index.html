@@ -878,7 +878,7 @@ oncontextmenu=e=>e.preventDefault();
 /////////////////////////////////////////////////////////////////////////////////////
 // Touch Input
 
-if (typeof ontouchstart != 'undefined')
+try
 {
     let wasTouching, lastTouchTime;
     const ProcessTouch=e=>
@@ -886,13 +886,15 @@ if (typeof ontouchstart != 'undefined')
         const touching = e.touches.length;
         if (touching)
         {
-            const touchTime = Date.now();
+            // set event pos
             e.x = e.touches[0].clientX;
             e.y = e.touches[0].clientY;
+            
+            // pass event on to mouse input
             if (!wasTouching)
-                touchTime - lastTouchTime < 300 ? ondblclick(e) : onmousedown(e);
+                Date.now() - lastTouchTime < 500 ? ondblclick(e) : onmousedown(e);
             onmousemove(e);
-            lastTouchTime = touchTime;
+            lastTouchTime = Date.now();
         }
         else
             wasTouching && onmouseup(e);
@@ -902,6 +904,7 @@ if (typeof ontouchstart != 'undefined')
     // set all touch events
     ontouchstart = ontouchmove = ontouchend = ontouchcancel = ProcessTouch;
 }
+catch (e) {}
 
 /////////////////////////////////////////////////////////////////////////////
 // ZzFXMicro - Zuper Zmall Zound Zynth 
