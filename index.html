@@ -877,7 +877,7 @@ oncontextmenu=e=>e.preventDefault();
 /////////////////////////////////////////////////////////////////////////////////////
 // Touch Input
 
-try
+if (typeof ontouchstart != 'undefined')
 {
     let wasTouching, lastTouchTime;
     const ProcessTouch=e=>
@@ -899,9 +899,8 @@ try
     }
 
     // set all touch events
-    ontouchstart = ontouchmove = ontouchcancel = ontouchend = ProcessTouch;
+    ontouchstart = ontouchmove = ontouchend = ontouchcancel = ProcessTouch;
 }
-catch (e) {}
 
 /////////////////////////////////////////////////////////////////////////////
 // ZzFXMicro - Zuper Zmall Zound Zynth 
