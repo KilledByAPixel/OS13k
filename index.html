@@ -684,9 +684,8 @@ class OS13kWindow extends HTMLElement
                 // try to pass OS13k to iframe
                 iframeContent.OS13k = OS13k;
                 iframeContent.zzfx = zzfx;
-                const fullscreen = document.fullscreenElement;
                 iframeContent.oncontextmenu=e=>e.preventDefault();
-                iframeContent.OS13kStart && iframeContent.OS13kStart();
+                iframeContent.OS13kStart && iframeContent.OS13kStart(this.icon);
 
                 // check for extensions
                 if (this.icon.isDweet || this.icon.isShader)
