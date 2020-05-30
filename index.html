@@ -408,6 +408,7 @@ class _OS13k
 desktop.Focus=()=>
 {
     // deavtivate window and icons
+    document.activeElement.blur();
     activeWindow && activeWindow.SetActive(activeWindow = 0);
     selectedIcon && selectedIcon.SetActive(selectedIcon = 0);
     selectedTaskbarIcon && selectedTaskbarIcon.SetActive(selectedTaskbarIcon = 0);
