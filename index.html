@@ -684,8 +684,9 @@ class OS13kWindow extends HTMLElement
                 // try to pass OS13k to iframe
                 iframeContent.OS13k = OS13k;
                 iframeContent.zzfx = zzfx;
-                iframeContent.innerWidth = icon.windowWidth;
-                iframeContent.innerHeight = icon.windowHeight;
+                const fullscreen = document.fullscreenElement;
+                iframeContent.innerWidth = fullscreen? innerWidth : icon.windowWidth;
+                iframeContent.innerHeight = fullscreen? innerHeight : icon.windowHeight;
                 iframeContent.oncontextmenu=e=>e.preventDefault();
                 iframeContent.OS13kStart && iframeContent.OS13kStart();
 
