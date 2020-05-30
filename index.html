@@ -27,12 +27,12 @@ body { margin:0; overflow:hidden; background:linear-gradient(#223,#322); }
     display:flex;
     align-items:center;
     justify-content:center;
-    text-shadow:2px 2px 3px #000;
+    text-shadow:1px 1px 2px #000;
     border-radius:9px;
     box-shadow:0px 0px 3px;
-    background:linear-gradient(#fff,#777);
+    background:linear-gradient(#eee,#444);
 }
-.iconSelected { background:linear-gradient(#ddd,#88f); }
+.iconSelected { background:linear-gradient(#ff8,#fff); }
 .title
 {
     font-size:300;
@@ -124,7 +124,7 @@ body { margin:0; overflow:hidden; background:linear-gradient(#223,#322); }
     align-items:center; 
     overflow:hidden;
 }
-.titleBarSelected { background:linear-gradient(#ddd,#88f); }
+.titleBarSelected { background:linear-gradient(#eee,#88f); }
 .folder       { background:#222; }
 #full,#reload { width:40; }
 .close        { width:28; }
@@ -553,8 +553,7 @@ class OS13kWindow extends HTMLElement
             `&nbsp;<span style='text-shadow:2px 2px 3px #000'>` + 
             icon.icon + '</span>&nbsp;' +
             icon.name + '&nbsp;' +
-            (icon.author ? '(' + icon.author + ')' : '') +
-            '</div>';
+            (icon.author ? '(' + icon.author + ')' : '');
         titleBar.appendChild(titleBarName);
         
         if (!icon.folder)
@@ -563,7 +562,7 @@ class OS13kWindow extends HTMLElement
             const titleBarIconFull = document.createElement('div');
             titleBarIconFull.className = titleBarIconFull.id = 'full';
             titleBarIconFull.title = 'Full Screen';
-            titleBarIconFull.innerHTML = '<svg><use href=#iconFull></use></svg>';
+            titleBarIconFull.innerHTML = '<svg><use href=#iconFull>';
             titleBar.appendChild(titleBarIconFull);
         }
         if (icon.showReload)
@@ -572,7 +571,7 @@ class OS13kWindow extends HTMLElement
             const titleBarIconReload = document.createElement('div');
             titleBarIconReload.className = titleBarIconReload.id = 'reload';
             titleBarIconReload.title = 'Reload';
-            titleBarIconReload.innerHTML = '<svg><use href=#iconReload></use></svg>';
+            titleBarIconReload.innerHTML = '<svg><use href=#iconReload>';
             titleBar.appendChild(titleBarIconReload);
         }
         
@@ -580,7 +579,7 @@ class OS13kWindow extends HTMLElement
         const titleBarIconClose = document.createElement('div');
         titleBarIconClose.className = titleBarIconClose.id = 'close';
         titleBarIconClose.title = 'Close';
-        titleBarIconClose.innerHTML = '<svg><use href=#iconClose></use></svg>';
+        titleBarIconClose.innerHTML = '<svg><use href=#iconClose>';
         titleBar.appendChild(titleBarIconClose);
         
         // create thin black line below title bar
@@ -784,7 +783,7 @@ class OS13kTaskbarIcon extends HTMLElement
         // create icon
         this.window = window;
         this.className = 'icon';
-        this.innerHTML = '<div style=pointer-events:none>' + icon.icon + '</span>';
+        this.innerHTML = '<div style=pointer-events:none>' + icon.icon;
         this.title = icon.name;
     }
     
