@@ -140,13 +140,13 @@ body
 div svg       { width:100%; pointer-events:none; }
 </style>    
 <svg width=0 height=0>
-    <symbol id=iconFull viewBox='0 0 10 10'>
+    <symbol id=icon-full viewBox='0 0 10 10'>
         <rect stroke=#000 stroke-width=.7 fill=none x=1 y=2 width=8 height=6 />
     </symbol>
-    <symbol id=iconReload viewBox='0 0 10 10'>
+    <symbol id=icon-reload viewBox='0 0 10 10'>
         <circle stroke=#000 stroke-width=.7 fill=none cx=5 cy=5 r=3 />
     </symbol>
-    <symbol id=iconClose viewBox='0 0 10 10'>
+    <symbol id=icon-close viewBox='0 0 10 10'>
         <path stroke=#000 d='M1 1L9 9M9 1L1 9' />
     </symbol>
 </svg>
@@ -208,9 +208,7 @@ class _OS13k
         taskbar.appendChild(this.taskbarIcon = new OS13kTaskbarIcon(desktop, icon));
         
         // add icons to desktop
-        let x = 30;
-        let y = 80;
-        let open = 1;
+        let x = 30, y = 80, open = 1;
         for (const icon of desktopLayout)
         {
             // set icon position
@@ -227,8 +225,7 @@ class _OS13k
     
     Update()
     {
-        // listen for change in active element
-        // this happens when clicking on an iframe
+        // listen for iframe becomming new active element
         const activeElement = document.activeElement;
         if (this.lastActiveElement != activeElement)
         {
@@ -241,8 +238,7 @@ class _OS13k
     KeyDirection(keyCode)
     {
         // get direction from wasd or arrow keys
-        let x = 0;
-        let y = 0;
+        let x = 0, y = 0;
         if (keyCode == 87 || keyCode == 38) y += 1; // up
         if (keyCode == 83 || keyCode == 40) y -= 1; // down
         if (keyCode == 68 || keyCode == 39) x += 1; // right
@@ -447,8 +443,8 @@ class OS13kTaskbarIcon extends HTMLElement
                 w.Close();
                 
             // reset window open position
-            windowOpenPositionX = 99;
-            windowOpenPositionY = 200;
+            windowOpenX = 99;
+            windowOpenY = 200;
         }
     }
     
@@ -467,8 +463,7 @@ customElements.define('os13k-taskbar-icon', OS13kTaskbarIcon);
 // OS13kIcon
 
 let selectedIcon;
-const iconGridSizeX = 99;
-const iconGridSizeY = 130;
+const iconGridSizeX = 99, iconGridSizeY = 130;
 
 class OS13kIcon extends HTMLElement
 {
@@ -535,11 +530,9 @@ class OS13kIcon extends HTMLElement
     
     MouseDown()
     {
-        // focus on icon window if it exists
+        // focus on icon window if it exists and set active
         const parent = this.parentElement && this.parentElement.offsetParent;
         parent.Focus ? parent.Focus() : desktop.Focus();
-        
-        // set active
         this.SetActive();
     }
     
@@ -557,10 +550,7 @@ customElements.define('os13k-icon', OS13kIcon);
 /////////////////////////////////////////////////////////////////////////////
 // OS13kWindow
 
-let activeWindow;
-let activeWindowZ = 0;
-let windowOpenPositionX = 99;
-let windowOpenPositionY = 200;
+let activeWindow, activeWindowZ = 0, windowOpenX = 99, windowOpenY = 200;
 
 class OS13kWindow extends HTMLElement
 {
@@ -576,10 +566,10 @@ class OS13kWindow extends HTMLElement
         taskbar.appendChild(this.taskbarIcon);
         
         // set window position
-        this.style.left = windowOpenPositionX;
-        this.style.top = windowOpenPositionY;
-        ((windowOpenPositionY += 46) > 400) && (windowOpenPositionY = 200);
-        ((windowOpenPositionX += 46) > 1e3) && (windowOpenPositionX = 99);
+        this.style.left = windowOpenX;
+        this.style.top = windowOpenY;
+        ((windowOpenY += 46) > 400) && (windowOpenY = 200);
+        ((windowOpenX += 46) > 1e3) && (windowOpenX = 99);
         
         // create shadow root
 		this.shadow = this.attachShadow({mode: 'open'});
@@ -602,31 +592,19 @@ class OS13kWindow extends HTMLElement
             (icon.author ? ' - ' + icon.author : '');
         titleBar.appendChild(titleBarName);
         
+        // create title bar icons
+        const AddTitleBarIcon=(id, title)=>
+        {
+            const icon = document.createElement('div');
+            icon.innerHTML = `<svg><use href=#icon-${icon.className=icon.id=id}>`;
+            icon.title = title;
+            titleBar.appendChild(icon);
+        }
         if (!icon.folder)
-        {
-            // full screen icon
-            const titleBarIconFull = document.createElement('div');
-            titleBarIconFull.className = titleBarIconFull.id = 'full';
-            titleBarIconFull.title = 'Full Screen';
-            titleBarIconFull.innerHTML = '<svg><use href=#iconFull>';
-            titleBar.appendChild(titleBarIconFull);
-        }
+            AddTitleBarIcon('full', 'Full Screen');
         if (icon.showReload)
-        {
-            // reload icon
-            const titleBarIconReload = document.createElement('div');
-            titleBarIconReload.className = titleBarIconReload.id = 'reload';
-            titleBarIconReload.title = 'Reload';
-            titleBarIconReload.innerHTML = '<svg><use href=#iconReload>';
-            titleBar.appendChild(titleBarIconReload);
-        }
-        
-        // close icon
-        const titleBarIconClose = document.createElement('div');
-        titleBarIconClose.className = titleBarIconClose.id = 'close';
-        titleBarIconClose.title = 'Close';
-        titleBarIconClose.innerHTML = '<svg><use href=#iconClose>';
-        titleBar.appendChild(titleBarIconClose);
+            AddTitleBarIcon('reload', 'Reload');
+        AddTitleBarIcon('close', 'Close');
         
         // create thin black line below title bar
         const titleBarGap = document.createElement('div');
@@ -646,16 +624,15 @@ class OS13kWindow extends HTMLElement
         if (icon.folder)
         {
             // add icons to folder
-            let x = 30;
-            let y = 30;
+            let x = 30, y = 30;
             for (const folderIcon of icon.folder)
             {
                 folderIcon.x = x;
                 folderIcon.y = y;
-                if ((x += iconGridSizeX) > icon.windowWidth-90)
+                if ((x += iconGridSizeX) > icon.windowWidth - 90)
                 {
-                    // wrap icons
-                    x = iconGridSizeX/4;
+                    // wrap icons to fit window
+                    x = 30;
                     y += iconGridSizeY;
                 }
                 contentWrapper.appendChild(new OS13kIcon(folderIcon));
@@ -811,15 +788,15 @@ customElements.define('os13k-window', OS13kWindow);
 /////////////////////////////////////////////////////////////////////////////
 // Input
 
-let selected;
-let seletOffsetX;
-let seletOffsetY;
+let selected, seletOffsetX, seletOffsetY;
 
 onmousedown=e=>
 {
     // prevent getting stuck
     if (selected)
         return onmouseup(e);
+        
+    // prevent main window from getting focus
     e.preventDefault();
     
     // save selected offset
@@ -932,7 +909,7 @@ const zzfx =     // play zzfx sound
     // generate waveform
     for(; i < length;b[i++] = s)
     {
-        if (++c>bitCrush*100)                            // bit crush
+        if (++c > bitCrush*100)                          // bit crush
         {
             c = 0;
             s = t * frequency *                          // frequency
@@ -965,7 +942,7 @@ const zzfx =     // play zzfx sound
         if (j && ++j > pitchJumpTime)       // pitch jump
         {
             frequency += pitchJump;         // apply pitch jump
-            startFrequency += pitchJump;    // also apply to start
+            startFrequency += pitchJump;    // also apply to start frequency
             j = 0;                          // reset pitch jump time
         };
 
