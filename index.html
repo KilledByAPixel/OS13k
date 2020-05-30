@@ -2,6 +2,7 @@
 <title>OS13k - A tiny pseudo operating system for JS13k</title>
 <meta charset=utf-8>
 <meta name=viewport content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0'>
+<meta http-equiv=ScreenOrientation content=autoRotate:disabled>
 <style>
 *    
 { 
@@ -798,8 +799,7 @@ onmousedown=e=>
     e.cancelable && e.preventDefault();
     
     // prevent getting stuck
-    if (selected)
-        return onmouseup(e);
+    if (selected) return onmouseup(e);
     
     // save selected offset
     const rect = e.target.getBoundingClientRect();
