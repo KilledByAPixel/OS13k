@@ -16,7 +16,7 @@ OS13k is a tiny pseudo operating system designed for a JS13k community project. 
 ## Programming Info
 Add an icon config to desktop.js to register a new program
 - The first icon in desktopLayout opens on start
-- {name:'Test', icon:'✌️', src:'system/test.html', allowMultiple:1, showReload:1}
+- {name:'Test', icon:'✌️', src:'system/test.html', multiple:1, reload:1, code:1}
 - {name:'Underwater Cavern', icon:'🌊', author:'Pavel', src:'dweets/underwaterCavern.dweet.js'}
 - {name:'Yin Yangs', icon:'☯️', src:'toys/infiniteYinYangs.shader.txt'}
 - {src:'help.html'}
@@ -55,9 +55,10 @@ Add an icon config to desktop.js to register a new program
 ### Icon settings
 - width and height - Size of window
 - author - Name of creator
-- allowMultiple - Allows multiple copies of the window to open
-- showReload - Shows the reload page icon to reload your program
-- showCode - Option to show the code for your program
+- multiple - Allows multiple copies of the window to open
+- reload - Shows the reload page icon to reload your program
+- code - Option to show the code for your program
+- dweets and shadertoys always show reload and code options
 
 ### Shadertoy Shaders
  - Supports iTime, iMouse, iResolution, and iChannel0
