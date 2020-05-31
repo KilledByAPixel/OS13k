@@ -1,14 +1,19 @@
 # Welcome to OS13k!
-
-OS13k is a tiny pseudo operating system designed for a JS13k community project. It includes native support for webgl shaders, zzfx, dweets, medals, fullscreen, mobile support, and more. The OS (incuding zzfx and shader support) is under 6k when zipped.
+OS13k is a tiny pseudo operating system designed for a JS13k community project. It includes native support for shadertoys, dweets,  zzfx sounds, medals, fullscreen, mobile support, and more. The OS (incuding zzfx, shadertoy, and dwitter support) is under 6k when zipped.
 
 ## Please keep this project confidential!
 
 # [Live Demo](https://killedbyapixel.github.io/OS13k)
 # [Trello Board](https://trello.com/b/1PNeOZfM/os13k)
 
-## Programming Info
+## The Plan
+- My crazy idea is to make this tiny OS to host a variety of games and utilities
+- By sharing code like shader setup, dweets, and zzfx we can pack a lot into 13k
+- Also another big part of this (not yet implemented) is the achievement system
+- I'd like to see as many people as possible contribute tiny games and apps
+- On day one of js13k I plan to submit what we have, then work the theme in during the contest.
 
+## Programming Info
 Add an icon config to desktop.js to register a new program
 - The first icon in desktopLayout opens on start
 - {name:'Test', icon:'✌️', src:'system/test.html', allowMultiple:1, showReload:1}
@@ -17,14 +22,16 @@ Add an icon config to desktop.js to register a new program
 - {src:'help.html'}
 
 ### Programming
+
 - Chrome is recommended for development
+- Strict mode is not enforced but recommended to make minification easier
 - Firefox will not work in local mode because it treats local files as cross-origin
 - Programs with the extension .dweet.js or .shader.txt will automatically load as dweets or shadertoys
 - To force a page to refresh you can add ?<version> to the src link... {src:'help.html?1'}
 - Your program should be paused or light on cpu when it does not have focus, !document.hasFocus() 
 - You do not need charset=utf-8, it will be applied automatically
 - Prefix local storage keys with OS13k(program name) to prevent collisions
-- OS13k works well on mobile devices, so we can have a different entry for the JS13k mobile category
+- OS13k works well on mobile devices, so we plan to have a separate entry for the JS13k mobile category
 - Make use of the built in features of OS13k to save space in your code
 
 ### System Calls
@@ -55,3 +62,14 @@ Add an icon config to desktop.js to register a new program
  - Supports iTime, iMouse, iResolution, and iChannel0
  - iChannel0 is an image of the previous frame
  - pi and e are also exposed as constants
+ 
+ ### Medals (not yet implemented)
+ - Apps can register medals for their games, the os tracks which are unlocked
+ - A function is provided for apps to unlock medals, OS13k.Medal
+ - Players can view their medals and total points will be shown on the taskbar
+ - Any JS13k game can use medals, even if not part of OS13k!
+ - To add a medal to any JS13k game, just save a special key to localStorage
+ - The simplest way to add a medal is save localStorage.OS13kMedals_GAMENAME=1 when the player wins
+ - For more medals use localStorage.OS13kMedals_GAMENAME = [{"medalName":name,"difficulty":difficultyl},{more medals...}]
+ - Both medal name and difficulty are optional
+ - When OS13k is next run, it will search locaStorage and display medals unlocked by other games
