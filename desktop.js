@@ -4,7 +4,7 @@ const desktopLayout =
 {name:'Code Info', icon:'👨‍💻', src:'codeInfo.html?6'},
 {name:'System', icon:'⚙️', folder:
 [
-    {name:'Test', icon:'😄', src:'system/test.html?5'},
+    {name:'Test', icon:'😄', src:'system/test.html?5', allowMultiple:1, showReload:1},
 ]},
 {name:'Games', icon:'🎮', folder:
 [
@@ -28,7 +28,7 @@ const desktopLayout =
 ]},
 {name:'Toys', icon:'🤖', folder:
 [
-    {name:'ZzFX Soundboard', icon:'𝐙𝐙', src:'toys/zzfxSoundBoard.html'},
+    {name:'ZzFX Soundboard', icon:'𝐙𝐙', src:'toys/zzfxSoundBoard.html?1'},
     {name:'Yin Yangs', icon:'☯️', src:'toys/infiniteYinYangs.shader.txt'},
     {name:'Vogel Spiral', icon:'🌀', src:'toys/vogelSpiral.shader.txt?2'},
     {name:'Meta OS13k', icon:'𝐎𝐒', src:'index.html'},
