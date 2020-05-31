@@ -63,7 +63,7 @@ Add an icon config to desktop.js to register a new program
 ### Shadertoy Shaders
  - Supports iTime, iMouse, iResolution, and iChannel0
  - iChannel0 is an image of the previous frame
- - PI and E are also exposed as constants
+ - More can be added if there is a need
  
  ### Medals (not yet implemented)
  - Apps can register medals for their games, the os tracks which are unlocked
