@@ -1,10 +1,11 @@
 const desktopLayout = 
 [
+    {name:'Black Hole', icon:'🌌', src:'dweets/blackHole.dweet.js'},
 {name:'Help', icon:'<span style=color:#0f0>?</span>', src:'help.html?10', width:380, height:380},
 {name:'Code Info', icon:'👨‍💻', src:'codeInfo.html?6'},
 {name:'System', icon:'⚙️', folder:
 [
-    {name:'Test', icon:'😄', src:'system/test.html?5', allowMultiple:1, showReload:1},
+    {name:'Test', icon:'😄', src:'system/test.html?5', allowMultiple:1, showReload:1, showCode:1},
 ]},
 {name:'Games', icon:'🎮', folder:
 [

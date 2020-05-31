@@ -136,18 +136,34 @@ body
     align-items:center;
     overflow:hidden;
 }
+.codeDisplay
+{
+    height:100;
+    resize:none;
+    background:#000;
+    color:#fff;
+    display:none;
+    user-select:auto;
+    pointer-events:auto;
+    border:1px solid #fff;
+    outline: none;
+}
 .selected     { background:linear-gradient(#eee,#88f); }
 .folder       { background:#000; }
-#full,#reload { width:40; }
+.reload,
+.full,
+.code         { width:40; }
+.code         { width:40; }
 .close        { width:28; }
+.code:hover   { background:#0f0; }
 .full:hover   { background:#fff; }
 .reload:hover { background:#ff0; }
 .close:hover  { background:#f00; }
 div svg       { width:100%; pointer-events:none; }
 </style>    
 <svg width=0 height=0>
-<symbol id=icon-code viewBox='0 0 6 10'>
-    <circle stroke=#000 stroke-width=.5 fill=none cx=5 cy=5 r=1.8 />
+<symbol id=icon-code viewBox='0 0 10 10'>
+    <path stroke=#000 stroke-width=.7 fill=none d='M5 8L8 2L2 2L5 8L8 2' />
 </symbol>
 <symbol id=icon-full viewBox='0 0 10 10'>
     <rect stroke=#000 stroke-width=.7 fill=none x=1 y=2 width=8 height=6 />
@@ -165,11 +181,12 @@ div svg       { width:100%; pointer-events:none; }
 <div id=taskbar class=taskbar></div>
 <div id=title class=title>OS13k</div>
 <div id=desktop>
-<script src=desktop.js?9></script>
+<script src=desktop.js?11></script>
 <script>
 
-// Startup Program - uncomment and change to your file to open on start
-//desktopLayout.unshift({src:'system/test.html'});
+// load test if there is no desktop
+if (typeof desktopLayout == 'undefined')
+    desktopLayout = [{src:'system/test.html'},{src:'dweets/underwaterCavern.dweet.js'}];
 
 'use strict';
 
@@ -489,7 +506,7 @@ const iconGridSizeX = 99, iconGridSizeY = 120;
 
 class OS13kIcon extends HTMLElement
 {
-	constructor({x, y, name, icon, src, width=720, height=405, author, folder, allowMultiple, showReload})
+	constructor({x, y, name, icon, src, width=720, height=405, author, folder, allowMultiple, showReload, showCode})
     {
 		super();
         
@@ -500,6 +517,14 @@ class OS13kIcon extends HTMLElement
         src = src || '';
         name = name || src.split('.')[0];
         icon = icon || (name[0] ? name[0].toUpperCase() : '' );
+        
+        
+        // check for special extensions
+        const extension = src? src.split('.')[1] : '';
+        this.isDweet = extension == 'dweet';
+        this.isShader = extension == 'shader';
+        this.hasExtension = this.isDweet || this.isShader
+        this.hasExtension && (showReload = 1);
         
         // set icon data
         this.name = name;
@@ -514,13 +539,7 @@ class OS13kIcon extends HTMLElement
         this.allowMultiple = allowMultiple;
         this.showReload = showReload;
         this.title = name + (author ? '\nBy ' + author : '');
-        
-        // check for special extensions
-        const extension = src? src.split('.')[1] : '';
-        this.isDweet = extension == 'dweet';
-        this.isShader = extension == 'shader';
-        this.hasExtension = this.isDweet || this.isShader;
-        this.hasExtension && (this.showReload = 1);
+        this.showCode = showCode || this.hasExtension;
         
         // create shadow root
 		this.shadow = this.attachShadow({mode: 'open'});
@@ -606,7 +625,7 @@ class OS13kWindow extends HTMLElement
         
         // create title bar name
         const titleBarName = document.createElement('div');
-        titleBarName.className = titleBarName.id = 'name';
+        titleBarName.className = 'name';
         titleBarName.innerHTML = 
             '<div style=pointer-events:none>' +
             '&nbsp;<span style="text-shadow:2px 2px 3px #000">' + 
@@ -619,12 +638,13 @@ class OS13kWindow extends HTMLElement
         const AddTitleBarIcon=(id, title)=>
         {
             const icon = document.createElement('div');
-            icon.innerHTML = `<svg><use href=#icon-${icon.className=icon.id=id}>`;
+            icon.innerHTML = `<svg><use href=#icon-${icon.className = id}>`;
             icon.title = title;
             titleBar.appendChild(icon);
         }
         icon.folder || AddTitleBarIcon('full', 'Full Screen');
         icon.showReload && AddTitleBarIcon('reload', 'Reload');
+        icon.showCode && AddTitleBarIcon('code', 'Show Code');
         AddTitleBarIcon('close', 'Close');
         
         // create thin black line below title bar
@@ -668,27 +688,30 @@ class OS13kWindow extends HTMLElement
             const iframe = this.iframe = document.createElement('iframe');
             iframe.className = 'frame';
             iframe.style.background = '#000';
-            iframe.style.display = this.icon.hasExtension ? 'none' : 'hidden';
+            if (this.icon.hasExtension)
+                iframe.style.display = this.icon.hasExtension ? 'none' : 'hidden';
             iframe.src = icon.src;
             contentWrapper.appendChild(iframe);
-                    
-            /*if (this.icon.hasExtension)
-            {
-                const codeDisplay = this.codeDisplay = document.createElement('textarea');
-                codeDisplay.style = `
-                height:100;
-                resize:none;
-                color:#fff;
-                background:#000;
-                `
-                this.shadowRoot.appendChild(codeDisplay);
-            }*/
         
             // load frame
             iframe.onload=e=>
             {
                 // set up iframe          
                 const iframeContent = this.iframeContent = e.target.contentWindow;
+                const iframeDocument = iframeContent.document;
+                const iframeText = this.icon.hasExtension ?
+                    iframeDocument.body.innerText :
+                    iframeDocument.body.innerHTML;
+
+                // create code display
+                if (!this.codeDisplay)
+                {
+                    this.codeDisplay = document.createElement('textarea');
+                    this.codeDisplay.className = 'codeDisplay'; 
+                    this.codeDisplay.setAttribute('readOnly', 1);
+                    this.codeDisplay.value = iframeText;
+                    this.shadowRoot.appendChild(this.codeDisplay);
+                }
 
                 // try to pass OS13k to iframe
                 iframeContent.OS13k = OS13k;
@@ -699,17 +722,12 @@ class OS13kWindow extends HTMLElement
                 // check for extensions
                 if (this.icon.hasExtension)
                 {
-                    // create full body canvas
-                    const iframeDocument = iframeContent.document;
-                    const iframeText = iframeDocument.body.innerText;
-                    //this.codeDisplay.value = iframeText;
-                    
                     iframeDocument.body.innerHTML = 
                         '<canvas id=c width=1920 height=1080 style=' +
                         'width:100%;background:#' +
                         (this.icon.isDweet ? 'fff' : '000') +'>';
                     iframeDocument.body.style = 
-                        'background:#222;' +
+                        'background:#111;' +
                         'overflow:hidden;' +
                         'margin:0;' +
                         'display:flex;' +
@@ -754,12 +772,15 @@ class OS13kWindow extends HTMLElement
     
     MouseDown(e, originalTarget)
     {
+        if (originalTarget.className == 'codeDisplay')
+            return;
+            
         // prevent desktop from getting focus
         if (this.iframe)
             e.cancelable && e.preventDefault();
             
         // set selected
-        if (originalTarget.id == 'name')
+        if (originalTarget.className == 'name')
             selected = this;
             
         // set focus
@@ -768,10 +789,14 @@ class OS13kWindow extends HTMLElement
     
     MouseClick(e)
     {
+        if (e.className == 'codeDisplay')
+            return;
+            
         // check for title bar buttons
-        (e.id == 'full')   && this.FullScreen();
-        (e.id == 'reload') && this.Reload();
-        (e.id == 'close')  && this.Close();
+        (e.className == 'full')   && this.FullScreen();
+        (e.className == 'reload') && this.Reload();
+        (e.className == 'close')  && this.Close();
+        (e.className == 'code')  && this.ShowCode();
         this.Focus();
     }
     
@@ -790,6 +815,12 @@ class OS13kWindow extends HTMLElement
         this.iframeContent.location.reload();
     }
     
+    ShowCode()
+    {
+        this.showCode = !this.showCode;
+        this.codeDisplay.style.display = this.showCode ? 'block' : '';
+    }
+    
     Focus()
     {
         // set focus
@@ -806,8 +837,7 @@ class OS13kWindow extends HTMLElement
             
             // limit window size to inner size
             this.contentWrapper.style.width  = Math.min(this.icon.width,  innerWidth);
-            this.contentWrapper.style.height = Math.min(this.icon.height, innerHeight)
-                - 1; // fix browser glitch causing a 1 pixel gap at bottom
+            this.contentWrapper.style.height = Math.min(this.icon.height, innerHeight);
 
             // clamp window to screen
             const rect = this.getBoundingClientRect();
