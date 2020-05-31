@@ -11,10 +11,11 @@ OS13k is a tiny pseudo operating system designed for a JS13k community project. 
 - By sharing code like shader setup, dweets, and zzfx we can pack a lot into 13k
 - Also another big part of this (not yet implemented) is the achievement system
 - I'd like to see as many people as possible contribute tiny games and apps
-- On day one of js13k I plan to submit what we have, then work the theme in during the contest.
+- The first day of JS13k I plan to submit what we have, then work the theme in during the contest.
 
 ## Programming Info
-Add an icon config to desktop.js to register a new program
+Add an icon config to desktop.js to register your program, and send me pull request
+Make sure to put your program in the proper subfolder
 - The first icon in desktopLayout opens on start
 - {name:'Test', icon:'✌️', src:'system/test.html', multiple:1, reload:1, code:1}
 - {name:'Underwater Cavern', icon:'🌊', author:'Pavel', src:'dweets/underwaterCavern.dweet.js'}
