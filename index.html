@@ -146,7 +146,7 @@ body
     user-select:auto;
     pointer-events:auto;
     border:1px solid #fff;
-    outline: none;
+    outline:none;
 }
 .selected     { background:linear-gradient(#eee,#88f); }
 .folder       { background:#000; }
@@ -685,7 +685,6 @@ class OS13kWindow extends HTMLElement
             // create iframe
             const iframe = this.iframe = document.createElement('iframe');
             iframe.className = 'frame';
-            iframe.style.background = '#000';
             if (this.icon.hasExtension)
                 iframe.style.display = this.icon.hasExtension ? 'none' : 'hidden';
             iframe.src = icon.src;
