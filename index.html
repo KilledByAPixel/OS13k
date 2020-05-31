@@ -714,7 +714,7 @@ class OS13kWindow extends HTMLElement
                         'g=c.getContext`webgl2`;' +
                         'x=y=z=w=0;' +
                         'onmousemove=e=>e.buttons&&(x=e.x,y=c.height-e.y);' +
-                        'onmousedown=e=>(z=e.x,w=c.height-e.y);' +
+                        'onmousedown=e=>(x=z=e.x,y=w=c.height-e.y);' +
                         'onmouseup=e=>z=w=0;' +
                         'loop=t=>requestAnimationFrame(loop,' +
                             'document.hasFocus()&&(' +
