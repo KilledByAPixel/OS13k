@@ -53,7 +53,7 @@ body
     justify-content:center;
     pointer-events:none;
 }
-.iconSelected { background:linear-gradient(#ff8,#fff); }
+.selected { background:linear-gradient(#ff8,#fff); }
 .icon:hover { background:linear-gradient(#fff,#44f); }
 </style>
 <template id=templateIcon>
@@ -65,7 +65,6 @@ body
     flex-direction:column;
     pointer-events:auto;
     position:absolute;
-    --color:linear-gradient(#fff,#777);
 }
 .icon
 {
@@ -75,7 +74,7 @@ body
     border-radius:9px;
     box-shadow:4px 4px 5px;
     text-shadow:2px 2px 4px #000;
-    background:var(--color);
+    background:linear-gradient(#fff,#777);
     display:flex;
     align-items:center;
     justify-content:center;
@@ -91,8 +90,9 @@ body
     text-shadow:2px 2px 5px #000;
     text-align:center;
     position:absolute;
+    pointer-events:none;
 }
-:host(:hover) { --color:linear-gradient(#fff,#44f); }
+.selected { background:linear-gradient(#fff,#44f); }
 </style>
 </template>
 <template id=templateWindow>
@@ -161,7 +161,7 @@ div svg       { width:100%; pointer-events:none; }
 <div id=taskbar class=taskbar></div>
 <div id=title class=title>OS13k</div>
 <div id=desktop>
-<script src=desktop.js?6></script>
+<script src=desktop.js?7></script>
 <script>
 
 // Startup Program - uncomment and change to your file to open on start
@@ -446,9 +446,10 @@ class OS13kTaskbarIcon extends HTMLElement
         this.title = icon.title;
     }
     
-    MouseDown()
+    MouseClick()
     {
         // focus on window
+        desktop.Focus();
         this.window.Focus();
         if (this.window == desktop)
         {
@@ -479,6 +480,7 @@ customElements.define('os13k-taskbar-icon', OS13kTaskbarIcon);
 /////////////////////////////////////////////////////////////////////////////
 // OS13kIcon
 
+let selectedIcon;
 const iconGridSizeX = 99, iconGridSizeY = 120;
 
 class OS13kIcon extends HTMLElement
@@ -517,9 +519,14 @@ class OS13kIcon extends HTMLElement
         
         // create shadow root
 		this.shadow = this.attachShadow({mode: 'open'});
-        this.shadowRoot.innerHTML = templateIcon.innerHTML +
-            '<div class=icon>' + icon + '</div>' +
+        this.shadowRoot.innerHTML = templateIcon.innerHTML + 
             '<div class=name>' + name;
+         
+        // create icon
+        const iconElement = this.iconElement = document.createElement('div');
+        iconElement.className = 'icon';
+        iconElement.innerHTML = icon;
+        this.shadowRoot.appendChild(iconElement);
     }
     
     Open()
@@ -542,6 +549,17 @@ class OS13kIcon extends HTMLElement
         const parent = this.parentElement && this.parentElement.offsetParent;
         parent.Focus ? parent.Focus() : desktop.Focus();
     }
+    
+    MouseMove()
+    {
+        if (!selected)
+        {
+            this.iconElement.className = 'icon selected'
+            selectedIcon = this;
+        }
+    }
+    
+    MouseClick() { this.Open(); }
     
 } // OS13kIcon
 
@@ -714,13 +732,18 @@ class OS13kWindow extends HTMLElement
         }
     }
     
-    MouseDown(id)
+    MouseDown(e)
+    {
+        (e.id == 'name') && (selected = this);
+        this.Focus();
+    }
+    
+    MouseClick(e)
     {
         // check for title bar buttons
-        (id == 'name')   && (selected = this);
-        (id == 'full')   && this.FullScreen();
-        (id == 'reload') && this.Reload();
-        (id == 'close')  && this.Close();
+        (e.id == 'full')   && this.FullScreen();
+        (e.id == 'reload') && this.Reload();
+        (e.id == 'close')  && this.Close();
         this.Focus();
     }
     
@@ -742,17 +765,16 @@ class OS13kWindow extends HTMLElement
     Focus()
     {
         // set focus
-        this.iframeContent ? this.iframeContent.focus() : desktop.Focus();
+        this.iframeContent && this.iframeContent.focus();
         this.SetActive();
     }
     
     SetActive(active=1)
     {
-        if (active)
+        if (active && activeWindow != this)
         {
             // deactivate old window
-            if (activeWindow && activeWindow != this)
-                activeWindow.SetActive(0);
+            activeWindow && activeWindow.SetActive(0);
                 
             // limit window size to inner size
             this.contentWrapper.style.width  = Math.min(this.icon.width,  innerWidth);
@@ -798,6 +820,9 @@ onmousedown=e=>
     // prevent getting stuck
     if (selected) return onmouseup(e);
     
+    // prevent desktop from getting selected
+    e.cancelable && e.preventDefault();
+    
     // save selected offset
     const rect = e.target.getBoundingClientRect();
     seletOffsetX = e.x - rect.x;
@@ -805,7 +830,7 @@ onmousedown=e=>
     
     // mouse down event
     if (e.target.MouseDown)
-        e.target.MouseDown((e.originalTarget || e.path[0]).id)
+        e.target.MouseDown(e.originalTarget || e.path[0])
     else
         desktop.MouseDown();
     
@@ -836,13 +861,18 @@ onmousemove=e=>
         selected.style.left = e.x - seletOffsetX;
         selected.style.top = e.y - seletOffsetY;
     }
+    
+    // unselect selected icon
+    selectedIcon && (selectedIcon.iconElement.className = 'icon');
+    const originalTarget = e.originalTarget || e.path[0];
+    originalTarget.MouseMove && originalTarget.MouseMove(e);
 }
 
 onclick=e=>
 {
-    // open icon
-    const target = e.originalTarget || e.path[0];
-    target.Open && target.Open();
+    const originalTarget = e.originalTarget || e.path[0];
+    originalTarget.MouseClick ? originalTarget.MouseClick() :
+        e.target.MouseClick && e.target.MouseClick(originalTarget);
 }
 
 // disable context menu
