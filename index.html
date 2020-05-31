@@ -733,10 +733,15 @@ class OS13kWindow extends HTMLElement
     
     MouseDown(e, originalTarget)
     {
+        // prevent desktop from getting focus
+        if (this.iframe)
+            e.cancelable && e.preventDefault();
+            
+        // set selected
         if (originalTarget.id == 'name')
             selected = this;
-        else
-            e.cancelable && e.preventDefault();
+            
+        // set focus
         this.Focus();
     }
     
