@@ -46,8 +46,7 @@ Make sure to put your program in the proper subfolder
 - The function OS13kStart(icon) is called on child frames when opened
 - To acces OS13k features, use the OS13k object
 - ZzFx sounds can played by calling zzfx, volume is controlled by the system
-- A seeded ZzFX sound player is also provided to play sounds with only a single integer
-
+- A seeded ZzFX sound player is available to save space with much smaller sound calls
 - OS13k.CreateShader(canvas, shaderCode) - Create a shadertoy compatible webgl shader
 - OS13k.RenderShader(canvas, shaderProgram, time=0) - Render a shader
 - OS13k.Medal(gameName, medalName='', difficulty=0) - Register a medal for your game as complete
