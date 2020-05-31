@@ -731,9 +731,12 @@ class OS13kWindow extends HTMLElement
         }
     }
     
-    MouseDown(e)
+    MouseDown(e, originalTarget)
     {
-        (e.id == 'name') && (selected = this);
+        if (originalTarget.id == 'name')
+            selected = this;
+        else
+            e.cancelable && e.preventDefault();
         this.Focus();
     }
     
@@ -819,9 +822,6 @@ onmousedown=e=>
     // prevent getting stuck
     if (selected) return onmouseup(e);
     
-    // prevent desktop from getting selected
-    e.cancelable && e.preventDefault();
-    
     // save selected offset
     const rect = e.target.getBoundingClientRect();
     seletOffsetX = e.x - rect.x;
@@ -829,7 +829,7 @@ onmousedown=e=>
     
     // handle mouse down
     if (e.target.MouseDown)
-        e.target.MouseDown(e.originalTarget || e.path[0])
+        e.target.MouseDown(e, e.originalTarget || e.path[0])
     else
         desktop.MouseDown();
     
