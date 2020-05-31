@@ -124,7 +124,7 @@ body
     width:100%;
     height:100%;
     border:none;
-    background:#fff;
+    background:#000;
     position:relative;
     overflow:hidden;
 }
@@ -519,8 +519,7 @@ class OS13kIcon extends HTMLElement
         const extension = src? src.split('.')[1] : '';
         this.isDweet = extension == 'dweet';
         this.isShader = extension == 'shader';
-        this.hasExtension = this.isDweet || this.isShader;
-        this.hasExtension && (this.showReload = 1);
+        (this.isDweet || this.isShader) && (this.showReload = 1);
         
         // create shadow root
 		this.shadow = this.attachShadow({mode: 'open'});
@@ -664,10 +663,9 @@ class OS13kWindow extends HTMLElement
             // create iframe
             const iframe = this.iframe = document.createElement('iframe');
             iframe.className = 'frame';
-            if (this.icon.hasExtension)
-                iframe.style.display = 'none';
+            iframe.style.background = '#000';
+            iframe.style.display = 'hidden';
             iframe.src = icon.src;
-            contentWrapper.style.background = '#000';
             contentWrapper.appendChild(iframe);
         
             // load frame
@@ -683,7 +681,7 @@ class OS13kWindow extends HTMLElement
                 iframeContent.OS13kStart && iframeContent.OS13kStart(this.icon);
 
                 // check for extensions
-                if (this.icon.hasExtension)
+                if (this.icon.isDweet || this.icon.isShader)
                 {
                     // create full body canvas
                     const iframeDocument = iframeContent.document;
@@ -729,6 +727,7 @@ class OS13kWindow extends HTMLElement
                 }
                 
                 // show iframe and set focus
+                iframe.style.background = '#fff';
                 iframe.style.display = 'block';
                 this.Focus();
             }
@@ -769,8 +768,7 @@ class OS13kWindow extends HTMLElement
     Reload()
     {
         // hide iframe and reload it
-        if (this.icon.hasExtension)
-            this.iframe.style.display = 'none';
+        this.iframe.style.display = 'hidden';
         this.iframeContent.location.reload();
     }
     
