@@ -90,7 +90,6 @@ body
     color:#fff;
     text-shadow:2px 2px 5px #000;
     text-align:center;
-    white-space:normal;
     position:absolute;
 }
 :host(:hover) { --color:linear-gradient(#fff,#44f); }
@@ -519,7 +518,7 @@ class OS13kIcon extends HTMLElement
         // create shadow root
 		this.shadow = this.attachShadow({mode: 'open'});
         this.shadowRoot.innerHTML = templateIcon.innerHTML +
-            '<div class=icon>' + icon  +
+            '<div class=icon>' + icon + '</div>' +
             '<div class=name>' + name;
     }
     
