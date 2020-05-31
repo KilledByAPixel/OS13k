@@ -223,7 +223,7 @@ class _OS13k
             // set icon position
             icon.x = x;
             icon.y = y;
-            if ((x += iconGridSizeX) > Math.max(300, innerWidth - 70))
+            if ((x += iconGridSizeX) > innerWidth - 70)
             {
                 // wrap icons to fit window
                 x = 30;
@@ -519,7 +519,8 @@ class OS13kIcon extends HTMLElement
         const extension = src? src.split('.')[1] : '';
         this.isDweet = extension == 'dweet';
         this.isShader = extension == 'shader';
-        (this.isDweet || this.isShader) && (this.showReload = 1);
+        this.hasExtension = this.isDweet || this.isShader;
+        this.hasExtension && (this.showReload = 1);
         
         // create shadow root
 		this.shadow = this.attachShadow({mode: 'open'});
@@ -664,9 +665,21 @@ class OS13kWindow extends HTMLElement
             const iframe = this.iframe = document.createElement('iframe');
             iframe.className = 'frame';
             iframe.style.background = '#000';
-            iframe.style.display = 'hidden';
+            iframe.style.display = this.icon.hasExtension ? 'none' : 'hidden';
             iframe.src = icon.src;
             contentWrapper.appendChild(iframe);
+                    
+            /*if (this.icon.hasExtension)
+            {
+                const codeDisplay = this.codeDisplay = document.createElement('textarea');
+                codeDisplay.style = `
+                height:100;
+                resize:none;
+                color:#fff;
+                background:#000;
+                `
+                this.shadowRoot.appendChild(codeDisplay);
+            }*/
         
             // load frame
             iframe.onload=e=>
@@ -681,17 +694,19 @@ class OS13kWindow extends HTMLElement
                 iframeContent.OS13kStart && iframeContent.OS13kStart(this.icon);
 
                 // check for extensions
-                if (this.icon.isDweet || this.icon.isShader)
+                if (this.icon.hasExtension)
                 {
                     // create full body canvas
                     const iframeDocument = iframeContent.document;
                     const iframeText = iframeDocument.body.innerText;
+                    //this.codeDisplay.value = iframeText;
+                    
                     iframeDocument.body.innerHTML = 
                         '<canvas id=c width=1920 height=1080 style=' +
                         'width:100%;background:#' +
                         (this.icon.isDweet ? 'fff' : '000') +'>';
                     iframeDocument.body.style = 
-                        'background:#000;' +
+                        'background:#222;' +
                         'overflow:hidden;' +
                         'margin:0;' +
                         'display:flex;' +
@@ -728,7 +743,7 @@ class OS13kWindow extends HTMLElement
                 
                 // show iframe and set focus
                 iframe.style.background = '#fff';
-                iframe.style.display = 'block';
+                iframe.style.display = '';
                 this.Focus();
             }
         }
@@ -768,7 +783,7 @@ class OS13kWindow extends HTMLElement
     Reload()
     {
         // hide iframe and reload it
-        this.iframe.style.display = 'hidden';
+        this.iframe.style.display = this.icon.hasExtension ? 'none' : 'hidden';
         this.iframeContent.location.reload();
     }
     
@@ -785,10 +800,11 @@ class OS13kWindow extends HTMLElement
         {
             // deactivate old window
             activeWindow && activeWindow.SetActive(0);
-                
+            
             // limit window size to inner size
             this.contentWrapper.style.width  = Math.min(this.icon.width,  innerWidth);
-            this.contentWrapper.style.height = Math.min(this.icon.height-1, innerHeight);
+            this.contentWrapper.style.height = Math.min(this.icon.height, innerHeight)
+                - 1; // fix browser glitch causing a 1 pixel gap at bottom
 
             // clamp window to screen
             const rect = this.getBoundingClientRect();
@@ -881,7 +897,7 @@ onclick=e=>
 {
     // handle click
     const originalTarget = e.originalTarget || e.path[0];
-    originalTarget.MouseClick ? originalTarget.MouseClick() :
+    originalTarget.MouseClick ? originalTarget.MouseClick(originalTarget) :
         e.target.MouseClick && e.target.MouseClick(originalTarget);
 }
 
