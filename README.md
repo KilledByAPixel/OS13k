@@ -17,7 +17,9 @@ OS13k is a tiny pseudo operating system designed for a JS13k community project. 
 - Anything left out of the JS13k build will still be available in the full GitHub version
 
 ## Programming Info
+
 Add an icon config to desktop.js to register your program, and send me pull request
+
 Make sure to put your program in the proper subfolder
 - The first icon in desktopLayout opens on start
 - {name:'Test', icon:'✌️', src:'system/test.html', multiple:1, reload:1, code:1}
