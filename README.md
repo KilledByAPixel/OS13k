@@ -30,8 +30,8 @@ Make sure to put your program in the proper subfolder
 ### Programming
 
 - OS13k can open any html file with javascript and it will work the same as if opened directly
-- Chrome is recommended for development
-- Firefox will not work in local mode because it treats local files as cross-origin
+- Chrome is recommended for development, but Firefox is also supported.
+- Firefox will not work in local mode though because it treats local files as cross-origin
 - Strict mode is not enforced but recommended to make minification easier
 - Programs with the extension .dweet.js or .shader.txt will automatically load as dweets or shadertoys
 - To force a page to refresh you can add ?<version> to the src link... {src:'help.html?1'}
