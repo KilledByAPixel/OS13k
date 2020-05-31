@@ -471,7 +471,7 @@ class OS13kTaskbarIcon extends HTMLElement
         // unselect old icon and set style
         selectedTaskbarIcon && selectedTaskbarIcon.SetActive(selectedTaskbarIcon = 0);
         selectedTaskbarIcon = this;
-        this.className = 'icon' + (active ? ' iconSelected' : '');
+        this.className = 'icon' + (active ? ' selected' : '');
     }
 } // OS13kTaskbarIcon
 
