@@ -643,8 +643,8 @@ class OS13kWindow extends HTMLElement
             titleBar.appendChild(icon);
         }
         icon.folder || AddTitleBarIcon('full', 'Full Screen');
-        icon.reload && AddTitleBarIcon('reload', 'Reload');
         icon.code && AddTitleBarIcon('code', 'Show Code');
+        icon.reload && AddTitleBarIcon('reload', 'Reload');
         AddTitleBarIcon('close', 'Close');
         
         // create thin black line below title bar
