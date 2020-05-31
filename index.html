@@ -53,7 +53,7 @@ body
     justify-content:center;
     pointer-events:none;
 }
-.selected { background:linear-gradient(#ff8,#fff); }
+.selected   { background:linear-gradient(#ff8,#fff); }
 .icon:hover { background:linear-gradient(#fff,#44f); }
 </style>
 <template id=templateIcon>
@@ -135,7 +135,7 @@ body
     align-items:center;
     overflow:hidden;
 }
-.titleBarSelected { background:linear-gradient(#eee,#88f); }
+.selected     { background:linear-gradient(#eee,#88f); }
 .folder       { background:#222; }
 #full,#reload { width:40; }
 .close        { width:28; }
@@ -145,15 +145,15 @@ body
 div svg       { width:100%; pointer-events:none; }
 </style>    
 <svg width=0 height=0>
-    <symbol id=icon-full viewBox='0 0 10 10'>
-        <rect stroke=#000 stroke-width=.7 fill=none x=1 y=2 width=8 height=6 />
-    </symbol>
-    <symbol id=icon-reload viewBox='0 0 10 10'>
-        <circle stroke=#000 stroke-width=.7 fill=none cx=5 cy=5 r=3 />
-    </symbol>
-    <symbol id=icon-close viewBox='0 0 10 10'>
-        <path stroke=#000 d='M1 1L9 9M9 1L1 9' />
-    </symbol>
+<symbol id=icon-full viewBox='0 0 10 10'>
+    <rect stroke=#000 stroke-width=.7 fill=none x=1 y=2 width=8 height=6 />
+</symbol>
+<symbol id=icon-reload viewBox='0 0 10 10'>
+    <circle stroke=#000 stroke-width=.7 fill=none cx=5 cy=5 r=3 />
+</symbol>
+<symbol id=icon-close viewBox='0 0 10 10'>
+    <path stroke=#000 d='M1 1L9 9M9 1L1 9' />
+</symbol>
 </svg>
 </template>
 </head>
@@ -552,14 +552,15 @@ class OS13kIcon extends HTMLElement
     
     MouseMove()
     {
-        if (!selected)
-        {
-            this.iconElement.className = 'icon selected'
-            selectedIcon = this;
-        }
+        // set selected icon
+        selected || ((selectedIcon = this).iconElement.className = 'icon selected');
     }
     
-    MouseClick() { this.Open(); }
+    MouseClick() 
+    { 
+        // open the window
+        this.Open(); 
+    }
     
 } // OS13kIcon
 
@@ -617,10 +618,8 @@ class OS13kWindow extends HTMLElement
             icon.title = title;
             titleBar.appendChild(icon);
         }
-        if (!icon.folder)
-            AddTitleBarIcon('full', 'Full Screen');
-        if (icon.showReload)
-            AddTitleBarIcon('reload', 'Reload');
+        icon.folder || AddTitleBarIcon('full', 'Full Screen');
+        icon.showReload && AddTitleBarIcon('reload', 'Reload');
         AddTitleBarIcon('close', 'Close');
         
         // create thin black line below title bar
@@ -794,7 +793,7 @@ class OS13kWindow extends HTMLElement
         // set active
         activeWindow = active && this;
         this.taskbarIcon.SetActive(1);
-        this.titleBar.className = 'titleBar' + (active ? ' titleBarSelected' : '');
+        this.titleBar.className = 'titleBar' + (active ? ' selected' : '');
     }
     
     FullScreen()
@@ -828,7 +827,7 @@ onmousedown=e=>
     seletOffsetX = e.x - rect.x;
     seletOffsetY = e.y - rect.y;
     
-    // mouse down event
+    // handle mouse down
     if (e.target.MouseDown)
         e.target.MouseDown(e.originalTarget || e.path[0])
     else
@@ -864,12 +863,15 @@ onmousemove=e=>
     
     // unselect selected icon
     selectedIcon && (selectedIcon.iconElement.className = 'icon');
+    
+    // handle mouse move
     const originalTarget = e.originalTarget || e.path[0];
     originalTarget.MouseMove && originalTarget.MouseMove(e);
 }
 
 onclick=e=>
 {
+    // handle click
     const originalTarget = e.originalTarget || e.path[0];
     originalTarget.MouseClick ? originalTarget.MouseClick() :
         e.target.MouseClick && e.target.MouseClick(originalTarget);
