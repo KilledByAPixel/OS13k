@@ -181,7 +181,7 @@ div svg       { width:100%; pointer-events:none; }
 <div id=taskbar class=taskbar></div>
 <div id=title class=title>OS13k</div>
 <div id=desktop>
-<script src=desktop.js?12></script>
+<script src=desktop.js?14></script>
 <script>
 
 // load test if there is no desktop
@@ -506,7 +506,7 @@ const iconGridSizeX = 99, iconGridSizeY = 120;
 
 class OS13kIcon extends HTMLElement
 {
-	constructor({x, y, name, icon, src, width=720, height=405, author, folder, allowMultiple, showReload, showCode})
+	constructor({x, y, name, icon, src, width=720, height=405, author, folder, multiple, reload, code})
     {
 		super();
         
@@ -524,7 +524,7 @@ class OS13kIcon extends HTMLElement
         this.isDweet = extension == 'dweet';
         this.isShader = extension == 'shader';
         this.hasExtension = this.isDweet || this.isShader
-        this.hasExtension && (showReload = 1);
+        this.hasExtension && (reload = 1);
         
         // set icon data
         this.name = name;
@@ -536,10 +536,10 @@ class OS13kIcon extends HTMLElement
         this.height = height;
         this.author = author;
         this.folder = folder;
-        this.allowMultiple = allowMultiple;
-        this.showReload = showReload;
+        this.multiple = multiple;
+        this.reload = reload;
         this.title = name + (author ? '\nBy ' + author : '');
-        this.showCode = showCode || this.hasExtension;
+        this.code = code || this.hasExtension;
         
         // create shadow root
 		this.shadow = this.attachShadow({mode: 'open'});
@@ -559,7 +559,7 @@ class OS13kIcon extends HTMLElement
         {
             // create the window
             const window = new OS13kWindow(this);
-            if (!this.allowMultiple)
+            if (!this.multiple)
                 this.window = window;
         }
         
@@ -643,8 +643,8 @@ class OS13kWindow extends HTMLElement
             titleBar.appendChild(icon);
         }
         icon.folder || AddTitleBarIcon('full', 'Full Screen');
-        icon.showReload && AddTitleBarIcon('reload', 'Reload');
-        icon.showCode && AddTitleBarIcon('code', 'Show Code');
+        icon.reload && AddTitleBarIcon('reload', 'Reload');
+        icon.code && AddTitleBarIcon('code', 'Show Code');
         AddTitleBarIcon('close', 'Close');
         
         // create thin black line below title bar

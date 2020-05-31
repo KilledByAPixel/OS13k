@@ -4,17 +4,17 @@ const desktopLayout =
 {name:'Code Info', icon:'👨‍💻', src:'codeInfo.html?6'},
 {name:'System', icon:'⚙️', folder:
 [
-    {name:'Test', icon:'😄', src:'system/test.html?5', allowMultiple:1, showReload:1, showCode:1},
+    {name:'Test', icon:'😄', src:'system/test.html?5', multiple:1, reload:1, code:1},
 ]},
 {name:'Games', icon:'🎮', folder:
 [
     {name:'Lava Rush', icon:'🌋', author:'Jeremy Burns', src:'games/lavaRush.html?4', width:640, height:400},
     {name:'Sn1ke', icon:'👀', src:'games/sn1ke.html', author:'Codegolf Team', width:450, height:330},
     {name:'Tetris', icon:'<span style=font-size:16>▀█▀</span>', author:'Veubeke', src:'games/tetris.html', width:340, height:430},
-    {name:`Queen's Gambit`, icon:'<span style=color:#f0f>♛</span>', src:'games/queensGambit.html?4', showReload:1},
+    {name:`Queen's Gambit`, icon:'<span style=color:#f0f>♛</span>', src:'games/queensGambit.html?4', reload:1},
     {name:'Free Cell', icon:'♠️', src:'games/freeCell.html', width:800, height:1e3},
     {name:'Digit Dilemma', icon:'<span style=font-family:monospace>☻</span>', src:'games/digitDilemma.html?2'},
-    {name:'Hue Jumper', icon:'🌲', src:'games/hueJumper.html', showReload:1},
+    {name:'Hue Jumper', icon:'🌲', src:'games/hueJumper.html', reload:1},
 ]},
 {name:'Music', icon:'🎶', folder:
 [
