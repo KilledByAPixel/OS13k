@@ -137,7 +137,7 @@ body
     overflow:hidden;
 }
 .selected     { background:linear-gradient(#eee,#88f); }
-.folder       { background:#222; }
+.folder       { background:#000; }
 #full,#reload { width:40; }
 .close        { width:28; }
 .full:hover   { background:#fff; }
@@ -655,6 +655,9 @@ class OS13kWindow extends HTMLElement
                 }
                 contentWrapper.appendChild(new OS13kIcon(folderIcon));
             }
+            
+            // set folder color
+            contentWrapper.style.background = '#222';
             
             // set focus
             this.Focus();
