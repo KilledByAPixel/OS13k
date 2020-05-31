@@ -4,8 +4,8 @@ OS13k is a tiny pseudo operating system designed for a JS13k community project. 
 ## Please keep this project confidential!
 
 # [Live Demo](https://killedbyapixel.github.io/OS13k)
-# [Trello Board](https://trello.com/b/1PNeOZfM/os13k) (ask for an invite)
 # [Discord](https://discord.gg/apuXeT)
+# [Trello Board](https://trello.com/b/1PNeOZfM/os13k) (ask for an invite)
 
 
 ## The Plan
