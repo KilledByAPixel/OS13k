@@ -16,7 +16,7 @@ void mainImage(out vec4 a, in vec2 p)
     a.xywz += vec2(-9.370, 2.120).xyxy;
     vec4 b = a;
 
-    float t = 2.*pi*iTime/4.0;
+    float t = 2.*PI*iTime/4.0;
 
     // Generated Code - Line Count: 8
     for (int i = 0; i < 8; ++i)

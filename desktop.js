@@ -29,10 +29,10 @@ const desktopLayout =
 {name:'Toys', icon:'🤖', folder:
 [
     {name:'ZzFX Soundboard', icon:'𝐙𝐙', src:'toys/zzfxSoundBoard.html?1'},
-    {name:'Yin Yangs', icon:'☯️', src:'toys/infiniteYinYangs.shader.txt'},
+    {name:'Yin Yangs', icon:'☯️', src:'toys/infiniteYinYangs.shader.txt?1'},
     {name:'Vogel Spiral', icon:'🌀', src:'toys/vogelSpiral.shader.txt?2'},
     {name:'Meta OS13k', icon:'𝐎𝐒', src:'index.html'},
-    {name:'ZzArt Landscape', icon:'𝓩', src:'toys/zzart.shader.txt'},
+    {name:'ZzArt Landscape', icon:'𝓩', src:'toys/zzart.shader.txt?1'},
 ]},
 {name:'Dweets', icon:'<b>III</b>', folder:
 [
