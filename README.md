@@ -57,11 +57,12 @@ Add an icon config to desktop.js to register a new program
 - author - Name of creator
 - allowMultiple - Allows multiple copies of the window to open
 - showReload - Shows the reload page icon to reload your program
+- showCode - Option to show the code for your program
 
 ### Shadertoy Shaders
  - Supports iTime, iMouse, iResolution, and iChannel0
  - iChannel0 is an image of the previous frame
- - pi and e are also exposed as constants
+ - PI and E are also exposed as constants
  
  ### Medals (not yet implemented)
  - Apps can register medals for their games, the os tracks which are unlocked
