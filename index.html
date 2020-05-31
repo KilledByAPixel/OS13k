@@ -842,6 +842,9 @@ onmousemove=e=>
 
 onclick=e=>
 {
+    // prevent main window from getting focus
+    e.cancelable && e.preventDefault();
+    
     // open icon
     const target = e.originalTarget || e.path[0];
     target.Open && target.Open();
