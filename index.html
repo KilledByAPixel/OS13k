@@ -146,6 +146,9 @@ body
 div svg       { width:100%; pointer-events:none; }
 </style>    
 <svg width=0 height=0>
+<symbol id=icon-code viewBox='0 0 6 10'>
+    <circle stroke=#000 stroke-width=.5 fill=none cx=5 cy=5 r=1.8 />
+</symbol>
 <symbol id=icon-full viewBox='0 0 10 10'>
     <rect stroke=#000 stroke-width=.7 fill=none x=1 y=2 width=8 height=6 />
 </symbol>
@@ -516,7 +519,8 @@ class OS13kIcon extends HTMLElement
         const extension = src? src.split('.')[1] : '';
         this.isDweet = extension == 'dweet';
         this.isShader = extension == 'shader';
-        (this.isDweet || this.isShader) && (this.showReload = 1);
+        this.hasExtension = this.isDweet || this.isShader;
+        this.hasExtension && (this.showReload = 1);
         
         // create shadow root
 		this.shadow = this.attachShadow({mode: 'open'});
@@ -631,8 +635,6 @@ class OS13kWindow extends HTMLElement
         // create content wrapper
         const contentWrapper = this.contentWrapper = document.createElement('div');
         contentWrapper.className = 'frame folder';
-        contentWrapper.style.width = icon.width;
-        contentWrapper.style.height = icon.height;
         this.shadowRoot.appendChild(contentWrapper);
         
         // open the icon
@@ -662,7 +664,8 @@ class OS13kWindow extends HTMLElement
             // create iframe
             const iframe = this.iframe = document.createElement('iframe');
             iframe.className = 'frame';
-            iframe.style.display = 'none';
+            if (this.icon.hasExtension)
+                iframe.style.display = 'none';
             iframe.src = icon.src;
             contentWrapper.style.background = '#000';
             contentWrapper.appendChild(iframe);
@@ -680,7 +683,7 @@ class OS13kWindow extends HTMLElement
                 iframeContent.OS13kStart && iframeContent.OS13kStart(this.icon);
 
                 // check for extensions
-                if (this.icon.isDweet || this.icon.isShader)
+                if (this.icon.hasExtension)
                 {
                     // create full body canvas
                     const iframeDocument = iframeContent.document;
@@ -726,7 +729,7 @@ class OS13kWindow extends HTMLElement
                 }
                 
                 // show iframe and set focus
-                iframe.style.display = '';
+                iframe.style.display = 'block';
                 this.Focus();
             }
         }
@@ -766,7 +769,8 @@ class OS13kWindow extends HTMLElement
     Reload()
     {
         // hide iframe and reload it
-        this.iframe.style.display = 'none';
+        if (this.icon.hasExtension)
+            this.iframe.style.display = 'none';
         this.iframeContent.location.reload();
     }
     
@@ -786,7 +790,7 @@ class OS13kWindow extends HTMLElement
                 
             // limit window size to inner size
             this.contentWrapper.style.width  = Math.min(this.icon.width,  innerWidth);
-            this.contentWrapper.style.height = Math.min(this.icon.height, innerHeight);
+            this.contentWrapper.style.height = Math.min(this.icon.height-1, innerHeight);
 
             // clamp window to screen
             const rect = this.getBoundingClientRect();
