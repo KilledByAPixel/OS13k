@@ -795,9 +795,6 @@ let selected, seletOffsetX, seletOffsetY;
 
 onmousedown=e=>
 {
-    // prevent main window from getting focus
-    e.cancelable && e.preventDefault();
-    
     // prevent getting stuck
     if (selected) return onmouseup(e);
     
@@ -827,6 +824,7 @@ onmouseup=e=>
     document.body.style.cursor = '';
         
     // release selected
+    selected && selected.Focus();
     selected = 0;
 }
 
@@ -842,9 +840,6 @@ onmousemove=e=>
 
 onclick=e=>
 {
-    // prevent main window from getting focus
-    e.cancelable && e.preventDefault();
-    
     // open icon
     const target = e.originalTarget || e.path[0];
     target.Open && target.Open();
