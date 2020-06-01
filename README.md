@@ -51,7 +51,7 @@ Make sure to put your program in the proper subfolder
 - Programs with the extension .shader.js or .dweet.js will automatically load as dweets or shadertoys!
 - Shadertoys and dweets are automatically paused when they don't have focus
 - They also automatically have reload and show code options applied
-- Dweets do not need to be under 140 characers, there is no limit, but try to keep em small
+- Dweets do not need to be under 140 characers, so if you want to make a small app, maybe use a dweet
 - Dweets cand do anything that other programs can do including access OS13k and zzfx
 - Shadertoy shaders support iTime, iMouse, iResolution, and iChannel0
 - iChannel0 is a loop back image of the previous frame, this can be used to store game logic or make effects
