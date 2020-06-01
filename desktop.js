@@ -4,7 +4,7 @@ const desktopLayout =
 {name:'Code Info', icon:'👨‍💻', src:'codeInfo.html?6'},
 {name:'System', icon:'⚙️', folder:
 [
-    {name:'Test', icon:'😄', src:'system/test.html?5', multiple:1, reload:1, code:1},
+    {name:'Test', icon:'😄', src:'system/test.html?6', multiple:1, reload:1, code:1},
 ]},
 {name:'Games', icon:'🎮', folder:
 [

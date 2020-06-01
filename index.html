@@ -182,7 +182,7 @@ div svg       { width:100%; pointer-events:none; }
 <div id=taskbar class=taskbar></div>
 <div id=title class=title>OS13k</div>
 <div id=desktop>
-<script src=desktop.js?17></script>
+<script src=desktop.js?18></script>
 <script>
 
 // load test if there is no desktop
@@ -197,7 +197,7 @@ if (typeof desktopLayout == 'undefined')
 // @js_externs OS13k, OS13kIcon, OS13kWindow, OS13kTaskbarIcon, zzfx, zzfxV
 // @js_externs _OS13k.Medal, _OS13k.KeyDirection, _OS13k.Speak
 // @js_externs _OS13k.CreateShader, _OS13k.RenderShader, _OS13k.CreateCanvas
-// @js_externs _OS13k.PlaySamples, _OS13k.PlaySeedSound, _OS13k.GetSeedSound
+// @js_externs _OS13k.PlaySamples, _OS13k.PlaySeed, _OS13k.GetSeedSound
 // @js_externs _OS13k.Random, _OS13k.randomSeed 
 // @js_externs _OS13k.Clamp, _OS13k.Percent, _OS13k.Lerp
 // @js_externs iframeContent.OS13k, iframeContent.OS13kStart, iframeContent.zzfx
@@ -282,7 +282,7 @@ class _OS13k
         // todo: show popup and unlock medal
     }
     
-    PlaySeedSound(seed, lengthScale=1, volume=1, randomness=.05)
+    PlaySeed(seed, lengthScale=1, volume=1, randomness=.05)
     {
         // set random seed
         this.randomSeed = seed;
@@ -712,7 +712,7 @@ class OS13kWindow extends HTMLElement
                 iframeContent.OS13k = OS13k;
                 iframeContent.zzfx = zzfx;
                 iframeContent.oncontextmenu=e=>e.preventDefault();
-                iframeContent.OS13kStart && iframeContent.OS13kStart(this.icon);
+                iframeContent.OS13kStart && iframeContent.OS13kStart();
 
                 // check for extensions
                 if (this.icon.hasExtension)
