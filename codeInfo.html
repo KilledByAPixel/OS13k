@@ -1,27 +1,33 @@
 <h2 id="programming-info">Programming Info</h2>
-<p>Add an icon config to desktop.js to register a new program</p>
+<p>Add an icon config to desktop.js to register your program, and send me pull request</p>
+<p>Make sure to put your program in the proper subfolder</p>
 <ul>
-<li>{name:&#39;Test&#39;, icon:&#39;✌️&#39;, src:&#39;system/test.html&#39;}</li>
+<li>The first icon in desktopLayout opens on start</li>
+<li>{name:&#39;Test&#39;, icon:&#39;✌️&#39;, src:&#39;system/test.html&#39;, multiple:1, reload:1, code:1}</li>
 <li>{name:&#39;Underwater Cavern&#39;, icon:&#39;🌊&#39;, author:&#39;Pavel&#39;, src:&#39;dweets/underwaterCavern.dweet.js&#39;}</li>
 <li>{name:&#39;Yin Yangs&#39;, icon:&#39;☯️&#39;, src:&#39;toys/infiniteYinYangs.shader.txt&#39;}</li>
-<li>{name:&#39;Free Cell&#39;, icon:&#39;♠️&#39;, src:&#39;games/freeCell.html&#39;, width:800, height:1e3, allowMultiple:1}</li>
 <li>{src:&#39;help.html&#39;}</li>
 </ul>
-<p>The first icon in desktopLayout added opens on start</p>
 <h3 id="programming">Programming</h3>
 <ul>
-<li>Chrome is recommended for development</li>
-<li>Firefox will not work in local mode because it treats local files as cross-origin</li>
+<li>OS13k can open any html file with javascript and it will work the same as if opened directly</li>
+<li>Chrome is recommended for development, but Firefox is also supported.</li>
+<li>Firefox will not work in local mode though because it treats local files as cross-origin</li>
+<li>Strict mode is not enforced but recommended to make minification easier</li>
 <li>Programs with the extension .dweet.js or .shader.txt will automatically load as dweets or shadertoys</li>
 <li>To force a page to refresh you can add ?(version) to the src link... {src:&#39;help.html?1&#39;}</li>
+<li>Your program should be paused or light on cpu when it does not have focus, !document.hasFocus() </li>
 <li>You do not need charset=utf-8, it will be applied automatically</li>
+<li>Prefix local storage keys with OS13k(program name) to prevent collisions</li>
+<li>OS13k works well on mobile devices, so we plan to have a separate entry for the JS13k mobile category</li>
 <li>Make use of the built in features of OS13k to save space in your code</li>
 </ul>
 <h3 id="system-calls">System Calls</h3>
 <ul>
-<li>The function OS13kInit is called on child frames when opened</li>
+<li>The function OS13kStart(icon) is called on child frames when opened</li>
 <li>To acces OS13k features, use the OS13k object</li>
 <li>ZzFx sounds can played by calling zzfx, volume is controlled by the system</li>
+<li>A seeded ZzFX sound player is available to save space with much smaller sound calls</li>
 <li>OS13k.CreateShader(canvas, shaderCode) - Create a shadertoy compatible webgl shader</li>
 <li>OS13k.RenderShader(canvas, shaderProgram, time=0) - Render a shader</li>
 <li>OS13k.Medal(gameName, medalName=&#39;&#39;, difficulty=0) - Register a medal for your game as complete</li>
@@ -39,14 +45,28 @@
 </ul>
 <h3 id="icon-settings">Icon settings</h3>
 <ul>
-<li>width and height of window</li>
+<li>width and height - Size of window</li>
 <li>author - Name of creator</li>
-<li>allowMultiple - Allows multiple copies of the window to open</li>
-<li>showReload - Shows the reload page icon that will reload your program</li>
+<li>multiple - Allows multiple copies of the window to open</li>
+<li>reload - Shows the reload page icon to reload your program</li>
+<li>code - Option to show the code for your program</li>
+<li>dweets and shadertoys always show reload and code options</li>
 </ul>
 <h3 id="shadertoy-shaders">Shadertoy Shaders</h3>
 <ul>
 <li>Supports iTime, iMouse, iResolution, and iChannel0</li>
 <li>iChannel0 is an image of the previous frame</li>
-<li>pi and e are also exposed as constants</li>
+<li>More can be added if there is a need</li>
+</ul>
+<h3 >Medals (not yet implemented)</h3>
+<ul>
+<li>Apps can register medals for their games, the os tracks which are unlocked</li>
+<li>A function is provided for apps to unlock medals, OS13k.Medal</li>
+<li>Players can view their medals and total points will be shown on the taskbar</li>
+<li>Any JS13k game can use medals, even if not part of OS13k!</li>
+<li>To add a medal to any JS13k game, just save a special key to localStorage</li>
+<li>The simplest way to add a medal is save localStorage.OS13kMedals_GAMENAME=1 when the player wins</li>
+<li>For more control use localStorage.OS13kMedals_GAMENAME = [{&quot;medalName&quot;:name,&quot;difficulty&quot;:difficultyl}...]</li>
+<li>Both medal name and difficulty are optional</li>
+<li>When OS13k is next run, it will search locaStorage and display medals unlocked by other games</li>
 </ul>
