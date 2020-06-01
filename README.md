@@ -13,7 +13,7 @@ OS13k is a tiny pseudo operating system designed for a JS13k community project. 
 - By sharing code like shader setup, dweets, and zzfx we can pack a lot into 13k
 - I'd like to see as many people as possible contribute tiny games and apps
 - Also another big part of this (not yet implemented) is the achievement system
-- I will curate the content for what actualy lands in the JS13k build
+- We will curate the content for what actualy lands in the JS13k build
 - Anything left out of the JS13k build will still be available in the full GitHub version
 
 ## Programming Info
