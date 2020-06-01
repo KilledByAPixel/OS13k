@@ -37,7 +37,8 @@ Make sure to put your program in the proper subfolder
 - Programs with the extension .dweet.js or .shader.txt will automatically load as dweets or shadertoys
 - Dweets do not need to be under 140 characers, there is no limit, but try to keep them small
 - To force a page to refresh you can add ?(version) to the src link... {src:'help.html?1'}
-- Your program should be paused or light on cpu when it does not have focus, !document.hasFocus() 
+- Your program should be paused or light on cpu when it does not have focus, !document.hasFocus()
+- Shadertoys and dweets are automatically paused when they don't have focus
 - You do not need charset=utf-8, it will be applied automatically
 - Prefix local storage keys with OS13k(program name) to prevent collisions
 - OS13k works well on mobile devices, so we plan to have a separate entry for the JS13k mobile category
