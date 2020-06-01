@@ -35,6 +35,7 @@ Make sure to put your program in the proper subfolder
 - Firefox will not work in local mode though because it treats local files as cross-origin
 - Strict mode is not enforced but recommended to make minification easier
 - Programs with the extension .dweet.js or .shader.txt will automatically load as dweets or shadertoys
+- Dweets do not need to be under 140 characers, there is no limit, but try to keep them small
 - To force a page to refresh you can add ?(version) to the src link... {src:'help.html?1'}
 - Your program should be paused or light on cpu when it does not have focus, !document.hasFocus() 
 - You do not need charset=utf-8, it will be applied automatically
