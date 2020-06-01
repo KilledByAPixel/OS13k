@@ -78,7 +78,6 @@ You have reached the bottom! Visit <a href='http://www.dwitter.net' target='_bla
 <textarea id=textarea_comments disabled rows=2 style='font-size:15px;font-weight: bold;'></textarea>
 <textarea id=textarea_dweetInfo rows=1 disabled style='font-size:20px;height:30px'></textarea>
 <textarea id=textarea_code disabled rows=5 style='word-break:break-all;'></textarea>
-<textarea id=textarea_uncompressed disabled rows=4 style='color:yellow;word-break:break-all;display:none;'></textarea>
 <textarea id=textarea_error disabled rows=4 style='color:red;display:none;'></textarea>
 </div>
 <script>
@@ -411,12 +410,7 @@ function UpdateOverlay()
         textarea_code.value = dweet.code;
         
         if (dweet.uncompressed)
-        {
-            textarea_uncompressed.value = dweet.uncompressed;
-            textarea_uncompressed.style.display = 'inline';
-        }
-        else
-            textarea_uncompressed.style.display = 'none';
+            textarea_code.value = dweet.uncompressed;
 
         CountCharacters=string=>[...string].length
         let infoString = '';
