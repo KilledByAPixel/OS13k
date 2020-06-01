@@ -1,0 +1,586 @@
+<!--
+
+Dweet View - A visual browser for dweets!
+By Frank Force 2020
+
+-->
+<!doctype html>
+<html>
+<meta charset='utf-8'>
+<head>
+<title>Dweet View</title>
+<link rel='shortcut icon' type='image/x-icon' href='favicon.png'/>
+<style>
+body,input,select
+{
+    font-family: 'courier';
+    color: #FFF;
+    font-size: 25px;
+    background-color: #111;
+}
+button
+{
+    background-color: #FFF;
+    color: #000;
+    font-size: 25px;
+    font-weight: bold;
+}
+textarea
+{
+    color: #DDD;
+    background-color: #000;
+    resize: none;
+    width: 100%;
+    overflow: hidden;
+    padding: 4px;
+}
+a { color: #5AF; }
+a:visited { color: #A5A; }
+</style>
+</head>
+<body bgcolor=#111 style='overflow:visible'>
+<center>
+<div style='font-size:25px;'><i>𝓦𝓮𝓵𝓬𝓸𝓶𝓮 𝓽𝓸 𝓓𝔀𝓮𝓮𝓽 𝓥𝓲𝓮𝔀</i></div>
+<div style='font-size:40px;font-weight:bold' id=span_title></div>
+<div style='font-size:30px;font-weight:bold;display:none' id=span_info></div>
+<div style='font-size:20px;'>
+This is a visual browser for tiny JavaScript programs on <a href='http://www.dwitter.net' target='_blank'>Dwitter</a><br>
+Mouse over a dweet to animate, double click to open a new tab.<br>
+<i>All dweets are property of their respective creators!</i>
+<br>
+<br>
+<input title="Enter user name or leave blank to show all" id=input_author onchange=ButtonSearch() style="width:250px;height:30px;" autocomplete="off" placeholder="Username">
+<button title="Search most recent dweets" onClick=ButtonSearch()>Recent</button>
+<button title="Search most awesome dweets" onClick=ButtonSearch(1)>Awesome</button>
+<span>
+<select style="width:130px;height:30px;" onchange=UpdateSize() id=select_size>
+    <option value='0.25'>Tiny</option>
+    <option value='0.5'>Small</option>
+    <option value='1' selected="selected">Medium</option>
+    <option value='2'>Large</option>
+    <option value='3'>Huge</option>
+</select>
+</span>
+<br>
+<br>
+</div>
+<span style='font-size:40px;' id=span_loading><br><i>Loading...</i></span>
+<span id=span_addDweetsHere></span>
+<div id=div_bottom style='display:none'>
+<hr>
+<span style='font-size:20px'>
+You have reached the bottom! Visit <a href='http://www.dwitter.net' target='_blank'>Dwitter</a> or <a href='http://dweetabase.3d2k.com' target='_blank'>The Dweetabase</a> to see more.
+</span>
+</div>
+</center>
+<div id=div_getMore>&nbsp;</div>
+<div id=div_overlay style='position:fixed;display:none;pointer-events:none;'>
+<textarea id=textarea_comments disabled rows=2 style='font-size:15px;font-weight: bold;'></textarea>
+<textarea id=textarea_dweetInfo rows=1 disabled style='font-size:20px;height:30px'></textarea>
+<textarea id=textarea_code disabled rows=5 style='word-break:break-all;'></textarea>
+<textarea id=textarea_uncompressed disabled rows=4 style='color:yellow;word-break:break-all;display:none;'></textarea>
+<textarea id=textarea_error disabled rows=4 style='color:red;display:none;'></textarea>
+</div>
+<script>
+
+let size = 1;
+let dweetSizeScale = .2;
+let dweetList = [];
+let addDweetIndex = 0;
+let dweetCount = 0;
+let focusDweet = 0;
+let nextFrameMs = 0;
+let timeBuffer = 0;
+let FPS = 60;
+let timeDelta = 1/FPS;
+let isLoading = 0;
+let mostAwesome = 0;
+let user = '';
+
+// update size when window is resized
+onresize=_=>UpdateSize();
+
+// hide overlay when scrolling
+onscroll=_=>{div_overlay.style.display='none';}
+
+function Init()
+{
+    if (IsMobile())
+        dweetSizeScale = 1;
+    
+    let theUrl = `https://www.dwitter.net/api/dweets/`;
+    let title = '';
+    if (user)
+    {
+        input_author.value = user;
+        theUrl += `?limit=100&author=${user}`;
+        title = 'Most ' + (mostAwesome?'Awesome': 'Recent') + ' Dweets By ' + user;
+        document.title = 'Dweet View - ' + title;
+    }
+    else
+    {
+        theUrl += `?limit=100`
+        title = `Most ${mostAwesome?'Awesome ':''}Recent 100 Dweets`;
+        document.title = 'Dweet View' + (mostAwesome?' - Most Awesome':'');
+    }
+
+    span_title.innerHTML = title;
+    FetchDweets(theUrl);
+}
+
+function FetchDweets(theUrl)
+{
+    isLoading = 1;
+    
+    fetch(theUrl, {mode: 'cors'})
+        .then(response => response.json())
+        .then( data => 
+        {
+            if (!data.results)
+            {
+                if (data.code)
+                {
+                    data.index = 0;
+                    data.code = dweet.code.replace(/\r\n/g,'\n');
+                    dweetList.push(data);
+                }
+                FinishLoading();
+                return;
+            }
+            
+            for(dweet of data.results)
+            {
+                // fix carriage returns
+                dweet.code = dweet.code.replace(/\r\n/g,'\n');
+                dweet.index = dweetList.length;
+                dweetList.push(dweet);
+            }
+
+            if (user && data.next)
+            {
+                // replace http with https
+                let theUrl = data.next;0
+                theUrl = 'https' + theUrl.slice(4);
+                FetchDweets(theUrl)
+            }
+
+            else
+                FinishLoading();
+        }
+    );
+}
+
+function FinishLoading()
+{
+    isLoading = 0;
+    if (!dweetList.length)
+    {
+        span_loading.innerHTML='<br><i>No matching dweets found!</i>';
+        return;
+    }
+    
+    span_loading.style.display='none';
+
+    if (mostAwesome)
+    {
+        // sort by awesome
+        dweetList.sort((a,b)=>b.awesome_count-a.awesome_count);
+        dweetList = dweetList.map((d,i)=>(d.index=i,d));
+    }
+        
+    if (user && dweetList.length)
+    {
+        span_info.style.display = 'block';
+        
+        let totalAwesomes = dweetList.reduce((total,dweet)=>total+dweet.awesome_count, 0);
+        span_info.innerHTML = `Total Dweets: ${dweetList.length} ~ Total Awesomes: ${totalAwesomes}`;
+    }
+}
+
+function LoadDweet(dweet, startUpFrames=2)
+{ 
+    CreateDweet(dweet);
+    
+    // warm up dweet
+    for (let i=startUpFrames;i--;)
+        UpdateDweet(dweet);
+}
+
+function UpdateDweet(dweet)
+{
+    if (!dweet)
+        return;
+    
+    let iframe = dweet.iframe;
+    let iframeContent = dweet.iframeContent;
+    dweet.error = '';
+    
+    try
+    {
+        let time = iframeContent.frame/FPS;
+        if (time > 0 && (time * FPS | 0 == iframeContent.frame - 1))
+            time += 0.000001; // fix floating point error
+
+        iframeContent.time=time;
+        ++iframeContent.frame;
+        iframeContent.maxLoopCount=2e5;
+        iframeContent.window.u = iframe.u;
+        iframeContent.window.u(time);
+    }
+    catch (e)
+    {
+        if (typeof e === "undefined")
+            dweet.error = "undefined"
+        else
+            dweet.error = e.message? "Error: " + e.message : e;
+    }
+}
+
+function ButtonSearch(awesome=0)
+{
+    mostAwesome = awesome;
+    user = input_author.value;
+    
+    // reset
+    dweetSizeScale = .2;
+    dweetList = [];
+    addDweetIndex = 0;
+    dweetCount = 0;
+    focusDweet = 0;
+
+    span_addDweetsHere.innerHTML = '';
+    div_bottom.style.display = 'none';
+    span_loading.style.display = 'block';
+    Init();
+}
+
+function UpdateSize()
+{
+    size = select_size.value;
+
+    let dweetSize = GetDweetSize();
+    for (let dweet of dweetList)
+        SetDweetSize(dweet, dweetSize);
+    
+    UpdateOverlay();
+}
+
+function GetDweetSize(dweet)
+{   
+    let width = 1920*size*dweetSizeScale;
+    let windowWidth = window.innerWidth - 150;
+    
+    let fit = windowWidth / width;
+    fit |= 0;
+    if (fit < 1)
+        fit = 1;
+    width = windowWidth / fit;
+    
+    let aspect = 9/16;
+    let height = width * aspect;
+    
+    if (height > window.innerHeight - 100)
+    {
+        // make smaller if to big to fit height
+        height = window.innerHeight - 100;
+        width = height / aspect;
+    }
+    
+    return {width, height};
+}
+
+function SetDweetSize(dweet, size)
+{   
+    let span = dweet.span;
+    if (!span)
+        return;
+        
+    span.style.width = size.width + 'px';
+    span.style.height = size.height + 'px';
+}
+                
+function CheckForAudioContext(dweet)
+{
+    // simple search for any top level audio objects
+    for(const key of Object.keys(dweet.iframeContent))
+    {
+        const object = dweet.iframeContent[key];
+        if (object instanceof dweet.iframeContent.AudioContext)
+            return true;
+    }
+    
+    return false;
+}
+
+function MainUpdate(frameTime)
+{
+    requestAnimationFrame(MainUpdate);
+
+    // limit update rate to FPS
+    if (frameTime)
+    {
+        if (frameTime < nextFrameMs-2)
+          return;  // skip this cycle
+        nextFrameMs = Math.max(nextFrameMs + 1000 / FPS, frameTime);
+    }
+    
+    let topOffset = document.documentElement.scrollTop + window.innerHeight;
+    let isNearBottom = topOffset >= document.documentElement.scrollHeight-500;
+    isNearBottom |= IsInViewport(document.getElementById('div_getMore'));
+    
+    if (isLoading)
+        span_loading.innerHTML = `<i><br>Loading... ${dweetList.length?dweetList.length + ' Dweets':''}</i>`;
+    
+    let loadingDweet = 0;
+    if (!isLoading && isNearBottom)
+    {
+        // load next dweet
+        if (addDweetIndex < dweetList.length)
+        {
+            loadingDweet = 1;
+            ++dweetCount;
+            LoadDweet(dweetList[addDweetIndex]);
+            ++addDweetIndex; 
+        }
+        else
+            div_bottom.style.display = 'inline';
+    }
+    
+    // update dweet under mouse
+    let mouseElement = document.querySelectorAll( ':hover' );
+    let lastFocusDweet = focusDweet;
+    focusDweet = 0;
+    if (mouseElement.length > 0)
+    {
+        let topElement = mouseElement[ mouseElement.length-1 ];
+        if (topElement.dweet)
+            focusDweet = topElement.dweet;
+    }
+    
+    // check if only 1 can fit in viewport
+    let width = 1920*size*dweetSizeScale;
+    if (!loadingDweet && !focusDweet && (window.innerWidth < 2*width || IsMobile() || dweetList.length == 1))
+    {
+        for(let dweet of dweetList)
+        {
+            if (dweet.iframe && IsInViewport(dweet.iframe))
+            {
+                focusDweet = dweet;
+                break;
+            }
+        }
+    }
+    
+    // reset dweet if it has audio (fix audio getting stuck on some dweets)
+    if (lastFocusDweet && focusDweet != lastFocusDweet)
+        if (CheckForAudioContext(lastFocusDweet))
+            LoadDweet(lastFocusDweet, 0);
+    
+    if (focusDweet)
+        UpdateDweet(focusDweet);
+    UpdateOverlay();
+}
+
+function UpdateOverlay()
+{
+    let dweet = focusDweet;
+    LoadComments(dweet);
+        
+    if (dweet && dweet.loadedComments)
+    {
+        textarea_comments.value = dweet.comments;
+        textarea_comments.style.display = dweet.comments?'inline':'none';
+        
+        let bounding = dweet.iframe.getBoundingClientRect();
+        let width = bounding.right - bounding.left;
+        if (width<500)
+            width = 500;
+            
+        let left = bounding.left;
+        if (left + width > window.innerWidth)
+            left = bounding.right - width;
+        width -= 15;
+            
+        div_overlay.style.top = (bounding.bottom+10) + 'px';
+        div_overlay.style.left = left + 'px';
+        div_overlay.style.width = width+'px';
+        div_overlay.style.display='inline';
+        
+        textarea_error.value = dweet.error;
+        textarea_error.style.display = dweet.error?'inline':'none';
+        textarea_code.value = dweet.code;
+        
+        if (dweet.uncompressed)
+        {
+            textarea_uncompressed.value = dweet.uncompressed;
+            textarea_uncompressed.style.display = 'inline';
+        }
+        else
+            textarea_uncompressed.style.display = 'none';
+
+        CountCharacters=string=>[...string].length
+        let infoString = '';
+        infoString += '👍' + dweet.awesome_count + ' ';
+        infoString += CountCharacters(dweet.code) + '/140 ';
+        infoString += dweet.posted.slice(0, 10);
+        
+        textarea_dweetInfo.value = infoString;
+    }
+    else
+        div_overlay.style.display='none';
+}
+
+function LoadComments(dweet)
+{
+    if (!dweet || dweet.fetchedComments || dweet.loadedComments)
+        return;
+        
+    dweet.fetchedComments = 1;
+    dweet.comments = '';
+    let theUrl=`https://www.dwitter.net/api/comments/?limit=1&reply_to=`+dweet.id;
+    fetch(theUrl, {mode: 'cors'})
+        .then(response => response.json())
+        .then( data => 
+        {
+            for(let comment of data.results)
+            {
+                if (comment.author != dweet.author.username)
+                    continue;
+
+                dweet.comments = comment.text;
+                break;
+            }
+
+            if (!user)
+            {
+                if (dweet.comments)
+                    dweet.comments = dweet.author.username + ' - ' + dweet.comments;
+                else
+                    dweet.comments = dweet.author.username;
+            }
+            dweet.loadedComments = 1;
+        }
+    );
+}
+
+function CreateDweet(dweet)
+{  
+    let span = document.createElement('span');
+    document.getElementById('span_addDweetsHere').appendChild(span);
+
+    if (!dweet.span)
+    {
+        span_dweet = document.createElement('span');
+        dweet.span = span_dweet;
+        span_dweet.dweet = dweet;
+        span.appendChild(span_dweet);
+        span_dweet.style = 'background:#FFF;border:3px solid black;padding:5px;margin:5px;border:2px solid black;outline:0;overflow:hidden;display:inline-block';
+
+        // set on double click
+        span_dweet.ondblclick=e=>window.open('https://www.dwitter.net/d/' + dweet.id);
+        
+        // set on click
+        span_dweet.onclick=e=>
+        {
+            input_author.value = dweet.author.username;
+            iframe_content.onclick && iframe_content.onclick(e);
+        }
+        
+        // route input to iframe
+        span_dweet.onmousedown=e=>iframe_content.onmousedown &&iframe_content.onmousedown(e);
+        span_dweet.onmouseup=e=>iframe_content.onmouseup &&iframe_content.onmouseup(e);
+        span_dweet.onmousemove=e=>iframe_content.onmousemove && iframe_content.onmousemove(e);
+        span_dweet.onkeydown=e=>iframe_content.onkeydown && iframe_content.onkeydown(e);
+        span_dweet.onkeyup=e=>iframe_content.onkeyup && iframe_content.onkeyup(e);
+        span_dweet.onkeypress=e=>iframe_content.onkeypress && iframe_content.onkeypress(e);
+    }
+    
+    iframe_dweet = document.createElement('iframe')
+    if (dweet.iframe)
+    {
+        dweet.iframe.before(iframe_dweet);
+        dweet.iframe.remove();
+    }
+    else
+        span_dweet.appendChild(iframe_dweet);
+    
+    let iframe_content = iframe_dweet.contentWindow || iframe_dweet.contentDocument;
+    let html = '<style>*{padding:0;margin:0;border:0;outline:0;overflow:hidden;}canvas{background:#FFF;width:100%}</style><body style="overflow:hidden"><canvas width=1920 height=1080 id=c></canvas>';
+    iframe_content.document.open();
+    iframe_content.document.write(html);
+    iframe_content.document.close();
+
+    dweet.iframe = iframe_dweet;
+    dweet.iframeContent = iframe_content;
+    dweet.iframeWrapper = span_dweet;
+
+    iframe_dweet.sandbox.add('allow-scripts');
+    iframe_dweet.style.width = '100%';
+    iframe_dweet.style.height = '100%';
+    iframe_dweet.style.background = '#FFF';
+    iframe_dweet.style.pointerEvents = 'none';
+    iframe_dweet.frameBorder = '0';
+    
+    // init globals
+    iframe_content.x = iframe_content.c.getContext('2d');
+    iframe_content.S = Math.sin;
+    iframe_content.C = Math.cos;
+    iframe_content.T = Math.tan;
+    iframe_content.frame = 0;
+    iframe_content.time = 0;
+    iframe_content.FPS = FPS;
+    iframe_content.R = (r,g,b,a=1) => `rgba(${r|0},${g|0},${b|0},${a})`;
+    iframe_content.code = dweet.code;
+    
+    let code = dweet.code;
+    let codeFunction = 'function u(t) {\n' + code + '\n}';
+    try { dweet.iframeContent.eval(codeFunction); } catch (e) {}
+    dweet.iframeContent.window.u = dweet.iframeContent.u;
+    dweet.iframe.u = dweet.iframeContent.u;
+
+    // auto uncompress code
+    const i = code.toLowerCase().search(/eval\(unescape\(escape`/g);
+    if (i>=0)
+    {
+        const codeStart = code.slice(0,i);
+        const codeEnd = code.slice(i+4);
+        try
+        {
+            const newCode = dweet.iframeContent.eval(codeEnd)
+            if (newCode)
+                dweet.uncompressed = codeStart+newCode;
+        }
+        catch (e) {}
+    }
+
+    // apply loop protection
+    code = code.replace
+    (
+        /(for\s*\((?!\s+of\s+)(?!\s+in\s+)[^;]*;[^;]*;|while\s*\()\s*(\S)/g, 
+        (loopBody, group1, group2)=>
+            group1 && group2? group1 +
+            `--maxLoopCount<0&&function(){throw new Error('Frame timed out, update paused!')}()` +
+            (group2 == ')' ? '' : ',') + group2 : loopBody
+    );
+    
+    SetDweetSize(dweet, GetDweetSize());
+}
+
+function IsInViewport(element)
+{
+    let bounding = element.getBoundingClientRect();
+    return (
+        bounding.left >= 0 && bounding.right <= (window.innerWidth || document.documentElement.clientWidth) &&
+        bounding.top >= 0 &&
+        bounding.top <= (window.innerHeight || document.documentElement.clientHeight)
+    );
+}; 
+
+let IsMobile=_=>((navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i))!= null);
+
+Init();
+requestAnimationFrame( MainUpdate );
+
+</script>
+</body>
+</html>
