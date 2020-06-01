@@ -598,6 +598,7 @@ class OS13kWindow extends HTMLElement
 		super();
         
         // add to desktop
+        this.style.visibility = 'hidden';
         desktop.appendChild(this);
         
         // create taskbar icon
@@ -675,16 +676,15 @@ class OS13kWindow extends HTMLElement
             // set folder color
             contentWrapper.style.background = '#222';
             
-            // set focus
+            // set focus and make visible
             this.Focus();
+            this.style.visibility = '';
         }
         else if (icon.src)
         {
             // create iframe
             const iframe = this.iframe = document.createElement('iframe');
             iframe.className = 'frame';
-            if (this.icon.hasExtension)
-                iframe.style.display = this.icon.hasExtension ? 'none' : 'hidden';
             iframe.src = icon.src;
             contentWrapper.appendChild(iframe);
         
@@ -759,7 +759,8 @@ class OS13kWindow extends HTMLElement
                 
                 // show iframe and set focus
                 iframe.style.background = '#fff';
-                iframe.style.display = '';
+                this.style.visibility = '';
+                this.iframe.style.display = '';
                 this.Focus();
             }
         }
