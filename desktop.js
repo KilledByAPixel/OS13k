@@ -36,7 +36,7 @@ const desktopLayout =
 ]},
 {name:'Dweets', icon:'<b>III</b>', folder:
 [
-    {name:'Dweet View', icon:'<span style=color:#05f><b>III</b></span>', src:'dweets/dweetView.html', width:800, height:800},
+    {name:'Dweet View', icon:'<span style=color:#f00><b>III</b></span>', src:'dweets/dweetView.html', width:800, height:800},
     {name:'Black Hole', icon:'🌌', src:'dweets/blackHole.dweet.js'},
     {name:'Mandelbrot Nebula', icon:'🌟', src:'dweets/mandelbrotNebula.dweet.js'},
     {name:'Bogus Roads', icon:'🛣️', src:'dweets/bogusRoads.dweet.js'},
