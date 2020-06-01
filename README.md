@@ -87,9 +87,11 @@ Add an icon config to desktop.js to register your program, and send me pull requ
  
  ### Medals (not yet implemented)
  - Apps can register medals for their games, the os tracks which are unlocked
- - A function is provided for apps to unlock medals, OS13k.Medal
- - Players can view their medals and total points will be shown on the taskbar
- - Any JS13k game can use medals, even if not part of OS13k!
+ - A function is provided for apps to unlock medals, OS13k.Medal(gameName, medalName='', difficulty=0)
+ - Medals will have 3 difficulty levels 0-2 with different point values
+ - Players can view all their medals and total points will be shown on the taskbar
+ 
+ ### Any JS13k game can use medals, even if not part of OS13k!
  - To add a medal to any JS13k game, just save a special key to localStorage
  - The simplest way to add a medal is save localStorage.OS13kMedals_GAMENAME=1 when the player wins
  - For more control use localStorage.OS13kMedals_GAMENAME = [{"medalName":name,"difficulty":difficultyl}...]
