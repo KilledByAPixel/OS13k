@@ -52,6 +52,7 @@ body
     align-items:center;
     justify-content:center;
     pointer-events:none;
+    font-size:15vw;
 }
 .selected       { background:linear-gradient(#ff8,#fff); }
 .icon:hover     { background:linear-gradient(#fff,#44f); }
@@ -255,9 +256,6 @@ class _OS13k
     
     Update() 
     {
-        // fit title to desktop
-        title.style.fontSize = innerWidth/5;
-        
         // listen for iframe becomming new active element
         const activeElement = document.activeElement;
         if (this.lastActiveElement != activeElement)
