@@ -21,10 +21,11 @@ OS13k is a tiny pseudo operating system designed for a JS13k community project. 
 
 ## Programming Info
 
-Add an icon config to desktop.js to register your program, and send me pull request
-
+OS13k stores it's desktop config in desktop.js
+For rapid development iteration, the first desktopLayout in the list opens automatically
 Make sure to put your program in the proper subfolder
-- The first icon in desktopLayout opens on start
+
+Add an icon config to desktop.js to register your program, and send me pull request
 - {name:'Test', icon:'✌️', src:'system/test.html', multiple:1, reload:1, code:1}
 - {name:'Underwater Cavern', icon:'🌊', author:'Pavel', src:'dweets/underwaterCavern.dweet.js'}
 - {name:'Yin Yangs', icon:'☯️', src:'toys/infiniteYinYangs.shader.txt'}
