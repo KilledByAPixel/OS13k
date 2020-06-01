@@ -34,15 +34,21 @@ Make sure to put your program in the proper subfolder
 - Chrome is recommended for development, but Firefox is also supported.
 - Firefox will not work in local mode though because it treats local files as cross-origin
 - Strict mode is not enforced but recommended to make minification easier
-- Programs with the extension .dweet.js or .shader.txt will automatically load as dweets or shadertoys
-- Dweets do not need to be under 140 characers, there is no limit, but try to keep them small
 - To force a page to refresh you can add ?(version) to the src link... {src:'help.html?1'}
 - Your program should be paused or light on cpu when it does not have focus, !document.hasFocus()
-- Shadertoys and dweets are automatically paused when they don't have focus
 - You do not need charset=utf-8, it will be applied automatically
 - Prefix local storage keys with OS13k(program name) to prevent collisions
 - OS13k works well on mobile devices, so we plan to have a separate entry for the JS13k mobile category
 - Make use of the built in features of OS13k to save space in your code
+
+### Shadertoys and Dweets
+
+- Programs with the extension .shader.js or .dweet.js will automatically load as dweets or shadertoys
+- Shadertoys and dweets are automatically paused when they don't have focus
+- Dweets do not need to be under 140 characers, there is no limit, but try to keep em small
+- Dweets cand do anything that other programs can do including access OS13k and zzfx
+- Shadertoy shaders support iTime, iMouse, iResolution, and iChannel0
+- iChannel0 is a loop back image of the previous frame, this can be used to store game logic or make effects
 
 ### System Calls
 
@@ -71,11 +77,6 @@ Make sure to put your program in the proper subfolder
 - reload - Shows the reload page icon to reload your program
 - code - Option to show the code for your program
 - dweets and shadertoys always show reload and code options
-
-### Shadertoy Shaders
- - Supports iTime, iMouse, iResolution, and iChannel0
- - iChannel0 is an image of the previous frame
- - More can be added if there is a need
  
  ### Medals (not yet implemented)
  - Apps can register medals for their games, the os tracks which are unlocked
