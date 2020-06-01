@@ -13,9 +13,11 @@ OS13k is a tiny pseudo operating system designed for a JS13k community project. 
 - By sharing code like shader setup, dweets, and zzfx we can pack a lot into 13k
 - I'd like to see as many people as possible contribute tiny games and apps
 - Programs should be in the 100-1000 byte range, what matters most is how well it compresses
-- Another big part of this (not yet implemented) is the medal/achievement system
+- A very important rule to the contest is that all content must be new, so no old stuff
+- You can start with an old project but polish it up a lot, minify it and make it work with OS13k
 - We will curate the content for what actualy lands in the JS13k build
 - Anything left out of the JS13k build will still be available in the full GitHub version
+- Another big part of this is the medal system that ANY JS13k game (even non-OS13k) can opt into
 
 ## Programming Info
 
@@ -32,7 +34,7 @@ Make sure to put your program in the proper subfolder
 
 - OS13k can open any html file with javascript and it will work the same as if opened directly
 - Chrome is recommended for development, but Firefox is also supported.
-- Firefox will not work in local mode though because it treats local files as cross-origin
+- Firefox does not work in local mode because it treats local files as cross-origin
 - Strict mode is not enforced but recommended to make minification easier
 - To force a page to refresh you can add ?(version) to the src link... {src:'help.html?1'}
 - Your program should be paused or light on cpu when it does not have focus, !document.hasFocus()
@@ -40,11 +42,15 @@ Make sure to put your program in the proper subfolder
 - Prefix local storage keys with OS13k(program name) to prevent collisions
 - OS13k works well on mobile devices, so we plan to have a separate entry for the JS13k mobile category
 - Make use of the built in features of OS13k to save space in your code
+- For now don't worry about submitting fully minified versions of your code, just keep it clean
+- I will make a separate folder specifically for our minified build
+- Don't worry about overhead from OS13k function call names, remember this will be zipped
 
 ### Shadertoys and Dweets
 
-- Programs with the extension .shader.js or .dweet.js will automatically load as dweets or shadertoys
+- Programs with the extension .shader.js or .dweet.js will automatically load as dweets or shadertoys!
 - Shadertoys and dweets are automatically paused when they don't have focus
+- They also automatically have reload and show code options applied
 - Dweets do not need to be under 140 characers, there is no limit, but try to keep em small
 - Dweets cand do anything that other programs can do including access OS13k and zzfx
 - Shadertoy shaders support iTime, iMouse, iResolution, and iChannel0
@@ -52,16 +58,17 @@ Make sure to put your program in the proper subfolder
 
 ### System Calls
 
-- The function OS13kStart(icon) is called on child frames when opened
+- The function OS13kStart() is called on child frames when opened
 - To acces OS13k features, use the OS13k object
-- ZzFx sounds can played by calling zzfx, volume is controlled by the system
+- ZzFx sounds can played directly by calling zzfx, volume is controlled by the system
 - A seeded ZzFX sound player is available to save space with much smaller sound calls
+- Example OS13k.PlaySeed(1006), I will create a tool for looking for sound seeds soon
 - OS13k.CreateShader(canvas, shaderCode) - Create a shadertoy compatible webgl shader
 - OS13k.RenderShader(canvas, shaderProgram, time=0) - Render a shader
 - OS13k.Medal(gameName, medalName='', difficulty=0) - Register a medal for your game as complete
 - OS13k.KeyDirection(key) - Get position from a key code
 - OS13k.PlaySamples(samples, sampleRate=44100) - Play audio samples
-- OS13k.PlaySeedSound(seed, lengthScale=1, volume=1, randomness=.05) - Play a zzfx sound from seed
+- OS13k.PlaySeed(seed, lengthScale=1, volume=1, randomness=.05) - Play a zzfx sound from seed
 - OS13k.Speak(text) - Play speech of the text
 
 ### Math Library
@@ -76,7 +83,6 @@ Make sure to put your program in the proper subfolder
 - multiple - Allows multiple copies of the window to open
 - reload - Shows the reload page icon to reload your program
 - code - Option to show the code for your program
-- dweets and shadertoys always show reload and code options
  
  ### Medals (not yet implemented)
  - Apps can register medals for their games, the os tracks which are unlocked
