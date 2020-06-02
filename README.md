@@ -49,7 +49,7 @@ Add an icon config to desktop.js to register your program, and send me pull requ
 - Make use of the built in features of OS13k to save space in your code
 - For now don't worry about submitting fully minified versions of your code, just keep it clean
 - I will make a separate folder specifically for our minified build
-- Don't worry about overhead from OS13k function call names, remember this will be zipped
+- There is very little overhead for OS13k function call names, remember this will be zipped
 
 ### Shadertoys and Dweets
 
