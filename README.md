@@ -42,6 +42,7 @@ Add an icon config to desktop.js to register your program, and send me pull requ
 - Strict mode is not enforced but recommended to make minification easier
 - To force a page to refresh you can add ?(version) to the src link... {src:'help.html?1'}
 - Your program should be paused or light on cpu when it does not have focus, !document.hasFocus()
+- Dweets and Shadertoys are automatically paused when not focued
 - You do not need charset=utf-8, it will be applied automatically
 - Prefix local storage keys with OS13k(program name) to prevent collisions
 - OS13k works well on mobile devices, so we plan to have a separate entry for the JS13k mobile category
