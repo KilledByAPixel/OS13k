@@ -23,6 +23,7 @@ OS13k is a tiny pseudo operating system designed for a JS13k community project. 
 - Another big part of this is the medal system that ANY JS13k game (even non-OS13k) can opt into
 - It is still very early in development so all the apps are placeholders to be swapped out later
 - We make this repo public on day 1 of Js13k
+- I will submit an much reduced version on day 1 for people to test their games achevements on
 
 You can learn more about JS13k here, I won 2nd place last year!
 https://js13kgames.com/
