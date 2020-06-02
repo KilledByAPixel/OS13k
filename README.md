@@ -9,7 +9,7 @@ OS13k is a tiny pseudo operating system designed for a JS13k community project. 
 
 
 ## The Plan
-- My crazy idea is to make this tiny OS to host a variety of games and utilities and fit in 13k
+- My crazy idea is to make this tiny OS to host a variety of games and apps and fit it in 13k
 - By sharing code like shader setup, dweets, and zzfx we can pack a lot into 13k
 - OS13k is under 6k by itself, the bulk if it is mostly ZzFX, shader code, dweets and other shared code
 - I'd like to see as many people as possible contribute tiny games and apps
