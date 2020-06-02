@@ -102,3 +102,4 @@ Add an icon config to desktop.js to register your program, and send me pull requ
  - For more control use localStorage.OS13kMedals_GAMENAME = [{"medalName":name,"difficulty":difficultyl}...]
  - Both medal name and difficulty are optional
  - When OS13k is next run, it will search locaStorage and display medals unlocked by other games
+ - This is possible because all JS13k games share the same local storage! Pretty cool right?
