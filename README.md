@@ -114,5 +114,6 @@ Add an icon config to desktop.js to register your program, and send me pull requ
  ### Resources
  - [Dwitter](https://www.dwitter.net/) - The source of so much amazing tiny code
  - [The Dweetabase](http://dweetabase.3d2k.com/), and offline searable database of every dweet
+ - [Shadertoy](https://www.shadertoy.com/) - Some are massive, but many amazing tweet sized shaders
  - [JS1k](https://js1k.com/) - I imagine with so much shared code and zip we could fit many of these size
  - [JS13k](https://js13kgames.com/) - This is our goal
