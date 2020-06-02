@@ -71,7 +71,7 @@ Add an icon config to desktop.js to register your program, and send me pull requ
 - OS13k.CreateShader(canvas, shaderCode) - Create a shadertoy compatible webgl shader
 - OS13k.RenderShader(canvas, shaderProgram, time=0) - Render a shader
 - OS13k.Medal(gameName, medalName='', difficulty=0) - Register a medal for your game as complete
-- OS13k.KeyDirection(key) - Get position from a key code
+- OS13k.KeyDirection(key) - Get {x, y} position from a key code
 - OS13k.PlaySamples(samples, sampleRate=44100) - Play audio samples
 - OS13k.PlaySeed(seed, lengthScale=1, volume=1, randomness=.05) - Play a zzfx sound from seed
 - OS13k.Speak(text) - Play speech of the text
