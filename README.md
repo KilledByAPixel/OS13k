@@ -68,9 +68,6 @@ Add an icon config to desktop.js to register your program, and send me pull requ
 
 - The function OS13kStart() is called on child frames when opened
 - To acces OS13k features, use the OS13k object
-- ZzFx sounds can played directly by calling zzfx, volume is controlled by the system
-- A seeded ZzFX sound player is available to save space with much smaller sound calls
-- Example OS13k.PlaySeed(1006), I will create a tool for looking for sound seeds soon
 - OS13k.CreateShader(canvas, shaderCode) - Create a shadertoy compatible webgl shader
 - OS13k.RenderShader(canvas, shaderProgram, time=0) - Render a shader
 - OS13k.Medal(gameName, medalName='', difficulty=0) - Register a medal for your game as complete
@@ -78,6 +75,13 @@ Add an icon config to desktop.js to register your program, and send me pull requ
 - OS13k.PlaySamples(samples, sampleRate=44100) - Play audio samples
 - OS13k.PlaySeed(seed, lengthScale=1, volume=1, randomness=.05) - Play a zzfx sound from seed
 - OS13k.Speak(text) - Play speech of the text
+
+### ZzFX
+- ZzFX is my super tiny sound synth which is also on GitHub, but don't let it's size fool you
+- Here is the sound desinger for ZzFX with a link to the public repo https://zzfx.3d2k.com/
+- ZzFx sounds can played directly by calling zzfx, volume is controlled by the system
+- A seeded ZzFX sound player is available to save space with much smaller sound calls
+- Example OS13k.PlaySeed(1006), I will create a tool for looking for sound seeds soon
 
 ### Math Library
 - OS13k.Random(max=1, min=0) - Get a seeded random value, OS13k.randomSeed to set the seed
