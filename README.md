@@ -18,7 +18,7 @@ OS13k is a tiny pseudo operating system designed for a JS13k community project. 
 - We could easily pack 1k of that with just like 10 or more really cool dweets and shaders
 - A very important rule to the contest is that all content must be new, so no old stuff!
 - You can start with an old project but polish it up a lot, minify it and make it work with OS13k
-- We will curate the content for what actualy lands in the JS13k build
+- We will need to curate the best and perhaps smallest content for what actualy lands in the JS13k build
 - Anything left out of the JS13k build will still be available in the full GitHub version
 - Another big part of this is the medal system that ANY JS13k game (even non-OS13k) can opt into
 - It is still very early in development so all the apps are placeholders to be swapped out later
