@@ -81,6 +81,7 @@ Add an icon config to desktop.js to register your program, and send me pull requ
 - OS13k.Clamp(a, min=0, max=1) - Clamp value between min and max
 - OS13k.Percent(v, a, b) - Get clamped percent between a and b
 - OS13k.Lerp(p, a, b) - Lerp clamped percent between a and b
+- Let me know if anything else should be included, I am considering adding a vector class
 
 ### Icon settings
 - width and height - Size of window
