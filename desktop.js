@@ -44,5 +44,6 @@ const desktopLayout =
     {name:'Underwater Cavern', icon:'🌊', author:'Pavel', src:'dweets/underwaterCavern.dweet.js'},
     {name:'City Traffic', icon:'🚌', author:'Tomxor', src:'dweets/cityTraffic.dweet.js'},
     {name:'Train Set', icon:'🚂', author:'jylikangas', src:'dweets/trainSet.dweet.js'},
+    {name:'Analog Clock', icon:'🕒', author:'DaSpider', src:'dweets/clock.dweet.js'},
 ]},
 ];
