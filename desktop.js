@@ -25,6 +25,7 @@ const desktopLayout =
     {name:'Photo Booth', icon:'📸', src:'utilities/photoBooth.html', width:1380, height:600},
     {name:'Unicode Toys', icon:'𝖀', author:'Xem', src:'utilities/unicodeToys.html', width:500, height:800},
     {name:'Mini Shadertoy', icon:'𝓢', src:'utilities/miniShadertoy.html', width:340, height:400},
+    {name:'Text Editor', icon:'📝', src:'utilities/texteditor.html', width:530, height:300},
 ]},
 {name:'Toys', icon:'🤖', folder:
 [
