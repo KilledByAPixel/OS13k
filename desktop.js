@@ -5,6 +5,7 @@ const desktopLayout =
 {name:'System', icon:'⚙️', folder:
 [
     {name:'Test', icon:'😄', src:'system/test.html?6', multiple:1, reload:1, code:1},
+    {name:'Mirror', icon:'↩', src:'system/mirror.html'},
 ]},
 {name:'Games', icon:'🎮', folder:
 [
