@@ -5,6 +5,7 @@ const desktopLayout =
 {name:'System', icon:'⚙️', folder:
 [
     {name:'Test', icon:'😄', src:'system/test.html?6', multiple:1, reload:1, code:1},
+    {name:'Shell', icon:'X', src:'system/shell.html'},
     {name:'Mirror', icon:'↩', src:'system/mirror.html'},
     {name:'Screensaver', icon:'⌛', src:'system/screenSaver.dweet.js'},
 ]},
