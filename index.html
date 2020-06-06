@@ -102,7 +102,7 @@ body
 :host
 {
     box-shadow:9px 9px 9px;
-    background:#000;
+    background:rgba(22, 22, 22, 0.9);
     border:2px solid;
     display:flex;
     flex-direction:column;
@@ -125,7 +125,6 @@ body
     width:100%;
     height:100%;
     border:none;
-    background:#000;
     position:relative;
     overflow:hidden;
 }
@@ -150,7 +149,6 @@ body
     outline:none;
 }
 .selected     { background:linear-gradient(#eee,#88f); }
-.folder       { background:#000; }
 .reload,
 .full,
 .code         { width:40; }
@@ -674,7 +672,8 @@ class OS13kWindow extends HTMLElement
             }
             
             // set folder color
-            contentWrapper.style.background = '#222';
+// rodrigo.siqueira - commented (already set in :host)
+//            contentWrapper.style.background = '#222';
             
             // set focus and make visible
             this.Focus();
@@ -888,6 +887,9 @@ onmousedown=e=>
     
     if (selected)
     {
+        // semi-transparent window while grabbing
+        selected.style.backgroundColor='rgba(40, 40, 40, 0.7)';
+
         // set grabbing mode
         document.body.style.cursor = 'grabbing';
         desktop.style.pointerEvents = 'none';
@@ -899,6 +901,12 @@ onmouseup=e=>
     // allow pointer events and reset cursor
     desktop.style.pointerEvents = '';
     document.body.style.cursor = '';
+
+    // Restore window background (was semi-transparent while grabbing)
+    if (selected)
+    {
+      selected.style.backgroundColor='rgba(22, 22, 22, 0.9)';
+    }
         
     // release selected
     selected && selected.Focus();
