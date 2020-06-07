@@ -87,7 +87,7 @@ body
 .titleBar
 {
     height:44;
-    font-size:30;
+    font-size:26;
     background:linear-gradient(#eee,#888);
     display:flex;
     align-items:center;
@@ -126,8 +126,8 @@ body
 .reload,
 .full,
 .code         { width:40; }
-.code         { width:40; }
 .close        { width:28; }
+.help:hover   { background:#0ff; }
 .code:hover   { background:#0f0; }
 .full:hover   { background:#fff; }
 .reload:hover { background:#ff0; }
@@ -744,16 +744,18 @@ class OS13kWindow extends HTMLElement
             
         // set focus
         this.Focus();
+        
+        return originalTarget.className == 'codeDisplay';
     }
     
     MouseClick(e)
     {
         // check for title bar buttons
-        e.className == 'full'   && this.FullScreen();
-        e.className == 'reload' && this.Reload();
-        e.className == 'close'  && this.Close();
-        e.className == 'code'   && this.ShowCode();
-        this.Focus();
+        e.className == 'full'        && this.FullScreen();
+        e.className == 'reload'      && this.Reload();
+        e.className == 'close'       && this.Close();
+        e.className == 'code'        && this.ShowCode();
+        e.className != 'codeDisplay' && this.Focus();
     }
     
     Close()
@@ -837,11 +839,12 @@ onmousedown=e=>
     // prevent getting stuck
     if (selected) return onmouseup(e);
     
-    // prevent desktop from stealing focus
-    e.cancelable && e.preventDefault();
-    
     // handle mouse down
-    e.target.MouseDown && e.target.MouseDown(e, e.originalTarget || e.path[0])
+    let prevetDefault = 1;
+    e.target.MouseDown && (prevetDefault = !e.target.MouseDown(e, e.originalTarget || e.path[0]));
+    
+    // prevent desktop from stealing focus
+    prevetDefault && e.cancelable && e.preventDefault();
     
     // save selected offset
     const rect = e.target.getBoundingClientRect();
@@ -883,6 +886,9 @@ onmousemove=e=>
 
 onclick=e=>
 {
+    // prevent desktop from stealing focus
+    e.cancelable && e.preventDefault();
+    
     // handle click
     e.target.MouseClick ? e.target.MouseClick(e.originalTarget || e.path[0]) :
         desktop.CloseFolders();
