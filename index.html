@@ -780,31 +780,6 @@ class OS13kWindow extends HTMLElement
         e.className != 'codeDisplay' && this.Focus();
     }
     
-    Close()
-    {
-        // destroy window
-        this.icon.window = 0;
-        this.taskbarIcon.remove();
-        this.remove();
-        
-        // try to focus on top window
-        desktop.FocusTopWindow();
-    }
-    
-    Reload()
-    {
-        // hide iframe and reload it
-        this.iframe.style.visibility = 'hidden';
-        this.iframeContent.location.reload();
-    }
-    
-    ShowCode()
-    {
-        // toggle showing code
-        this.codeDisplay.style.display = 
-            (this.showCode = !this.showCode) ? 'block' : '';
-    }
-    
     Focus(fromTaskbar)
     {
         // set focus
@@ -850,11 +825,38 @@ class OS13kWindow extends HTMLElement
     FullScreen()
     {
         // set fullscreen
+        this.Focus();
         const fullScreenElement = this.contentWrapper;
         if (fullScreenElement.webkitRequestFullScreen)
             fullScreenElement.webkitRequestFullScreen();
         else if (fullScreenElement.mozRequestFullScreen)
             fullScreenElement.mozRequestFullScreen();
+    }
+    
+    ShowCode()
+    {
+        // toggle showing code
+        this.Focus();
+        this.codeDisplay.style.display = 
+            (this.showCode = !this.showCode) ? 'block' : '';
+    }
+    
+    Reload()
+    {
+        // hide iframe and reload it
+        this.iframe.style.visibility = 'hidden';
+        this.iframeContent.location.reload();
+    }
+    
+    Close()
+    {
+        // destroy window
+        this.icon.window = 0;
+        this.taskbarIcon.remove();
+        this.remove();
+        
+        // try to focus on top window
+        desktop.FocusTopWindow();
     }
 } // OS13kWindow
 
@@ -970,6 +972,8 @@ oncontextmenu=e=>
         // focus on target frame
         e.target.element.Focus();
     }
+    else
+        e.target.Focus && e.target.Focus();
     
     // show menu
     menuElement.style.left = e.x;
