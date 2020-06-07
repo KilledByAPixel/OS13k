@@ -41,6 +41,7 @@ body
 }
 .folder
 {
+    z-index:20000;
     box-shadow:5px 5px 9px;
     border:2px solid;
     background:linear-gradient(#fff,#777);
@@ -64,6 +65,7 @@ body
     visibility:hidden;
     display:flex;
     flex-direction:column;
+    background:#000;
 }
 .iconActive                { background:linear-gradient(#fff,#44f); }
 .taskbarIconActive         { background:linear-gradient(#ff8,#fff); }
@@ -154,6 +156,7 @@ div svg       { width:100%; pointer-events:none; }
     <path stroke=#000 d='M1 1L9 9M9 1L1 9'/>
 </template>
 <div id=desktop>
+<div id=programsFolder style=position:absolute></div>
 <div id=taskbar class=taskbar></div>
 <div id=menu class=menu></div>
 <div class=title>OS13k
@@ -367,15 +370,15 @@ class _OS13k
 // OS13k Desktop
 
 let selected, seletOffsetX, seletOffsetY;
-let lastActiveElement, activeWindow, activeIcon, activeTaskbarIcon;
+let folderIcon, contextWindow, lastActiveElement, activeWindow, activeIcon, activeTaskbarIcon;
 let firstIcon, topZ = 0, windowOpenX = 50, windowOpenY = 99;
 
 desktop.Init=()=>
 {
     // system icons
     const taskbarIcon = 
-        new OS13kTaskbarIcon( {icon:'📁', name:'Apps'}, 
-            new OS13kFolder(programs, 0, 51));
+        folderIcon = new OS13kTaskbarIcon( {icon:'📁', name:'Apps'}, 
+            new OS13kFolder(programs, 0, 0));
 
     // open first icon in list
     firstIcon && firstIcon.MouseClick();
@@ -404,8 +407,10 @@ desktop.Focus=()=>
 desktop.CloseFolders=()=>
 {
     // hide all drop down folders
-    for (const c of desktop.children)
+    for (const c of programsFolder.children)
         c.localName == 'os13k-folder' && (c.style.visibility = 'hidden');
+        
+    menu.style.visibility = '';
 }
 
 desktop.CloseWindows=()=>
@@ -486,7 +491,7 @@ class OS13kFolder extends HTMLElement
         this.style.left = x;
         this.style.top = y;
         this.parentFolder = parentFolder;
-        desktop.appendChild(this);
+        programsFolder.appendChild(this);
         
         // add icons to folder
         for (const icon of icons)
@@ -504,14 +509,23 @@ class OS13kFolder extends HTMLElement
 
     Focus(fromTaskbar)
     {
-        const wasVisible = this.style.visibility == '';
+        const wasVisible = 
+            this.style.visibility == '' &&
+            programsFolder.style.left == '0px' &&
+            programsFolder.style.top == '51px'
+            
         desktop.CloseFolders();
         if (!fromTaskbar || !wasVisible)
         { 
             // make visible
             this.parentFolder && this.parentFolder.Focus();
             this.style.visibility = '';
-            this.style.zIndex = ++topZ;
+        }
+        
+        if (fromTaskbar && this.parentNode == programsFolder)
+        {
+            programsFolder.style.left = 0;
+            programsFolder.style.top = 51;
         }
     }
 } // OS13kFolder
@@ -819,10 +833,10 @@ class OS13kWindow extends HTMLElement
             this.style.zIndex = ++topZ;
             
             // set conext menu buttons
-            let menuHTML = '<button onclick=activeWindow.FullScreen()>Fullscreen';
-            this.icon.code && (menuHTML += '<button onclick=activeWindow.ShowCode()>Show Code');
-            this.icon.reload && (menuHTML += '<button onclick=activeWindow.Reload()>Reload');
-            menuHTML += '<button onclick=activeWindow.Close()>Close';
+            let menuHTML = '<button onclick=contextWindow.FullScreen()>Fullscreen';
+            this.icon.code && (menuHTML += '<button onclick=contextWindow.ShowCode()>Show Code');
+            this.icon.reload && (menuHTML += '<button onclick=contextWindow.Reload()>Reload');
+            menuHTML += '<button onclick=contextWindow.Close()>Close';
             menu.innerHTML = menuHTML;
         }
         
@@ -853,6 +867,10 @@ onmousedown=e=>
 {
     // prevent getting stuck
     if (selected) return onmouseup(e);
+    
+    // ignore menu buttons
+    if (e.target.localName == 'button')
+        return;
         
     // prevent desktop from stealing focus
     const originalTarget = e.originalTarget || e.path[0];
@@ -862,6 +880,10 @@ onmousedown=e=>
     
     // hide menu if it wasnt clicked on
     e.target.offsetParent.className != 'menu' && (menu.style.visibility = '');
+    
+    // hide folders if not clicked on
+    e.target.offsetParent.className != 'folder' && 
+        e.target != folderIcon && desktop.CloseFolders();
     
     // only look for left mouse button
     if (e.button) return;
@@ -925,19 +947,36 @@ oncontextmenu=e=>
     // prevent default context menu
     e.preventDefault();
     
+    // ignore menu buttons
+    if (e.target.localName == 'button')
+        return;
+        
     // hide menu
     menu.style.visibility = '';
     
-    // ignore events except from taskbar icons
-    if (!e.target.element || e.target.element.className) return;
-    
-    // focus on target frame
-    e.target.element.Focus();
+    // ignore events except from windows and taskbar icons
+    let menuElement = menu;
+    if (!e.target.SetActive || e.target == folderIcon)
+    {
+        menuElement = programsFolder;
+        folderIcon.MouseClick();
+    }
+    if (e.target.element)
+    {
+        // ignore if it is a folder
+        if (e.target.element.className && e.target != folderIcon)
+            return;
+            
+        // focus on target frame
+        e.target.element.Focus();
+    }
     
     // show menu
-    menu.style.left = e.x;
-    menu.style.top = e.y;
-    menu.style.visibility = 'visible';
+    menuElement.style.left = e.x;
+    menuElement.style.top = e.y;
+    menuElement.style.visibility = 'visible';
+    contextWindow = activeWindow;
+    document.activeElement.blur();
 }
 
 /////////////////////////////////////////////////////////////////////////////
