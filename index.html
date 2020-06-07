@@ -56,6 +56,16 @@ body
     display:flex;
     align-items:center;
 }
+.menu
+{
+    position:absolute;
+    z-index:20000;
+    background:#777;
+    border:2px solid;
+    visibility:hidden;
+    display:flex;
+    flex-direction:column;
+}
 .iconActive                { background:linear-gradient(#fff,#44f); }
 .taskbarIconActive         { background:linear-gradient(#ff8,#fff); }
 .taskbarIcon:hover         { background:linear-gradient(#fff,#44f); }
@@ -146,6 +156,7 @@ div svg       { width:100%; pointer-events:none; }
 </template>
 <div id=desktop>
 <div id=taskbar class=taskbar></div>
+<div id=menu class=menu></div>
 <div class=title>OS13k
 <script src=programs.js?7></script>
 <script>
@@ -744,17 +755,15 @@ class OS13kWindow extends HTMLElement
             
         // set focus
         this.Focus();
-        
-        return originalTarget.className == 'codeDisplay';
     }
     
     MouseClick(e)
     {
         // check for title bar buttons
         e.className == 'full'        && this.FullScreen();
+        e.className == 'code'        && this.ShowCode();
         e.className == 'reload'      && this.Reload();
         e.className == 'close'       && this.Close();
-        e.className == 'code'        && this.ShowCode();
         e.className != 'codeDisplay' && this.Focus();
     }
     
@@ -809,6 +818,13 @@ class OS13kWindow extends HTMLElement
             
             // move z to top
             this.style.zIndex = ++topZ;
+            
+            // set conext menu buttons
+            let menuHTML = '<button onclick=activeWindow.FullScreen()>Fullscreen';
+            this.icon.code && (menuHTML += '<button onclick=activeWindow.ShowCode()>Show Code');
+            this.icon.reload && (menuHTML += '<button onclick=activeWindow.Reload()>Reload');
+            menuHTML += '<button onclick=activeWindow.Close()>Close';
+            menu.innerHTML = menuHTML;
         }
         
         // set active
@@ -839,12 +855,22 @@ onmousedown=e=>
     // prevent getting stuck
     if (selected) return onmouseup(e);
     
-    // handle mouse down
-    let prevetDefault = 1;
-    e.target.MouseDown && (prevetDefault = !e.target.MouseDown(e, e.originalTarget || e.path[0]));
-    
+    // hide context menu
+    if (e.target.offsetParent.className != 'menu')
+        menu.style.visibility = '';
+        
     // prevent desktop from stealing focus
-    prevetDefault && e.cancelable && e.preventDefault();
+    const originalTarget = e.originalTarget || e.path[0];
+    
+    // prevent default except for text areas (allow copy/paste)
+    (originalTarget.localName != 'textarea') && e.preventDefault();
+    
+    // only look for left mouse button
+    if (e.button)
+        return;
+    
+    // handle mouse down
+    e.target.MouseDown && e.target.MouseDown(e, originalTarget);
     
     // save selected offset
     const rect = e.target.getBoundingClientRect();
@@ -886,16 +912,44 @@ onmousemove=e=>
 
 onclick=e=>
 {
+    // hide menu
+    menu.style.visibility = '';
+    
     // prevent desktop from stealing focus
-    e.cancelable && e.preventDefault();
+    e.preventDefault();
     
     // handle click
     e.target.MouseClick ? e.target.MouseClick(e.originalTarget || e.path[0]) :
         desktop.CloseFolders();
 }
 
-// disable right click menu
-oncontextmenu=e=>e.preventDefault();
+oncontextmenu=e=>
+{
+    // prevent default context menu
+    e.preventDefault();
+    
+    // hide menu
+    menu.style.visibility = '';
+    
+    // ignore events except from windows and taskbar icons
+    if (!e.target.SetActive)
+        return;
+    
+    if (e.target.element)
+    {
+        // ignore if it is a folder
+        if (e.target.element.className != "")
+            return;
+            
+        // focus on target frame
+        e.target.element.Focus();
+    }
+    
+    // right click menu
+    menu.style.left = e.x;
+    menu.style.top = e.y;
+    menu.style.visibility = 'visible';
+}
 
 /////////////////////////////////////////////////////////////////////////////
 // ZzFXMicro - Zuper Zmall Zound Zynth 
