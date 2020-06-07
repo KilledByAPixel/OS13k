@@ -510,7 +510,9 @@ class OS13kFolder extends HTMLElement
 
     Focus(fromTaskbar)
     {
-        const wasVisible = this.style.visibility == '';
+        // check if it is visible and in default position
+        const wasVisible = this.style.visibility == '' && 
+            programsFolder.style.left == '0px' && programsFolder.style.top == '51px';
             
         desktop.CloseFolders();
         if (!fromTaskbar || !wasVisible)
