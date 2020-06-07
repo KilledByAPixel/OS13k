@@ -463,6 +463,7 @@ class OS13kTaskbarIcon extends HTMLElement
     MouseClick()
     {
         // focus on window or drop down folder
+        document.activeElement.blur();
         this.element.Focus(1);
     }
     
@@ -509,10 +510,7 @@ class OS13kFolder extends HTMLElement
 
     Focus(fromTaskbar)
     {
-        const wasVisible = 
-            this.style.visibility == '' &&
-            programsFolder.style.left == '0px' &&
-            programsFolder.style.top == '51px'
+        const wasVisible = this.style.visibility == '';
             
         desktop.CloseFolders();
         if (!fromTaskbar || !wasVisible)
@@ -521,6 +519,8 @@ class OS13kFolder extends HTMLElement
             this.parentFolder && this.parentFolder.Focus();
             this.style.visibility = '';
         }
+        else
+            activeWindow && activeWindow.Focus();
         
         if (fromTaskbar && this.parentNode == programsFolder)
         {
@@ -884,8 +884,7 @@ onmousedown=e=>
     e.target.offsetParent.className != 'menu' && (menu.style.visibility = '');
     
     // hide folders if not clicked on
-    e.target.offsetParent.className != 'folder' && 
-        e.target != folderIcon && desktop.CloseFolders();
+    e.target.offsetParent.className != 'folder' && e.target != folderIcon && desktop.CloseFolders();
     
     // only look for left mouse button
     if (e.button) return;
@@ -913,6 +912,9 @@ onmouseup=e=>
         
     // release selected
     selected && selected.Focus(selected = 0);
+        
+    // focus on active window
+    e.target != folderIcon && activeWindow && activeWindow.Focus();
 }
 
 onmousemove=e=>
