@@ -9,7 +9,7 @@ const programs =
     {name:'Test', icon:'😄', src:'test.html?6', multiple:1, reload:1, code:1},
     {name:'Test Folder', icon:'📁', folder:
     [
-        {name:'Test2', icon:'✌️', src:'test.html?6'},
+        {name:'Test2', icon:'✌️', src:'../test.html?6'},
     ]},
 ]},
 {name:'Tools', icon:'🔧', folder:
