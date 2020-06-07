@@ -683,7 +683,6 @@ class OS13kWindow extends HTMLElement
             iframeContent.OS13k = OS13k;
             iframeContent.zzfx = zzfx;
             iframeContent.OS13kStart && iframeContent.OS13kStart();
-            //iframeContent.oncontextmenu=e=>e.preventDefault();
 
             // check for extensions
             if (this.icon.hasExtension)
@@ -808,7 +807,7 @@ class OS13kWindow extends HTMLElement
         
         // set active
         activeWindow = active && this;
-        this.style.filter = active ? '' : 'grayscale(1)brightness(.8';
+        this.style.filter = active ? '' : 'grayscale(1)brightness(.7';
         this.taskbarIcon.SetActive();
     }
     
