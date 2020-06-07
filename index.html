@@ -143,7 +143,7 @@ div svg       { width:100%; pointer-events:none; }
 <div id=desktop>
 <div id=taskbar class=taskbar></div>
 <div class=title>OS13k
-<script src=programs.js?6></script>
+<script src=programs.js?7></script>
 <script>
 
 // load test programs if there are none found
@@ -463,7 +463,7 @@ customElements.define('os13k-taskbar-icon', OS13kTaskbarIcon);
 
 class OS13kFolder extends HTMLElement
 {
-	constructor(icons, x, y, parentFolder, path='')
+	constructor(icons, x, y, parentFolder)
     {
 		super();
         
@@ -476,14 +476,14 @@ class OS13kFolder extends HTMLElement
         
         // add icons to folder
         for (const icon of icons)
-            this.appendChild(icon.os13kicon = new OS13kIcon(icon, path));
+            this.appendChild(icon.os13kicon = new OS13kIcon(icon));
         
         // get width offset and add new folders recursively
         const rect = this.getBoundingClientRect();
         for (const icon of icons)
         {
             // create the folder and hook up to icon
-            icon.folder && (icon.os13kicon.folder = new OS13kFolder(icon.folder, rect.right - 2, y, this, path + icon.name + '/'));
+            icon.folder && (icon.os13kicon.folder = new OS13kFolder(icon.folder, rect.right - 2, y, this));
             y += 26;
         }
     }
@@ -509,12 +509,12 @@ customElements.define('os13k-folder', OS13kFolder);
 
 class OS13kIcon extends HTMLElement
 {
-	constructor({x, y, name, icon, src, width=720, height=405, author, folder, multiple, reload, code}, path)
+	constructor({x, y, name, icon, src, width=720, height=405, author, folder, multiple, reload, code})
     {
 		super();
         
         // set icon defaults
-        src = src ? path.toLowerCase() + src : '';
+        src = src || '';
         name = name || src.split('.')[0];
         icon = icon || (name[0] ? name[0].toUpperCase() : '' );     
         
