@@ -17,6 +17,7 @@ body
 }
 .taskbar
 {
+    position:absolute;
     width:100%;
     z-index:10000;
     background:linear-gradient(#999,#444);
@@ -55,10 +56,10 @@ body
     display:flex;
     align-items:center;
 }
-.iconActive            { background:linear-gradient(#fff,#44f); }
-.taskbarActive         { background:linear-gradient(#ff8,#fff); }
-.taskbarIcon:hover     { background:linear-gradient(#fff,#44f); }
-.taskbarActive:hover   { background:linear-gradient(#ff8,#44f); }
+.iconActive                { background:linear-gradient(#fff,#44f); }
+.taskbarIconActive         { background:linear-gradient(#ff8,#fff); }
+.taskbarIcon:hover         { background:linear-gradient(#fff,#44f); }
+.taskbarIconActive:hover   { background:linear-gradient(#ff8,#44f); }
 .title
 {
     height:100%;
@@ -100,15 +101,12 @@ body
     height:100%;
     border:none;
     background:#000;
-    position:relative;
     overflow:hidden;
 }
 .name
 {
     width:100%;
     cursor:grab;
-    display:flex;
-    align-items:center;
     overflow:hidden;
 }
 .codeDisplay
@@ -142,8 +140,8 @@ div svg       { width:100%; pointer-events:none; }
 <symbol id=icon-close viewBox='0 0 10 10'>
     <path stroke=#000 d='M1 1L9 9M9 1L1 9'/>
 </template>
-<div id=taskbar class=taskbar></div>
 <div id=desktop>
+<div id=taskbar class=taskbar></div>
 <div class=title>OS13k
 <script src=programs.js?2></script>
 <script>
@@ -456,7 +454,7 @@ class OS13kTaskbarIcon extends HTMLElement
         // unselect old icon and set style
         activeTaskbarIcon && activeTaskbarIcon.SetActive(activeTaskbarIcon = 0);
         activeTaskbarIcon = this;
-        this.className = 'taskbarIcon' + (active ? ' taskbarActive' : '');
+        this.className = 'taskbarIcon' + (active ? ' taskbarIconActive' : '');
     }
 } // OS13kTaskbarIcon
 
