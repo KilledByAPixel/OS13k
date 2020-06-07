@@ -69,7 +69,7 @@ body
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:15vw;
+    font-size:20vw;
 }
 </style>
 <template id=template>
@@ -88,7 +88,7 @@ body
 {
     height:44;
     font-size:30;
-    background:linear-gradient(#999,#444);
+    background:linear-gradient(#eee,#88f);
     display:flex;
     align-items:center;
     justify-content:center;
@@ -118,7 +118,6 @@ body
     display:none;
     border:1px solid #fff;
 }
-.active       { background:linear-gradient(#eee,#88f); }
 .reload,
 .full,
 .code         { width:40; }
@@ -817,9 +816,8 @@ class OS13kWindow extends HTMLElement
         
         // set active
         activeWindow = active && this;
-        this.style.opacity = (active? 1 : .9);
+        this.style.filter = active?'':'grayscale(1)brightness(.8';
         this.taskbarIcon.SetActive(1);
-        this.titleBar.className = 'titleBar' + (active ? ' active' : '');
     }
     
     FullScreen()
