@@ -102,6 +102,7 @@ body
     border:none;
     background:#000;
     overflow:hidden;
+    background:#fff;
 }
 .name
 {
@@ -591,7 +592,7 @@ class OS13kWindow extends HTMLElement
     {
 		super();
         
-        // add to desktop hidden
+        // add to desktop
         desktop.appendChild(this);
         
         // create taskbar icon
@@ -653,8 +654,9 @@ class OS13kWindow extends HTMLElement
         this.style.width = Math.min(this.icon.width, innerWidth);
 
         // create iframe
-        const iframe = this.iframe = document.createElement('iframe');
+        const iframe = this.iframe = document.createElement('iframe'); 
         iframe.className = 'frame';
+        iframe.style.visibility = 'hidden';
         iframe.src = icon.src;
         contentWrapper.appendChild(iframe);
                 
@@ -665,8 +667,7 @@ class OS13kWindow extends HTMLElement
             const iframeContent = this.iframeContent = e.target.contentWindow;
             const iframeDocument = iframeContent.document;
             const iframeText = this.icon.hasExtension ?
-                iframeDocument.body.innerText :
-                iframeDocument.body.innerHTML;
+                iframeDocument.body.innerText : iframeDocument.body.innerHTML;
 
             // create code display
             if (!this.codeDisplay)
@@ -728,8 +729,7 @@ class OS13kWindow extends HTMLElement
             }
 
             // show iframe and set focus
-            iframe.style.background = '#fff';
-            this.iframe.style.display = '';
+            iframe.style.visibility = '';
             this.Focus();
         }
     }
@@ -767,7 +767,7 @@ class OS13kWindow extends HTMLElement
     Reload()
     {
         // hide iframe and reload it
-        this.iframe.style.display = this.icon.hasExtension ? 'none' : 'hidden';
+        this.iframe.style.visibility = 'hidden';
         this.iframeContent.location.reload();
     }
     

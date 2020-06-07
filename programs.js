@@ -14,7 +14,7 @@ const programs =
 ]},
 {name:'Tools', icon:'🔧', folder:
 [
-    {name:'Photo Booth', icon:'📸', src:'tools/photoBooth.html', width:1380, height:600},
+    {name:'Photo Booth', icon:'📸', src:'tools/photoBooth.html', width:1300, height:600},
     {name:'Unicode Toys', icon:'𝖀', author:'Xem', src:'tools/unicodeToys.html', width:500, height:800},
     {name:'Mini Shadertoy', icon:'𝓢', src:'tools/miniShadertoy.html', width:340, height:400},
     {name:'Text Editor', icon:'📝', src:'tools/textEditor.html', width:540, height:720},
