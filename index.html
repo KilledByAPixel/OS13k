@@ -41,10 +41,10 @@ body
 }
 .folder
 {
+    box-shadow:5px 5px 9px;
+    border:2px solid;
     background:linear-gradient(#fff,#777);
     position:absolute;
-    border:2px solid;
-    box-shadow:3px 3px 9px;
 }
 .icon
 {
@@ -76,9 +76,9 @@ body
 <style>
 :host
 {
-    box-shadow:9px 9px 9px;
-    background:#000;
+    box-shadow:5px 5px 9px;
     border:2px solid;
+    background:#000;
     display:flex;
     flex-direction:column;
     overflow:hidden;
@@ -142,7 +142,7 @@ div svg       { width:100%; pointer-events:none; }
 <div id=desktop>
 <div id=taskbar class=taskbar></div>
 <div class=title>OS13k
-<script src=programs.js?2></script>
+<script src=programs.js?3></script>
 <script>
 
 // load test programs if there are none found
@@ -404,8 +404,8 @@ desktop.CloseWindows=()=>
     }
 
     // reset window open position
-    windowOpenX = 99;
-    windowOpenY = 200;
+    windowOpenX = 50;
+    windowOpenY = 99;
 }
 
 desktop.FocusTopWindow=()=>
@@ -601,8 +601,8 @@ class OS13kWindow extends HTMLElement
         // set window position
         this.style.left = windowOpenX;
         this.style.top = windowOpenY;
-        ((windowOpenY += 46) > 400) && (windowOpenY = 200);
-        ((windowOpenX += 46) > 1e3) && (windowOpenX = 99);
+        (windowOpenY += 46) > 400 && (windowOpenY = 99);
+        (windowOpenX += 46) > 1e3 && (windowOpenX = 50);
         
         // create shadow root
 		this.shadow = this.attachShadow({mode: 'open'});
@@ -736,14 +736,8 @@ class OS13kWindow extends HTMLElement
     
     MouseDown(e, originalTarget)
     {
-        if (originalTarget.className == 'name')
-        {
-            // set selected if name is clicked on
-            selected = this;
-            
-            // prevent desktop from getting focus
-            e.cancelable && e.preventDefault();
-        }
+        // set selected if name is clicked on
+        originalTarget.className == 'name' && (selected = this);
             
         // set focus
         this.Focus();
@@ -752,10 +746,10 @@ class OS13kWindow extends HTMLElement
     MouseClick(e)
     {
         // check for title bar buttons
-        (e.className == 'full')   && this.FullScreen();
-        (e.className == 'reload') && this.Reload();
-        (e.className == 'close')  && this.Close();
-        (e.className == 'code')  && this.ShowCode();
+        e.className == 'full'   && this.FullScreen();
+        e.className == 'reload' && this.Reload();
+        e.className == 'close'  && this.Close();
+        e.className == 'code'   && this.ShowCode();
         this.Focus();
     }
     
@@ -779,24 +773,25 @@ class OS13kWindow extends HTMLElement
     
     ShowCode()
     {
-        this.showCode = !this.showCode;
-        this.codeDisplay.style.display = this.showCode ? 'block' : '';
+        // toggle showing code
+        this.codeDisplay.style.display = 
+            (this.showCode = !this.showCode) ? 'block' : '';
     }
     
     Focus(fromTaskbar)
     {
         // set focus
+        desktop.CloseFolders();
         this.iframeContent && this.iframeContent.focus();
         this.SetActive();
-        desktop.CloseFolders();
         
         if (fromTaskbar)
         {
             // clamp window to screen
             const rect = this.getBoundingClientRect();
-            const maxHeight = Math.max(46,innerHeight-rect.height);
-            this.style.left = OS13k.Clamp(rect.x, 0, innerWidth-rect.width);
-            this.style.top = OS13k.Clamp(rect.y, 46, maxHeight);
+            this.style.left = OS13k.Clamp(rect.x, 0, innerWidth - rect.width);
+            this.style.top = OS13k.Clamp(rect.y, 46, 
+                Math.max(46, innerHeight - rect.height));
         }
     }
     
@@ -807,15 +802,14 @@ class OS13kWindow extends HTMLElement
             // deactivate old window
             activeWindow && activeWindow.SetActive(0);
             
-            // move z to top and display
+            // move z to top
             this.style.zIndex = ++topZ;
-            this.style.display = '';
         }
         
         // set active
         activeWindow = active && this;
-        this.style.filter = active?'':'grayscale(1)brightness(.8';
-        this.taskbarIcon.SetActive(1);
+        this.style.filter = active ? '' : 'grayscale(1)brightness(.8';
+        this.taskbarIcon.SetActive();
     }
     
     FullScreen()
@@ -837,8 +831,10 @@ customElements.define('os13k-window', OS13kWindow);
 onmousedown=e=>
 {
     // prevent getting stuck
-    e.preventDefault();
     if (selected) return onmouseup(e);
+    
+    // prevent desktop from stealing focus
+    e.cancelable && e.preventDefault();
     
     // handle mouse down
     e.target.MouseDown && e.target.MouseDown(e, e.originalTarget || e.path[0])
@@ -859,8 +855,7 @@ onmousedown=e=>
 onmouseup=e=>
 {
     // allow pointer events and reset cursor
-    document.body.style.cursor = '';
-    desktop.style.pointerEvents = '';
+    document.body.style.cursor = desktop.style.pointerEvents = '';
         
     // release selected
     selected && selected.Focus(selected = 0);
