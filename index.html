@@ -385,7 +385,6 @@ desktop.Focus=()=>
     document.activeElement.blur();
     activeWindow && activeWindow.SetActive(activeWindow = 0);
     activeTaskbarIcon && activeTaskbarIcon.SetActive(activeTaskbarIcon = 0);
-    this.focus();
 }
 
 desktop.CloseFolders=()=>
@@ -397,14 +396,13 @@ desktop.CloseFolders=()=>
 
 desktop.CloseWindows=()=>
 {
-    // save windows first to prevent any being skipped
-    const children = [];
-    for (const c of desktop.children)
-        children.push(c);
-
-    // close all windows
-    for (const c of children)
-        c.Close && c.Close();
+    // loop until all windows are closed
+    for(let finished;!finished;)
+    {
+        finished = 1;
+        for (const c of desktop.children)
+            c.Close && c.Close(finished=0);
+    }
 
     // reset window open position
     windowOpenX = 99;
@@ -542,10 +540,9 @@ class OS13kIcon extends HTMLElement
         
         // set html
         this.innerHTML = 
-            '<span style="pointer-events:none;display:flex;width:100%">' +
-            '&nbsp;<span style="width:28;text-shadow:1px 1px 2px #000;display:flex;align-items:center;justify-content:center">' + 
-            icon + '</span>&nbsp;' + 
-            '<span style=flex:1;display:flex;align-items:center>' +
+            '<span style=pointer-events:none;display:flex;width:100%>&nbsp;' +
+            '<span style="width:28;text-shadow:1px 1px 2px #000;text-align:center">' + 
+            icon + '</span>&nbsp;<span style=flex:1>' +
             name + '</span><span style=width:20;text-align:right>' +
             (folder? '▶' : '');
     }
@@ -655,13 +652,8 @@ class OS13kWindow extends HTMLElement
         // limit window size to inner size
         this.contentWrapper.style.width  = Math.min(this.icon.width,  innerWidth);
         this.contentWrapper.style.height = Math.min(this.icon.height, innerHeight);
-        this.style.width = Math.min(this.icon.width,  innerWidth);
+        this.style.width = Math.min(this.icon.width, innerWidth);
 
-        // always use 16:9 for dweets
-        if (this.icon.isDweet)
-            this.contentWrapper.style.height = 
-                Math.min(this.icon.width, innerWidth) * 1080 / 1920;
-        
         // create iframe
         const iframe = this.iframe = document.createElement('iframe');
         iframe.className = 'frame';
@@ -849,6 +841,7 @@ customElements.define('os13k-window', OS13kWindow);
 onmousedown=e=>
 {
     // prevent getting stuck
+    e.preventDefault();
     if (selected) return onmouseup(e);
     
     // handle mouse down
@@ -956,7 +949,7 @@ const zzfx =     // play zzfx sound
     {
         if (++c > bitCrush*100)                          // bit crush
         {
-            c = 0;
+            c = 0;                                       // reset bit crush
             s = t * frequency *                          // frequency
                 Math.sin(tm * modulation - modPhase);    // modulation
 
