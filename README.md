@@ -7,7 +7,6 @@ OS13k is a tiny pseudo operating system designed for a JS13k community project. 
 # [Discord](https://discord.gg/n8vxUcZ)
 # [Trello Board](https://trello.com/b/1PNeOZfM/os13k) (ask for an invite)
 
-
 ## The Plan
 - My crazy idea is to make this tiny OS to host a variety of games and apps and fit it in 13k
 - By sharing code like shader setup, dweets, and zzfx we can pack a lot into 13k
@@ -29,8 +28,8 @@ You can learn more about JS13k here, I won 2nd place last year!
 https://js13kgames.com/
 
 ## Programming Info
-- OS13k stores it's desktop config in desktop.js
-- For faster development iteration, the first desktopLayout in the list opens automatically
+- OS13k stores it's list of programs in programs.js
+- For faster development iteration, the first program in the list opens automatically
 - Make sure to put your program in the proper subfolder
 
 Add an icon config to desktop.js to register your program, and send me pull request, examples...
@@ -40,7 +39,6 @@ Add an icon config to desktop.js to register your program, and send me pull requ
 - {src:'help.html'}
 
 ### Programming
-
 - OS13k can open any html file with javascript and it will work the same as if opened directly
 - Chrome is recommended for development, but Firefox is also supported.
 - Firefox does not work in local mode because it treats local files as cross-origin
@@ -57,7 +55,6 @@ Add an icon config to desktop.js to register your program, and send me pull requ
 - There is very little overhead for OS13k function call names, remember this will be zipped
 
 ### Shadertoys and Dweets
-
 - Programs with the extension .shader.js or .dweet.js will automatically load as dweets or shadertoys!
 - Shadertoys and dweets are automatically paused when they don't have focus
 - They also automatically have reload and show code options applied
@@ -67,7 +64,6 @@ Add an icon config to desktop.js to register your program, and send me pull requ
 - iChannel0 is a loop back image of the previous frame, this can be used to store game logic or make effects
 
 ### System Calls
-
 - The function OS13kStart() is called on child frames when opened
 - To acces OS13k features, use the OS13k object
 - OS13k.CreateShader(canvas, shaderCode) - Create a shadertoy compatible webgl shader
