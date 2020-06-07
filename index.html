@@ -487,7 +487,7 @@ class OS13kFolder extends HTMLElement
         for (const icon of icons)
         {
             // create the folder and hook up to icon
-            icon.folder && (icon.os13kicon.folder = new OS13kFolder(icon.folder, rect.right - 1, y, this));
+            icon.folder && (icon.os13kicon.folder = new OS13kFolder(icon.folder, rect.right - 2, y, this));
             y += 26;
         }
     }
@@ -513,7 +513,7 @@ customElements.define('os13k-folder', OS13kFolder);
 
 class OS13kIcon extends HTMLElement
 {
-	constructor({"x":x, "y":y, "name":name, "icon":icon, "src":src, "width":width=720, "height":height=405, "author":author, "folder":folder, "multiple":multiple, "reload":reload, "code":code})
+	constructor({x, y, name, icon, src, width=720, height=405, author, folder, multiple, reload, code})
     {
 		super();
         
@@ -584,7 +584,6 @@ class OS13kIcon extends HTMLElement
             desktop.CloseWindows();
         }
     }
-    
 } // OS13kIcon
 
 customElements.define('os13k-icon', OS13kIcon);
@@ -893,16 +892,13 @@ onmousemove=e=>
     activeIcon && (activeIcon.className = 'icon');
     
     // handle mouse move
-    const originalTarget = e.originalTarget || e.path[0];
-    originalTarget.MouseMove && originalTarget.MouseMove(e);
+    e.target.MouseMove && e.target.MouseMove(e);
 }
 
 onclick=e=>
 {
     // handle click
-    const originalTarget = e.originalTarget || e.path[0];
-    originalTarget.MouseClick ? originalTarget.MouseClick(originalTarget) :
-        e.target.MouseClick ? e.target.MouseClick(originalTarget) :
+    e.target.MouseClick ? e.target.MouseClick(e.originalTarget || e.path[0]) :
         desktop.CloseFolders();
 }
 
