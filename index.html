@@ -592,7 +592,6 @@ class OS13kWindow extends HTMLElement
 		super();
         
         // add to desktop hidden
-        this.style.visibility = 'hidden';
         desktop.appendChild(this);
         
         // create taskbar icon
@@ -730,7 +729,6 @@ class OS13kWindow extends HTMLElement
 
             // show iframe and set focus
             iframe.style.background = '#fff';
-            this.style.visibility = '';
             this.iframe.style.display = '';
             this.Focus();
         }
