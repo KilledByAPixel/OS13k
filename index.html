@@ -514,7 +514,7 @@ class OS13kIcon extends HTMLElement
 		super();
         
         // set icon defaults
-        src = src ? path + src : '';
+        src = src ? path.toLowerCase() + src : '';
         name = name || src.split('.')[0];
         icon = icon || (name[0] ? name[0].toUpperCase() : '' );     
         
