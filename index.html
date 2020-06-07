@@ -60,7 +60,6 @@ body
 {
     position:absolute;
     z-index:20000;
-    background:#777;
     border:2px solid;
     visibility:hidden;
     display:flex;
@@ -854,10 +853,6 @@ onmousedown=e=>
 {
     // prevent getting stuck
     if (selected) return onmouseup(e);
-    
-    // hide context menu
-    if (e.target.offsetParent.className != 'menu')
-        menu.style.visibility = '';
         
     // prevent desktop from stealing focus
     const originalTarget = e.originalTarget || e.path[0];
@@ -865,9 +860,11 @@ onmousedown=e=>
     // prevent default except for text areas (allow copy/paste)
     (originalTarget.localName != 'textarea') && e.preventDefault();
     
+    // hide menu if it wasnt clicked on
+    e.target.offsetParent.className != 'menu' && (menu.style.visibility = '');
+    
     // only look for left mouse button
-    if (e.button)
-        return;
+    if (e.button) return;
     
     // handle mouse down
     e.target.MouseDown && e.target.MouseDown(e, originalTarget);
@@ -931,21 +928,13 @@ oncontextmenu=e=>
     // hide menu
     menu.style.visibility = '';
     
-    // ignore events except from windows and taskbar icons
-    if (!e.target.SetActive)
-        return;
+    // ignore events except from taskbar icons
+    if (!e.target.element || e.target.element.className) return;
     
-    if (e.target.element)
-    {
-        // ignore if it is a folder
-        if (e.target.element.className != "")
-            return;
-            
-        // focus on target frame
-        e.target.element.Focus();
-    }
+    // focus on target frame
+    e.target.element.Focus();
     
-    // right click menu
+    // show menu
     menu.style.left = e.x;
     menu.style.top = e.y;
     menu.style.visibility = 'visible';
