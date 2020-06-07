@@ -88,12 +88,16 @@ body
 {
     height:44;
     font-size:30;
-    background:linear-gradient(#eee,#88f);
+    background:linear-gradient(#eee,#888);
     display:flex;
     align-items:center;
     justify-content:center;
     overflow:hidden;
     white-space:nowrap;
+}
+.titleBarActive
+{
+    background:linear-gradient(#eee,#88f);
 }
 .frame
 {
@@ -807,7 +811,8 @@ class OS13kWindow extends HTMLElement
         
         // set active
         activeWindow = active && this;
-        this.style.filter = active ? '' : 'grayscale(1)brightness(.7';
+        this.style.filter = active ? '' : 'grayscale(.7)brightness(.7';
+        this.titleBar.className = 'titleBar' + (active? ' titleBarActive' : '')
         this.taskbarIcon.SetActive();
     }
     
