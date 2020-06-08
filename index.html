@@ -808,7 +808,7 @@ class OS13kWindow extends HTMLElement
             
         // set active
         activeWindow = active && this;
-        this.style.filter = active ? '' : 'grayscale(.7)brightness(.7';
+        this.style.filter = active ? '' : 'saturate(.7)brightness(.7';
         this.titleBar.className = 'titleBar' + (active? ' titleBarActive' : '')
         this.taskbarIcon.SetActive();
     }
