@@ -163,7 +163,7 @@ if (typeof programs == 'undefined')
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // @language_out ECMASCRIPT_2019
 // @js_externs OS13k, OS13kFolder, OS13kIcon, OS13kWindow, OS13kTaskbarIcon
-// @js_externs zzfx, zzfxV
+// @js_externs zzfx, zzfxV, icon.folder
 // @js_externs _OS13k.Medal, _OS13k.KeyDirection, _OS13k.Speak
 // @js_externs _OS13k.CreateShader, _OS13k.RenderShader, _OS13k.CreateCanvas
 // @js_externs _OS13k.PlaySamples, _OS13k.PlaySeed, _OS13k.GetSeedSound
@@ -518,7 +518,7 @@ customElements.define('os13k-folder', OS13kFolder);
 
 class OS13kIcon extends HTMLElement
 {
-	constructor({x, y, name, icon, src, width=720, height=405, author, folder, multiple, reload, code})
+	constructor({'x':x, 'y':y, 'name':name, 'icon':icon, 'src':src, 'width':width=720, 'height':height=405, 'author':author, 'folder':folder, 'multiple':multiple, 'reload':reload, 'code':code})
     {
 		super();
         
