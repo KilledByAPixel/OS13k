@@ -18,6 +18,7 @@ const programs =
     {name:'Unicode Toys', icon:'𝖀', author:'Xem', src:'tools/unicodeToys.html', width:500, height:800},
     {name:'Mini Shadertoy', icon:'𝓢', src:'tools/miniShadertoy.html', width:340, height:400},
     {name:'Text Editor', icon:'📝', src:'tools/textEditor.html', width:540, height:720},
+    {name:'Post-it', icon:'🟨', src:'tools/postIt.html', width:400, height:320},
 ]},
 {name:'Games', icon:'🎮', folder:
 [
