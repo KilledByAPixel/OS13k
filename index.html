@@ -510,8 +510,7 @@ class OS13kFolder extends HTMLElement
     Focus(fromTaskbar)
     {
         // check if it is visible and in default position
-        const wasVisible = this.style.visibility == '' && 
-            programsFolder.style.left == '0px' && programsFolder.style.top == '51px';
+        const wasVisible = this.style.visibility == '';
             
         desktop.CloseFolders();
         if (!fromTaskbar || !wasVisible)
@@ -880,7 +879,11 @@ onmousedown=e=>
     
     // hide menu if it not clicked on
     e.target.offsetParent.className != 'menu' && (menu.style.visibility = '');
-    
+        
+    // hide folders if not clicked on
+    e.target.offsetParent.className != 'folder' && e.target != folderIcon &&
+        desktop.CloseFolders();
+
     // only look for left mouse button
     if (e.button)
         return;
