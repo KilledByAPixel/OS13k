@@ -53,8 +53,9 @@ body
 {
     height:18;
     padding:4;
-    white-space:nowrap;
     display:flex;
+    align-items:center;
+    white-space:nowrap;
 }
 .iconActive,
 .taskbarIconActive         { background:linear-gradient(#ff8,#fff); }
@@ -434,7 +435,9 @@ class OS13kTaskbarIcon extends HTMLElement
         this.className = 'taskbarIcon';
         this.innerHTML = '<span style=pointer-events:none>' + icon.icon;
         this.element = element;
-        this.title = icon.name + (icon.author ? '\nBy ' + icon.author : '');
+        this.title = icon.name +
+            (icon.isDweet ? ' - Dweet' : icon.isShader ? ' - Shader' : '') +
+            (icon.author ? '\nBy ' + icon.author : '');
         
         // add to taskbar
         taskbar.appendChild(this);
@@ -544,7 +547,7 @@ class OS13kIcon extends HTMLElement
         this.reload = reload;
         this.code = code || this.hasExtension;
         this.className = 'icon';
-        
+            
         // set html
         this.innerHTML = 
             '<span style=pointer-events:none;display:flex;width:100%>&nbsp;' +
