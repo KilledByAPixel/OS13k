@@ -235,9 +235,20 @@ class _OS13k
         return {x, y}
     }
     
-    Medal(gameName, medalName, medalIcon, difficulty=0)
+    Medal(gameName, medalName='', medalIcon = '🏆', medalText='')
     {
-        // todo: show popup and unlock medal
+        // build key
+        const key = 'OS13kMedal,' + gameName + ',' + medalName + ',' + medalIcon;
+        
+        // update points if first unlocked
+        if (localStorage[key] === undefined)
+            ++medalPointsTotal;
+            
+        // set local storage
+        localStorage[key] = medalText;
+            
+        // show popup
+        medalPopups.push({gameName, medalName, medalIcon, medalText});
     }
     
     PlaySeed(seed, lengthScale=1, volume=1, randomness=.05)
@@ -405,6 +416,7 @@ const Init=()=>
     ToggleMute(1);
     
     // html hookups to minified functions
+    trayVolume.ontouchstart  =
     trayVolume.onclick       =()=> ToggleMute();
     buttonFullScreen.onclick =()=> activeWindow.FullScreen();
     buttonShowCode.onclick   =()=> activeWindow.ShowCode();
@@ -413,6 +425,23 @@ const Init=()=>
 
     // open first icon in list
     firstIcon && firstIcon.MouseClick();
+    
+    // parse medal list
+    medalList = localStorage.OS13kMedals ? JSON.parse(localStorage.OS13kMedals) : [];
+
+    // check for newly unlocked medals
+    for (let i = localStorage.length; i--;)
+    {
+        const key = localStorage.key(i);
+        const value = localStorage[key];
+        console.log(key + ' ' + value);
+        
+        const keyParts = key.split(',');
+        if (keyParts[0] == 'OS13kMedal')
+        {
+            // check if medal has been processed
+        }
+    }
 }
 
 const Update=()=>
