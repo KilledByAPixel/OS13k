@@ -21,7 +21,7 @@ body
     left:-2;
     width:100%;
     z-index:10000;
-    background:linear-gradient(#999,#444);
+    background:linear-gradient(#777,#222);
     border:2px solid;
     display:flex;
 }
@@ -956,6 +956,7 @@ oncontextmenu=e=>
     let menuElement = menu;
     if (!e.target.SetActive || e.target == folderIcon)
     {
+        // open folder if clicked on desktop or folder icon
         menuElement = programsFolder;
         folderIcon.MouseClick();
     }
@@ -964,12 +965,15 @@ oncontextmenu=e=>
         // ignore if it is a folder
         if (e.target.element.className && e.target != folderIcon)
             return;
-            
-        // focus on target frame
+        
+        // focus on target frame element
         e.target.element.SetActive && e.target.element.SetActive();
     }
-    else
+    else 
+    {
+        // set active if it is a window
         e.target.SetActive && e.target.SetActive();
+    }
     
     // show menu
     menuElement.style.left = e.x;
