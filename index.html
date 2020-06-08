@@ -910,11 +910,12 @@ onclick=e=>
     menu.style.visibility = '';
         
     // focus on active window
+    const originalTarget = e.originalTarget || e.path[0];
     e.target != folderIcon && e.target.localName != 'os13k-icon' && activeWindow && 
-        activeWindow.Focus();
-    
+        originalTarget.id != 'codeDisplay' && activeWindow.Focus();
+
     // handle click
-    e.target.MouseClick && e.target.MouseClick(e.originalTarget || e.path[0]);
+    e.target.MouseClick && e.target.MouseClick(originalTarget);
 }
 
 oncontextmenu=e=>
