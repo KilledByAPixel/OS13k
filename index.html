@@ -7,6 +7,7 @@
 {
     font-family:arial;
     user-select:none;
+    white-space:nowrap;
 }
 body
 {
@@ -23,17 +24,30 @@ body
     width:100%;
     background:linear-gradient(#888,#333);
     display:flex;
+    align-items:center;
     left:-2;
 }
 .taskbarIcon
 {
-    width:44;
-    height:36;
     font-size:22;
+    width:44;
+    height:40;
     text-shadow:1px 1px 2px #000;
     display:flex;
     align-items:center;
     justify-content:center;
+}
+#tray
+{
+    font-size:22;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1px solid;
+    margin:2;
+    padding:2;
+    background:linear-gradient(#000,#444);
+    color:#fff;
 }
 #menu
 {
@@ -51,11 +65,11 @@ body
 }
 .icon
 {
+    font-size:18;
     height:18;
     padding:4;
     display:flex;
     align-items:center;
-    white-space:nowrap;
 }
 .iconActive,
 .taskbarIconActive         { background:linear-gradient(#ff8,#fff); }
@@ -149,7 +163,14 @@ div svg       { width:100%; pointer-events:none; }
 </template>
 <div id=desktop>
 <div id=programsFolder style=position:absolute></div>
-<div id=taskbar></div>
+<div id=taskbar>
+<div id=traySpace style=flex:1></div>
+<div id=tray>&nbsp;&nbsp;
+    <div id=trayMedals></div>🏆&nbsp;
+    <div id=trayTime></div>&nbsp;
+    <div id=trayVolume title='Toggle Mute' onclick=ToggleMute()>🔊</div>
+</div>
+</div>
 <div id=menu></div>
 <div id=title>OS13k
 <script src=programs.js?11></script>
@@ -178,6 +199,8 @@ if (typeof programs == 'undefined')
 /////////////////////////////////////////////////////////////////////////////
 // OS13k System
 
+const gainDefault = .3;
+
 class _OS13k
 {
 	constructor(icon, element = 0)
@@ -193,7 +216,10 @@ class _OS13k
             s
         );
         
-        this.randomSeed = Date.now();
+        // set up gain node
+        const gain = this.gain = this.audioContext.createGain();
+        gain.connect(this.audioContext.destination);
+        gain.gain.value = gainDefault;
     }
     
     KeyDirection(keyCode)
@@ -207,7 +233,7 @@ class _OS13k
         return {x, y}
     }
     
-    Medal(gameName, medalName='', difficulty=0)
+    Medal(gameName, medalName, medalIcon, difficulty=0)
     {
         // todo: show popup and unlock medal
     }
@@ -255,7 +281,7 @@ class _OS13k
         const source = this.audioContext.createBufferSource();
         buffer.getChannelData(0).set(samples);
         source.buffer = buffer;
-        source.connect(this.audioContext.destination);
+        source.connect(this.gain);
         source.start();
         return source;
     }
@@ -348,6 +374,7 @@ class _OS13k
     Random(max=1, min=0)
     {
         // simple seeded random numbers using sin
+        // you must set the randomSeed before using this!
         return this.Percent((Math.sin(++this.randomSeed)+1)*1e9%1, min, max);
     }
 }; // _OS13k
@@ -355,7 +382,9 @@ class _OS13k
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Desktop
 
-const taskbarHeight = 38, iconHeight = 26, titlebarHeight = 46,
+const medalPointsTotal = 0;
+
+const taskbarHeight = 42, iconHeight = 26, titlebarHeight = 46,
       startWindowOpenX = 50, startWindowOpenY = 99;
       
 let grabObject, grabOffsetX, grabOffsetY,
@@ -363,7 +392,7 @@ let grabObject, grabOffsetX, grabOffsetY,
     lastActiveElement, folderIcon, firstIcon, topZ = 0,
     windowOpenX = startWindowOpenX, windowOpenY = startWindowOpenY;
 
-desktop.Init=()=>
+Init=()=>
 {
     // create top level icon and add folders/icons
     const taskbarIcon = 
@@ -374,7 +403,7 @@ desktop.Init=()=>
     firstIcon && firstIcon.MouseClick();
 }
 
-desktop.Update=()=>
+Update=()=>
 {
     // listen for iframe becomming new active element
     const activeElement = document.activeElement;
@@ -384,9 +413,16 @@ desktop.Update=()=>
         activeElement.SetActive && activeElement.SetActive();
         lastActiveElement = activeElement;
     }
+    
+    trayMedals.innerHTML = medalPointsTotal
+    
+    // set time
+    const date = new Date();
+    trayTime.innerHTML = date.getHours()%12 + 
+        (date.getMinutes()<=9?':0':':') + date.getMinutes();
 }
 
-desktop.CloseFolders=()=>
+CloseFolders=()=>
 {
     // hide all drop down folders
     for (const c of programsFolder.children)
@@ -395,7 +431,7 @@ desktop.CloseFolders=()=>
     menu.style.visibility = '';
 }
 
-desktop.CloseWindows=()=>
+CloseWindows=()=>
 {
     // loop until all windows are closed
     for(let finished;!finished;)
@@ -410,7 +446,7 @@ desktop.CloseWindows=()=>
     windowOpenY = startWindowOpenY;
 }
 
-desktop.FocusTopWindow=()=>
+FocusTopWindow=()=>
 {
     // find the top window and focus on it
     let topWindow;
@@ -421,6 +457,14 @@ desktop.FocusTopWindow=()=>
             (topWindow = c);
     }
     topWindow && topWindow.Focus();
+}
+
+ToggleMute=()=>
+{
+    const mute = OS13k.gain.gain.value;
+    
+    OS13k.gain.gain.value = mute ? 0 : gainDefault;
+    trayVolume.innerHTML = mute ? '🔇' : '🔊';
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -441,7 +485,7 @@ class OS13kTaskbarIcon extends HTMLElement
             (icon.author ? '\nBy ' + icon.author : '');
         
         // add to taskbar
-        taskbar.appendChild(this);
+        traySpace.before(this);
     }
     
     MouseClick()
@@ -496,7 +540,7 @@ class OS13kFolder extends HTMLElement
         // check if it is visible
         const wasVisible = this.style.visibility == '';
             
-        desktop.CloseFolders();
+        CloseFolders();
         if (!fromTaskbar || !wasVisible)
         { 
             // make visible
@@ -579,8 +623,8 @@ class OS13kIcon extends HTMLElement
         else if (!this.folder)
         {
             // close all
-            desktop.CloseFolders();
-            desktop.CloseWindows();
+            CloseFolders();
+            CloseWindows();
         }
     }
 } // OS13kIcon
@@ -760,7 +804,7 @@ class OS13kWindow extends HTMLElement
     Focus(fromTaskbar)
     {
         // set focus
-        desktop.CloseFolders();
+        CloseFolders();
         this.iframeContent && this.iframeContent.focus();
         this.SetActive();
         
@@ -793,7 +837,7 @@ class OS13kWindow extends HTMLElement
         }
         
         // close folders and menu
-        active && desktop.CloseFolders();
+        active && CloseFolders();
             
         // set active
         activeWindow = active && this;
@@ -836,7 +880,7 @@ class OS13kWindow extends HTMLElement
         this.remove();
         
         // try to focus on top window
-        desktop.FocusTopWindow();
+        FocusTopWindow();
     }
 } // OS13kWindow
 
@@ -860,26 +904,26 @@ onmousedown=e=>
         
     // hide folders if not clicked on
     e.target.offsetParent.className != 'folder' && e.target != folderIcon &&
-        desktop.CloseFolders();
+        CloseFolders();
 
     // only look for left mouse button
     if (e.button)
-        return (e.button == 2); // prevent all but right click
+        return e.button == 2; // prevent all but right click
     
     // handle mouse down
     const originalTarget = e.originalTarget || e.path[0];
     e.target.MouseDown && e.target.MouseDown(e, originalTarget);
     
-    // save grab offset
-    const rect = e.target.getBoundingClientRect();
-    grabOffsetX = e.x - rect.x;
-    grabOffsetY = e.y - rect.y;
-    
-    // set grabbing mode
     if (grabObject)
-    {  
+    {
+        // set grabbing mode
         document.body.style.cursor = 'grabbing';
         desktop.style.pointerEvents = 'none';
+        
+        // save grab offset
+        const rect = e.target.getBoundingClientRect();
+        grabOffsetX = e.x - rect.x;
+        grabOffsetY = e.y - rect.y;
     }
 }
 
@@ -958,7 +1002,6 @@ oncontextmenu=e=>
 /////////////////////////////////////////////////////////////////////////////
 // ZzFXMicro - Zuper Zmall Zound Zynth 
 
-let zzfxV  = .3; // volume
 const zzfx =     // play zzfx sound
 (
     volume        = 1, 
@@ -1020,7 +1063,7 @@ const zzfx =     // play zzfx sound
                 Math.sin(s);                             // 0 sin
             s = sign(s)*(Math.abs(s)**shapeCurve);       // curve 0=square, 2=pointy
 
-            s *= volume * zzfxV * (                      // envelope
+            s *= volume * (                              // envelope
                 i < attack ? i/attack :                  // attack
                 i < attack + sustain ? 1 :               // sustain
                 i < length - delay ?                     // post release
@@ -1059,8 +1102,8 @@ const zzfx =     // play zzfx sound
 // Start OS13k!
 
 const OS13k = new _OS13k;
-desktop.Init();
-setInterval(desktop.Update, 16);
+Init();
+setInterval(Update, 16);
 
 /////////////////////////////////////////////////////////////////////////////////////
 // Touch Input
