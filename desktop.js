@@ -15,6 +15,7 @@ const desktopLayout =
     {name:'Free Cell', icon:'♠️', src:'games/freeCell.html', width:800, height:1e3},
     {name:'Digit Dilemma', icon:'<span style=font-family:monospace>☻</span>', src:'games/digitDilemma.html?2'},
     {name:'Hue Jumper', icon:'🌲', src:'games/hueJumper.html', showReload:1},
+    {name:'Swatch', icon:'🌈', src:'games/swatch.html', width:320, height:320},
 ]},
 {name:'Music', icon:'🎶', folder:
 [
