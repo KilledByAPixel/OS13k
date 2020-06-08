@@ -863,7 +863,7 @@ onmousedown=e=>
 
     // only look for left mouse button
     if (e.button)
-        return e.preventDefault();
+        return (e.button == 2); // prevent all but right click
     
     // handle mouse down
     const originalTarget = e.originalTarget || e.path[0];
@@ -895,7 +895,7 @@ onmousemove=e=>
     activeIcon && (activeIcon.className = 'icon');
     
     // handle mouse move
-    e.target.MouseMove && e.target.MouseMove(e);
+    e.target.MouseMove && e.target.MouseMove();
 }
 
 onclick=e=>
@@ -904,7 +904,7 @@ onclick=e=>
     document.body.style.cursor = desktop.style.pointerEvents = '';
         
     // release grab object
-    grabObject && grabObject.Focus(grabObject = 0);
+    grabObject = 0;
     
     // hide menu
     menu.style.visibility = '';
@@ -919,9 +919,6 @@ onclick=e=>
 
 oncontextmenu=e=>
 {
-    // prevent default context menu
-    e.preventDefault();
-    
     // ignore menu buttons
     if (e.target.localName == 'button')
         return;
@@ -952,6 +949,8 @@ oncontextmenu=e=>
     menuElement.style.left = e.x;
     menuElement.style.top = e.y;
     menuElement.style.visibility = 'visible';
+    
+    return false; // prevent default
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1069,7 +1068,6 @@ try
     let wasTouching;
     const ProcessTouch=e=>
     {
-        e.preventDefault();
         const touching = e.touches.length;
         if (touching)
         {
@@ -1084,6 +1082,8 @@ try
         else
             wasTouching && onclick(e);
         wasTouching = touching;
+        
+        return false; // prevent default
     }
 
     // set all touch events
