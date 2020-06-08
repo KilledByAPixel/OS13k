@@ -1,0 +1,97 @@
+<body style=margin:0>
+  <div id=a><svg id="b" viewBox="0 0 6 6" height=320 width=320></svg></div>
+  <style>
+    #a { height:100%;}
+    #a rect { cursor: pointer; transition: x .15s ease-out, y .25s ease-out; }
+  </style>
+  <script>
+  
+  /**
+   * SWATCH - reorder the swatches
+   * based off the game "i love hue"
+   **/
+
+  // TODO - add win state
+  // TODO - add moves counter
+  // TODO - add fixed indicators
+  // TODO - add level progression
+  // TODO - add level start animation
+  // TODO - replace DOM logic with something more effecient?
+  // TODO - minify code
+
+  let sA = 'setAttribute';
+  let gA = 'getAttribute';
+
+  let d = document;
+  // 12 whole levels wroth of data 
+  // can i use named css colors instead?
+  let ld = [232,81,64,28,47,51,242,255,127,1,202,229,61,255,183,36,34,160,233,119,12,138,40,88,108,233,63,79,8,104,224,234,128,97,151,158,58,94,13,206,227,211,36,138,104,159,101,101];
+  // get/set attribute
+  let ga = (e,a) => e.getAttribute(a);
+  let sa = (e,a,b) => e.setAttribute(a,b);
+  // is sorted test
+  let isSorted = (arr) => arr.every((c,i,a)=> !i || a[i-1].i <= c.i);
+  // bilinear interpolation
+  let blerp = (x,y,Q,R,S,T) => (1-y)*((1-x)*Q+x*R)+y*((1-x)*S+x*T);
+  // shuffle with fixed positions
+  let shuffle = (q) => (q.sort(a=>Math.random()-0.5),q.forEach((k,i)=>(k.f&&([q[k.i],q[i]]=[q[i],q[k.i]]))),q);
+
+
+  let level = (n) => {
+
+    let moves = 0;
+    n*=3;
+    let cs = ld.slice(n,n+12);
+    let x = (i) => i%6;
+    let y = (i) => ~~(i/6);
+    let swap = [];
+    let rgb = [
+      [cs[0],cs[3],cs[6],cs[9]],
+      [cs[1],cs[4],cs[7],cs[10]],
+      [cs[2],cs[5],cs[8],cs[11]],
+    ];
+
+    let cells = [...Array(36)].map((d,i) => {
+      let f = [0,5,30,35].includes(i);
+      let p = x(i)/5;
+      let q = y(i)/5;
+      let c = `rgb(${rgb.map(c=>blerp(p,q,...c))})`;
+      return { i, p, q, c, f };
+    });
+
+    let shuffled = shuffle(cells.slice(0));
+
+    // improve this
+    handleClick = (r,c,i,e) => {
+      if (c.f) return;
+      if (swap.push(r)==2) {
+        let [A,B]=swap;
+        let AX=A[gA]('x'),
+            AY=A[gA]('y'),
+            AI=A[gA]('idx'),
+            BX=B[gA]('x'),
+            BY=B[gA]('y'),
+            BI=B[gA]('idx');
+        A[sA]('x',BX); A[sA]('y',BY);
+        B[sA]('x',AX); B[sA]('y',AY);
+        moves++;
+        swap = [];
+      }
+    }
+
+    draw = (A) => {
+      A.map((c,i) => {
+        let r = d.createElementNS('http://www.w3.org/2000/svg','rect');
+        let o = { height:1,width:1,x:x(i),y:y(i),idx:c.i,fill:c.c};
+        r.onclick=handleClick.bind('',r,c,i)
+        for (let b in o) sa(r,b,o[b]);
+        b.appendChild(r);
+      });
+    }
+
+    draw(shuffled);
+  }
+
+  level(0);
+
+  </script>
