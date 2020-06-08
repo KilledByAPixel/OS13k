@@ -575,13 +575,6 @@ class OS13kIcon extends HTMLElement
             (folder? '▶' : '');
     }
     
-    MouseDown()
-    {
-        // focus on parent
-        const parent = this.parentElement && this.parentElement.offsetParent;
-        parent.Focus && parent.Focus();
-    }
-    
     MouseMove()
     {
         // set active
@@ -962,11 +955,7 @@ oncontextmenu=e=>
     }
     if (e.target.element)
     {
-        // ignore if it is a folder
-        if (e.target.element.className && e.target != folderIcon)
-            return;
-        
-        // focus on target frame element
+        // set target frame active if it is an icon
         e.target.element.SetActive && e.target.element.SetActive();
     }
     else 
@@ -1094,9 +1083,10 @@ setInterval(desktop.Update, 16);
 
 try
 {
-    let wasTouching, lastTouchTime;
+    let wasTouching;
     const ProcessTouch=e=>
     {
+        e.preventDefault();
         const touching = e.touches.length;
         if (touching)
         {
@@ -1107,10 +1097,9 @@ try
             // pass event on to mouse input
             !wasTouching && onmousedown(e);
             onmousemove(e);
-            lastTouchTime = Date.now();
         }
         else
-            wasTouching && (onmouseup(e), onclick(e));
+            wasTouching && onclick(e);
         wasTouching = touching;
     }
 
