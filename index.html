@@ -90,7 +90,7 @@ body
 :host
 {
     box-shadow:5px 5px 9px;
-    border:2px solid #111;
+    border:2px solid;
     background:#000;
     display:flex;
     flex-direction:column;
@@ -670,9 +670,9 @@ class OS13kWindow extends HTMLElement
         this.shadowRoot.appendChild(contentWrapper);
         
         // limit window size to inner size
-        this.contentWrapper.style.width  = Math.min(this.icon.width,  innerWidth);
-        this.contentWrapper.style.height = Math.min(this.icon.height, innerHeight);
         this.style.width = Math.min(this.icon.width, innerWidth-4);
+        this.contentWrapper.style.width  = Math.min(this.icon.width,  innerWidth-4);
+        this.contentWrapper.style.height = Math.min(this.icon.height, innerHeight);
 
         // create iframe
         const iframe = this.iframe = document.createElement('iframe'); 
