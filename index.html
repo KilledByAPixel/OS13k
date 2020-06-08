@@ -898,6 +898,9 @@ customElements.define('os13k-window', OS13kWindow);
 
 onmousedown=e=>
 {
+    // take context from active elment
+    document.activeElement.blur();
+
     // prevent getting stuck
     if (grabObject)
         return onclick(e);
@@ -972,10 +975,6 @@ onclick=e=>
 
 oncontextmenu=e=>
 {
-    // ignore menu buttons
-    if (e.target.localName == 'button')
-        return;
-        
     // hide menu
     menu.style.visibility = '';
     
@@ -1003,7 +1002,8 @@ oncontextmenu=e=>
     menuElement.style.top = e.y;
     menuElement.style.visibility = 'visible';
     
-    return false; // prevent default
+    // prevent default context menu
+    return false;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1113,7 +1113,7 @@ Init();
 setInterval(Update, 16);
 
 /////////////////////////////////////////////////////////////////////////////////////
-// Touch Input
+// Touch Input (optional)
 
 try
 {
