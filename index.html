@@ -165,10 +165,10 @@ div svg       { width:100%; pointer-events:none; }
 <div id=programsFolder style=position:absolute></div>
 <div id=taskbar>
 <div id=traySpace style=flex:1></div>
-<div id=tray>&nbsp;&nbsp;
-    <div id=trayMedals></div>🏆&nbsp;
-    <div id=trayTime></div>
-    <div id=trayVolume title='Toggle Mute'>&nbsp;🔊&nbsp;</div>
+<div id=tray>&nbsp;
+    <div id=trayMedals></div>🏆
+    <div id=trayVolume title='Toggle Mute'></div>
+    <div id=trayTime></div>&nbsp;
 </div>
 </div>
 <div id=menu>
@@ -204,8 +204,6 @@ if (typeof programs == 'undefined')
 /////////////////////////////////////////////////////////////////////////////
 // OS13k System
 
-const gainDefault = .3;
-
 class _OS13k
 {
 	constructor(icon, element = 0)
@@ -224,7 +222,6 @@ class _OS13k
         // set up gain node
         const gain = this.gain = this.audioContext.createGain();
         gain.connect(this.audioContext.destination);
-        gain.gain.value = gainDefault;
     }
     
     KeyDirection(keyCode)
@@ -404,15 +401,18 @@ const Init=()=>
         folderIcon = new OS13kTaskbarIcon( {icon:'📁', name:'Apps'}, 
             new OS13kFolder(programs, 0, 0));
 
-    // open first icon in list
-    firstIcon && firstIcon.MouseClick();
+    // init mute buton
+    ToggleMute(1);
     
     // html hookups to minified functions
-    trayVolume.onclick = ToggleMute;
+    trayVolume.onclick       =()=> ToggleMute();
     buttonFullScreen.onclick =()=> activeWindow.FullScreen();
     buttonShowCode.onclick   =()=> activeWindow.ShowCode();
     buttonReload.onclick     =()=> activeWindow.Reload();
     buttonClose.onclick      =()=> activeWindow.Close();
+
+    // open first icon in list
+    firstIcon && firstIcon.MouseClick();
 }
 
 const Update=()=>
@@ -471,12 +471,10 @@ const FocusTopWindow=()=>
     topWindow && topWindow.Focus();
 }
 
-const ToggleMute=()=>
+const ToggleMute=(force)=>
 {
-    const mute = OS13k.gain.gain.value;
-    
-    OS13k.gain.gain.value = mute ? 0 : gainDefault;
-    trayVolume.innerHTML = '&nbsp;' + (mute ? '🔇' : '🔊') + '&nbsp;';
+    OS13k.gain.gain.value = force || !OS13k.gain.gain.value ? .3 : 0;
+    trayVolume.innerHTML = '&nbsp;' + (OS13k.gain.gain.value ? '🔊' : '🔇') + '&nbsp;';
 }
 
 /////////////////////////////////////////////////////////////////////////////
