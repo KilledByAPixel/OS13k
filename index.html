@@ -18,6 +18,7 @@ body
 .taskbar
 {
     position:absolute;
+    left:-2;
     width:100%;
     z-index:10000;
     background:linear-gradient(#999,#444);
@@ -679,7 +680,7 @@ class OS13kWindow extends HTMLElement
         // limit window size to inner size
         this.contentWrapper.style.width  = Math.min(this.icon.width,  innerWidth);
         this.contentWrapper.style.height = Math.min(this.icon.height, innerHeight);
-        this.style.width = Math.min(this.icon.width, innerWidth);
+        this.style.width = Math.min(this.icon.width, innerWidth-4);
 
         // create iframe
         const iframe = this.iframe = document.createElement('iframe'); 
@@ -792,8 +793,8 @@ class OS13kWindow extends HTMLElement
             // clamp window to screen
             const rect = this.getBoundingClientRect();
             this.style.left = OS13k.Clamp(rect.x, 0, innerWidth - rect.width);
-            this.style.top = OS13k.Clamp(rect.y, 46, 
-                Math.max(46, innerHeight - rect.height));
+            this.style.top = OS13k.Clamp(rect.y, 51, 
+                Math.max(51, innerHeight - rect.height));
         }
     }
     
@@ -876,20 +877,19 @@ onmousedown=e=>
     // ignore menu buttons
     if (e.target.localName == 'button')
         return;
-        
-    // prevent desktop from stealing focus
-    const originalTarget = e.originalTarget || e.path[0];
     
-    // hide menu if it wasnt clicked on
+    // hide menu if it not clicked on
     e.target.offsetParent.className != 'menu' && (menu.style.visibility = '');
     
     // hide folders if not clicked on
     e.target.offsetParent.className != 'folder' && e.target != folderIcon && desktop.CloseFolders();
     
     // only look for left mouse button
-    if (e.button) return;
+    if (e.button)
+        return;
     
     // handle mouse down
+    const originalTarget = e.originalTarget || e.path[0];
     e.target.MouseDown && e.target.MouseDown(e, originalTarget);
     
     // save selected offset
@@ -966,7 +966,7 @@ oncontextmenu=e=>
             return;
             
         // focus on target frame
-        e.target.element.SetActive();
+        e.target.element.SetActive && e.target.element.SetActive();
     }
     else
         e.target.SetActive && e.target.SetActive();
