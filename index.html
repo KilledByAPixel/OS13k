@@ -168,10 +168,15 @@ div svg       { width:100%; pointer-events:none; }
 <div id=tray>&nbsp;&nbsp;
     <div id=trayMedals></div>🏆&nbsp;
     <div id=trayTime></div>
-    <div id=trayVolume title='Toggle Mute' onclick=ToggleMute()>&nbsp;🔊&nbsp;</div>
+    <div id=trayVolume title='Toggle Mute'>&nbsp;🔊&nbsp;</div>
 </div>
 </div>
-<div id=menu></div>
+<div id=menu>
+<button id=buttonFullScreen>Fullscreen
+<button id=buttonShowCode>Show Code
+<button id=buttonReload>Reload
+<button id=buttonClose>Close
+</div>
 <div id=title>OS13k
 <script src=programs.js?11></script>
 <script>
@@ -392,7 +397,7 @@ let grabObject, grabOffsetX, grabOffsetY,
     lastActiveElement, folderIcon, firstIcon, topZ = 0,
     windowOpenX = startWindowOpenX, windowOpenY = startWindowOpenY;
 
-Init=()=>
+const Init=()=>
 {
     // create top level icon and add folders/icons
     const taskbarIcon = 
@@ -401,9 +406,16 @@ Init=()=>
 
     // open first icon in list
     firstIcon && firstIcon.MouseClick();
+    
+    // html hookups to minified functions
+    trayVolume.onclick = ToggleMute;
+    buttonFullScreen.onclick =()=> activeWindow.FullScreen();
+    buttonShowCode.onclick   =()=> activeWindow.ShowCode();
+    buttonReload.onclick     =()=> activeWindow.Reload();
+    buttonClose.onclick      =()=> activeWindow.Close();
 }
 
-Update=()=>
+const Update=()=>
 {
     // listen for iframe becomming new active element
     const activeElement = document.activeElement;
@@ -422,7 +434,7 @@ Update=()=>
         (date.getMinutes()<=9?':0':':') + date.getMinutes();
 }
 
-CloseFolders=()=>
+const CloseFolders=()=>
 {
     // hide all drop down folders
     for (const c of programsFolder.children)
@@ -431,7 +443,7 @@ CloseFolders=()=>
     menu.style.visibility = '';
 }
 
-CloseWindows=()=>
+const CloseWindows=()=>
 {
     // loop until all windows are closed
     for(let finished;!finished;)
@@ -446,7 +458,7 @@ CloseWindows=()=>
     windowOpenY = startWindowOpenY;
 }
 
-FocusTopWindow=()=>
+const FocusTopWindow=()=>
 {
     // find the top window and focus on it
     let topWindow;
@@ -459,7 +471,7 @@ FocusTopWindow=()=>
     topWindow && topWindow.Focus();
 }
 
-ToggleMute=()=>
+const ToggleMute=()=>
 {
     const mute = OS13k.gain.gain.value;
     
@@ -828,12 +840,9 @@ class OS13kWindow extends HTMLElement
             // move z to top
             this.style.zIndex = ++topZ;
             
-            // set conext menu buttons
-            let menuHTML = '<button onclick=activeWindow.FullScreen()>Fullscreen';
-            this.icon.code && (menuHTML += '<button onclick=activeWindow.ShowCode()>Show Code');
-            this.icon.reload && (menuHTML += '<button onclick=activeWindow.Reload()>Reload');
-            menuHTML += '<button onclick=activeWindow.Close()>Close';
-            menu.innerHTML = menuHTML;
+            // show menu buttons
+            buttonShowCode.style.display = this.icon.code? '' : 'none';
+            buttonReload.style.display   = this.icon.reload? '' : 'none';
         }
         
         // close folders and menu
