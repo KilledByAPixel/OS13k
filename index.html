@@ -42,11 +42,22 @@ body
 }
 .folder
 {
+    position:absolute;
     z-index:20000;
     box-shadow:5px 5px 9px;
     border:2px solid;
     background:linear-gradient(#fff,#777);
+}
+.menu
+{
     position:absolute;
+    z-index:20000;
+    box-shadow:5px 5px 9px;
+    border:2px solid;
+    visibility:hidden;
+    display:flex;
+    flex-direction:column;
+    background:#000;
 }
 .icon
 {
@@ -57,16 +68,6 @@ body
     white-space:nowrap;
     display:flex;
     align-items:center;
-}
-.menu
-{
-    position:absolute;
-    z-index:20000;
-    border:2px solid;
-    visibility:hidden;
-    display:flex;
-    flex-direction:column;
-    background:#000;
 }
 .iconActive                { background:linear-gradient(#fff,#44f); }
 .taskbarIconActive         { background:linear-gradient(#ff8,#fff); }
