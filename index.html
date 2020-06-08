@@ -1,12 +1,12 @@
-<title>OS13k - A tiny pseudo operating system for JS13k</title>
+<title>OS13k - A tiny operating system for JS13k</title>
 <link rel=icon type=image/x-icon href='favicon.png?1'/>
 <meta charset=utf-8>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
 <style>
 *
 {
-    user-select:none;
     font-family:arial;
+    user-select:none;
 }
 body
 {
@@ -15,15 +15,15 @@ body
     overflow:hidden;
     touch-action:none;
 }
-.taskbar
+#taskbar
 {
     position:absolute;
-    left:-2;
-    width:100%;
-    z-index:10000;
-    background:linear-gradient(#888,#333);
     border:2px solid;
+    z-index:10000;
+    width:100%;
+    background:linear-gradient(#888,#333);
     display:flex;
+    left:-2;
 }
 .taskbarIcon
 {
@@ -35,40 +35,33 @@ body
     align-items:center;
     justify-content:center;
 }
-.folder
+#menu
 {
-    position:absolute;
-    z-index:20000;
-    box-shadow:5px 5px 9px;
-    border:2px solid;
-    background:linear-gradient(#fff,#777);
-}
-.menu
-{
-    position:absolute;
-    z-index:20000;
-    box-shadow:5px 5px 9px;
-    border:2px solid;
     visibility:hidden;
     display:flex;
     flex-direction:column;
     background:#000;
 }
+.folder, #menu
+{
+    position:absolute;
+    border:2px solid;
+    z-index:20000;
+    box-shadow:5px 5px 9px;
+}
 .icon
 {
-    color:'red';
-    pointer-events:auto;
     height:18;
     padding:4;
     white-space:nowrap;
     display:flex;
-    align-items:center;
 }
 .iconActive,
 .taskbarIconActive         { background:linear-gradient(#ff8,#fff); }
 .taskbarIcon:hover         { background:linear-gradient(#fff,#44f); }
 .taskbarIconActive:hover   { background:linear-gradient(#ff8,#44f); }
-.title
+.folder                    { background:linear-gradient(#fff,#777); }
+#title
 {
     height:100%;
     color:#0002;
@@ -107,7 +100,7 @@ body
 {
     background:linear-gradient(#eee,#88f);
 }
-.frame
+#frame
 {
     width:100%;
     height:100%;
@@ -116,13 +109,13 @@ body
     overflow:hidden;
     background:#fff;
 }
-.name
+#name
 {
     width:100%;
     cursor:grab;
     overflow:hidden;
 }
-.codeDisplay
+#codeDisplay
 {
     height:99;
     resize:none;
@@ -131,15 +124,15 @@ body
     display:none;
     border:1px solid #fff;
 }
-.reload,
-.full,
-.code         { width:40; }
-.close        { width:28; }
-.help:hover   { background:#0ff; }
-.code:hover   { background:#0f0; }
-.full:hover   { background:#fff; }
-.reload:hover { background:#ff0; }
-.close:hover  { background:#f00; }
+#reload,
+#full,
+#code         { width:40; }
+#close        { width:28; }
+#help:hover   { background:#0ff; }
+#code:hover   { background:#0f0; }
+#full:hover   { background:#fff; }
+#reload:hover { background:#ff0; }
+#close:hover  { background:#f00; }
 div svg       { width:100%; pointer-events:none; }
 </style>
 <svg width=0 height=0>
@@ -154,13 +147,13 @@ div svg       { width:100%; pointer-events:none; }
 </template>
 <div id=desktop>
 <div id=programsFolder style=position:absolute></div>
-<div id=taskbar class=taskbar></div>
-<div id=menu class=menu></div>
-<div class=title>OS13k
+<div id=taskbar></div>
+<div id=menu></div>
+<div id=title>OS13k
 <script src=programs.js?8></script>
 <script>
 
-// load test programs if there are none found
+// load test programs if none found
 if (typeof programs == 'undefined')
     programs = [{src:'system/test.html'},{src:'dweets/underwaterCavern.dweet.js'}];
 
@@ -220,11 +213,9 @@ class _OS13k
     PlaySeed(seed, lengthScale=1, volume=1, randomness=.05)
     {
         // set random seed
+        const R=()=>this.Random(), C=()=>R()<.5, S=()=>C()?-1:1;
         this.randomSeed = seed;
-        const R=()=> this.Random();
-        
-        // warm up random generator
-        R(R(R()));
+        R(R(R())); // warm up
         
         // randomize sound length
         lengthScale /= 2;
@@ -236,23 +227,23 @@ class _OS13k
         // create random sound
         return zzfx(...
         [
-           volume,                              // volume
-           randomness,                          // randomness
-           R()**2*2e3,                          // frequency
-           attack,                              // attack
-           sustain,                             // sustain
-           release,                             // release
-           R()*5|0,                             // shape
-           R()**2*3,                            // shapeCurve
-           (R()<.5) * R()**3*99*(R()<.5?-1:1),  // slide
-           (R()<.5) * R()**3*99*(R()<.5?-1:1),  // deltaSlide
-           (R()<.5) * R()**2*1e3*(R()<.5?-1:1), // pitchJump
-           R()**2 * length,                     // pitchJumpTime
-           (R()<.5) * R() * length,             // repeatTime
-           (R()<.5) * R()**4,                   // noise
-           (R()<.5) * R()**3*9*(R()<.5?-1:1),   // modulation
-           (R()<.5) * R()**4,                   // bitCrush
-           (R()<.5) * R()**3/2,                 // delay
+           volume,               // volume
+           randomness,           // randomness
+           R()**2*2e3,           // frequency
+           attack,               // attack
+           sustain,              // sustain
+           release,              // release
+           R()*5|0,              // shape
+           R()**2*3,             // shapeCurve
+           C() * R()**3*99*S(),  // slide
+           C() * R()**3*99*S(),  // deltaSlide
+           C() * R()**2*1e3*S(), // pitchJump
+           R()**2 * length,      // pitchJumpTime
+           C() * R() * length,   // repeatTime
+           C() * R()**4,         // noise
+           C() * R()**3*9*S(),   // modulation
+           C() * R()**4,         // bitCrush
+           C() * R()**3/2,       // delay
         ]);
     }
     
@@ -345,7 +336,7 @@ class _OS13k
         x.viewport(0, 0, canvas.width, canvas.height);
         x.drawArrays(x.TRIANGLE_FAN, 0, 3);
         
-        // set texture to previous frame
+        // set texture to the newly renderd canvas
         x.texImage2D(x.TEXTURE_2D, 0, x.RGBA, x.RGBA, x.UNSIGNED_BYTE, canvas);
     }
     
@@ -355,11 +346,8 @@ class _OS13k
     Lerp(p, a, b)          { return a + this.Clamp(p, 0, 1) * (b-a); }
     Random(max=1, min=0)
     {
-        // seeded random numbers - Mersenne Twister
-        this.randomSeed ^= (this.randomSeed||-1) << 13;
-        this.randomSeed ^= this.randomSeed >> 17;
-        this.randomSeed ^= this.randomSeed << 5;
-        return this.Percent(Math.abs(this.randomSeed) % 1e9 / 1e9, min, max);
+        // simple seeded random numbers using sin
+        return this.Percent((Math.sin(++this.randomSeed)+1)*1e9%1, min, max);
     }
 }; // _OS13k
 
@@ -627,12 +615,12 @@ class OS13kWindow extends HTMLElement
         
         // create title bar
         const titleBar = this.titleBar = document.createElement('div');
-        titleBar.className = 'titleBar';
+        titleBar.id = 'titleBar';
         this.shadowRoot.appendChild(titleBar);
         
         // create title bar name
         const titleBarName = document.createElement('div');
-        titleBarName.className = 'name';
+        titleBarName.id = 'name';
         titleBarName.innerHTML = 
             '<div style=pointer-events:none>' +
             '&nbsp;<span style="text-shadow:2px 2px 3px #000">' + 
@@ -645,7 +633,7 @@ class OS13kWindow extends HTMLElement
         const AddTitleBarIcon=(id, title)=>
         {
             const icon = document.createElement('div');
-            icon.innerHTML = `<svg><use href=#icon-${icon.className = id}>`;
+            icon.innerHTML = `<svg><use href=#icon-${icon.id = id}>`;
             icon.title = title;
             titleBar.appendChild(icon);
         }
@@ -660,21 +648,21 @@ class OS13kWindow extends HTMLElement
         this.shadowRoot.appendChild(titleBarGap);
 
         // create content wrapper
-        const contentWrapper = this.contentWrapper = document.createElement('div');
-        contentWrapper.style.background = '#000'
-        this.shadowRoot.appendChild(contentWrapper);
+        const frameWrapper = this.frameWrapper = document.createElement('div');
+        frameWrapper.style.background = '#000'
+        this.shadowRoot.appendChild(frameWrapper);
         
         // limit window size to inner size
         this.style.width = Math.min(this.icon.width, innerWidth-4);
-        this.contentWrapper.style.width  = Math.min(this.icon.width,  innerWidth-4);
-        this.contentWrapper.style.height = Math.min(this.icon.height, innerHeight);
+        frameWrapper.style.width  = Math.min(this.icon.width,  innerWidth-4);
+        frameWrapper.style.height = Math.min(this.icon.height, innerHeight);
 
         // create iframe
         const iframe = this.iframe = document.createElement('iframe'); 
-        iframe.className = 'frame';
+        iframe.id = 'frame';
         iframe.style.visibility = 'hidden';
         iframe.src = icon.src;
-        contentWrapper.appendChild(iframe);
+        frameWrapper.appendChild(iframe);
                 
         // load frame
         iframe.onload=e=>
@@ -689,7 +677,7 @@ class OS13kWindow extends HTMLElement
             if (!this.codeDisplay)
             {
                 this.codeDisplay = document.createElement('textarea');
-                this.codeDisplay.className = 'codeDisplay'; 
+                this.codeDisplay.id = 'codeDisplay'; 
                 this.codeDisplay.setAttribute('readOnly', 1);
                 this.codeDisplay.value = iframeText;
                 this.shadowRoot.appendChild(this.codeDisplay);
@@ -752,7 +740,7 @@ class OS13kWindow extends HTMLElement
     MouseDown(e, originalTarget)
     {
         // set selected if name is clicked on
-        originalTarget.className == 'name' && (selected = this);
+        originalTarget.id == 'name' && (selected = this);
             
         // set focus
         this.Focus();
@@ -761,11 +749,11 @@ class OS13kWindow extends HTMLElement
     MouseClick(e)
     {
         // check for title bar buttons
-        e.className == 'full'        && this.FullScreen();
-        e.className == 'code'        && this.ShowCode();
-        e.className == 'reload'      && this.Reload();
-        e.className == 'close'       && this.Close();
-        e.className != 'codeDisplay' && this.Focus();
+        e.id == 'full'        && this.FullScreen();
+        e.id == 'code'        && this.ShowCode();
+        e.id == 'reload'      && this.Reload();
+        e.id == 'close'       && this.Close();
+        e.id != 'codeDisplay' && this.Focus();
     }
     
     Focus(fromTaskbar)
@@ -817,7 +805,7 @@ class OS13kWindow extends HTMLElement
     {
         // set fullscreen
         this.Focus();
-        const fullScreenElement = this.contentWrapper;
+        const fullScreenElement = this.frameWrapper;
         if (fullScreenElement.webkitRequestFullScreen)
             fullScreenElement.webkitRequestFullScreen();
         else if (fullScreenElement.mozRequestFullScreen)
@@ -859,14 +847,15 @@ customElements.define('os13k-window', OS13kWindow);
 onmousedown=e=>
 {
     // prevent getting stuck
-    if (selected) return onclick(e);
+    if (selected)
+        return onclick(e);
     
     // ignore menu buttons
     if (e.target.localName == 'button')
         return;
     
-    // hide menu if it not clicked on
-    e.target.offsetParent.className != 'menu' && (menu.style.visibility = '');
+    // hide menu if not clicked on
+    e.target.offsetParent.id != 'menu' && (menu.style.visibility = '');
         
     // hide folders if not clicked on
     e.target.offsetParent.className != 'folder' && e.target != folderIcon &&
