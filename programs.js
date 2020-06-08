@@ -6,7 +6,7 @@ const programs =
 {name:'System', icon:'⚙️', folder:
 [
     {name:'Shell', icon:'<span style=color:#0f0;background:#000>&nbsp;>&nbsp;</span>', src:'system/shell.html?1', reload:1},
-    {name:'Test', icon:'😄', src:'system/test.html?6', multiple:1, reload:1, code:1},
+    {name:'Test', icon:'😄', src:'system/test.html?6', reload:1, code:1},
     {name:'Test Folder', icon:'📁', folder:
     [
         {name:'Test2', icon:'✌️', src:'system/test.html?6'},

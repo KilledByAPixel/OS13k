@@ -150,7 +150,7 @@ div svg       { width:100%; pointer-events:none; }
 <div id=taskbar></div>
 <div id=menu></div>
 <div id=title>OS13k
-<script src=programs.js?10></script>
+<script src=programs.js?11></script>
 <script>
 
 // load test programs if none found
@@ -517,7 +517,7 @@ customElements.define('os13k-folder', OS13kFolder);
 
 class OS13kIcon extends HTMLElement
 {
-	constructor({'x':x, 'y':y, 'name':name, 'icon':icon, 'src':src, 'width':width=720, 'height':height=405, 'author':author, 'folder':folder, 'multiple':multiple, 'reload':reload, 'code':code})
+	constructor({'x':x, 'y':y, 'name':name, 'icon':icon, 'src':src, 'width':width=720, 'height':height=405, 'author':author, 'folder':folder, 'reload':reload, 'code':code})
     {
 		super();
         
@@ -541,7 +541,6 @@ class OS13kIcon extends HTMLElement
         this.width = width;
         this.height = height;
         this.author = author;
-        this.multiple = multiple;
         this.reload = reload;
         this.code = code || this.hasExtension;
         this.className = 'icon';
@@ -568,7 +567,7 @@ class OS13kIcon extends HTMLElement
         if (this.src)
         {
             // open the window
-            (!this.window || this.multiple) && (this.window = new OS13kWindow(this));
+            this.window || (this.window = new OS13kWindow(this));
 
             // set focus to window
             this.window.Focus(1);
