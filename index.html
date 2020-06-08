@@ -215,7 +215,6 @@ class _OS13k
         // set random seed
         const R=()=>this.Random(), C=()=>R()<.5, S=()=>C()?1:-1;
         this.randomSeed = seed;
-        R(R(R())); // warm up
         
         // randomize sound length
         lengthScale /= 2;
