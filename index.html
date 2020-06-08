@@ -400,8 +400,7 @@ desktop.Update=()=>
 
 desktop.Focus=()=>
 {
-    // deavtivate window and icons
-    activeWindow && activeWindow.SetActive(activeWindow = 0);
+    // deavtivate icons
     activeTaskbarIcon && activeTaskbarIcon.SetActive(activeTaskbarIcon = 0);
 }
 
@@ -581,7 +580,7 @@ class OS13kIcon extends HTMLElement
     {
         // focus on parent
         const parent = this.parentElement && this.parentElement.offsetParent;
-        (parent.Focus? parent : desktop).Focus();
+        parent.Focus && parent.Focus();
     }
     
     MouseMove()
@@ -882,9 +881,6 @@ onmousedown=e=>
     // hide menu if it not clicked on
     e.target.offsetParent.className != 'menu' && (menu.style.visibility = '');
     
-    // hide folders if not clicked on
-    e.target.offsetParent.className != 'folder' && e.target != folderIcon && desktop.CloseFolders();
-    
     // only look for left mouse button
     if (e.button)
         return;
@@ -934,11 +930,11 @@ onclick=e=>
     menu.style.visibility = '';
         
     // focus on active window
-    e.target != folderIcon && activeWindow && activeWindow.Focus();
+    e.target != folderIcon && e.target.localName != 'os13k-icon' && activeWindow && 
+        activeWindow.Focus();
     
     // handle click
-    e.target.MouseClick ? e.target.MouseClick(e.originalTarget || e.path[0]) :
-        desktop.CloseFolders();
+    e.target.MouseClick && e.target.MouseClick(e.originalTarget || e.path[0]);
 }
 
 oncontextmenu=e=>
