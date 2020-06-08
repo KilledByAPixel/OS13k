@@ -1,0 +1,6 @@
+<script>R=(c)=>{r=''
+if(c=='ls'){for ([k,v] of Object.entries(parent.desktop.children)){r+=v.title?v.title+'<br>':''}}else{try{r=eval(c)}catch(e){r=e.message+". Type JS expression. Eg. 6*7"}}win.innerHTML=win.innerHTML+"> "+c+"<br>"+r+"<br>"
+IN.value=''
+win.scrollTop=1e4}</script><style>body,#in,#in:focus{font-family:courier;background-color:black;color:#00ff58;border:0;outline:0;}
+#win{overflow-y:auto;max-height:90%;}</style><form onSubmit="R(IN.value);return false"><div id='win'></div><div id='command-line'>[js shell]>
+<input id=IN style=width:80%>
