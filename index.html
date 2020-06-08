@@ -46,7 +46,7 @@ body
     border:1px solid;
     margin:2;
     padding:2;
-    background:linear-gradient(#000,#444);
+    background:linear-gradient(#000,#333);
     color:#fff;
 }
 #menu
@@ -167,8 +167,8 @@ div svg       { width:100%; pointer-events:none; }
 <div id=traySpace style=flex:1></div>
 <div id=tray>&nbsp;&nbsp;
     <div id=trayMedals></div>🏆&nbsp;
-    <div id=trayTime></div>&nbsp;
-    <div id=trayVolume title='Toggle Mute' onclick=ToggleMute()>🔊</div>
+    <div id=trayTime></div>
+    <div id=trayVolume title='Toggle Mute' onclick=ToggleMute()>&nbsp;🔊&nbsp;</div>
 </div>
 </div>
 <div id=menu></div>
@@ -464,7 +464,7 @@ ToggleMute=()=>
     const mute = OS13k.gain.gain.value;
     
     OS13k.gain.gain.value = mute ? 0 : gainDefault;
-    trayVolume.innerHTML = mute ? '🔇' : '🔊';
+    trayVolume.innerHTML = '&nbsp;' + (mute ? '🔇' : '🔊') + '&nbsp;';
 }
 
 /////////////////////////////////////////////////////////////////////////////
