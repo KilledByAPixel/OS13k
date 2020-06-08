@@ -391,7 +391,7 @@ desktop.Update=()=>
     if (lastActiveElement != activeElement)
     {
         // set focus to new active element
-        activeElement.Focus && activeElement.Focus();
+        activeElement.SetActive && activeElement.SetActive();
         lastActiveElement = activeElement;
     }
 }
@@ -399,7 +399,6 @@ desktop.Update=()=>
 desktop.Focus=()=>
 {
     // deavtivate window and icons
-    document.activeElement.blur();
     activeWindow && activeWindow.SetActive(activeWindow = 0);
     activeTaskbarIcon && activeTaskbarIcon.SetActive(activeTaskbarIcon = 0);
 }
@@ -463,7 +462,6 @@ class OS13kTaskbarIcon extends HTMLElement
     MouseClick()
     {
         // focus on window or drop down folder
-        document.activeElement.blur();
         this.element.Focus(1);
     }
     
@@ -817,6 +815,9 @@ class OS13kWindow extends HTMLElement
             menu.innerHTML = menuHTML;
         }
         
+        // close folders and menu
+        active && desktop.CloseFolders();
+            
         // set active
         activeWindow = active && this;
         this.style.filter = active ? '' : 'grayscale(.7)brightness(.7';
@@ -870,7 +871,7 @@ customElements.define('os13k-window', OS13kWindow);
 onmousedown=e=>
 {
     // prevent getting stuck
-    if (selected) return onmouseup(e);
+    if (selected) return onclick(e);
     
     // ignore menu buttons
     if (e.target.localName == 'button')
@@ -878,9 +879,6 @@ onmousedown=e=>
         
     // prevent desktop from stealing focus
     const originalTarget = e.originalTarget || e.path[0];
-    
-    // prevent default except for text areas (allow copy/paste)
-    (originalTarget.localName != 'textarea') && e.preventDefault();
     
     // hide menu if it wasnt clicked on
     e.target.offsetParent.className != 'menu' && (menu.style.visibility = '');
@@ -907,18 +905,6 @@ onmousedown=e=>
     }
 }
 
-onmouseup=e=>
-{
-    // allow pointer events and reset cursor
-    document.body.style.cursor = desktop.style.pointerEvents = '';
-        
-    // release selected
-    selected && selected.Focus(selected = 0);
-        
-    // focus on active window
-    e.target != folderIcon && activeWindow && activeWindow.Focus();
-}
-
 onmousemove=e=>
 {
     if (selected)
@@ -937,11 +923,17 @@ onmousemove=e=>
 
 onclick=e=>
 {
+    // allow pointer events and reset cursor
+    document.body.style.cursor = desktop.style.pointerEvents = '';
+        
+    // release selected
+    selected && selected.Focus(selected = 0);
+    
     // hide menu
     menu.style.visibility = '';
-    
-    // prevent desktop from stealing focus
-    e.preventDefault();
+        
+    // focus on active window
+    e.target != folderIcon && activeWindow && activeWindow.Focus();
     
     // handle click
     e.target.MouseClick ? e.target.MouseClick(e.originalTarget || e.path[0]) :
@@ -974,17 +966,16 @@ oncontextmenu=e=>
             return;
             
         // focus on target frame
-        e.target.element.Focus();
+        e.target.element.SetActive();
     }
     else
-        e.target.Focus && e.target.Focus();
+        e.target.SetActive && e.target.SetActive();
     
     // show menu
     menuElement.style.left = e.x;
     menuElement.style.top = e.y;
     menuElement.style.visibility = 'visible';
     contextWindow = activeWindow;
-    document.activeElement.blur();
 }
 
 /////////////////////////////////////////////////////////////////////////////
