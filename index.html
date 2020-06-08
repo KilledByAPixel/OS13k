@@ -85,7 +85,7 @@ body
     overflow:hidden;
     position:absolute;
 }
-.titleBar
+.titlebar
 {
     height:44;
     font-size:26;
@@ -96,7 +96,7 @@ body
     overflow:hidden;
     white-space:nowrap;
 }
-.titleBarActive
+.titlebarActive
 {
     background:linear-gradient(#eee,#88f);
 }
@@ -213,7 +213,7 @@ class _OS13k
     PlaySeed(seed, lengthScale=1, volume=1, randomness=.05)
     {
         // set random seed
-        const R=()=>this.Random(), C=()=>R()<.5, S=()=>C()?-1:1;
+        const R=()=>this.Random(), C=()=>R()<.5, S=()=>C()?1:-1;
         this.randomSeed = seed;
         R(R(R())); // warm up
         
@@ -354,13 +354,17 @@ class _OS13k
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Desktop
 
-let selected, seletOffsetX, seletOffsetY;
-let folderIcon, contextWindow, lastActiveElement, activeWindow, activeIcon, activeTaskbarIcon;
-let firstIcon, topZ = 0, windowOpenX = 50, windowOpenY = 99;
+const taskbarHeight = 38, iconHeight = 26, titlebarHeight = 46,
+      startWindowOpenX = 50, startWindowOpenY = 99;
+      
+let grabObject, grabOffsetX, grabOffsetY,
+    activeWindow, activeIcon, activeTaskbarIcon,
+    lastActiveElement, folderIcon, firstIcon, topZ = 0,
+    windowOpenX = startWindowOpenX, windowOpenY = startWindowOpenY;
 
 desktop.Init=()=>
 {
-    // system icons
+    // create top level icon and add folders/icons
     const taskbarIcon = 
         folderIcon = new OS13kTaskbarIcon( {icon:'📁', name:'Apps'}, 
             new OS13kFolder(programs, 0, 0));
@@ -379,12 +383,6 @@ desktop.Update=()=>
         activeElement.SetActive && activeElement.SetActive();
         lastActiveElement = activeElement;
     }
-}
-
-desktop.Focus=()=>
-{
-    // deavtivate icons
-    activeTaskbarIcon && activeTaskbarIcon.SetActive(activeTaskbarIcon = 0);
 }
 
 desktop.CloseFolders=()=>
@@ -407,8 +405,8 @@ desktop.CloseWindows=()=>
     }
 
     // reset window open position
-    windowOpenX = 50;
-    windowOpenY = 99;
+    windowOpenX = startWindowOpenX;
+    windowOpenY = startWindowOpenY;
 }
 
 desktop.FocusTopWindow=()=>
@@ -486,13 +484,13 @@ class OS13kFolder extends HTMLElement
         {
             // create the folder and hook up to icon
             icon.folder && (icon.os13kicon.folder = new OS13kFolder(icon.folder, rect.right - 2, y, this));
-            y += 26;
+            y += iconHeight;
         }
     }
 
     Focus(fromTaskbar)
     {
-        // check if it is visible and in default position
+        // check if it is visible
         const wasVisible = this.style.visibility == '';
             
         desktop.CloseFolders();
@@ -508,7 +506,7 @@ class OS13kFolder extends HTMLElement
         if (fromTaskbar && this.parentNode == programsFolder)
         {
             programsFolder.style.left = 0;
-            programsFolder.style.top = 38;
+            programsFolder.style.top = taskbarHeight;
         }
     }
 } // OS13kFolder
@@ -606,46 +604,46 @@ class OS13kWindow extends HTMLElement
         // set window position
         this.style.left = windowOpenX;
         this.style.top = windowOpenY;
-        (windowOpenY += 46) > 400 && (windowOpenY = 99);
-        (windowOpenX += 46) > 1e3 && (windowOpenX = 50);
+        (windowOpenY += titlebarHeight) > 400 && (windowOpenY = startWindowOpenY);
+        (windowOpenX += titlebarHeight) > 1e3 && (windowOpenX = startWindowOpenX);
         
         // create shadow root
 		this.shadow = this.attachShadow({mode: 'open'});
         this.shadowRoot.innerHTML = template.innerHTML;
         
         // create title bar
-        const titleBar = this.titleBar = document.createElement('div');
-        titleBar.id = 'titleBar';
-        this.shadowRoot.appendChild(titleBar);
+        const titlebar = this.titlebar = document.createElement('div');
+        titlebar.id = 'titlebar';
+        this.shadowRoot.appendChild(titlebar);
         
         // create title bar name
-        const titleBarName = document.createElement('div');
-        titleBarName.id = 'name';
-        titleBarName.innerHTML = 
+        const titlebarName = document.createElement('div');
+        titlebarName.id = 'name';
+        titlebarName.innerHTML = 
             '<div style=pointer-events:none>' +
             '&nbsp;<span style="text-shadow:2px 2px 3px #000">' + 
             icon.icon + '</span>&nbsp;' +
             icon.name +
             (icon.author ? ' - ' + icon.author : '');
-        titleBar.appendChild(titleBarName);
+        titlebar.appendChild(titlebarName);
         
         // create title bar icons
-        const AddTitleBarIcon=(id, title)=>
+        const AddtitlebarIcon=(id, title)=>
         {
             const icon = document.createElement('div');
             icon.innerHTML = `<svg><use href=#icon-${icon.id = id}>`;
             icon.title = title;
-            titleBar.appendChild(icon);
+            titlebar.appendChild(icon);
         }
-        AddTitleBarIcon('full', 'Full Screen');
-        icon.code && AddTitleBarIcon('code', 'Show Code');
-        icon.reload && AddTitleBarIcon('reload', 'Reload');
-        AddTitleBarIcon('close', 'Close');
+        AddtitlebarIcon('full', 'Full Screen');
+        icon.code && AddtitlebarIcon('code', 'Show Code');
+        icon.reload && AddtitlebarIcon('reload', 'Reload');
+        AddtitlebarIcon('close', 'Close');
         
         // create thin black line below title bar
-        const titleBarGap = document.createElement('div');
-        titleBarGap.style.height = 2;
-        this.shadowRoot.appendChild(titleBarGap);
+        const titlebarGap = document.createElement('div');
+        titlebarGap.style.height = 2;
+        this.shadowRoot.appendChild(titlebarGap);
 
         // create content wrapper
         const frameWrapper = this.frameWrapper = document.createElement('div');
@@ -691,6 +689,7 @@ class OS13kWindow extends HTMLElement
             // check for extensions
             if (this.icon.hasExtension)
             {
+                // create full size canvas
                 iframeDocument.body.innerHTML = 
                     '<canvas id=c width=1920 height=1080 style=' +
                     'width:100%;background:#' +
@@ -739,9 +738,9 @@ class OS13kWindow extends HTMLElement
     
     MouseDown(e, originalTarget)
     {
-        // set selected if name is clicked on
-        originalTarget.id == 'name' && (selected = this);
-            
+        // set grab object if name is clicked on
+        originalTarget.id == 'name' && (grabObject = this);
+        
         // set focus
         this.Focus();
     }
@@ -768,8 +767,8 @@ class OS13kWindow extends HTMLElement
             // clamp window to screen
             const rect = this.getBoundingClientRect();
             this.style.left = OS13k.Clamp(rect.x, 0, innerWidth - rect.width);
-            this.style.top = OS13k.Clamp(rect.y, 38, 
-                Math.max(38, innerHeight - rect.height));
+            this.style.top = OS13k.Clamp(rect.y, taskbarHeight, 
+                Math.max(taskbarHeight, innerHeight - rect.height));
         }
     }
     
@@ -784,10 +783,10 @@ class OS13kWindow extends HTMLElement
             this.style.zIndex = ++topZ;
             
             // set conext menu buttons
-            let menuHTML = '<button onclick=contextWindow.FullScreen()>Fullscreen';
-            this.icon.code && (menuHTML += '<button onclick=contextWindow.ShowCode()>Show Code');
-            this.icon.reload && (menuHTML += '<button onclick=contextWindow.Reload()>Reload');
-            menuHTML += '<button onclick=contextWindow.Close()>Close';
+            let menuHTML = '<button onclick=activeWindow.FullScreen()>Fullscreen';
+            this.icon.code && (menuHTML += '<button onclick=activeWindow.ShowCode()>Show Code');
+            this.icon.reload && (menuHTML += '<button onclick=activeWindow.Reload()>Reload');
+            menuHTML += '<button onclick=activeWindow.Close()>Close';
             menu.innerHTML = menuHTML;
         }
         
@@ -797,7 +796,7 @@ class OS13kWindow extends HTMLElement
         // set active
         activeWindow = active && this;
         this.style.filter = active ? '' : 'saturate(.7)brightness(.7';
-        this.titleBar.className = 'titleBar' + (active? ' titleBarActive' : '')
+        this.titlebar.className = 'titlebar' + (active? ' titlebarActive' : '')
         this.taskbarIcon.SetActive();
     }
     
@@ -847,7 +846,7 @@ customElements.define('os13k-window', OS13kWindow);
 onmousedown=e=>
 {
     // prevent getting stuck
-    if (selected)
+    if (grabObject)
         return onclick(e);
     
     // ignore menu buttons
@@ -863,19 +862,19 @@ onmousedown=e=>
 
     // only look for left mouse button
     if (e.button)
-        return;
+        return e.preventDefault();
     
     // handle mouse down
     const originalTarget = e.originalTarget || e.path[0];
     e.target.MouseDown && e.target.MouseDown(e, originalTarget);
     
-    // save selected offset
+    // save grab offset
     const rect = e.target.getBoundingClientRect();
-    seletOffsetX = e.x - rect.x;
-    seletOffsetY = e.y - rect.y;
+    grabOffsetX = e.x - rect.x;
+    grabOffsetY = e.y - rect.y;
     
     // set grabbing mode
-    if (selected)
+    if (grabObject)
     {  
         document.body.style.cursor = 'grabbing';
         desktop.style.pointerEvents = 'none';
@@ -884,11 +883,11 @@ onmousedown=e=>
 
 onmousemove=e=>
 {
-    if (selected)
+    if (grabObject)
     {
-        // update selected position
-        selected.style.left = e.x - seletOffsetX;
-        selected.style.top = e.y - seletOffsetY;
+        // update grab object position
+        grabObject.style.left = e.x - grabOffsetX;
+        grabObject.style.top = e.y - grabOffsetY;
     }
     
     // unselect active icon
@@ -903,8 +902,8 @@ onclick=e=>
     // allow pointer events and reset cursor
     document.body.style.cursor = desktop.style.pointerEvents = '';
         
-    // release selected
-    selected && selected.Focus(selected = 0);
+    // release grab object
+    grabObject && grabObject.Focus(grabObject = 0);
     
     // hide menu
     menu.style.visibility = '';
@@ -952,7 +951,6 @@ oncontextmenu=e=>
     menuElement.style.left = e.x;
     menuElement.style.top = e.y;
     menuElement.style.visibility = 'visible';
-    contextWindow = activeWindow;
 }
 
 /////////////////////////////////////////////////////////////////////////////
