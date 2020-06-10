@@ -1,5 +1,5 @@
 # Welcome to OS13k!
-OS13k is a tiny pseudo operating system designed for a JS13k community project. It includes native support for shadertoys, dweets,  zzfx sounds, medals, fullscreen, mobile support, and more. The OS (incuding zzfx, shadertoy, and dwitter support) is under 6k when zipped.
+OS13k is a tiny pseudo operating system designed for a JS13k community project. It includes native support for shadertoys, dweets,  zzfx sounds, trophies, fullscreen, mobile support, and more. The OS (incuding zzfx, shadertoy, and dwitter support) is under 6k when zipped.
 
 ## Please keep this project confidential!
 
@@ -19,7 +19,7 @@ OS13k is a tiny pseudo operating system designed for a JS13k community project. 
 - You can start with an old project but polish it up a lot, minify it and make it work with OS13k
 - We will need to curate the best and perhaps smallest content for what actualy lands in the JS13k build
 - Anything left out of the JS13k build will still be available in the full GitHub version
-- Another big part of this is the medal system that ANY JS13k game (even non-OS13k) can opt into
+- Another big part of this is the trophy system that ANY JS13k game (even non-OS13k) can opt into
 - It is still very early in development so all the apps are placeholders to be swapped out later
 - We make this repo public on day 1 of Js13k and open source everything, I haven't decided on license
 - I will submit a much reduced version on day 1 for people to test their games achevements on
@@ -68,7 +68,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 - To acces OS13k features, use the OS13k object
 - OS13k.CreateShader(canvas, shaderCode) - Create a shadertoy compatible webgl shader
 - OS13k.RenderShader(canvas, shaderProgram, time=0) - Render a shader
-- OS13k.Medal(gameName, medalName='', difficulty=0) - Register a medal for your game as complete
+- OS13k.Trophy(gameName, trophyName, icon, message) - Register a trophy for your game
 - OS13k.KeyDirection(key) - Get {x, y} position from a key code for WASD or arrow keys
 - OS13k.PlaySamples(samples, sampleRate=44100) - Play audio samples
 - OS13k.PlaySeed(seed, lengthScale=1, volume=1, randomness=.05) - Play a zzfx sound from seed
@@ -95,18 +95,21 @@ Add an icon config to programs.js to register your program, and send me pull req
 - reload - Shows the reload page icon to reload your program
 - code - Option to show the code for your program
  
- ### Medals (not yet implemented)
- - Apps can register medals for their games, the os tracks which are unlocked
- - A function is provided for apps to unlock medals, OS13k.Medal(gameName, medalName='', difficulty=0)
- - Medals will have 3 difficulty levels 0-2 with different point values
- - Players can view all their medals and total points will be shown on the taskbar
+ ### Trophies
+ - Apps can register trophies for their games, the os tracks which are unlocked
+ - A function is provided for apps to unlock trophies, OS13k.Trophy(gameName, trophyName, icon, message)
+ - The gameName,trophyName,icon together form the unique id for the trophy
+ - When a new trophy is unlocked or message is changed a popup will appear
+ - Total trophy count is shown in the taskbar
+ - The trophy case shows all unlocked trophies
+ - Trophies can be tested with the System/Test tool
  
- ### Any JS13k game can use medals, even if not part of OS13k!
- - To add a medal to any JS13k game, just save a special key to localStorage
- - The simplest way to add a single medal is save localStorage.OS13kMedals_GAMENAME=1 when the player wins
- - For more control use localStorage.OS13kMedals_GAMENAME = [{"medalName":name,"difficulty":difficultyl}...]
- - Both medal name and difficulty are optional
- - When OS13k is next run, it will search locaStorage and display medals unlocked by other games
+ ### Any JS13k game can use trophies, even if not part of OS13k!
+ - To add a trophies to any JS13k game, just save a special key to localStorage
+ - The simplest way to add a single trophies is save localStorage["OS13kTrophy,GameName"]=""
+ - For more control use localStorage["OS13kTrophy,GameName,TrophyName,Icon"] = "Message"
+ - You can change the message to update the trophy, like if it is a highscore
+ - When OS13k is next run, it will search locaStorage and display popups for new trophies
  - This is possible because all JS13k games share the same local storage! Pretty cool right?
  
  ### Resources
@@ -115,8 +118,3 @@ Add an icon config to programs.js to register your program, and send me pull req
  - [Shadertoy](https://www.shadertoy.com/) - There are many amazing tweet and 2 tweet sized shaders
  - [JS1k](https://js1k.com/) - I imagine with so much shared code and zip we could fit many of these size
  - [JS13k](https://js13kgames.com/) - This is our goal
-
-### Potential Features
-- Vertex shader customization (currently it is always a quad)
-- More Shadertoy paremeters, custom textures
-- Multi pass Shadertoys
