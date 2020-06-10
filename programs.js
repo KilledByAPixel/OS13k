@@ -16,10 +16,10 @@ const programs =
 ]},
 {name:'Tools', icon:'🔧', folder:
 [
-    {name:'Photo Booth', icon:'📸', src:'tools/photoBooth.html', width:1380, height:600},
+    {name:'Photo Booth', icon:'📸', src:'tools/photoBooth.html', width:1400 },
     {name:'Unicode Toys', icon:'𝖀', author:'Xem', src:'tools/unicodeToys.html', width:500, height:800},
     {name:'Mini Shadertoy', icon:'𝓢', src:'tools/miniShadertoy.html', width:340, height:400},
-    {name:'Text Editor', icon:'📝', src:'tools/textEditor.html', width:540, height:720},
+    {name:'Text Editor', icon:'📝', src:'tools/textEditor.html'},
     {name:'Post-it', icon:'🟨', src:'tools/postIt.html', width:400, height:320},
 ]},
 {name:'Games', icon:'🎮', folder:
@@ -47,7 +47,7 @@ const programs =
 ]},
 {name:'Dweets', icon:'<b>III', folder:
 [
-    {name:'Dweet View', icon:'<span style=color:#f00;background:#000><b>&nbsp;III&nbsp;', src:'dweets/dweetView.html', width:800, height:800},
+    {name:'Dweet View', icon:'<span style=color:#f00;background:#000><b>&nbsp;III&nbsp;', src:'dweets/dweetView.html'},
     {name:'Black Hole', icon:'🌌', src:'dweets/blackHole.dweet.js'},
     {name:'Mandelbrot Nebula', icon:'🌟', src:'dweets/mandelbrotNebula.dweet.js'},
     {name:'Bogus Roads', icon:'🛣️', src:'dweets/bogusRoads.dweet.js'},

@@ -201,7 +201,7 @@ div svg       { width:100%; pointer-events:none; }
 <button id=buttonShowCode onclick=activeWindow.ShowCode()>Show Code
 <button id=buttonReload onclick=activeWindow.Reload()>Reload
 <button id=buttonClose onclick=activeWindow.Close()>Close
-<script src=programs.js?15></script>
+<script src=programs.js?17></script>
 <script>
     
 // load test programs if none found
@@ -691,7 +691,7 @@ customElements.define('os13k-folder', OS13kFolder);
 
 class OS13kIcon extends HTMLElement
 {
-	constructor({'x':x, 'y':y, 'name':name, 'icon':icon, 'src':src, 'width':width=720, 'height':height=405, 'author':author, 'folder':folder, 'reload':reload, 'code':code})
+	constructor({'x':x, 'y':y, 'name':name, 'icon':icon, 'src':src, 'width':width=1280, 'height':height=720, 'author':author, 'folder':folder, 'reload':reload, 'code':code})
     {
 		super();
         
@@ -793,8 +793,8 @@ class OS13kWindow extends HTMLElement
         // set window position
         this.style.left = windowOpenX;
         this.style.top = windowOpenY;
-        (windowOpenY += titlebarHeight) > 400 && (windowOpenY = startWindowOpenY);
-        (windowOpenX += titlebarHeight) > 1e3 && (windowOpenX = startWindowOpenX);
+        (windowOpenY += titlebarHeight) > 250 && (windowOpenY = startWindowOpenY);
+        (windowOpenX += titlebarHeight) > 500 && (windowOpenX = startWindowOpenX);
         
         // create shadow root
 		this.shadow = this.attachShadow({mode: 'open'});
