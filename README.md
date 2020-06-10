@@ -118,8 +118,3 @@ Add an icon config to programs.js to register your program, and send me pull req
  - [Shadertoy](https://www.shadertoy.com/) - There are many amazing tweet and 2 tweet sized shaders
  - [JS1k](https://js1k.com/) - I imagine with so much shared code and zip we could fit many of these size
  - [JS13k](https://js13kgames.com/) - This is our goal
-
-### Potential Features
-- Vertex shader customization (currently it is always a quad)
-- More Shadertoy paremeters, custom textures
-- Multi pass Shadertoys
