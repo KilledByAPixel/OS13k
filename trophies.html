@@ -53,13 +53,10 @@ var OS13kStart=()=>
         div.className = 'trophy';
         div.title = title;
         div.innerHTML =
-            '<div class=icon>' + icon +     // icon
-            '</div><div>' +                 // info
+            '<div class=icon>' + icon +                  // icon
+            '</div><div>' +                              // info
                 (name? '<b>' + name + '</b><br>' : '') + // name
-                '<i>' + game;               // game
-            
-        // alert if click on
-        div.ontouchstart = div.onmousedown =()=> alert(title);
+                '<i>' + game;                            // game
         
         // add to document
         this.document.body.appendChild(div); 
