@@ -486,10 +486,10 @@ const Update=()=>
     // update trophy popups if not fullscreen
     if (!document.fullscreenElement)
     {
-        let offsetHeight = 0;
-        let waitToFade = 0;
-        const popups = [...trophyPopups.children];
-        for(const popup of popups)
+        let offsetHeight = 0, waitToFade = 0;
+        
+        // use copy of trophies to prevent skipping if removed
+        for(const popup of [...trophyPopups.children])
         {
             let y = parseInt(popup.style.top) + offsetHeight - 8;
             if (y < taskbarHeight)
@@ -529,13 +529,9 @@ const CloseFolders=()=>
 
 const CloseWindows=()=>
 {
-    // loop until all windows are closed
-    for(let finished;!finished;)
-    {
-        finished = 1;
-        for (const c of desktop.children)
-            c.Close && c.Close(finished=0);
-    }
+    // use copy of children to prevent skipping
+    for (const c of [...desktop.children])
+        c.Close && c.Close(finished=0)
 
     // reset window open position
     windowOpenX = startWindowOpenX;
