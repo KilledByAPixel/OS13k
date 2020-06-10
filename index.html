@@ -202,7 +202,7 @@ div svg       { width:100%; pointer-events:none; }
 <button id=buttonShowCode onclick=activeWindow.ShowCode()>Show Code
 <button id=buttonReload onclick=activeWindow.Reload()>Reload
 <button id=buttonClose onclick=activeWindow.Close()>Close
-<script src=programs.js?25></script>
+<script src=programs.js?26></script>
 <script>
     
 // load test programs if none found
@@ -595,7 +595,7 @@ const ToggleTrophies=()=>
             windowOpenX = startWindowOpenX,
             windowOpenY = startWindowOpenY);
             
-    OS13k.Trophy('OS13k','Winner','🏆','View Trophies');
+    OS13k.Trophy('OS13k','Winner','🏆','Viewed Trophies');
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1016,7 +1016,7 @@ class OS13kWindow extends HTMLElement
         else if (fullScreenElement.mozRequestFullScreen)
             fullScreenElement.mozRequestFullScreen();
             
-        OS13k.Trophy('OS13k','Maximizer','🖥️','Go Fullscreen');
+        OS13k.Trophy('OS13k','Maximizer','⛶','Went Fullscreen');
     }
     
     ShowCode()
@@ -1026,7 +1026,7 @@ class OS13kWindow extends HTMLElement
         this.codeDisplay.style.display = 
             (this.showCode = !this.showCode) ? 'block' : '';
             
-        OS13k.Trophy('OS13k','Coder','⌨️','Show Code');
+        OS13k.Trophy('OS13k','Coder','⌨️','Showed Code');
     }
     
     Reload()
