@@ -271,7 +271,7 @@ class _OS13k
         trophyPopups.appendChild(trophyElement);
         
         // refresh trophy window if it is being displayed
-        trophyIcon && trophyIcon.window && trophyIcon.window.iframeContent.OS13kStart();
+        trophyIcon.window && trophyIcon.window.iframeContent.OS13kStart();
     }
     
     GetTrophies() { return trophies; } 
@@ -523,7 +523,8 @@ const CloseFolders=()=>
     // hide all drop down folders
     for (const c of programsFolder.children)
         c.localName == 'os13k-folder' && (c.style.visibility = 'hidden');
-        
+
+    // hide menu
     menu.style.visibility = '';
 }
 
@@ -559,11 +560,12 @@ const ToggleMute=()=>
 
 const ToggleTrophies=()=>
 {
-    trophyIcon && 
-        (trophyIcon.window? trophyIcon.window.Close() : 
+    if (trophyIcon.window)
+        trophyIcon.window.Close()
+    else
         trophyIcon.MouseClick(
             windowOpenX = startWindowOpenX,
-            windowOpenY = startWindowOpenY));
+            windowOpenY = startWindowOpenY);
 }
 
 /////////////////////////////////////////////////////////////////////////////
