@@ -26,7 +26,7 @@ body
 .taskbarIcon
 {
     font-size:22;
-    width:44;
+    width:50;
     height:40;
     text-shadow:1px 1px 2px #000;
 }
@@ -201,7 +201,7 @@ div svg       { width:100%; pointer-events:none; }
 <button id=buttonShowCode onclick=activeWindow.ShowCode()>Show Code
 <button id=buttonReload onclick=activeWindow.Reload()>Reload
 <button id=buttonClose onclick=activeWindow.Close()>Close
-<script src=programs.js?17></script>
+<script src=programs.js?18></script>
 <script>
     
 // load test programs if none found
@@ -344,7 +344,7 @@ class _OS13k
         return source;
     }
     
-    GetNote(rootNoteFrequency=440, semitoneOffset)
+    GetNote(rootNoteFrequency=440, semitoneOffset=0)
     {
         // get frequency of a musical note on a diatonic scale
         return rootNoteFrequency * 2**(semitoneOffset/12);
@@ -709,6 +709,7 @@ class OS13kIcon extends HTMLElement
         firstIcon || src && (firstIcon = this);
 
         // set icon data
+        this.className = 'icon';
         this.name = name;
         this.icon = icon;
         this.src = src;
@@ -717,11 +718,10 @@ class OS13kIcon extends HTMLElement
         this.author = author;
         this.reload = reload;
         this.code = code || this.hasExtension;
-        this.className = 'icon';
             
         // icon
         const iconDisplay = document.createElement('div');
-        iconDisplay.style = 'pointer-events:none;width:40;text-shadow:1px 1px 2px #000;text-align:center';
+        iconDisplay.style = 'pointer-events:none;width:45;text-shadow:1px 1px 2px #000;text-align:center';
         iconDisplay.innerHTML = icon;
         this.appendChild(iconDisplay);
         

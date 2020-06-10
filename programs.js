@@ -4,7 +4,7 @@ const programs =
 {name:'Help', icon:'<b><span style=color:#0f0>?', src:'help.html?12', width:380, height:380},
 {name:'More Info', icon:'👨‍💻', src:'info.html?9'},
 {name:'Trophy Case', icon:'🏆', src:'trophies.html?1'},
-{name:'JS13k Website', icon:'<b><span style=font-family:currier;color:#b33>13k', src:'https://js13kgames.com/'},
+{name:'JS13k Website', icon:'<b><span style=font-family:currier;color:#b33>13k', src:'https://js13kgames.com'},
 {name:'System', icon:'⚙️', folder:
 [
     {name:'Shell', icon:'<span style=color:#0f0;background:#000>&nbsp;>&nbsp;', src:'system/shell.html?1', reload:1},
@@ -16,6 +16,9 @@ const programs =
 ]},
 {name:'Tools', icon:'🔧', folder:
 [
+    {name:'ZzFX', icon:'<b>ℤℤ', src:'https://zzfx.3d2k.com', height:880},
+    {name:'CapJS', icon:'𝓒𝓪𝓹', src:'https://capjs.3d2k.com', height:900},
+    {name:'Dweet View', icon:'<span style=color:#f00;background:#000><b>&nbsp;III&nbsp;', src:'https://dweetview.3d2k.com'},
     {name:'Photo Booth', icon:'📸', src:'tools/photoBooth.html', width:1400 },
     {name:'Unicode Toys', icon:'𝖀', author:'Xem', src:'tools/unicodeToys.html', width:500, height:800},
     {name:'Mini Shadertoy', icon:'𝓢', src:'tools/miniShadertoy.html', width:340, height:400},
@@ -47,7 +50,6 @@ const programs =
 ]},
 {name:'Dweets', icon:'<b>III', folder:
 [
-    {name:'Dweet View', icon:'<span style=color:#f00;background:#000><b>&nbsp;III&nbsp;', src:'dweets/dweetView.html'},
     {name:'Black Hole', icon:'🌌', src:'dweets/blackHole.dweet.js'},
     {name:'Mandelbrot Nebula', icon:'🌟', src:'dweets/mandelbrotNebula.dweet.js'},
     {name:'Bogus Roads', icon:'🛣️', src:'dweets/bogusRoads.dweet.js'},
