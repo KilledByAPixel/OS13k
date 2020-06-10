@@ -72,13 +72,13 @@ body
     margin:9;
     border-radius:9px;
 }
-.icon
+.program
 {
     font-size:18;
     height:18;
     padding:4;
 }
-.iconActive,
+.programActive,
 .taskbarIconActive         { background:linear-gradient(#ff8,#fff); }
 .taskbarIcon:hover         { background:linear-gradient(#fff,#44f); }
 .taskbarIconActive:hover   { background:linear-gradient(#ff8,#44f); }
@@ -93,7 +93,7 @@ body
     font-size:20vw;
     background:linear-gradient(#223,#322);
 }
-.flexCenter, .taskbarIcon, #taskbar, .icon,  #tray, #title
+.flexCenter, .taskbarIcon, #taskbar, .program,  #tray, #title
 {
     display:flex;
     align-items:center;
@@ -201,7 +201,7 @@ div svg       { width:100%; pointer-events:none; }
 <button id=buttonShowCode onclick=activeWindow.ShowCode()>Show Code
 <button id=buttonReload onclick=activeWindow.Reload()>Reload
 <button id=buttonClose onclick=activeWindow.Close()>Close
-<script src=programs.js?18></script>
+<script src=programs.js?19></script>
 <script>
     
 // load test programs if none found
@@ -213,7 +213,7 @@ if (typeof programs == 'undefined')
 // ==ClosureCompiler==
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // @language_out ECMASCRIPT_2019
-// @js_externs OS13k, OS13kFolder, OS13kIcon, OS13kWindow, OS13kTaskbarIcon
+// @js_externs OS13k, OS13kFolder, OS13kProgram, OS13kWindow, OS13kTaskbarIcon
 // @js_externs zzfx, zzfxV, icon.folder
 // @js_externs _OS13k.Trophy, _OS13k.GetTrophies, _OS13k.KeyDirection, _OS13k.Speak
 // @js_externs _OS13k.CreateShader, _OS13k.RenderShader, _OS13k.CreateCanvas
@@ -280,7 +280,7 @@ class _OS13k
         trophyPopups.appendChild(trophyElement);
         
         // refresh trophy window if it is being displayed
-        trophyIcon.window && trophyIcon.window.iframeContent.OS13kStart();
+        trophyProgram.window && trophyProgram.window.iframeContent.OS13kStart();
     }
     
     GetTrophies() { return trophies; } 
@@ -454,10 +454,10 @@ const taskbarHeight = 42, iconHeight = 26, titlebarHeight = 46,
       trophyPopupTime = 3, defaultVolume = .3;
       
 let grabObject, grabOffsetX, grabOffsetY,
-    activeWindow, activeIcon, activeTaskbarIcon,
+    activeWindow, activeProgram, activeTaskbarIcon,
     lastActiveElement, folderIcon, firstIcon, topZ = 0,
     windowOpenX = startWindowOpenX, windowOpenY = startWindowOpenY,
-    trophies = [], trophyIcon;
+    trophies = [], trophyProgram;
 
 const Init=()=>
 {
@@ -585,10 +585,10 @@ const ToggleMute=()=>
 
 const ToggleTrophies=()=>
 {
-    if (trophyIcon.window)
-        trophyIcon.window.Close()
+    if (trophyProgram.window)
+        trophyProgram.window.Close()
     else
-        trophyIcon.MouseClick(
+        trophyProgram.MouseClick(
             windowOpenX = startWindowOpenX,
             windowOpenY = startWindowOpenY);
 }
@@ -649,14 +649,14 @@ class OS13kFolder extends HTMLElement
         
         // add icons to folder
         for (const icon of icons)
-            this.appendChild(icon.os13kicon = new OS13kIcon(icon));
+            this.appendChild(icon.program = new OS13kProgram(icon));
         
         // get width offset and add new folders recursively
         const rect = this.getBoundingClientRect();
         for (const icon of icons)
         {
             // create the folder and hook up to icon
-            icon.folder && (icon.os13kicon.folder = new OS13kFolder(icon.folder, rect.right - 2, y, this));
+            icon.folder && (icon.program.folder = new OS13kFolder(icon.folder, rect.right - 2, y, this));
             y += iconHeight;
         }
     }
@@ -687,9 +687,9 @@ class OS13kFolder extends HTMLElement
 customElements.define('os13k-folder', OS13kFolder);
 
 /////////////////////////////////////////////////////////////////////////////
-// OS13kIcon
+// OS13kProgram
 
-class OS13kIcon extends HTMLElement
+class OS13kProgram extends HTMLElement
 {
 	constructor({'x':x, 'y':y, 'name':name, 'icon':icon, 'src':src, 'width':width=1280, 'height':height=720, 'author':author, 'folder':folder, 'reload':reload, 'code':code})
     {
@@ -709,7 +709,7 @@ class OS13kIcon extends HTMLElement
         firstIcon || src && (firstIcon = this);
 
         // set icon data
-        this.className = 'icon';
+        this.className = 'program';
         this.name = name;
         this.icon = icon;
         this.src = src;
@@ -735,21 +735,20 @@ class OS13kIcon extends HTMLElement
         if (folder)
         {
             const folderDisplay = document.createElement('div');
-            folderDisplay.className = 'iconFolder';
             folderDisplay.style = 'pointer-events:none'
             folderDisplay.innerHTML = '▶';
             this.appendChild(folderDisplay);
         }
             
         // save trophy icon
-        src.substr(0,8) == 'trophies' && (trophyIcon = this);
+        src.substr(0,8) == 'trophies' && (trophyProgram = this);
     }
     
     MouseMove()
     {
         // set active
-        activeIcon = this;
-        this.className = 'icon iconActive';
+        activeProgram = this;
+        this.className = 'program programActive';
         (this.folder? this.folder : this.offsetParent).Focus();
     }
     
@@ -770,9 +769,9 @@ class OS13kIcon extends HTMLElement
             CloseWindows();
         }
     }
-} // OS13kIcon
+} // OS13kProgram
 
-customElements.define('os13k-icon', OS13kIcon);
+customElements.define('os13k-program', OS13kProgram);
 
 /////////////////////////////////////////////////////////////////////////////
 // OS13kWindow
@@ -966,14 +965,14 @@ class OS13kWindow extends HTMLElement
         target.id != 'codeDisplay' && this.Focus();
     }
     
-    Focus(fromTaskbar)
+    Focus(clampToWindow)
     {
         // set focus
         CloseFolders();
         this.iframeContent && this.iframeContent.focus();
         this.SetActive();
         
-        if (fromTaskbar)
+        if (clampToWindow)
         {
             // clamp window to screen
             const rect = this.getBoundingClientRect();
@@ -1105,7 +1104,7 @@ onmousemove=e=>
     }
     
     // unselect active icon
-    activeIcon && (activeIcon.className = 'icon');
+    activeProgram && (activeProgram.className = 'program');
     
     // handle mouse move
     e.target.MouseMove && e.target.MouseMove();
@@ -1129,7 +1128,7 @@ onclick=e=>
         
     // focus on active window
     const originalTarget = e.originalTarget || e.path[0];
-    e.target != folderIcon && e.target.localName != 'os13k-icon' && activeWindow && 
+    e.target != folderIcon && e.target.localName != 'os13k-program' && activeWindow && 
         originalTarget.id != 'codeDisplay' && activeWindow.Focus();
 
     // handle click
