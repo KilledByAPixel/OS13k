@@ -1,9 +1,10 @@
 const programs = 
 [
+    {name:'Test', icon:'😄', src:'system/test.html?9', reload:1, code:1},
 {name:'Close All', icon:'❌',},
 {name:'Help', icon:'<b><span style=color:#0f0>?', src:'help.html?12', width:380, height:380},
 {name:'More Info', icon:'👨‍💻', src:'info.html?9'},
-{name:'Trophy Case', icon:'🏆', src:'trophies.html?1'},
+{name:'Trophy Case', icon:'🏆', src:'trophies.html?2'},
 {name:'JS13k Website', icon:'<b><span style=font-family:currier;color:#b33>13k', src:'https://js13kgames.com'},
 {name:'System', icon:'⚙️', folder:
 [
