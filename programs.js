@@ -21,7 +21,7 @@ const programs =
 ]},
 {name:'Games', icon:'🎮', folder:
 [
-    {name:'Swatch', icon:'🌈', src:'games/swatch.html', author:'Nicholas Ortenzio', width:320, height:320},
+    {name:'Swatch', icon:'🌈', src:'games/swatch.html', author:'Nicholas Ortenzio', width:320, height:340},
     {name:'Lava Rush', icon:'🌋', author:'Jeremy Burns', src:'games/lavaRush.html?4', width:640, height:400},
     {name:'Sn1ke', icon:'👀', author:'Codegolf Team', src:'games/sn1ke.html', width:450, height:330},
     {name:'Tetris', icon:'<span style=font-size:10>▀█▀</span>', author:'Veubeke', src:'games/tetris.html', width:340, height:430},
