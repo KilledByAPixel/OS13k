@@ -21,7 +21,7 @@ body
     width:100%;
     background:linear-gradient(#888,#333);
     left:-2;
-    box-shadow:0px 2px 9px;
+    box-shadow:0px 1px 9px;
 }
 .taskbarIcon
 {
@@ -38,8 +38,12 @@ body
     padding:2;
     background:linear-gradient(#000,#333);
     color:#fff;
-    border-radius:8px;
+    border-radius:7px;
+    padding-left:9;
+    padding-right:9;
 }
+.trayIcon       { padding-left:5; padding-right:5; }
+.trayIcon:hover { background:#fff3;}
 #menu
 {
     visibility:hidden;
@@ -95,7 +99,6 @@ body
     align-items:center;
     justify-content:center;
 }
-.trayIcon:hover { background:#fff3; }
 </style>
 <template id=template>
 <style>
@@ -184,10 +187,10 @@ div svg       { width:100%; pointer-events:none; }
 <div id=desktop>
 <div id=taskbar>
 <div id=traySpace style=flex:1></div>
-<div id=tray>&nbsp;
+<div id=tray>
     <div id=trayTrophy class=trayIcon title='Trophy Case' onmousedown=ToggleTrophies() ontouchstart=ToggleTrophies()></div>
     <div id=trayVolume class=trayIcon title='Toggle Mute' onmousedown=ToggleMute() ontouchstart=ToggleMute()></div>
-    <div id=trayTime class=trayIcon></div>&nbsp;
+    <div id=trayTime class=trayIcon></div>
 </div>
 </div>
 <div id=trophyPopups style=float:right;position:relative></div>
@@ -573,7 +576,7 @@ const FocusTopWindow=()=>
 const ToggleMute=()=>
 {
     gain.gain.value = gain.gain.value ? 0 : defaultVolume;
-    trayVolume.innerHTML = '&nbsp;' + (gain.gain.value ? '🔊' : '🔇') + '&nbsp;';
+    trayVolume.innerHTML = (gain.gain.value ? '🔊' : '🔇');
 }
 
 const ToggleTrophies=()=>
