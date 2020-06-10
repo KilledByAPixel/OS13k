@@ -188,8 +188,8 @@ div svg       { width:100%; pointer-events:none; }
 <div id=taskbar>
 <div id=traySpace style=flex:1></div>
 <div id=tray>
-    <div id=trayTrophy class=trayIcon title='Trophy Case' onmousedown=ToggleTrophies() ontouchstart=ToggleTrophies()></div>
-    <div id=trayVolume class=trayIcon title='Toggle Mute' onmousedown=ToggleMute() ontouchstart=ToggleMute()></div>
+    <div id=trayTrophy class=trayIcon title='Trophy Case'></div>
+    <div id=trayVolume class=trayIcon title='Toggle Mute'></div>
     <div id=trayTime class=trayIcon></div>
 </div>
 </div>
@@ -219,7 +219,7 @@ if (typeof programs == 'undefined')
 // @js_externs _OS13k.CreateShader, _OS13k.RenderShader, _OS13k.CreateCanvas
 // @js_externs _OS13k.PlaySamples, _OS13k.PlaySeed, _OS13k.GetSeedSound, _OS13k.GetNote
 // @js_externs _OS13k.Random, _OS13k.randomSeed 
-// @js_externs _OS13k.Clamp, _OS13k.Percent, _OS13k.Lerp
+// @js_externs _OS13k.Clamp, _OS13k.Percent, _OS13k.Lerp, _OS13k.StripHTML
 // @js_externs iframeContent.OS13k, iframeContent.OS13kStart, iframeContent.zzfx
 // @output_file_name OS13k.min.js
 // ==/ClosureCompiler==
@@ -229,17 +229,6 @@ if (typeof programs == 'undefined')
 
 class _OS13k
 {
-    KeyDirection(keyCode)
-    {
-        // get direction from wasd or arrow keys
-        let x = 0, y = 0;
-        (keyCode == 87 || keyCode == 38) && ++y; // up
-        (keyCode == 83 || keyCode == 40) && --y; // down
-        (keyCode == 68 || keyCode == 39) && ++x; // right
-        (keyCode == 65 || keyCode == 37) && --x; // left
-        return {x, y}
-    }
-    
     Trophy(game, name='', icon='', message='')
     {
         // skip if there is no game name
@@ -295,6 +284,17 @@ class _OS13k
     }
     
     GetTrophies() { return trophies; } 
+    
+    KeyDirection(keyCode)
+    {
+        // get direction from wasd or arrow keys
+        let x = 0, y = 0;
+        (keyCode == 87 || keyCode == 38) && ++y; // up
+        (keyCode == 83 || keyCode == 40) && --y; // down
+        (keyCode == 68 || keyCode == 39) && ++x; // right
+        (keyCode == 65 || keyCode == 37) && --x; // left
+        return {x, y}
+    }
     
     PlaySeed(seed, lengthScale=1, volume=1, randomness=.05)
     {
@@ -451,7 +451,7 @@ class _OS13k
 
 const taskbarHeight = 42, iconHeight = 26, titlebarHeight = 46,
       startWindowOpenX = 50, startWindowOpenY = 99, 
-      trophyPopupTime = 4, defaultVolume = .3;
+      trophyPopupTime = 3, defaultVolume = .3;
       
 let grabObject, grabOffsetX, grabOffsetY,
     activeWindow, activeIcon, activeTaskbarIcon,
@@ -461,6 +461,10 @@ let grabObject, grabOffsetX, grabOffsetY,
 
 const Init=()=>
 {
+    // set taskbar functions
+    trayTrophy.onmousedown = trayTrophy.ontouchstart = ToggleTrophies;
+    trayVolume.onmousedown = trayVolume.ontouchstart = ToggleMute;
+
     // create top level icon and add folders/icons
     const taskbarIcon = 
         folderIcon = new OS13kTaskbarIcon( {icon:'💾', name:'Apps'}, 
