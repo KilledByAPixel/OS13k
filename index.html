@@ -7,7 +7,6 @@ body
 {
     touch-action:none;
     margin:0;
-    background:linear-gradient(#223,#322);
     overflow:hidden;
     font-family:arial;
     user-select:none;
@@ -92,6 +91,8 @@ body
     font-family:impact;
     font-weight:900;
     font-size:20vw;
+    position:absolute;
+    background:linear-gradient(#223,#322);
 }
 .flexCenter, .taskbarIcon, #taskbar, .icon,  #tray, #title
 {
@@ -195,7 +196,7 @@ div svg       { width:100%; pointer-events:none; }
 </div>
 <div id=trophyPopups style=float:right;position:relative></div>
 <div id=programsFolder style=position:absolute></div>
-<div id=title style=position:absolute>OS13k
+<div id=title>OS13k
 <div id=menu>
 <button id=buttonFullScreen onclick=activeWindow.FullScreen()>Fullscreen
 <button id=buttonShowCode onclick=activeWindow.ShowCode()>Show Code
