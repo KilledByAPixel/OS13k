@@ -44,6 +44,9 @@ var OS13kStart=()=>
         // use only first icon character and set default
         icon = (icon.length ? [...icon][0] : '🏆')
         
+        // use game as name if there is no name
+        name || (name = game, game = '');
+        
         // set title
         const title = name + '\n' + game + (message? '\n"' + message + '"' : '');
         title.replace("'",'');
