@@ -231,6 +231,10 @@ class _OS13k
         game = game.replace(',', '');
         name = name.replace(',', '');
         icon = icon.replace(',', '');
+        
+        // skip if there is no game name
+        if (!game)
+            return;
     
         // build key
         const key = game + ',' + name + ',' + icon;
@@ -257,7 +261,7 @@ class _OS13k
         trophyElement.innerHTML = 
             '<div class=flexCenter>' +                      // center
                 '<div style="font-size:50;padding:9;text-shadow:3px 3px 8px #000">' + 
-                    icon+                                   // icon
+                    icon +                                  // icon
                 '</div>' +
                 '<div style=width:100%;overflow:hidden>' +  // info
                     '<b>' + name + '</b><br>' +             // name
