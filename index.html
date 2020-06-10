@@ -174,7 +174,7 @@ div svg       { width:100%; pointer-events:none; }
 <div id=traySpace style=flex:1></div>
 <div id=tray>&nbsp;
     <div id=trayTrophy title='Trophy Case' onmousedown=ToggleTrophies() ontouchstart=ToggleTrophies()></div>
-    <div id=trayVolume title='Toggle Mute' onmousedown=ToggleMute() ontouchstart=ToggleMute()>🔊</div>
+    <div id=trayVolume title='Toggle Mute' onmousedown=ToggleMute() ontouchstart=ToggleMute()></div>
     <div id=trayTime></div>&nbsp;
 </div>
 </div>
@@ -1133,7 +1133,7 @@ audioContext.createBufferSource = (s = audioContext.Z())=>
 // setup gain node
 const gain = audioContext.createGain();
 gain.connect(audioContext.destination);
-gain.gain.value = defaultVolume;
+ToggleMute(gain.gain.value = 0);
 
 // play zzfx sound
 const zzfx =
