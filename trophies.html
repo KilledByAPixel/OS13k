@@ -22,7 +22,7 @@
     text-shadow:2px 2px 4px #000;
 }
 </style>
-<body bgcolor=#222>
+<body bgcolor=#333>
 <script>
 
 'use strict';
@@ -35,11 +35,11 @@ var OS13kStart=()=>
     {
         // get trophy info
         const key = trophy[0];
-        const message = trophy[1];
+        const message = OS13k.StripHTML(trophy[1]);
         const keyParts = key.split(',');
-        let game = keyParts[0];
-        let name = keyParts[1];
-        let icon = keyParts[2];
+        let game = OS13k.StripHTML(keyParts[0]);
+        let name = OS13k.StripHTML(keyParts[1]);
+        let icon = OS13k.StripHTML(keyParts[2]);
         
         // use only first icon character and set default
         icon = (icon.length ? [...icon][0] : '🏆')

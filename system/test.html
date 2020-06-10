@@ -26,11 +26,25 @@ Trophies
 <br>
 <button onClick=OS13k.Trophy(game.value,trophy.value,icon.value,message.value)>Add Trophy</button>
 <button onClick='delete localStorage.OS13kTrophies'>Reset Popups</button>
-<button onClick=localStorage.clear()>Clear Local Storage</button>
+<button onClick=ClearTrophies()>Clear Trophies</button>
 
 <script>
 
 'use strict';
+
+const ClearTrophies=()=>
+{
+    // delete all trophies
+    delete localStorage.OS13kTrophies
+    for (let i = localStorage.length; i--;)
+    {
+        // check if it is a trophy
+        const key = localStorage.key(i);
+        const keyParts = key.split(',');
+        if (keyParts.shift() == 'OS13kTrophy')
+            delete localStorage[key];
+    }
+}
 
 // load local storage text area
 localStorage.OS13kTest && (a.value = localStorage.OS13kTest);

@@ -95,6 +95,7 @@ body
     align-items:center;
     justify-content:center;
 }
+.trayIcon:hover { background:#fff3; }
 </style>
 <template id=template>
 <style>
@@ -138,6 +139,17 @@ body
     cursor:grab;
     overflow:hidden;
 }
+.icon
+{
+    text-shadow:2px 2px 3px #000;
+    margin-left:9;
+    margin-right:9;
+}
+.titleBarElement, .icon
+{
+    pointer-events:none;
+    display:inline;
+}
 #codeDisplay
 {
     height:99;
@@ -173,9 +185,9 @@ div svg       { width:100%; pointer-events:none; }
 <div id=taskbar>
 <div id=traySpace style=flex:1></div>
 <div id=tray>&nbsp;
-    <div id=trayTrophy title='Trophy Case' onmousedown=ToggleTrophies() ontouchstart=ToggleTrophies()></div>
-    <div id=trayVolume title='Toggle Mute' onmousedown=ToggleMute() ontouchstart=ToggleMute()></div>
-    <div id=trayTime></div>&nbsp;
+    <div id=trayTrophy class=trayIcon title='Trophy Case' onmousedown=ToggleTrophies() ontouchstart=ToggleTrophies()></div>
+    <div id=trayVolume class=trayIcon title='Toggle Mute' onmousedown=ToggleMute() ontouchstart=ToggleMute()></div>
+    <div id=trayTime class=trayIcon></div>&nbsp;
 </div>
 </div>
 <div id=trophyPopups style=float:right;position:relative></div>
@@ -186,7 +198,7 @@ div svg       { width:100%; pointer-events:none; }
 <button id=buttonShowCode onclick=activeWindow.ShowCode()>Show Code
 <button id=buttonReload onclick=activeWindow.Reload()>Reload
 <button id=buttonClose onclick=activeWindow.Close()>Close
-<script src=programs.js?13></script>
+<script src=programs.js?15></script>
 <script>
     
 // load test programs if none found
@@ -227,11 +239,6 @@ class _OS13k
     
     Trophy(game, name='', icon='', message='')
     {
-        // remove commas
-        game = game.replace(',', '');
-        name = name.replace(',', '');
-        icon = icon.replace(',', '');
-        
         // skip if there is no game name
         if (!game)
             return;
@@ -249,11 +256,17 @@ class _OS13k
         localStorage['OS13kTrophy,' + key] = message;
         localStorage.OS13kTrophies = JSON.stringify(trophies);
         
+        // strip html
+        icon = this.StripHTML(icon);
+        name = this.StripHTML(name);
+        game = this.StripHTML(game);
+        message = this.StripHTML(message);
+        
         // use game as name if there is no name
         name || (name = game, game = '');
         
         // use only first icon character and set default
-        icon = (icon.length ? [...icon][0] : '🏆')
+        icon = (icon.length ? [...icon][0] : '🏆');
 
         // build popup element
         const trophyElement = document.createElement('div');
@@ -415,7 +428,8 @@ class _OS13k
         x.texImage2D(x.TEXTURE_2D, 0, x.RGBA, x.RGBA, x.UNSIGNED_BYTE, canvas);
     }
     
-    // math functions
+    // helper functions
+    StripHTML(string)      { return string.replace(/(<([^>]+)>)/ig,''); }
     Clamp(a, min=0, max=1) { return Math.min(Math.max(a, min),max); }
     Percent(v, a, b)       { return b-a? this.Clamp((v-a)/(b-a), 0, 1) : 0; }
     Lerp(p, a, b)          { return a + this.Clamp(p, 0, 1) * (b-a); }
@@ -446,7 +460,7 @@ const Init=()=>
 {
     // create top level icon and add folders/icons
     const taskbarIcon = 
-        folderIcon = new OS13kTaskbarIcon( {icon:'📁', name:'Apps'}, 
+        folderIcon = new OS13kTaskbarIcon( {icon:'💾', name:'Apps'}, 
             new OS13kFolder(programs, 0, 0));
 
     // open first icon in list
@@ -698,16 +712,30 @@ class OS13kIcon extends HTMLElement
         this.code = code || this.hasExtension;
         this.className = 'icon';
             
-        // set html
-        this.innerHTML = 
-            '<div style=pointer-events:none;display:flex;width:100%>&nbsp;' +
-            '<div style="width:28;text-shadow:1px 1px 2px #000;text-align:center">' + 
-            icon + '</div>&nbsp;<div style=flex:1>' +
-            name + '</div><div style=width:20;text-align:right>' +
-            (folder? '▶' : '');
+        // icon
+        const iconDisplay = document.createElement('div');
+        iconDisplay.style = 'pointer-events:none;width:40;text-shadow:1px 1px 2px #000;text-align:center';
+        iconDisplay.innerHTML = icon;
+        this.appendChild(iconDisplay);
+        
+        // name
+        const nameDisplay = document.createElement('div');
+        nameDisplay.style = 'pointer-events:none;flex:1'
+        nameDisplay.innerHTML = name;
+        this.appendChild(nameDisplay);
+        
+        // folder arrow
+        if (folder)
+        {
+            const folderDisplay = document.createElement('div');
+            folderDisplay.className = 'iconFolder';
+            folderDisplay.style = 'pointer-events:none'
+            folderDisplay.innerHTML = '▶';
+            this.appendChild(folderDisplay);
+        }
             
         // save trophy icon
-        src == 'trophies.html' && (trophyIcon = this);
+        src.substr(0,8) == 'trophies' && (trophyIcon = this);
     }
     
     MouseMove()
@@ -766,20 +794,35 @@ class OS13kWindow extends HTMLElement
         this.shadowRoot.innerHTML = template.innerHTML;
         
         // create title bar
-        const titlebar = this.titlebar = document.createElement('div');
-        titlebar.id = 'titlebar';
-        this.shadowRoot.appendChild(titlebar);
+        this.titlebar = document.createElement('div');
+        this.titlebar.id = 'titlebar';
+        this.shadowRoot.appendChild(this.titlebar);
         
         // create title bar name
-        const titlebarName = this.titlebarName = document.createElement('div');
-        titlebarName.id = 'name';
-        titlebarName.innerHTML = 
-            '<div style=pointer-events:none>' +
-            '&nbsp;<span style="text-shadow:2px 2px 3px #000">' + 
-            icon.icon + '</span>&nbsp;' +
-            icon.name +
-            (icon.author ? ' - ' + icon.author : '');
-        titlebar.appendChild(titlebarName);
+        this.titlebarName = document.createElement('div');
+        this.titlebarName.id = 'name';
+        this.titlebar.appendChild(this.titlebarName);
+        
+        // icon
+        const iconDisplay = document.createElement('div');
+        iconDisplay.className = 'icon';
+        iconDisplay.innerHTML = icon.icon;
+        this.titlebarName.appendChild(iconDisplay);
+        
+        // name
+        const nameDisplay = document.createElement('div');
+        nameDisplay.className = 'titleBarElement';
+        nameDisplay.innerHTML = icon.name;
+        this.titlebarName.appendChild(nameDisplay);
+        
+        // author
+        if (icon.author)
+        {
+            const authorDisplay = document.createElement('div');
+            authorDisplay.className = 'titleBarElement';
+            authorDisplay.innerHTML = icon.author;
+            this.titlebarName.appendChild(authorDisplay);
+        }
         
         // create title bar icons
         const AddtitlebarIcon=(id, title)=>
@@ -787,7 +830,7 @@ class OS13kWindow extends HTMLElement
             const icon = document.createElement('div');
             icon.innerHTML = `<svg><use href=#icon-${icon.id = id}>`;
             icon.title = title;
-            titlebar.appendChild(icon);
+            this.titlebar.appendChild(icon);
         }
         AddtitlebarIcon('full', 'Full Screen');
         icon.code && AddtitlebarIcon('code', 'Show Code');
@@ -821,27 +864,34 @@ class OS13kWindow extends HTMLElement
         {
             // set up iframe          
             const iframeContent = this.iframeContent = e.target.contentWindow;
-            const iframeDocument = iframeContent.document;
-            const iframeText = this.icon.hasExtension ?
-                iframeDocument.body.innerText : iframeDocument.body.innerHTML;
-
-            // create code display
-            if (!this.codeDisplay)
+            let iframeDocument, iframeText;
+            
+            try
             {
+                // get the document and text, will fail if cross site
+                iframeDocument = iframeContent.document;
+                iframeText = this.icon.hasExtension ?
+                    iframeDocument.body.innerText : iframeDocument.body.innerHTML;
+
+                // create code display
                 this.codeDisplay = document.createElement('textarea');
                 this.codeDisplay.id = 'codeDisplay'; 
                 this.codeDisplay.setAttribute('readOnly', 1);
                 this.codeDisplay.value = iframeText;
                 this.shadowRoot.appendChild(this.codeDisplay);
             }
-
-            // try to pass OS13k to iframe
-            iframeContent.OS13k = OS13k;
-            iframeContent.zzfx = zzfx;
-            iframeContent.OS13kStart && iframeContent.OS13kStart();
+            catch (e) {}
+            
+            if (iframeDocument)
+            {
+                // pass OS13k to iframe
+                iframeContent.OS13k = OS13k;
+                iframeContent.zzfx = zzfx;
+                iframeContent.OS13kStart && iframeContent.OS13kStart();
+            }
 
             // check for extensions
-            if (this.icon.hasExtension)
+            if (iframeDocument && this.icon.hasExtension)
             {
                 // create full size canvas
                 iframeDocument.body.innerHTML = 
