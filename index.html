@@ -483,26 +483,29 @@ const Update=()=>
         lastActiveElement = activeElement;
     }
     
-    // update trophy popups
-    let offsetHeight = 0;
-    let waitToFade = 0;
-    const popups = [...trophyPopups.children];
-    for(const popup of popups)
+    // update trophy popups if not fullscreen
+    if (!document.fullscreenElement)
     {
-        let y = parseInt(popup.style.top) + offsetHeight - 8;
-        if (y < taskbarHeight)
+        let offsetHeight = 0;
+        let waitToFade = 0;
+        const popups = [...trophyPopups.children];
+        for(const popup of popups)
         {
-            if (!waitToFade && !(popup.style.opacity = (popup.style.opacity || trophyPopupTime) - .01))
+            let y = parseInt(popup.style.top) + offsetHeight - 8;
+            if (y < taskbarHeight)
             {
-                // remove when invisible and adjust for height
-                const rect = popup.getBoundingClientRect();
-                offsetHeight += rect.height;
-                trophyPopups.removeChild(popup);
+                if (!waitToFade && !(popup.style.opacity = (popup.style.opacity || trophyPopupTime) - .01))
+                {
+                    // remove when invisible and adjust for height
+                    const rect = popup.getBoundingClientRect();
+                    offsetHeight += rect.height;
+                    trophyPopups.removeChild(popup);
+                }
+                waitToFade = y = taskbarHeight;
             }
-            waitToFade = y = taskbarHeight;
+
+            popup.style.top = y;
         }
-            
-        popup.style.top = y;
     }
     
     // set trophy count
