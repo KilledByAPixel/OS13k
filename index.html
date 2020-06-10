@@ -202,7 +202,7 @@ div svg       { width:100%; pointer-events:none; }
 <button id=buttonShowCode onclick=activeWindow.ShowCode()>Show Code
 <button id=buttonReload onclick=activeWindow.Reload()>Reload
 <button id=buttonClose onclick=activeWindow.Close()>Close
-<script src=programs.js?26></script>
+<script src=programs.js?27></script>
 <script>
     
 // load test programs if none found
@@ -517,7 +517,7 @@ const Update=()=>
         // use copy of trophies to prevent skipping if removed
         for(const popup of [...trophyPopups.children])
         {
-            let y = parseInt(popup.style.top) + offsetHeight - 8;
+            let y = parseInt(popup.style.top) + offsetHeight - 9;
             if (y < taskbarHeight)
             {
                 if (!waitToFade && !(popup.style.opacity = (popup.style.opacity || trophyPopupTime) - .01))
@@ -595,7 +595,7 @@ const ToggleTrophies=()=>
             windowOpenX = startWindowOpenX,
             windowOpenY = startWindowOpenY);
             
-    OS13k.Trophy('OS13k','Winner','🏆','Viewed Trophies');
+    OS13k.Trophy('OS13k','Winner','','Viewed Trophies');
 }
 
 /////////////////////////////////////////////////////////////////////////////
