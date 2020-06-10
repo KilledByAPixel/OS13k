@@ -1,6 +1,5 @@
 const programs = 
 [
-    {name:'Test', icon:'😄', src:'system/test.html?9', reload:1, code:1},
 {name:'Close All', icon:'❌',},
 {name:'Help', icon:'<b><span style=color:#0f0>?', src:'help.html?12', width:380, height:380},
 {name:'More Info', icon:'👨‍💻', src:'info.html?9'},
@@ -29,7 +28,7 @@ const programs =
 {name:'Games', icon:'🎮', folder:
 [
     {name:'Bounce Back', icon:'❤️', src:'https://bounceback.3d2k.com', author:'Frank Force'},
-    {name:'Swatch', icon:'🌈', src:'games/swatch.html', author:'Nicholas Ortenzio', width:320, height:320},
+    {name:'Swatch', icon:'🌈', src:'games/swatch.html?1', author:'Nicholas Ortenzio', width:320, height:320},
     {name:'Lava Rush', icon:'🌋', author:'Jeremy Burns', src:'games/lavaRush.html?4', width:640, height:400},
     {name:'Sn1ke', icon:'👀', author:'Codegolf Team', src:'games/sn1ke.html', width:450, height:330},
     {name:'Tetris', icon:'<span style=font-size:10>▀█▀', author:'Veubeke', src:'games/tetris.html', width:340, height:430, reload:1},
