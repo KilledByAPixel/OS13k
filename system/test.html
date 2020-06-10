@@ -1,45 +1,64 @@
-Text area with local storage persistance.
+<table><tr></tr><td>
+Text area with local storage
 <br>
 <textarea rows=5 cols=30 id=a style=resize:none oninput=localStorage.OS13kTest=a.value>
 Hello OS13k!
 </textarea>
 <br><button onClick=OS13k.Speak(a.value)>Test Speech</button>
-<button onClick="z&&z.stop();z=OS13k.PlaySeed(r=++r%1e4);seed.innerHTML='Seed: '+r">
+<button onClick="z&&z.stop();z=OS13k.PlaySeed(seed=++seed%1e4);seed.innerHTML='Seed: '+r">
 Test ZzFX</button> <span id=seed></span>
+
 <br>
-<br>Test WASD input direction <input id=move readonly style=width:100>
+<br>Test WASD input direction
+<br><input id=move readonly>
+
+</td><td>
+Test Shader
+<br><canvas id=c style='border:1px solid'></canvas>
+</td>
+</table>
+<br><br>
+Trophies
+<br><input id=game value=Game>
+<br><input id=trophy value=Trophy>
+<br><input id=icon value=🏆>
+<br><input id=message value=Message>
 <br>
-<br>Test Shader
-<br>
-<canvas id=c style='border:1px solid'></canvas>
+<button onClick=OS13k.Trophy(game.value,trophy.value,icon.value,message.value)>Add Trophy</button>
+<button onClick='delete localStorage.OS13kTrophies'>Reset Popups</button>
+<button onClick=localStorage.clear()>Clear Local Storage</button>
+
 <script>
+
+'use strict';
 
 // load local storage text area
 localStorage.OS13kTest && (a.value = localStorage.OS13kTest);
 
 // init variables
-z=0;
-r=Date.now();
+let shader;
+let z;
+let r = Date.now();
 onkeydown=e=>
 {
-    p = OS13k.KeyDirection(e.keyCode); 
+    const p = OS13k.KeyDirection(e.keyCode); 
     move.value = p.x + ', ' + p.y;
 }
 
 // main loop
-loop=t=>
+const loop=t=>
 {
     requestAnimationFrame(loop);
     
     // render shader if focused
-    document.hasFocus() && OS13k.RenderShader(c, s, t/1e3);
+    document.hasFocus() && OS13k.RenderShader(c, shader, t/1e3);
 }
 
 // wait for os13k start
-OS13kStart=()=>
+var OS13kStart=()=>
 {
     // create a shader
-    s = OS13k.CreateShader
+    shader = OS13k.CreateShader
     (
         c, 
         'void mainImage(out vec4 c,vec2 p){for(int i;++i<35;)c.xy=mat2(-c.g,c.r,c)*c.gr+((0.5-p/iResolution.y)*(1.1+sin(iTime))-.6);}'

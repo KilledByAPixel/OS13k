@@ -3,18 +3,15 @@
 <meta charset=utf-8>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
 <style>
-*
-{
-    font-family:arial;
-    user-select:none;
-    white-space:nowrap;
-}
 body
 {
+    touch-action:none;
     margin:0;
     background:linear-gradient(#223,#322);
     overflow:hidden;
-    touch-action:none;
+    font-family:arial;
+    user-select:none;
+    white-space:nowrap;
 }
 #taskbar
 {
@@ -23,9 +20,8 @@ body
     z-index:10000;
     width:100%;
     background:linear-gradient(#888,#333);
-    display:flex;
-    align-items:center;
     left:-2;
+    box-shadow:0px 2px 9px;
 }
 .taskbarIcon
 {
@@ -33,16 +29,10 @@ body
     width:44;
     height:40;
     text-shadow:1px 1px 2px #000;
-    display:flex;
-    align-items:center;
-    justify-content:center;
 }
 #tray
 {
     font-size:22;
-    display:flex;
-    align-items:center;
-    justify-content:center;
     border:1px solid;
     margin:2;
     padding:2;
@@ -63,13 +53,25 @@ body
     z-index:20000;
     box-shadow:5px 5px 9px;
 }
+.trophyPopup
+{
+    position:relative;
+    border:2px solid;
+    z-index:10001;
+    box-shadow:5px 5px 9px;
+    max-width:300;
+    padding:8;
+    font-size:26;
+    text-align:center;
+    background:linear-gradient(#eee,#888);
+    white-space:normal;
+    margin:9;
+}
 .icon
 {
     font-size:18;
     height:18;
     padding:4;
-    display:flex;
-    align-items:center;
 }
 .iconActive,
 .taskbarIconActive         { background:linear-gradient(#ff8,#fff); }
@@ -78,14 +80,18 @@ body
 .folder                    { background:linear-gradient(#fff,#777); }
 #title
 {
+    width:100%;
     height:100%;
     color:#0002;
     font-family:impact;
     font-weight:900;
+    font-size:20vw;
+}
+.flexCenter, .taskbarIcon, #taskbar, .icon,  #tray, #title
+{
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:20vw;
 }
 </style>
 <template id=template>
@@ -162,23 +168,23 @@ div svg       { width:100%; pointer-events:none; }
     <path stroke=#000 d='M1 1L9 9M9 1L1 9'/>
 </template>
 <div id=desktop>
-<div id=programsFolder style=position:absolute></div>
 <div id=taskbar>
 <div id=traySpace style=flex:1></div>
 <div id=tray>&nbsp;
-    <div id=trayMedals></div>🏆
+    <div id=trayTrophy title='View Trophies'></div>
     <div id=trayVolume title='Toggle Mute'></div>
     <div id=trayTime></div>&nbsp;
 </div>
 </div>
+<div id=trophyPopups style=float:right;position:relative></div>
+<div id=programsFolder style=position:absolute></div>
+<div id=title style=position:absolute>OS13k
 <div id=menu>
 <button id=buttonFullScreen>Fullscreen
 <button id=buttonShowCode>Show Code
 <button id=buttonReload>Reload
 <button id=buttonClose>Close
-</div>
-<div id=title>OS13k
-<script src=programs.js?11></script>
+<script src=programs.js?12></script>
 <script>
 
 // load test programs if none found
@@ -192,9 +198,9 @@ if (typeof programs == 'undefined')
 // @language_out ECMASCRIPT_2019
 // @js_externs OS13k, OS13kFolder, OS13kIcon, OS13kWindow, OS13kTaskbarIcon
 // @js_externs zzfx, zzfxV, icon.folder
-// @js_externs _OS13k.Medal, _OS13k.KeyDirection, _OS13k.Speak
+// @js_externs _OS13k.Trophy, _OS13k.GetTrophies, _OS13k.KeyDirection, _OS13k.Speak
 // @js_externs _OS13k.CreateShader, _OS13k.RenderShader, _OS13k.CreateCanvas
-// @js_externs _OS13k.PlaySamples, _OS13k.PlaySeed, _OS13k.GetSeedSound
+// @js_externs _OS13k.PlaySamples, _OS13k.PlaySeed, _OS13k.GetSeedSound, _OS13k.GetNote
 // @js_externs _OS13k.Random, _OS13k.randomSeed 
 // @js_externs _OS13k.Clamp, _OS13k.Percent, _OS13k.Lerp
 // @js_externs iframeContent.OS13k, iframeContent.OS13kStart, iframeContent.zzfx
@@ -206,24 +212,6 @@ if (typeof programs == 'undefined')
 
 class _OS13k
 {
-	constructor(icon, element = 0)
-    {
-        // init web audio
-        this.audioContext = new (AudioContext || webkitAudioContext);
-        this.audioContext.Z = this.audioContext.createBufferSource;
-        this.audioContext.createBufferSource =
-        (s = this.audioContext.Z())=>
-        (
-            s.start = s.start || s.noteOn,
-            s.stop  = s.stop  || s.noteOff,
-            s
-        );
-        
-        // set up gain node
-        const gain = this.gain = this.audioContext.createGain();
-        gain.connect(this.audioContext.destination);
-    }
-    
     KeyDirection(keyCode)
     {
         // get direction from wasd or arrow keys
@@ -235,21 +223,55 @@ class _OS13k
         return {x, y}
     }
     
-    Medal(gameName, medalName='', medalIcon = '🏆', medalText='')
+    Trophy(game, name='', icon='', message='')
     {
+        // remove commas
+        game = game.replace(',', '');
+        name = name.replace(',', '');
+        icon = icon.replace(',', '');
+    
         // build key
-        const key = 'OS13kMedal,' + gameName + ',' + medalName + ',' + medalIcon;
+        const key = game + ',' + name + ',' + icon;
         
-        // update points if first unlocked
-        if (localStorage[key] === undefined)
-            ++medalPointsTotal;
-            
-        // set local storage
-        localStorage[key] = medalText;
-            
+        // add or update trophy list
+        const trophyIndex = trophies.findIndex(e=>e[0]==key)
+        trophyIndex < 0 ? 
+            trophies.push( [key, message] ) :
+            trophies[trophyIndex] = [key, message];
+
+        // save local storage
+        localStorage['OS13kTrophy,' + key] = message;
+        localStorage.OS13kTrophies = JSON.stringify(trophies);
+        
+        // use game as name if there is no name
+        name || (name = game, game = '');
+        
+        // use only first icon character and set default
+        icon = (icon.length ? [...icon][0] : '🏆')
+
         // show popup
-        medalPopups.push({gameName, medalName, medalIcon, medalText});
+        const trophyElement = document.createElement('div');
+        trophyElement.className = 'trophyPopup';
+        trophyElement.innerHTML = 
+            '<div class=flexCenter>' +                      // center
+                '<div style="font-size:50;padding:9;text-shadow:3px 3px 8px #000">' + 
+                    icon+                                   // icon
+                '</div>' +
+                '<div style=width:100%;overflow:hidden>' +  // info
+                    '<b>' + name + '</b><br>' +             // name
+                    '<i>' + game + '</i>' +                 // game
+                '</div>' +
+            '</div>' +
+            '<div style=font-size:20;padding:8>' + message; // message
+            
+        trophyElement.style.top = innerHeight;
+        trophyPopups.appendChild(trophyElement);
+        
+        // refresh trophy window if it is being displayed
+        trophyIcon && trophyIcon.window && trophyIcon.window.iframeContent.OS13kStart();
     }
+    
+    GetTrophies() { return trophies; } 
     
     PlaySeed(seed, lengthScale=1, volume=1, randomness=.05)
     {
@@ -290,15 +312,21 @@ class _OS13k
     PlaySamples(samples, sampleRate=44100)
     {
         // play raw audio sample data
-        const buffer = this.audioContext.createBuffer(1, samples.length, sampleRate);
-        const source = this.audioContext.createBufferSource();
+        const buffer = audioContext.createBuffer(1, samples.length, sampleRate);
+        const source = audioContext.createBufferSource();
         buffer.getChannelData(0).set(samples);
         source.buffer = buffer;
-        source.connect(this.gain);
+        source.connect(gain);
         source.start();
         return source;
     }
     
+    GetNote(rootNoteFrequency=440, semitoneOffset)
+    {
+        // get frequency of a musical note on a diatonic scale
+        return rootNoteFrequency * 2**(semitoneOffset/12);
+    }
+
     Speak(text) { speechSynthesis.speak(new SpeechSynthesisUtterance(text)); }
     
     CreateShader(canvas, code)
@@ -386,24 +414,25 @@ class _OS13k
     Lerp(p, a, b)          { return a + this.Clamp(p, 0, 1) * (b-a); }
     Random(max=1, min=0)
     {
-        // simple seeded random numbers using sin
-        // you must set the randomSeed before using this!
-        return this.Percent((Math.sin(++this.randomSeed)+1)*1e9%1, min, max);
+        // seeded random numbers - Mersenne Twister
+        this.randomSeed ^= (this.randomSeed||-1) << 13;
+        this.randomSeed ^= this.randomSeed >> 17;
+        this.randomSeed ^= this.randomSeed << 5;
+        return this.Percent(Math.abs(this.randomSeed) % 1e9 / 1e9, min, max);
     }
 }; // _OS13k
 
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Desktop
 
-const medalPointsTotal = 0;
-
 const taskbarHeight = 42, iconHeight = 26, titlebarHeight = 46,
-      startWindowOpenX = 50, startWindowOpenY = 99;
+      startWindowOpenX = 50, startWindowOpenY = 99, trophyPopupTime = 5;
       
 let grabObject, grabOffsetX, grabOffsetY,
     activeWindow, activeIcon, activeTaskbarIcon,
     lastActiveElement, folderIcon, firstIcon, topZ = 0,
-    windowOpenX = startWindowOpenX, windowOpenY = startWindowOpenY;
+    windowOpenX = startWindowOpenX, windowOpenY = startWindowOpenY,
+    trophies = [], trophyIcon;
 
 const Init=()=>
 {
@@ -417,7 +446,15 @@ const Init=()=>
     
     // html hookups to minified functions
     trayVolume.ontouchstart  =
-    trayVolume.onclick       =()=> ToggleMute();
+    trayVolume.onmousedown   =()=> ToggleMute();
+    trayTrophy.ontouchstart  =
+    trayTrophy.onmousedown   =()=> 
+        trophyIcon && (
+        windowOpenX = startWindowOpenX, 
+        windowOpenY = startWindowOpenY,
+        trophyIcon.window ?
+            trophyIcon.window.Close() :
+            trophyIcon.MouseClick());
     buttonFullScreen.onclick =()=> activeWindow.FullScreen();
     buttonShowCode.onclick   =()=> activeWindow.ShowCode();
     buttonReload.onclick     =()=> activeWindow.Reload();
@@ -426,26 +463,32 @@ const Init=()=>
     // open first icon in list
     firstIcon && firstIcon.MouseClick();
     
-    // parse medal list
-    medalList = localStorage.OS13kMedals ? JSON.parse(localStorage.OS13kMedals) : [];
+    // parse trophy list
+    trophies = localStorage.OS13kTrophies ? JSON.parse(localStorage.OS13kTrophies) : [];
 
-    // check for newly unlocked medals
+    // search local storage for new trophies
     for (let i = localStorage.length; i--;)
     {
+        // check if it is a trophy
         const key = localStorage.key(i);
-        const value = localStorage[key];
-        console.log(key + ' ' + value);
-        
         const keyParts = key.split(',');
-        if (keyParts[0] == 'OS13kMedal')
+        if (keyParts.shift() == 'OS13kTrophy')
         {
-            // check if medal has been processed
+            // check if trophy is new
+            const trophyIndex = trophies.findIndex(e => e[0] == keyParts.join());
+            
+            // show trophy if new or different
+            const trophyData = localStorage[key];
+            if (trophyIndex < 0 || trophies[trophyIndex][1] != trophyData)
+                OS13k.Trophy(...keyParts, trophyData);
         }
     }
 }
 
 const Update=()=>
 {
+    requestAnimationFrame(Update);
+
     // listen for iframe becomming new active element
     const activeElement = document.activeElement;
     if (lastActiveElement != activeElement)
@@ -455,12 +498,36 @@ const Update=()=>
         lastActiveElement = activeElement;
     }
     
-    trayMedals.innerHTML = medalPointsTotal
+    // update trophy popups
+    let offsetHeight = 0;
+    let waitToFade = 0;
+    const popups = [...trophyPopups.children];
+    for(const popup of popups)
+    {
+        let y = parseInt(popup.style.top) + offsetHeight - 8;
+        if (y < taskbarHeight)
+        {
+            if (!waitToFade && !(popup.style.opacity = (popup.style.opacity || trophyPopupTime) - .01))
+            {
+                // remove when invisible and adjust for height
+                const rect = popup.getBoundingClientRect();
+                offsetHeight += rect.height;
+                trophyPopups.removeChild(popup);
+            }
+            waitToFade = y = taskbarHeight;
+        }
+            
+        popup.style.top = y;
+    }
+    
+    // set trophy count
+    trayTrophy.innerHTML = trophies.length + '🏆';
     
     // set time
     const date = new Date();
     trayTime.innerHTML = date.getHours()%12 + 
         (date.getMinutes()<=9?':0':':') + date.getMinutes();
+    trayTime.title = date;
 }
 
 const CloseFolders=()=>
@@ -502,8 +569,8 @@ const FocusTopWindow=()=>
 
 const ToggleMute=(force)=>
 {
-    OS13k.gain.gain.value = force || !OS13k.gain.gain.value ? .3 : 0;
-    trayVolume.innerHTML = '&nbsp;' + (OS13k.gain.gain.value ? '🔊' : '🔇') + '&nbsp;';
+    gain.gain.value = force || !gain.gain.value ? .3 : 0;
+    trayVolume.innerHTML = '&nbsp;' + (gain.gain.value ? '🔊' : '🔇') + '&nbsp;';
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -517,7 +584,7 @@ class OS13kTaskbarIcon extends HTMLElement
         
         // create icon
         this.className = 'taskbarIcon';
-        this.innerHTML = '<span style=pointer-events:none>' + icon.icon;
+        this.innerHTML = '<div style=pointer-events:none>' + icon.icon;
         this.element = element;
         this.title = icon.name +
             (icon.isDweet ? ' - Dweet' : icon.isShader ? ' - Shader' : '') +
@@ -634,11 +701,14 @@ class OS13kIcon extends HTMLElement
             
         // set html
         this.innerHTML = 
-            '<span style=pointer-events:none;display:flex;width:100%>&nbsp;' +
-            '<span style="width:28;text-shadow:1px 1px 2px #000;text-align:center">' + 
-            icon + '</span>&nbsp;<span style=flex:1>' +
-            name + '</span><span style=width:20;text-align:right>' +
+            '<div style=pointer-events:none;display:flex;width:100%>&nbsp;' +
+            '<div style="width:28;text-shadow:1px 1px 2px #000;text-align:center">' + 
+            icon + '</div>&nbsp;<div style=flex:1>' +
+            name + '</div><div style=width:20;text-align:right>' +
             (folder? '▶' : '');
+            
+        // save trophy icon
+        src == 'trophies.html' && (trophyIcon = this);
     }
     
     MouseMove()
@@ -702,7 +772,7 @@ class OS13kWindow extends HTMLElement
         this.shadowRoot.appendChild(titlebar);
         
         // create title bar name
-        const titlebarName = document.createElement('div');
+        const titlebarName = this.titlebarName = document.createElement('div');
         titlebarName.id = 'name';
         titlebarName.innerHTML = 
             '<div style=pointer-events:none>' +
@@ -830,14 +900,14 @@ class OS13kWindow extends HTMLElement
         this.Focus();
     }
     
-    MouseClick(e)
+    MouseClick(target)
     {
         // check for title bar buttons
-        e.id == 'full'        && this.FullScreen();
-        e.id == 'code'        && this.ShowCode();
-        e.id == 'reload'      && this.Reload();
-        e.id == 'close'       && this.Close();
-        e.id != 'codeDisplay' && this.Focus();
+        target.id == 'full'        && this.FullScreen();
+        target.id == 'code'        && this.ShowCode();
+        target.id == 'reload'      && this.Reload();
+        target.id == 'close'       && this.Close();
+        target.id != 'codeDisplay' && this.Focus();
     }
     
     Focus(fromTaskbar)
@@ -956,8 +1026,8 @@ onmousedown=e=>
     if (grabObject)
     {
         // set grabbing mode
-        document.body.style.cursor = 'grabbing';
-        desktop.style.pointerEvents = 'none';
+        document.body.style.cursor = grabObject.titlebarName.style.cursor = 'grabbing';
+        grabObject.frameWrapper.style.pointerEvents = 'none';
         
         // save grab offset
         const rect = e.target.getBoundingClientRect();
@@ -985,7 +1055,12 @@ onmousemove=e=>
 onclick=e=>
 {
     // allow pointer events and reset cursor
-    document.body.style.cursor = desktop.style.pointerEvents = '';
+    document.body.style.cursor = '';
+    if (grabObject)
+    {
+        grabObject.titlebarName.style.cursor = 'grab';
+        grabObject.frameWrapper.style.pointerEvents = '';
+    }
         
     // release grab object
     grabObject = 0;
@@ -1035,28 +1110,37 @@ oncontextmenu=e=>
     return false;
 }
 
+ondblclick=e=>
+{
+    // go fullscreen if titlebar name or icon is double clicked
+    const originalTarget = e.originalTarget || e.path[0];
+    const target = e.target.element || e.target;
+    if ((originalTarget.id == 'name') || e.target.element)
+        target.FullScreen && target.FullScreen();
+}
+
 /////////////////////////////////////////////////////////////////////////////
 // ZzFXMicro - Zuper Zmall Zound Zynth 
 
-const zzfx =     // play zzfx sound
+// init web audio
+const audioContext = new (AudioContext || webkitAudioContext);
+audioContext.Z = audioContext.createBufferSource;
+audioContext.createBufferSource = (s = audioContext.Z())=>
 (
-    volume        = 1, 
-    randomness    = .05,
-    frequency     = 220,
-    attack        = 0,
-    sustain       = 0,
-    release       = .1,
-    shape         = 0,
-    shapeCurve    = 1,
-    slide         = 0, 
-    deltaSlide    = 0, 
-    pitchJump     = 0, 
-    pitchJumpTime = 0, 
-    repeatTime    = 0, 
-    noise         = 0,
-    modulation    = 0,
-    bitCrush      = 0,
-    delay         = 0,
+    s.start = s.start || s.noteOn,
+    s.stop  = s.stop  || s.noteOff,
+    s
+);
+
+// setup gain node
+const gain = audioContext.createGain();
+gain.connect(audioContext.destination);
+
+// play zzfx sound
+const zzfx =
+(
+    // parameters
+    volume=1, randomness=.05, frequency=220, attack=0, sustain=0, release=.1, shape=0, shapeCurve=1, slide=0, deltaSlide=0, pitchJump=0, pitchJumpTime=0, repeatTime=0, noise=0, modulation=0, bitCrush=0, delay=0,
 
     // locals
     PI2 = Math.PI*2,
@@ -1139,7 +1223,7 @@ const zzfx =     // play zzfx sound
 
 const OS13k = new _OS13k;
 Init();
-setInterval(Update, 16);
+Update();
 
 /////////////////////////////////////////////////////////////////////////////////////
 // Touch Input (optional)

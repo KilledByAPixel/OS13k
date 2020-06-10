@@ -1,12 +1,13 @@
 const programs = 
 [
 {name:'Close All', icon:'❌',},
-{name:'Help', icon:'<span style=color:#0f0>?</span>', src:'help.html?11', width:380, height:380},
-{name:'More Info', icon:'👨‍💻', src:'info.html?8'},
+{name:'Help', icon:'<span style=color:#0f0>?</span>', src:'help.html?12', width:380, height:380},
+{name:'More Info', icon:'👨‍💻', src:'info.html?9'},
+{name:'Trophy Case', icon:'🏆', src:'trophies.html'},
 {name:'System', icon:'⚙️', folder:
 [
     {name:'Shell', icon:'<span style=color:#0f0;background:#000>&nbsp;>&nbsp;</span>', src:'system/shell.html?1', reload:1},
-    {name:'Test', icon:'😄', src:'system/test.html?6', reload:1, code:1},
+    {name:'Test', icon:'😄', src:'system/test.html?7', reload:1, code:1},
     {name:'Test Folder', icon:'📁', folder:
     [
         {name:'Test2', icon:'✌️', src:'system/test.html?6'},
@@ -25,9 +26,9 @@ const programs =
     {name:'Swatch', icon:'🌈', src:'games/swatch.html', author:'Nicholas Ortenzio', width:320, height:320},
     {name:'Lava Rush', icon:'🌋', author:'Jeremy Burns', src:'games/lavaRush.html?4', width:640, height:400},
     {name:'Sn1ke', icon:'👀', author:'Codegolf Team', src:'games/sn1ke.html', width:450, height:330},
-    {name:'Tetris', icon:'<span style=font-size:10>▀█▀</span>', author:'Veubeke', src:'games/tetris.html', width:340, height:430},
+    {name:'Tetris', icon:'<span style=font-size:10>▀█▀</span>', author:'Veubeke', src:'games/tetris.html', width:340, height:430, reload:1},
     {name:`Queen's Gambit`, icon:'<span style=color:#f0f>♛</span>', src:'games/queensGambit.html?4', reload:1},
-    {name:'Free Cell', icon:'♠️', src:'games/freeCell.html', width:800, height:1e3},
+    {name:'Free Cell', icon:'♠️', src:'games/freeCell.html', width:800, height:900},
     {name:'Digit Dilemma', icon:'<span style=font-family:monospace>☻</span>', src:'games/digitDilemma.html?2'},
     {name:'Hue Jumper', icon:'🌲', src:'games/hueJumper.html', reload:1},
 ]},

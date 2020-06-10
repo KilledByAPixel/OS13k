@@ -11,13 +11,13 @@
 <li class="has-line-data" data-line-start="9" data-line-end="10">You can start with an old project but polish it up a lot, minify it and make it work with OS13k</li>
 <li class="has-line-data" data-line-start="10" data-line-end="11">We will need to curate the best and perhaps smallest content for what actualy lands in the JS13k build</li>
 <li class="has-line-data" data-line-start="11" data-line-end="12">Anything left out of the JS13k build will still be available in the full GitHub version</li>
-<li class="has-line-data" data-line-start="12" data-line-end="13">Another big part of this is the medal system that ANY JS13k game (even non-OS13k) can opt into</li>
+<li class="has-line-data" data-line-start="12" data-line-end="13">Another big part of this is the trophy system that ANY JS13k game (even non-OS13k) can opt into</li>
 <li class="has-line-data" data-line-start="13" data-line-end="14">It is still very early in development so all the apps are placeholders to be swapped out later</li>
 <li class="has-line-data" data-line-start="14" data-line-end="15">We make this repo public on day 1 of Js13k and open source everything, I haven’t decided on license</li>
 <li class="has-line-data" data-line-start="15" data-line-end="17">I will submit a much reduced version on day 1 for people to test their games achevements on</li>
 </ul>
-<p class="has-line-data" data-line-start="17" data-line-end="19">You can learn more about JS13k here, I won 2nd place last year!
-<a target=_blank href="https://js13kgames.com/">https://js13kgames.com/</a></p>
+<p class="has-line-data" data-line-start="17" data-line-end="19">You can learn more about JS13k here, I won 2nd place last year!<br>
+<a href="https://js13kgames.com/">https://js13kgames.com/</a></p>
 <h2 class="code-line" data-line-start=20 data-line-end=21 ><a id="Programming_Info_20"></a>Programming Info</h2>
 <ul>
 <li class="has-line-data" data-line-start="21" data-line-end="22">OS13k stores it’s list of programs in programs.js</li>
@@ -64,7 +64,7 @@
 <li class="has-line-data" data-line-start="58" data-line-end="59">To acces OS13k features, use the OS13k object</li>
 <li class="has-line-data" data-line-start="59" data-line-end="60">OS13k.CreateShader(canvas, shaderCode) - Create a shadertoy compatible webgl shader</li>
 <li class="has-line-data" data-line-start="60" data-line-end="61">OS13k.RenderShader(canvas, shaderProgram, time=0) - Render a shader</li>
-<li class="has-line-data" data-line-start="61" data-line-end="62">OS13k.Medal(gameName, medalName=’’, difficulty=0) - Register a medal for your game as complete</li>
+<li class="has-line-data" data-line-start="61" data-line-end="62">OS13k.Trophy(gameName, trophyName, icon, message) - Register a trophy for your game</li>
 <li class="has-line-data" data-line-start="62" data-line-end="63">OS13k.KeyDirection(key) - Get {x, y} position from a key code for WASD or arrow keys</li>
 <li class="has-line-data" data-line-start="63" data-line-end="64">OS13k.PlaySamples(samples, sampleRate=44100) - Play audio samples</li>
 <li class="has-line-data" data-line-start="64" data-line-end="65">OS13k.PlaySeed(seed, lengthScale=1, volume=1, randomness=.05) - Play a zzfx sound from seed</li>
@@ -73,7 +73,7 @@
 <h3 class="code-line" data-line-start=67 data-line-end=68 ><a id="ZzFX_67"></a>ZzFX</h3>
 <ul>
 <li class="has-line-data" data-line-start="68" data-line-end="69">ZzFX is my super tiny sound synth which is also on GitHub, but don’t let it’s size fool you</li>
-<li class="has-line-data" data-line-start="69" data-line-end="70">Here is the sound desinger for ZzFX with a link to the public repo <a target=_blank href="https://zzfx.3d2k.com/">https://zzfx.3d2k.com/</a></li>
+<li class="has-line-data" data-line-start="69" data-line-end="70">Here is the sound desinger for ZzFX with a link to the public repo <a href="https://zzfx.3d2k.com/">https://zzfx.3d2k.com/</a></li>
 <li class="has-line-data" data-line-start="70" data-line-end="71">ZzFx sounds can played directly by calling zzfx, volume is controlled by the system</li>
 <li class="has-line-data" data-line-start="71" data-line-end="72">A seeded ZzFX sound player is available to save space with much smaller sound calls</li>
 <li class="has-line-data" data-line-start="72" data-line-end="74">Example OS13k.PlaySeed(1006), I will create a tool for looking for sound seeds soon</li>
@@ -94,33 +94,36 @@
 <li class="has-line-data" data-line-start="85" data-line-end="86">reload - Shows the reload page icon to reload your program</li>
 <li class="has-line-data" data-line-start="86" data-line-end="88">code - Option to show the code for your program</li>
 </ul>
-<h3 class="code-line" data-line-start=88 data-line-end=89 ><a id="Medals_not_yet_implemented_88"></a>Medals (not yet implemented)</h3>
+<h3 class="code-line" data-line-start=88 data-line-end=89 ><a id="Trophies_88"></a>Trophies</h3>
 <ul>
-<li class="has-line-data" data-line-start="89" data-line-end="90">Apps can register medals for their games, the os tracks which are unlocked</li>
-<li class="has-line-data" data-line-start="90" data-line-end="91">A function is provided for apps to unlock medals, OS13k.Medal(gameName, medalName=’’, difficulty=0)</li>
-<li class="has-line-data" data-line-start="91" data-line-end="92">Medals will have 3 difficulty levels 0-2 with different point values</li>
-<li class="has-line-data" data-line-start="92" data-line-end="94">Players can view all their medals and total points will be shown on the taskbar</li>
+<li class="has-line-data" data-line-start="89" data-line-end="90">Apps can register trophies for their games, the os tracks which are unlocked</li>
+<li class="has-line-data" data-line-start="90" data-line-end="91">A function is provided for apps to unlock trophies, OS13k.Trophy(gameName, trophyName, icon, message)</li>
+<li class="has-line-data" data-line-start="91" data-line-end="92">The gameName,trophyName,icon together form the unique id for the trophy</li>
+<li class="has-line-data" data-line-start="92" data-line-end="93">When a new trophy is unlocked or message is changed a popup will appear</li>
+<li class="has-line-data" data-line-start="93" data-line-end="94">Total trophy count is shown in the taskbar</li>
+<li class="has-line-data" data-line-start="94" data-line-end="95">The trophy case shows all unlocked trophies</li>
+<li class="has-line-data" data-line-start="95" data-line-end="97">Trophies can be tested with the System/Test tool</li>
 </ul>
-<h3 class="code-line" data-line-start=94 data-line-end=95 ><a id="Any_JS13k_game_can_use_medals_even_if_not_part_of_OS13k_94"></a>Any JS13k game can use medals, even if not part of OS13k!</h3>
+<h3 class="code-line" data-line-start=97 data-line-end=98 ><a id="Any_JS13k_game_can_use_trophies_even_if_not_part_of_OS13k_97"></a>Any JS13k game can use trophies, even if not part of OS13k!</h3>
 <ul>
-<li class="has-line-data" data-line-start="95" data-line-end="96">To add a medal to any JS13k game, just save a special key to localStorage</li>
-<li class="has-line-data" data-line-start="96" data-line-end="97">The simplest way to add a single medal is save localStorage.OS13kMedals_GAMENAME=1 when the player wins</li>
-<li class="has-line-data" data-line-start="97" data-line-end="98">For more control use localStorage.OS13kMedals_GAMENAME = [{“medalName”:name,“difficulty”:difficultyl}…]</li>
-<li class="has-line-data" data-line-start="98" data-line-end="99">Both medal name and difficulty are optional</li>
-<li class="has-line-data" data-line-start="99" data-line-end="100">When OS13k is next run, it will search locaStorage and display medals unlocked by other games</li>
-<li class="has-line-data" data-line-start="100" data-line-end="102">This is possible because all JS13k games share the same local storage! Pretty cool right?</li>
+<li class="has-line-data" data-line-start="98" data-line-end="99">To add a trophies to any JS13k game, just save a special key to localStorage</li>
+<li class="has-line-data" data-line-start="99" data-line-end="100">The simplest way to add a single trophies is save localStorage[“OS13kTrophy,GameName”]=&quot;&quot;</li>
+<li class="has-line-data" data-line-start="100" data-line-end="101">For more control use localStorage[“OS13kTrophy,GameName,TrophyName,Icon”] = “Message”</li>
+<li class="has-line-data" data-line-start="101" data-line-end="102">You can change the message to update the trophy, like if it is a highscore</li>
+<li class="has-line-data" data-line-start="102" data-line-end="103">When OS13k is next run, it will search locaStorage and display popups for new trophies</li>
+<li class="has-line-data" data-line-start="103" data-line-end="105">This is possible because all JS13k games share the same local storage! Pretty cool right?</li>
 </ul>
-<h3 class="code-line" data-line-start=102 data-line-end=103 ><a id="Resources_102"></a>Resources</h3>
+<h3 class="code-line" data-line-start=105 data-line-end=106 ><a id="Resources_105"></a>Resources</h3>
 <ul>
-<li class="has-line-data" data-line-start="103" data-line-end="104"><a target=_blank href="https://www.dwitter.net/">Dwitter</a> - The source of so much amazing tiny code</li>
-<li class="has-line-data" data-line-start="104" data-line-end="105"><a target=_blank href="http://dweetabase.3d2k.com/">The Dweetabase</a>, and offline searable database of every dweet</li>
-<li class="has-line-data" data-line-start="105" data-line-end="106"><a target=_blank href="https://www.shadertoy.com/">Shadertoy</a> - There are many amazing tweet and 2 tweet sized shaders</li>
-<li class="has-line-data" data-line-start="106" data-line-end="107"><a target=_blank href="https://js1k.com/">JS1k</a> - I imagine with so much shared code and zip we could fit many of these size</li>
-<li class="has-line-data" data-line-start="107" data-line-end="109"><a target=_blank href="https://js13kgames.com/">JS13k</a> - This is our goal</li>
+<li class="has-line-data" data-line-start="106" data-line-end="107"><a href="https://www.dwitter.net/">Dwitter</a> - The source of so much amazing tiny code</li>
+<li class="has-line-data" data-line-start="107" data-line-end="108"><a href="http://dweetabase.3d2k.com/">The Dweetabase</a>, and offline searable database of every dweet</li>
+<li class="has-line-data" data-line-start="108" data-line-end="109"><a href="https://www.shadertoy.com/">Shadertoy</a> - There are many amazing tweet and 2 tweet sized shaders</li>
+<li class="has-line-data" data-line-start="109" data-line-end="110"><a href="https://js1k.com/">JS1k</a> - I imagine with so much shared code and zip we could fit many of these size</li>
+<li class="has-line-data" data-line-start="110" data-line-end="112"><a href="https://js13kgames.com/">JS13k</a> - This is our goal</li>
 </ul>
-<h3 class="code-line" data-line-start=109 data-line-end=110 ><a id="Potential_Features_109"></a>Potential Features</h3>
+<h3 class="code-line" data-line-start=112 data-line-end=113 ><a id="Potential_Features_112"></a>Potential Features</h3>
 <ul>
-<li class="has-line-data" data-line-start="110" data-line-end="111">Vertex shader customization (currently it is always a quad)</li>
-<li class="has-line-data" data-line-start="111" data-line-end="112">More Shadertoy paremeters, custom textures</li>
-<li class="has-line-data" data-line-start="112" data-line-end="113">Multi pass Shadertoys</li>
+<li class="has-line-data" data-line-start="113" data-line-end="114">Vertex shader customization (currently it is always a quad)</li>
+<li class="has-line-data" data-line-start="114" data-line-end="115">More Shadertoy paremeters, custom textures</li>
+<li class="has-line-data" data-line-start="115" data-line-end="116">Multi pass Shadertoys</li>
 </ul>
