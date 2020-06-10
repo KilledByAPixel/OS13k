@@ -545,7 +545,7 @@ const FocusTopWindow=()=>
     let topWindow;
     for (const c of desktop.children)
     {
-        c.localName == 'os13k-window' && !c.style.visibility &&
+        c.localName == 'os13k-window' &&
         (!topWindow || topWindow.style.zIndex < c.style.zIndex) &&
             (topWindow = c);
     }
@@ -560,9 +560,11 @@ const ToggleMute=()=>
 
 const ToggleTrophies=()=>
 {
-    trophyIcon && (trophyIcon.window && !trophyIcon.window.style.visibility?
-        FocusTopWindow(trophyIcon.window.style.visibility = 'hidden') :
-        trophyIcon.MouseClick());
+    trophyIcon && 
+        (trophyIcon.window? trophyIcon.window.Close() : 
+        trophyIcon.MouseClick(
+            windowOpenX = startWindowOpenX,
+            windowOpenY = startWindowOpenY));
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -720,9 +722,6 @@ class OS13kIcon extends HTMLElement
 
             // set focus to window
             this.window.Focus(1);
-            
-            // unhide window if it was hidden
-            this.window.style.visibility = '';
         }
         else if (!this.folder)
         {
