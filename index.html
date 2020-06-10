@@ -171,8 +171,8 @@ div svg       { width:100%; pointer-events:none; }
 <div id=taskbar>
 <div id=traySpace style=flex:1></div>
 <div id=tray>&nbsp;
-    <div id=trayTrophy title='View Trophy Case'></div>
-    <div id=trayVolume title='Toggle Mute'></div>
+    <div id=trayTrophy title='Trophy Case' onmousedown=ToggleTrophies() ontouchstart=ToggleTrophies()></div>
+    <div id=trayVolume title='Toggle Mute' onmousedown=ToggleMute() ontouchstart=ToggleMute()>🔊</div>
     <div id=trayTime></div>&nbsp;
 </div>
 </div>
@@ -180,13 +180,13 @@ div svg       { width:100%; pointer-events:none; }
 <div id=programsFolder style=position:absolute></div>
 <div id=title style=position:absolute>OS13k
 <div id=menu>
-<button id=buttonFullScreen>Fullscreen
-<button id=buttonShowCode>Show Code
-<button id=buttonReload>Reload
-<button id=buttonClose>Close
-<script src=programs.js?12></script>
+<button id=buttonFullScreen onclick=activeWindow.FullScreen()>Fullscreen
+<button id=buttonShowCode onclick=activeWindow.ShowCode()>Show Code
+<button id=buttonReload onclick=activeWindow.Reload()>Reload
+<button id=buttonClose onclick=activeWindow.Close()>Close
+<script src=programs.js?13></script>
 <script>
-
+    
 // load test programs if none found
 if (typeof programs == 'undefined')
     programs = [{src:'system/test.html'},{src:'dweets/underwaterCavern.dweet.js'}];
@@ -249,7 +249,7 @@ class _OS13k
         // use only first icon character and set default
         icon = (icon.length ? [...icon][0] : '🏆')
 
-        // show popup
+        // build popup element
         const trophyElement = document.createElement('div');
         trophyElement.className = 'trophyPopup';
         trophyElement.innerHTML = 
@@ -264,6 +264,7 @@ class _OS13k
             '</div>' +
             '<div style=font-size:20;padding:8>' + message; // message
             
+        // add trophy to bottom of screen
         trophyElement.style.top = innerHeight;
         trophyPopups.appendChild(trophyElement);
         
@@ -426,7 +427,8 @@ class _OS13k
 // OS13k Desktop
 
 const taskbarHeight = 42, iconHeight = 26, titlebarHeight = 46,
-      startWindowOpenX = 50, startWindowOpenY = 99, trophyPopupTime = 5;
+      startWindowOpenX = 50, startWindowOpenY = 99, 
+      trophyPopupTime = 5, defaultVolume = .3;
       
 let grabObject, grabOffsetX, grabOffsetY,
     activeWindow, activeIcon, activeTaskbarIcon,
@@ -440,25 +442,6 @@ const Init=()=>
     const taskbarIcon = 
         folderIcon = new OS13kTaskbarIcon( {icon:'📁', name:'Apps'}, 
             new OS13kFolder(programs, 0, 0));
-
-    // init mute buton
-    ToggleMute(1);
-    
-    // html hookups to minified functions
-    trayVolume.ontouchstart  =
-    trayVolume.onmousedown   =()=> ToggleMute();
-    trayTrophy.ontouchstart  =
-    trayTrophy.onmousedown   =()=> 
-        trophyIcon && (
-        windowOpenX = startWindowOpenX, 
-        windowOpenY = startWindowOpenY,
-        trophyIcon.window ?
-            trophyIcon.window.Close() :
-            trophyIcon.MouseClick());
-    buttonFullScreen.onclick =()=> activeWindow.FullScreen();
-    buttonShowCode.onclick   =()=> activeWindow.ShowCode();
-    buttonReload.onclick     =()=> activeWindow.Reload();
-    buttonClose.onclick      =()=> activeWindow.Close();
 
     // open first icon in list
     firstIcon && firstIcon.MouseClick();
@@ -567,10 +550,17 @@ const FocusTopWindow=()=>
     topWindow && topWindow.Focus();
 }
 
-const ToggleMute=(force)=>
+const ToggleMute=()=>
 {
-    gain.gain.value = force || !gain.gain.value ? .3 : 0;
+    gain.gain.value = gain.gain.value ? 0 : defaultVolume;
     trayVolume.innerHTML = '&nbsp;' + (gain.gain.value ? '🔊' : '🔇') + '&nbsp;';
+}
+
+const ToggleTrophies=()=>
+{
+    trophyIcon && (trophyIcon.window && !trophyIcon.window.style.visibility?
+        trophyIcon.window.style.visibility = 'hidden' :
+        trophyIcon.MouseClick());
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -644,7 +634,7 @@ class OS13kFolder extends HTMLElement
     Focus(fromTaskbar)
     {
         // check if it is visible
-        const wasVisible = this.style.visibility == '';
+        const wasVisible = !this.style.visibility;
             
         CloseFolders();
         if (!fromTaskbar || !wasVisible)
@@ -728,6 +718,9 @@ class OS13kIcon extends HTMLElement
 
             // set focus to window
             this.window.Focus(1);
+            
+            // unhide window if it was hidden
+            this.window.style.visibility = '';
         }
         else if (!this.folder)
         {
@@ -929,21 +922,24 @@ class OS13kWindow extends HTMLElement
     
     SetActive(active=1)
     {
-        if (active && activeWindow != this)
+        if (active)
         {
-            // deactivate old window
-            activeWindow && activeWindow.SetActive(0);
-            
-            // move z to top
-            this.style.zIndex = ++topZ;
-            
-            // show menu buttons
-            buttonShowCode.style.display = this.icon.code? '' : 'none';
-            buttonReload.style.display   = this.icon.reload? '' : 'none';
-        }
+            if (activeWindow != this)
+            {
+                // deactivate old window
+                activeWindow && activeWindow.SetActive(0);
+
+                // move z to top
+                this.style.zIndex = ++topZ;
+
+                // show menu buttons
+                buttonShowCode.style.display = this.icon.code? '' : 'none';
+                buttonReload.style.display   = this.icon.reload? '' : 'none';
+            }
         
-        // close folders and menu
-        active && CloseFolders();
+            // close folders and menu
+            CloseFolders();
+        }
             
         // set active
         activeWindow = active && this;
@@ -1135,6 +1131,7 @@ audioContext.createBufferSource = (s = audioContext.Z())=>
 // setup gain node
 const gain = audioContext.createGain();
 gain.connect(audioContext.destination);
+gain.gain.value = defaultVolume;
 
 // play zzfx sound
 const zzfx =
