@@ -531,7 +531,7 @@ const CloseWindows=()=>
 {
     // use copy of children to prevent skipping
     for (const c of [...desktop.children])
-        c.Close && c.Close(finished=0)
+        c.Close && c.Close()
 
     // reset window open position
     windowOpenX = startWindowOpenX;
