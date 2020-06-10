@@ -64,7 +64,7 @@ body
     border:2px solid;
     z-index:10001;
     box-shadow:5px 5px 9px;
-    width:250;
+    width:200;
     padding:8;
     font-size:26;
     text-align:center;
@@ -263,15 +263,14 @@ class _OS13k
         const trophyElement = document.createElement('div');
         trophyElement.className = 'trophyPopup';
         trophyElement.innerHTML = 
-            '<div class=flexCenter>' +                      // center
-                '<div style="font-size:50;padding:9;text-shadow:3px 3px 8px #000">' + 
+            '<div class=flexCenter style=flex-direction:column>' +
+                '<div style="font-size:40;padding:9;text-shadow:2px 2px 4px #000">' + 
                     icon +                                  // icon
                 '</div>' +
                 '<div style=width:100%;overflow:hidden>' +  // info
                     '<b>' + name + '</b><br>' +             // name
                     '<i>' + game + '</i>' +                 // game
                 '</div>' +
-            '</div>' +
             '<div style=font-size:20;padding:8>' + message; // message
             
         // add trophy to bottom of screen
