@@ -190,7 +190,7 @@ div svg       { width:100%; pointer-events:none; }
 <div id=traySpace style=flex:1></div>
 <div id=tray>
     <div id=trayTrophy class=trayIcon title='Trophy Case'></div>
-    <div id=trayVolume class=trayIcon title='Toggle Mute'></div>
+    <div id=trayVolume class=trayIcon title='Toggle Mute'>🔊</div>
     <div id=trayTime class=trayIcon></div>
 </div>
 </div>
@@ -588,6 +588,8 @@ const ToggleMute=()=>
 {
     gain.gain.value = gain.gain.value ? 0 : defaultVolume;
     trayVolume.innerHTML = (gain.gain.value ? '🔊' : '🔇');
+            
+    OS13k.Trophy('OS13k','Shut Up','🔇','Muted');
 }
 
 const ToggleTrophies=()=>
@@ -1213,7 +1215,7 @@ audioContext.createBufferSource = (s = audioContext.Z())=>
 // setup gain node
 const gain = audioContext.createGain();
 gain.connect(audioContext.destination);
-ToggleMute(gain.gain.value = 0);
+gain.gain.value = defaultVolume;
 
 // play zzfx sound
 const zzfx =
