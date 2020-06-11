@@ -202,7 +202,7 @@ div svg       { width:100%; pointer-events:none; }
 <button id=buttonShowCode onclick=activeWindow.ShowCode()>Show Code
 <button id=buttonReload onclick=activeWindow.Reload()>Reload
 <button id=buttonClose onclick=activeWindow.Close()>Close
-<script src=programs.js?35></script>
+<script src=programs.js?36></script>
 <script>
     
 // load test programs if none found
@@ -542,10 +542,10 @@ const Update=()=>
     trayTrophy.innerHTML = trophies.length + ' 🏆';
     
     // set time
-    const date = new Date();
-    trayTime.innerHTML = date.getHours()%12 + 
-        (date.getMinutes()<=9?':0':':') + date.getMinutes();
-    trayTime.title = date;
+    trayTime.title = new Date();
+    const date = trayTime.title.slice(16,24).split(':')
+    trayTime.innerHTML = (date[0]%12?date[0]%12:12) 
+        + (date[1]<=9?':0':':') + date[1];
 }
 
 const CloseFolders=()=>
