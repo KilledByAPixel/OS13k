@@ -68,7 +68,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 - *Apps can play sounds and have trophies too
 
 ### Music
-- We are working on a music system to play tracker songs with ZzFX sound effects [(WIP DEMO)](https://keithclark.co.uk/temp/zzfx-music/build/)
+- We are working on a music system to play tracker songs with ZzFX sound effects [(WIP DEMO)](https://github.com/keithclark/ZzFXM)
 - There will be music generators, synth instruments, and even mini albums
 - The idea is that players can listen to music while playing with games and apps
 - The music tools can even work in conjunction with each other (step sequencer drum kit + piano)
