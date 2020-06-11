@@ -410,6 +410,7 @@ class _OS13k
             '#version 300 es\n' +
             'precision mediump float;' +
             'uniform float iTime;' +
+            'uniform int iFrame;' +
             'uniform vec4 iMouse;' +
             'uniform vec3 iResolution;' +
             'uniform sampler2D iChannel0;' +
@@ -439,7 +440,7 @@ class _OS13k
         return shaderProgram;
     }
     
-    RenderShader(canvas, shaderProgram, time=0)
+    RenderShader(canvas, shaderProgram, time=0, frame=0)
     {
         // get webgl context
         const x = canvas.getContext('webgl2');
@@ -448,6 +449,7 @@ class _OS13k
         const uniformLocation=name=>x.getUniformLocation(shaderProgram, name);
         x.uniform3f(uniformLocation('iResolution'), canvas.width, canvas.height, 1);
         x.uniform1f(uniformLocation('iTime'), time);
+        x.uniform1f(uniformLocation('iFrame'), frame);
         x.uniform1i(uniformLocation('iChannel0'), 0);
         
         // render shader
@@ -963,7 +965,7 @@ class OS13kWindow extends HTMLElement
                 // create shader
                 program.isShader && iframeContent.eval(
                     'g=c.getContext`webgl2`;' +
-                    'x=y=z=w=0;' +
+                    'x=y=z=w=f=0;' +
                     'onmousemove=e=>e.buttons&&(x=e.x,y=c.height-e.y);' +
                     'onmousedown=e=>(x=z=e.x,y=w=c.height-e.y);' +
                     'onmouseup=e=>z=w=0;' +
@@ -972,7 +974,7 @@ class OS13kWindow extends HTMLElement
                         'c.width=innerWidth,' + 
                         'c.height=innerHeight,' + 
                         'g.uniform4f(g.getUniformLocation(s,"iMouse"),x,y,z,w),' +
-                        'OS13k.RenderShader(c,s,t/1e3)));' + 
+                        'OS13k.RenderShader(c,s,t/1e3,f++)));' + 
                     'loop(s=OS13k.CreateShader(c,`' + iframeText + '`))');
             }
 
