@@ -483,8 +483,8 @@ const taskbarHeight = 42, programHeight = 26, titlebarHeight = 46,
       trophyPopupTime = 3, defaultVolume = .3;
       
 let grabWindow, grabOffsetX, grabOffsetY,
-    activeWindow, activeProgram, activeTaskbarIcon,
-    lastActiveElement, loadIcon, firstProgram, topZ = 0,
+    activeWindow, activeProgram, firstProgram, activeTaskbarIcon,
+    lastActiveElement, loadIcon, topZ = 0,
     windowOpenX = startWindowOpenX, windowOpenY = startWindowOpenY,
     trophies = [], trophyProgram, clockProgram;
 
@@ -503,6 +503,10 @@ const Init=()=>
             OS13k.Trophy(...keyParts, localStorage[key], 0);
     }
     
+    // save trophies
+    localStorage.OS13kTrophies = JSON.stringify(trophies);
+    OS13k.Trophy(undefined,'Welcome!','👋');
+    
     // set taskbar functions
     trayTrophy.onmousedown = trayTrophy.ontouchstart =()=> trophyProgram.Toggle();
     trayVolume.onmousedown = trayVolume.ontouchstart = ToggleMute;
@@ -511,15 +515,9 @@ const Init=()=>
     // create the folder taskbar icon and add folders/programs
     loadIcon = new OS13kTaskbarIcon( {icon:'💾', name:'Apps'} );
     loadIcon.window = new OS13kFolder(programs);
-            
-    CloseFolders();
     
-    // save trophies
-    localStorage.OS13kTrophies = JSON.stringify(trophies);
-    OS13k.Trophy(undefined,'Welcome!','👋');
-    
-    // open first program in list
-    firstProgram && firstProgram.MouseClick();
+    // focus on first program
+    firstProgram.MouseClick();
 }
 
 const Update=()=>
@@ -777,7 +775,7 @@ class OS13kProgram extends HTMLElement
             this.MouseClick();
             
         // save first program in list
-        firstProgram || src && (firstProgram = this);  
+        firstProgram || src && (firstProgram=this).MouseClick();
     }
     
     MouseMove()
@@ -919,6 +917,7 @@ class OS13kWindow extends HTMLElement
         iframe.style.visibility = 'hidden';
         iframe.src = program.src;
         frameWrapper.appendChild(iframe);
+        this.Focus();
                 
         // load frame
         iframe.onload=e=>
@@ -953,7 +952,6 @@ class OS13kWindow extends HTMLElement
 
             // show iframe and set focus
             iframe.style.visibility = '';
-            this.Focus();
 
             // check for extensions
             if (iframeDocument && program.hasExtension)
