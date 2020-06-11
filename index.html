@@ -261,10 +261,8 @@ class _OS13k
         // find in trophy list
         const trophyIndex = trophies.findIndex(e=>e[4]==key)
         
-        // skip if no game same message
-        if (!game || trophyIndex >=0 && 
-                (trophies[trophyIndex][2] == icon &&
-                trophies[trophyIndex][3] == message))
+        // skip if no game or same message
+        if (!game || trophyIndex >=0 && trophies[trophyIndex][3] == message)
             return;
         
         // strip html
