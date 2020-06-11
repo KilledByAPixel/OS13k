@@ -214,15 +214,15 @@ div svg       { width:100%; pointer-events:none; }
 <button id=buttonShowCode onclick=activeWindow.ShowCode()>Show Code
 <button id=buttonReload onclick=activeWindow.Reload()>Reload
 <button id=buttonClose onclick=activeWindow.Close()>Close
-<script src=programs.js?57></script>
+<script src=programs.js?59></script>
 <script>
 
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Debug Stuff (remove from minified)
 
 // version check
-if (localStorage.OS13kVersion != 11)
-    localStorage.clear(),localStorage.OS13kVersion = 11;
+if (localStorage.OS13kVersion != 12)
+    localStorage.clear(),localStorage.OS13kVersion = 12;
     
 // load default programs if none found
 if (typeof programs == 'undefined')
@@ -242,7 +242,7 @@ if (typeof programs == 'undefined')
 // @js_externs _OS13k.CreateShader, _OS13k.RenderShader, _OS13k.CreateCanvas
 // @js_externs _OS13k.PlaySamples, _OS13k.PlaySeed, _OS13k.GetNote
 // @js_externs _OS13k.Random, _OS13k.randomSeed 
-// @js_externs _OS13k.Clamp, _OS13k.Percent, _OS13k.Lerp, _OS13k.StripHTML
+// @js_externs _OS13k.Clamp, _OS13k.Percent, _OS13k.Lerp
 // @js_externs iframeContent.OS13k, iframeContent.OS13kStart, iframeContent.zzfx
 // @output_file_name OS13k.min.js
 // ==/ClosureCompiler==
@@ -258,11 +258,12 @@ class _OS13k
         const key = game + ',' + name + ',' + icon;
         const storageKey = 'OS13kTrophy,' + key;
         
-        // strip html
-        icon = this.StripHTML(icon) || '🏆';
-        name = this.StripHTML(name);
-        game = this.StripHTML(game);
-        message = this.StripHTML(message);
+        // remove html tags
+        const RemoveHTML =string=> (string||'').replace('<','');
+        icon = RemoveHTML(icon) || '🏆';
+        name = RemoveHTML(name);
+        game = RemoveHTML(game);
+        message = RemoveHTML(message);
         
         // find in trophy list
         const trophyIndex = trophies.findIndex(e=>e[4]==key)
@@ -461,7 +462,6 @@ class _OS13k
     }
     
     // helper functions
-    StripHTML(string)      { return (string||'').replace(/(<([^>]+)>)/ig,'') }
     Clamp(a, min=0, max=1) { return Math.min(Math.max(a, min),max) }
     Percent(v, a, b)       { return b-a? this.Clamp((v-a)/(b-a), 0, 1) : 0 }
     Lerp(p, a, b)          { return a + this.Clamp(p, 0, 1) * (b-a) }
@@ -712,10 +712,11 @@ class OS13kProgram extends HTMLElement
 		super();
         
         const srcParts = src.split('.');
+        const srcFolders = srcParts[0].split('/');
         
         // set icon defaults
         src = src || '';
-        name = name || srcParts[0];
+        name = name || srcFolders[Math.max(0,srcFolders.length-1)].replace(/([a-z](?=[A-Z]))/g, '$1 ');
         icon = icon || '💠';
         
         // check for special extensions
@@ -765,10 +766,10 @@ class OS13kProgram extends HTMLElement
         }
         
         // save trophy program
-        src.substr(0,15) == 'system/trophies' && (trophyProgram = this);
+        name == 'Trophy Case' && (trophyProgram = this);
         
         // save clock program
-        src.substr(0,12) == 'system/clock' && (clockProgram = this);
+        name == 'Clock' && (clockProgram = this);
 
         // check for sticky
         if (sticky && this.LoadInfo().open)
@@ -917,7 +918,6 @@ class OS13kWindow extends HTMLElement
         iframe.style.visibility = 'hidden';
         iframe.src = program.src;
         frameWrapper.appendChild(iframe);
-        this.Focus();
                 
         // load frame
         iframe.onload=e=>
@@ -996,6 +996,9 @@ class OS13kWindow extends HTMLElement
                         'OS13k.RenderShader(c,s,t/1e3,f++)));' + 
                     'loop(s=OS13k.CreateShader(c,`' + iframeText + '`))');
             }
+            
+            // focus on iframe
+            this.Focus();
         }
     }
     
