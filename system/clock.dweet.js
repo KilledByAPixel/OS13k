@@ -1,4 +1,5 @@
-c.width|=c.style.filter='sepia()invert('
+c.width=c.height=200
+c.style.filter='sepia()invert('
 x.translate(99,99)
 z=Math.PI*3
 x.arc(0,0,90,-z/360,7)
