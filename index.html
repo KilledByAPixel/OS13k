@@ -202,12 +202,12 @@ div svg       { width:100%; pointer-events:none; }
 <button id=buttonShowCode onclick=activeWindow.ShowCode()>Show Code
 <button id=buttonReload onclick=activeWindow.Reload()>Reload
 <button id=buttonClose onclick=activeWindow.Close()>Close
-<script src=programs.js?37></script>
+<script src=programs.js?38></script>
 <script>
     
 // load test programs if none found
 if (typeof programs == 'undefined')
-    programs = [{src:'system/test.html'},{src:'dweets/underwaterCavern.dweet.js'}];
+    programs = [{src:'system/test.html'},{src:'system/trophies.html'},{src:'system/clock.dweet.js',width:200,height:200,sleep:0}];
 
 'use strict';
 
@@ -719,7 +719,7 @@ class OS13kProgram extends HTMLElement
         // set icon defaults
         src = src || '';
         name = name || src.split('.')[0];
-        icon = icon || (name[0] ? name[0].toUpperCase() : '' );     
+        icon = icon || '💠';     
         
         // check for special extensions
         const extension = src? src.split('.')[1] : '';
