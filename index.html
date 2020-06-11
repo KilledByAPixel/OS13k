@@ -766,10 +766,11 @@ class OS13kProgram extends HTMLElement
         this.reload = reload || (this.hasExtension && reload === undefined);
         this.code = code || (this.hasExtension && code === undefined);
         
-        // set title
-        this.title = name +
-            ( this.isDweet ? ' - Dweet' :  this.isShader ? ' - Shader' : '') +
-            (author ? '\nBy ' + author : '');
+        // set title if not a folder
+        if (!folder)
+            this.title = name +
+                ( this.isDweet ? ' - Dweet' :  this.isShader ? ' - Shader' : '') +
+                (author ? '\nBy ' + author : '');
             
         // icon
         const iconDisplay = document.createElement('div');
