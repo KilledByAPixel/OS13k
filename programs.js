@@ -8,10 +8,10 @@ const programs =
     {name:'Trophy Case', icon:'🏆', src:'system/trophies.html?8'},
     {name:'Clock', icon:'🕰️', src:'system/clock.dweet.js?6', width:200, height:200, reload:0, sleep:0, full:0},
     {name:'Shell', icon:'<span style=color:#0f0;background:#000>&nbsp;>&nbsp;', src:'system/shell.html?1', reload:1},
-    {name:'Test', src:'system/test.html?10', reload:1, code:1, width:600, height:400},
+    {name:'Test', src:'system/test.html?11', reload:1, code:1, width:600, height:400},
     {name:'Test Folder', icon:'📁', folder:
     [
-        {name:'Hello!', icon:'✌️😄', src:'system/test.html?6', width:600, height:400},
+        {name:'Hello!', icon:'✌️😄', src:'system/test.html?11', width:600, height:400},
     ]},
 ]},
 {name:'Tools', icon:'🔧', folder:
