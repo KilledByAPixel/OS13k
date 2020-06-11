@@ -569,7 +569,7 @@ const Update=timeStamp=>
     loading || (desktop.style.opacity = timeStamp/1e3);
 }
 
-const CloseFolders=()=>
+const CloseMenus=()=>
 {
     // hide all drop down folders
     for (const c of programsFolder.children)
@@ -683,18 +683,19 @@ class OS13kFolder extends HTMLElement
     {
         // check if it is visible
         const wasVisible = !this.style.visibility;
-            
-        CloseFolders();
-        if (!fromTaskbar || !wasVisible)
+        CloseMenus();
+        
+        // set visibility
+        if (fromTaskbar && wasVisible)
+            activeWindow && activeWindow.Focus();
+        else
         { 
-            // make visible
             this.parentFolder && this.parentFolder.Focus();
             this.style.visibility = '';
         }
-        else
-            activeWindow && activeWindow.Focus();
         
-        if (fromTaskbar && this.parentNode == programsFolder)
+        // reset position if programs folder
+        if (this.parentNode == programsFolder)
         {
             programsFolder.style.left = 0;
             programsFolder.style.top = taskbarHeight;
@@ -814,7 +815,7 @@ class OS13kProgram extends HTMLElement
         else if (!this.folder)
         {
             // close all
-            CloseFolders();
+            CloseMenus();
             CloseWindows();
         }
         
@@ -1040,8 +1041,9 @@ class OS13kWindow extends HTMLElement
     
     Focus(clampToWindow)
     {
+        CloseMenus();
+        
         // set focus
-        CloseFolders();
         this.iframeContent && this.iframeContent.focus();
         this.SetActive();
         
@@ -1059,6 +1061,7 @@ class OS13kWindow extends HTMLElement
     {
         if (active)
         {
+            CloseMenus();
             if (activeWindow != this)
             {
                 // deactivate old window
@@ -1071,9 +1074,6 @@ class OS13kWindow extends HTMLElement
                 buttonShowCode.style.display = this.program.code? '' : 'none';
                 buttonReload.style.display   = this.program.reload? '' : 'none';
             }
-        
-            // close folders and menu
-            CloseFolders();
         }
             
         // set active
@@ -1149,9 +1149,9 @@ onmousedown=e=>
     // hide menu if not clicked on
     e.target.offsetParent.id != 'menu' && (menu.style.visibility = '');
         
-    // hide folders if not clicked on
+    // hide menus if not clicked on
     e.target.offsetParent.className != 'folder' && e.target != loadIcon &&
-        CloseFolders();
+        CloseMenus();
 
     // only look for left mouse button
     if (e.button)
