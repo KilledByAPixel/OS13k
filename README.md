@@ -38,7 +38,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 - {name:'Yin Yangs', icon:'☯️', src:'toys/infiniteYinYangs.shader.txt'}
 - {src:'help.html'}
 
-### Programming
+### Programs
 - OS13k can open any html file with javascript and it will work the same as if opened directly
 - Chrome is recommended for development, but Firefox is also supported.
 - Firefox does not work in local mode because it treats local files as cross-origin
@@ -62,17 +62,18 @@ Add an icon config to programs.js to register your program, and send me pull req
 - Dweets can do anything that other programs can do including access OS13k and zzfx
 - Shadertoy shaders support iTime, iMouse, iResolution, and iChannel0
 - iChannel0 is a loop back image of the previous frame, this can be used to store game logic or make effects
+- Keep in mind that the entry for JS13k will be zipped, so repeating your code is better then a full golf
 
 ### System Calls
 - The function OS13kStart() is called on child frames when opened
 - To acces OS13k features, use the OS13k object
 - OS13k.CreateShader(canvas, shaderCode) - Create a shadertoy compatible webgl shader
 - OS13k.RenderShader(canvas, shaderProgram, time=0) - Render a shader
-- OS13k.Trophy(gameName, trophyName, icon, message) - Register a trophy for your game
 - OS13k.KeyDirection(key) - Get {x, y} position from a key code for WASD or arrow keys
 - OS13k.PlaySamples(samples, sampleRate=44100) - Play audio samples
 - OS13k.PlaySeed(seed, lengthScale=1, volume=1, randomness=.05) - Play a zzfx sound from seed
 - OS13k.Speak(text) - Play speech of the text
+- OS13k.StripHTML(string) - Removes html tags
 
 ### ZzFX
 - ZzFX is my super tiny sound synth which is also on GitHub, but don't let it's size fool you
@@ -80,6 +81,9 @@ Add an icon config to programs.js to register your program, and send me pull req
 - ZzFx sounds can played directly by calling zzfx, volume is controlled by the system
 - A seeded ZzFX sound player is available to save space with much smaller sound calls
 - Example OS13k.PlaySeed(1006), I will create a tool for looking for sound seeds soon
+
+### Music
+- Comming Soon!
 
 ### Math Library
 - OS13k.Random(max=1, min=0) - Get a seeded random value, OS13k.randomSeed to set the seed
@@ -94,14 +98,16 @@ Add an icon config to programs.js to register your program, and send me pull req
 - multiple - Allows multiple copies of the window to open
 - reload - Shows the reload page icon to reload your program
 - code - Option to show the code for your program
+- full - Set to 0 to disable fullscreen
+- sleep - Set to 0 to disable sleeping
  
  ### Trophies
  - Apps can register trophies for their games, the os tracks which are unlocked
  - A function is provided for apps to unlock trophies, OS13k.Trophy(gameName, trophyName, icon, message)
+ - Only gameName is necessary, the rest are optional
  - The gameName,trophyName,icon together form the unique id for the trophy
  - When a new trophy is unlocked or message is changed a popup will appear
- - Total trophy count is shown in the taskbar
- - The trophy case shows all unlocked trophies
+ - Total trophy count is shown in the taskbar and the trophy case shows all unlocked trophies
  - Trophies can be tested with the System/Test tool
  
  ### Any JS13k game can use trophies, even if not part of OS13k!
