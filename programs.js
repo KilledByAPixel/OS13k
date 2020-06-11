@@ -6,7 +6,7 @@ const programs =
 {name:'System', icon:'⚙️', folder:
 [
     {name:'Trophy Case', icon:'🏆', src:'system/trophies.html?3'},
-    {name:'Clock', icon:'🕰️', src:'system/clock.dweet.js', width:200, height:200, reload:0, code:0, sleep:0, full:0},
+    {name:'Clock', icon:'🕰️', src:'system/clock.dweet.js?1', width:200, height:200, reload:0, code:0, sleep:0, full:0},
     {name:'Shell', icon:'<span style=color:#0f0;background:#000>&nbsp;>&nbsp;', src:'system/shell.html?1', reload:1},
     {name:'Test', icon:'😄', src:'system/test.html?10', reload:1, code:1},
     {name:'Test Folder', icon:'📁', folder:
@@ -23,7 +23,7 @@ const programs =
     {name:'Unicode Toys', icon:'𝖀', author:'Xem', src:'tools/unicodeToys.html', width:500, height:800},
     {name:'Mini Shadertoy', icon:'𝓢', src:'tools/miniShadertoy.html', width:340, height:400},
     {name:'Text Editor', icon:'📝', src:'tools/textEditor.html'},
-    {name:'Sticky Note', icon:'🟨', src:'tools/stickyNote.html?1', width:300, height:264, full:0},
+    {name:'Sticky Note', icon:'🟨', src:'tools/stickyNote.html?2', width:300, height:264, full:0},
 ]},
 {name:'Games', icon:'🎮', folder:
 [
