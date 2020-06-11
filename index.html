@@ -499,7 +499,7 @@ class _OS13k
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Desktop
 
-const taskbarHeight = 42, programHeight = 26, titlebarHeight = 46,
+const taskbarHeight = 42, programHeight = 26, titlebarHeight = 50,
       startWindowOpenX = 9, startWindowOpenY = 51, 
       trophyPopupTime = 3, defaultVolume = .3;
       
@@ -933,7 +933,7 @@ class OS13kWindow extends HTMLElement
         
         // create thin line below title bar
         const titlebarGap = document.createElement('div');
-        titlebarGap.style='height:2';
+        titlebarGap.style='height:3';
         this.shadowRoot.appendChild(titlebarGap);
 
         // create content wrapper
