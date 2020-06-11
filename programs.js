@@ -23,7 +23,7 @@ const programs =
     {name:'Unicode Toys', icon:'𝖀', author:'Xem', src:'tools/unicodeToys.html', width:500, height:800},
     {name:'Mini Shadertoy', icon:'𝓢', src:'tools/miniShadertoy.html', width:340, height:400},
     {name:'Text Editor', icon:'📝', src:'tools/textEditor.html'},
-    {name:'Sticky Note', icon:'🟨', src:'tools/stickyNote.html', width:300, height:300, full:0},
+    {name:'Sticky Note', icon:'🟨', src:'tools/stickyNote.html?1', width:300, height:264, full:0},
 ]},
 {name:'Games', icon:'🎮', folder:
 [
