@@ -1093,8 +1093,11 @@ class OS13kWindow extends HTMLElement
     
     FullScreen()
     {
-        // set fullscreen
         this.Focus();
+        if (!this.program.full)
+            return;
+        
+        // set full screen
         const fullScreenElement = this.frameWrapper;
         if (fullScreenElement.webkitRequestFullScreen)
             fullScreenElement.webkitRequestFullScreen();
