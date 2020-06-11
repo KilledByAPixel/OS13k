@@ -24,12 +24,12 @@ const programs =
     {src:'tools/textEditor.html', icon:'📝'},
     {src:'https://zzfx.3d2k.com', name:'ZzFX', icon:'<b>ℤℤ', width:1280, height:880},
     {src:'https://capjs.3d2k.com', name:'CapJS', icon:'𝓒𝓪𝓹', width:1280, height:750},
-    {src:'https://dweetview.3d2k.com', name:'Dweet View', icon:'<span style=color:#f00;background:#000><b>&nbsp;III&nbsp;'}
+    {src:'https://dweetview.3d2k.com', name:'Dweet View', icon:'<span style=color:#f00;background:#000><b>&nbsp;III&nbsp;'},
 ]},
 {name:'Games', icon:'🎮', folder:
 [
     {src:'https://bounceback.3d2k.com', name:'Bounce Back', icon:'❤️', author:'Frank Force'},
-    {src:'games/swatch.html?1', icon:'🌈', author:'Nicholas Ortenzio', width:320, height:340},
+    {src:'games/swatch.html?2', icon:'🌈', author:'Nicholas Ortenzio', width:320, height:340},
     {src:'games/lavaRush.html?4', icon:'🌋', author:'Jeremy Burns', width:640, height:400},
     {src:'games/sn1ke.html', icon:'👀', author:'Codegolf Team', width:450, height:330},
     {src:'games/tetris.html', icon:'<span style=font-size:10>▀█▀', author:'Veubeke', width:340, height:430, reload:1},
@@ -57,5 +57,6 @@ const programs =
     {src:'dweets/trainSet.dweet.js', icon:'🚂', author:'jylikangas'},
     {src:'dweets/automaticBreakout.dweet.js', icon:'●'},
     {src:'dweets/bogusRoads.dweet.js', icon:'🛣️'},
+    {src:'dweets/colorZoom.dweet.js', icon:'❤', author:'Cantelope'},
 ]},
 ];
