@@ -215,7 +215,7 @@ div svg       { width:100%; pointer-events:none; }
 <button id=buttonShowCode onclick=activeWindow.ShowCode()>Show Code
 <button id=buttonReload onclick=activeWindow.Reload()>Reload
 <button id=buttonClose onclick=activeWindow.Close()>Close
-<script src=programs.js?62></script>
+<script src=programs.js?63></script>
 <script>
 
 /////////////////////////////////////////////////////////////////////////////
@@ -483,7 +483,7 @@ const taskbarHeight = 42, programHeight = 26, titlebarHeight = 46,
       startWindowOpenX = 9, startWindowOpenY = 51, 
       trophyPopupTime = 3, defaultVolume = .3;
       
-let grabWindow, grabOffsetX, grabOffsetY,
+let grabWindow, grabOffsetX, grabOffsetY, finishedStartup,
     activeWindow, activeProgram, firstProgram, activeTaskbarIcon,
     lastActiveElement, loadIcon, topZ = 0, loading = 0,
     windowOpenX = startWindowOpenX, windowOpenY = startWindowOpenY,
@@ -516,9 +516,6 @@ const Init=()=>
     // create the folder taskbar icon and add folders/programs
     loadIcon = new OS13kTaskbarIcon( {icon:'💾', name:'Apps'} );
     loadIcon.window = new OS13kFolder(programs);
-    
-    // focus on first program
-    firstProgram.MouseClick();
 }
 
 const Update=timeStamp=>
@@ -925,7 +922,7 @@ class OS13kWindow extends HTMLElement
         // create iframe
         const iframe = this.iframe = document.createElement('iframe'); 
         iframe.id = 'frame';
-        iframe.style.visibility = 'hidden';
+        this.style.visibility = 'hidden';
         iframe.src = program.src;
         frameWrapper.appendChild(iframe);
         
@@ -962,9 +959,6 @@ class OS13kWindow extends HTMLElement
                 iframeContent.zzfx = zzfx;
                 iframeContent.OS13kStart && iframeContent.OS13kStart();
             }
-
-            // show iframe and set focus
-            iframe.style.visibility = '';
 
             // check for extensions
             if (iframeDocument && program.hasExtension)
@@ -1009,12 +1003,18 @@ class OS13kWindow extends HTMLElement
                         'OS13k.RenderShader(c,s,t/1e3,f++)));' + 
                     'loop(s=OS13k.CreateShader(c,`' + iframeText + '`))');
             }
+
+            // show iframe and set focus
+            this.style.visibility = '';
             
             // focus on iframe
             this.Focus();
         
             // track if programs are loading
             --loading;
+    
+            // focus on first program after load
+            loading || finishedStartup || firstProgram.MouseClick(finishedStartup = 1);
         }
     }
     
