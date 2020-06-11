@@ -620,8 +620,6 @@ const ToggleTrophies=()=>
         trophyProgram.MouseClick(
             windowOpenX = startWindowOpenX,
             windowOpenY = startWindowOpenY);
-            
-    OS13k.Trophy('OS13k','Hoarder','','Viewed Trophy Case');
 }
 
 const ToggleClock=()=>
@@ -632,8 +630,6 @@ const ToggleClock=()=>
         clockProgram.MouseClick(
             windowOpenX = startWindowOpenX,
             windowOpenY = startWindowOpenY);
-            
-    OS13k.Trophy('OS13k','Clock Watcher','🕰️','Checked Time');
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -641,14 +637,14 @@ const ToggleClock=()=>
 
 class OS13kTaskbarIcon extends HTMLElement
 {
-	constructor(program, element = 0)
+	constructor(program, window = 0)
     {
 		super();
         
         // create icon
         this.className = 'taskbarIcon';
         this.innerHTML = '<div style=pointer-events:none>' + program.icon;
-        this.element = element;
+        this.window = window;
         this.title = program.name +
             (program.isDweet ? ' - Dweet' : program.isShader ? ' - Shader' : '') +
             (program.author ? '\nBy ' + program.author : '');
@@ -658,9 +654,9 @@ class OS13kTaskbarIcon extends HTMLElement
     }
     
     MouseClick()
-    {
+    {  
         // focus on window or drop down folder
-        this.element.Focus(1);
+        this.window.Focus(1);
     }
     
     SetActive(active=1)
@@ -801,6 +797,12 @@ class OS13kProgram extends HTMLElement
     
     MouseClick() 
     {
+        if (this == trophyProgram)
+            OS13k.Trophy('OS13k','Hoarder','','Viewed Trophy Case');
+        
+        if (this == clockProgram)
+            OS13k.Trophy('OS13k','Clock Watcher','🕰️','Checked Time');
+          
         if (this.src)
         {
             // open the window
@@ -1190,10 +1192,10 @@ oncontextmenu=e=>
         menuElement = programsFolder;
         loadIcon.MouseClick();
     }
-    if (e.target.element)
+    if (e.target.window)
     {
         // set target frame active if it is an icon
-        e.target.element.SetActive && e.target.element.SetActive();
+        e.target.window.SetActive && e.target.window.SetActive();
     }
     else 
     {
@@ -1214,8 +1216,8 @@ ondblclick=e=>
 {
     // go fullscreen if titlebar name or icon is double clicked
     const originalTarget = e.originalTarget || e.path[0];
-    const target = e.target.element || e.target;
-    if ((originalTarget.id == 'name') || e.target.element)
+    const target = e.target.window || e.target;
+    if ((originalTarget.id == 'name') || e.target.window)
         target.FullScreen && target.FullScreen();
 }
 
