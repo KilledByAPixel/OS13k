@@ -383,11 +383,20 @@ class _OS13k
         return rootNoteFrequency * 2**(semitoneOffset/12);
     }
 
-    Speak(text)
+    Speak(text, volume=1, pitch=1, rate=1)
     { 
+        if (!gain.gain.value || !speechSynthesis)
+            return;
+        
+        // set speech parameters
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.volume = volume * gain.gain.value;
+        utterance.pitch = pitch;
+        utterance.rate = rate;
+    
         // speak if not muted
         gain.gain.value && speechSynthesis && 
-            speechSynthesis.speak(new SpeechSynthesisUtterance(text)) 
+            speechSynthesis.speak(utterance) 
     }
     
     CreateShader(canvas, code)
