@@ -1,13 +1,12 @@
 c.style.filter='invert('
 c.width=c.height=200
 x.translate(99,99)
-z=Math.PI*3
-x.arc(0,0,90,-z/360,7)
-x.setLineDash([z/5,z*4/5])
+z=Math.PI/2
+x.arc(0,0,90,-z/60,7)
+x.setLineDash([z,z*5])
 x.lineWidth=5
 x.stroke()
-z=Math.PI*15
-x.setLineDash([z/9,z*8/9])
+x.setLineDash([z*=3,z*9])
 x.lineWidth=9
 x.stroke()
 L=(P,W,L)=>{
