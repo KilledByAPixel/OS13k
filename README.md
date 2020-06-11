@@ -1,5 +1,5 @@
 # Welcome to OS13k!
-OS13k is a tiny pseudo operating system designed for a JS13k community project. It includes native support for shadertoys, dweets, zzfx sounds, music, trophies, fullscreen, touch control, and more. The OS is only around 6k zipped and much if that is shared code.
+OS13k is a tiny pseudo operating system designed for a JS13k community project. It includes native support for Shadertoys, Dweets, ZzFX sounds, music, trophies, fullscreen, touch control, and more. The OS is only around 6k zipped and much if that is shared code.
 
 ## Please keep this project confidential!
 
