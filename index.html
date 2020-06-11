@@ -1180,7 +1180,7 @@ oncontextmenu=e=>
     // hide menu
     menu.style.visibility = '';
     
-    const menuElement = menu;
+    let menuElement = menu;
     if (!e.target.SetActive || e.target == loadIcon)
     {
         // open folder if clicked on desktop or folder icon
