@@ -233,24 +233,20 @@ class _OS13k
     Trophy(game, name='', icon='', message='')
     {
         // build key
-        const key = game + ',' + name;
-        const storageKey = 'OS13kTrophy,' + key + ',' + icon;
-        
-        // skip if there is no game
-        if (!game)
-            return;
+        const key = game + ',' + name + ',' + icon;
+        const storageKey = 'OS13kTrophy,' + key;
         
         // find in trophy list
-        const trophyIndex = trophies.findIndex(e=>e[0]==game && e[1]==name)
+        const trophyIndex = trophies.findIndex(e=>e[4]==key)
         
-        // skip if same message and icon
-        if (trophyIndex >=0 && 
+        // skip if no game or same message
+        if (!game || trophyIndex >=0 && 
                 (trophies[trophyIndex][2] == icon &&
                 trophies[trophyIndex][3] == message))
             return;
         
         // add or update trophy list
-        const trophyData = [game, name, icon, message];
+        const trophyData = [game, name, icon, message, key];
         trophyIndex < 0 ? 
             trophies.push( trophyData ) :
             trophies[trophyIndex] = trophyData;
