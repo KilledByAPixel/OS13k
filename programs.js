@@ -16,7 +16,7 @@ const programs =
 ]},
 {name:'Tools', icon:'🔧', folder:
 [
-    {name:'Sticky Note', icon:'<span style=color:#ff6>■', src:'tools/stickyNote.html?2', width:300, height:264, full:0},
+    {name:'Sticky Note', icon:'✍️', src:'tools/stickyNote.html?2', width:300, height:264, full:0},
     {name:'Photo Booth', icon:'📸', src:'tools/photoBooth.html', width:1400, height:550 },
     {name:'Unicode Toys', icon:'𝖀', author:'Xem', src:'tools/unicodeToys.html', width:500, height:800},
     {name:'Mini Shadertoy', icon:'𝓢', src:'tools/miniShadertoy.html', width:340, height:400},
