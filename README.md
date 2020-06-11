@@ -30,9 +30,9 @@ https://js13kgames.com/
 - For fast iteration when deveoping, the first program in the list opens automatically
 
 Add an icon config to programs.js to register your program, and send me pull request, examples...
-- {name:'Test', icon:'✌️', src:'system/test.html', multiple:1, reload:1, code:1}
-- {name:'Underwater Cavern', icon:'🌊', author:'Pavel', src:'dweets/underwaterCavern.dweet.js'}
-- {name:'Yin Yangs', icon:'☯️', src:'toys/infiniteYinYangs.shader.txt'}
+- {src:'system/test.html', name:'Test', icon:'✌️', multiple:1, reload:1, code:1}
+- {src:'dweets/underwaterCavern.dweet.js', name:'Underwater Cavern', icon:'🌊', author:'Pavel'}
+- {src:'toys/infiniteYinYangs.shader.txt', name:'Yin Yangs', icon:'☯️'}
 - {src:'help.html'}
 
 ### Programs
