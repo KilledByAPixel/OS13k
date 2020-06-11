@@ -12,7 +12,7 @@ OS13k is a tiny pseudo operating system designed for a JS13k community project. 
 - OS13k is around 6k zipped, so by sharing code with dweets, shaders, and zzfx we can pack a lot into 13k
 - I'd like to see as many people as possible contribute tiny games and apps
 - Programs should be in the 100-1000 byte range, what matters most is how well it compresses
-- We hope to fit on the order of 20 programs in total, [(maybe even 27) 😅](http://js13kgames.com/entries/26-games-in-1)
+- We hope to fit on the order of 20 programs in total, [(maybe even 27)](http://js13kgames.com/entries/26-games-in-1) 😅
 - We could easily pack 1k with just like 10 or more cool tiny dweets and shaders
 - **A very important rule to the contest is that all content must be new, so no old stuff!
 - You can start with an old project but polish it up a lot, minify it and make it work with OS13k
