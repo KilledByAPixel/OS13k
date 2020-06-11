@@ -216,19 +216,20 @@ div svg       { width:100%; pointer-events:none; }
 <button id=buttonShowCode onclick=activeWindow.ShowCode()>Show Code
 <button id=buttonReload onclick=activeWindow.Reload()>Reload
 <button id=buttonClose onclick=activeWindow.Close()>Close
-<script src=programs.js?67></script>
+<script src=programs.js?68></script>
 <script>
 
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Debug Stuff (remove from minified)
 
-// version check
-if (localStorage.OS13kVersion != 14)
-    localStorage.clear(),localStorage.OS13kVersion = 14;
+// version check, clear local storage if older
+const OS13kVersion = 15;
+if (localStorage.OS13kVersion != OS13kVersion)
+    localStorage.clear(), localStorage.OS13kVersion = OS13kVersion;
     
 // load default programs if none found
 if (typeof programs == 'undefined')
-    programs = [{src:'system/test.html'},{src:'system/trophies.html'},{src:'system/clock.dweet.js',width:200,height:200,sleep:0}];
+    programs = [{src:'system/test.html'},{src:'system/trophyCase.html'},{src:'system/clock.dweet.js',width:200,height:200,sleep:0}];
 
 /////////////////////////////////////////////////////////////////////////////
 // Use Strict and Closure Config
@@ -385,7 +386,7 @@ class _OS13k
 
     Speak(text, volume=1, pitch=1, rate=1)
     { 
-        if (!gain.gain.value || !speechSynthesis)
+        if (!speechSynthesis)
             return;
         
         // set speech parameters
@@ -532,7 +533,7 @@ const Init=()=>
     trayTime.onmousedown = trayTime.ontouchstart =()=> clockProgram.Toggle();
 
     // create the folder taskbar icon and add folders/programs
-    loadIcon = new OS13kTaskbarIcon( {icon:'💾', name:'Apps'} );
+    loadIcon = new OS13kTaskbarIcon( {icon:'💾', name:'Load Program'} );
     loadIcon.window = new OS13kFolder(programs);
 }
 

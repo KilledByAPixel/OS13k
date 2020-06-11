@@ -15,13 +15,13 @@ const programs =
         {src:'system/test.html', name:'Hello!', icon:'✌️😄', width:600, height:400},
     ]},
 ]},
-{name:'Tools', icon:'🔧', folder:
+{name:'Apps', icon:'🛠️', folder:
 [
-    {src:'tools/stickyNote.html?2', icon:'✍️', width:300, height:264, full:0, sticky:1, sleep:0},
-    {src:'tools/photoBooth.html', icon:'📸', width:1400, height:550 },
-    {src:'tools/unicodeToys.html', icon:'𝖀', author:'Xem', width:500, height:800},
-    {src:'tools/miniShadertoy.html', icon:'𝓢', width:340, height:400},
-    {src:'tools/textEditor.html', icon:'📝'},
+    {src:'apps/stickyNote.html?2', icon:'✍️', width:300, height:264, full:0, sticky:1, sleep:0},
+    {src:'apps/photoBooth.html', icon:'📸', width:1400, height:550 },
+    {src:'apps/unicodeToys.html', icon:'𝖀', author:'Xem', width:500, height:800},
+    {src:'apps/miniShadertoy.html', icon:'𝓢', width:340, height:400},
+    {src:'apps/textEditor.html', icon:'📝'},
     {src:'https://zzfx.3d2k.com', name:'ZzFX', icon:'<b>ℤℤ', width:1280, height:880},
     {src:'https://capjs.3d2k.com', name:'CapJS', icon:'𝓒𝓪𝓹', width:1280, height:750},
     {src:'https://dweetview.3d2k.com', name:'Dweet View', icon:'<span style=color:#f00;background:#000><b>&nbsp;III&nbsp;'},
