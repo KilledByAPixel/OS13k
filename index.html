@@ -713,7 +713,7 @@ class OS13kFolder extends HTMLElement
         }
         
         // reset position if programs folder
-        if (this.parentNode == programsFolder)
+        if (fromTaskbar)
         {
             programsFolder.style.left = 0;
             programsFolder.style.top = taskbarHeight;
@@ -1059,8 +1059,6 @@ class OS13kWindow extends HTMLElement
     
     Focus(clampToWindow)
     {
-        CloseMenus();
-        
         // set focus
         this.iframeContent && this.iframeContent.focus();
         this.SetActive();
@@ -1088,17 +1086,19 @@ class OS13kWindow extends HTMLElement
                 this.style.zIndex = ++topZ;
 
                 // show menu buttons
-                buttonShowCode.style.display = this.program.code? '' : 'none';
-                buttonReload.style.display   = this.program.reload? '' : 'none';
+                buttonFullScreen.style.display = this.program.full?   '' : 'none';
+                buttonShowCode.style.display   = this.program.code?   '' : 'none';
+                buttonReload.style.display     = this.program.reload? '' : 'none';
             }
+            
+            this.taskbarIcon.SetActive();
             CloseMenus();
         }
             
         // set active
         activeWindow = active && this;
         this.style.filter = active || !this.program.sleep? '' : 'saturate(.7)brightness(.7';
-        this.titlebar.className = 'titlebar' + (active? ' titlebarActive' : '')
-        this.taskbarIcon.SetActive();
+        this.titlebar.className = 'titlebar' + (active? ' titlebarActive' : '');
     }
     
     FullScreen()
@@ -1163,20 +1163,9 @@ onmousedown=e=>
     if (grabWindow)
         return onclick(e);
     
-    // ignore menu buttons
-    if (e.target.localName == 'button')
-        return;
-    
-    // hide menu if not clicked on
-    e.target.offsetParent.id != 'menu' && (menu.style.visibility = '');
-        
-    // hide menus if not clicked on
-    e.target.offsetParent.className != 'folder' && e.target != loadIcon &&
-        CloseMenus();
-
     // only look for left mouse button
     if (e.button)
-        return e.button == 2; // prevent all but right click
+        return e.button == 2; // prevent default except right click
     
     // handle mouse down
     const originalTarget = e.originalTarget || e.path[0];
