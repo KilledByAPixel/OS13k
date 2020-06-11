@@ -1,5 +1,5 @@
+c.style.filter='invert('
 c.width=c.height=200
-c.style.filter='sepia()invert('
 x.translate(99,99)
 z=Math.PI*3
 x.arc(0,0,90,-z/360,7)
@@ -10,9 +10,12 @@ z=Math.PI*15
 x.setLineDash([z/9,z*8/9])
 x.lineWidth=9
 x.stroke()
-L=(P,W,L)=>x.rotate(A=Math.PI*(1-2*P),x.fillRect(-W/2,-6,W,L,x.rotate(-A)))
+L=(P,W,L)=>{
+x.save(x.restore())
+x.rotate(Math.PI*(2*P-1))
+x.fillRect(-W/2,-6,W,L)}
 c.title=new Date()
 d=c.title.slice(16,24).split`:`
-L(d[2]/60,2,99)
-L(d[1]/60,3,85)
 L(d[0]%12/12,6,59)
+L(d[1]/60,3,85)
+L(d[2]/60,2,99)
