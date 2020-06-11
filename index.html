@@ -202,7 +202,7 @@ div svg       { width:100%; pointer-events:none; }
 <button id=buttonShowCode onclick=activeWindow.ShowCode()>Show Code
 <button id=buttonReload onclick=activeWindow.Reload()>Reload
 <button id=buttonClose onclick=activeWindow.Close()>Close
-<script src=programs.js?43></script>
+<script src=programs.js?44></script>
 <script>
     
 // load test programs if none found
@@ -233,18 +233,27 @@ class _OS13k
     Trophy(game, name='', icon='', message='')
     {
         // build key
-        const key = game + ',' + name + ',' + icon;
-        const storageKey = 'OS13kTrophy,' + key;
+        const key = game + ',' + name;
+        const storageKey = 'OS13kTrophy,' + key + ',' + icon;
         
-        // skip if there is no game or same message
-        if (!game || localStorage[storageKey] == message)
+        // skip if there is no game
+        if (!game)
+            return;
+        
+        // find in trophy list
+        const trophyIndex = trophies.findIndex(e=>e[0]==game && e[1]==name)
+        
+        // skip if same message and icon
+        if (trophyIndex >=0 && 
+                (trophies[trophyIndex][2] == icon &&
+                trophies[trophyIndex][3] == message))
             return;
         
         // add or update trophy list
-        const trophyIndex = trophies.findIndex(e=>e[0]==key)
+        const trophyData = [game, name, icon, message];
         trophyIndex < 0 ? 
-            trophies.push( [key, message] ) :
-            trophies[trophyIndex] = [key, message];
+            trophies.push( trophyData ) :
+            trophies[trophyIndex] = trophyData;
 
         // save local storage
         localStorage[storageKey] = message;
@@ -431,7 +440,7 @@ class _OS13k
     }
     
     // helper functions
-    StripHTML(string)      { return string.replace(/(<([^>]+)>)/ig,''); }
+    StripHTML(string)      { return (string||'').replace(/(<([^>]+)>)/ig,''); }
     Clamp(a, min=0, max=1) { return Math.min(Math.max(a, min),max); }
     Percent(v, a, b)       { return b-a? this.Clamp((v-a)/(b-a), 0, 1) : 0; }
     Lerp(p, a, b)          { return a + this.Clamp(p, 0, 1) * (b-a); }
@@ -476,22 +485,14 @@ const Init=()=>
     // parse trophy list
     trophies = localStorage.OS13kTrophies ? JSON.parse(localStorage.OS13kTrophies) : [];
 
-    // search local storage for new trophies
+    // search local storage for trophies
     for (let i = localStorage.length; i--;)
     {
         // check if it is a trophy
         const key = localStorage.key(i);
         const keyParts = key.split(',');
         if (keyParts.shift() == 'OS13kTrophy')
-        {
-            // check if trophy is new
-            const trophyIndex = trophies.findIndex(e => e[0] == keyParts.join());
-            
-            // show trophy if new or different
-            const trophyData = localStorage[key];
-            if (trophyIndex < 0 || trophies[trophyIndex][1] != trophyData)
-                OS13k.Trophy(...keyParts, trophyData);
-        }
+            OS13k.Trophy(...keyParts, localStorage[key]);
     }
     
     OS13k.Trophy('OS13k','Welcome!','👋');
