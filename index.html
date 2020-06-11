@@ -289,6 +289,8 @@ class _OS13k
         
         // use game as name if there is no name
         name || (name = game, game = '');
+        
+        this.Speak(name);
 
         // build popup element
         const trophyElement = document.createElement('div');
@@ -380,7 +382,12 @@ class _OS13k
         return rootNoteFrequency * 2**(semitoneOffset/12);
     }
 
-    Speak(text) { speechSynthesis.speak(new SpeechSynthesisUtterance(text)) }
+    Speak(text)
+    { 
+        // speak if not muted
+        gain.gain.value && speechSynthesis && 
+            speechSynthesis.speak(new SpeechSynthesisUtterance(text)) 
+    }
     
     CreateShader(canvas, code)
     {
@@ -607,10 +614,10 @@ const FocusTopWindow=()=>
 
 const ToggleMute=()=>
 {
+    speechSynthesis && speechSynthesis.cancel();
+    OS13k.Trophy(undefined,'Shut Up','🔇','Muted');
     gain.gain.value = gain.gain.value ? 0 : defaultVolume;
     trayVolume.innerHTML = (gain.gain.value ? '🔊' : '🔇');
-            
-    OS13k.Trophy(undefined,'Shut Up','🔇','Muted');
 }
     
 /////////////////////////////////////////////////////////////////////////////
