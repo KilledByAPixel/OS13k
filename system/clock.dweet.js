@@ -14,8 +14,8 @@ L=(P,W,L)=>{
 x.save(x.restore())
 x.rotate(Math.PI*(2*P-1))
 x.fillRect(-W/2,-6,W,L)}
-c.title=new Date()
-d=c.title.slice(16,24).split`:`
+c.title=D=new Date()+''
+d=D.slice(16,24).split`:`
 L(d[0]%12/12,6,59)
 L(d[1]/60,3,85)
 L(d[2]/60,2,99)
