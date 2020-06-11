@@ -1,3 +1,15 @@
+<!--
+
+OS13k is a tiny pseudo operating system designed for a JS13k community project. It has native support for Shadertoys, Dweets, ZzFX, trophies, and much more.
+
+Your mission, if you choose to accept it, is to help us fill it up with as much cool stuff as we can fit.
+
+Please keep this project confidential!
+
+✌️😄 ❤️ OS13k Team
+
+-->
+
 <title>OS13k - A tiny operating system for JS13k</title>
 <link rel=icon type=image/x-icon href='favicon.png?1'/>
 <meta charset=utf-8>
@@ -11,7 +23,6 @@ body
     font-family:arial;
     user-select:none;
     white-space:nowrap;
-    background:linear-gradient(#223,#322);
 }
 #taskbar
 {
@@ -86,13 +97,16 @@ body
 .folder                    { background:linear-gradient(#fff,#777); }
 #title
 {
+    position:absolute;
+    width:100%;
     height:100%;
     color:#0002;
     font-family:impact;
     font-weight:900;
     font-size:20vw;
+    background:linear-gradient(#223,#322);
 }
-.flexCenter, .taskbarIcon, #taskbar, .program,  #tray, #title
+.flexCenter, .taskbarIcon, #taskbar, .program, #tray, #title
 {
     display:flex;
     align-items:center;
@@ -104,7 +118,7 @@ body
 :host
 {
     box-shadow:5px 5px 9px;
-    border:2px solid;
+    border:2px solid #222;
     background:#000;
     display:flex;
     flex-direction:column;
@@ -188,7 +202,7 @@ div svg       { width:100%; pointer-events:none; }
 <div id=traySpace style=flex:1></div>
 <div id=tray>
     <div id=trayTrophy class=trayIcon title='Trophy Case'></div>
-    <div id=trayVolume class=trayIcon title='Toggle Mute'></div>
+    <div id=trayVolume class=trayIcon title='Toggle Mute'>🔊</div>
     <div id=trayTime class=trayIcon></div>
 </div>
 </div>
@@ -200,12 +214,22 @@ div svg       { width:100%; pointer-events:none; }
 <button id=buttonShowCode onclick=activeWindow.ShowCode()>Show Code
 <button id=buttonReload onclick=activeWindow.Reload()>Reload
 <button id=buttonClose onclick=activeWindow.Close()>Close
-<script src=programs.js?23></script>
+<script src=programs.js?57></script>
 <script>
+
+/////////////////////////////////////////////////////////////////////////////
+// OS13k Debug Stuff (remove from minified)
+
+// version check
+if (localStorage.OS13kVersion != 11)
+    localStorage.clear(),localStorage.OS13kVersion = 11;
     
-// load test programs if none found
+// load default programs if none found
 if (typeof programs == 'undefined')
-    programs = [{src:'system/test.html'},{src:'dweets/underwaterCavern.dweet.js'}];
+    programs = [{src:'system/test.html'},{src:'system/trophies.html'},{src:'system/clock.dweet.js',width:200,height:200,sleep:0}];
+
+/////////////////////////////////////////////////////////////////////////////
+// Use Strict and Closure Config
 
 'use strict';
 
@@ -216,7 +240,7 @@ if (typeof programs == 'undefined')
 // @js_externs zzfx, zzfxV, icon.folder
 // @js_externs _OS13k.Trophy, _OS13k.GetTrophies, _OS13k.KeyDirection, _OS13k.Speak
 // @js_externs _OS13k.CreateShader, _OS13k.RenderShader, _OS13k.CreateCanvas
-// @js_externs _OS13k.PlaySamples, _OS13k.PlaySeed, _OS13k.GetSeedSound, _OS13k.GetNote
+// @js_externs _OS13k.PlaySamples, _OS13k.PlaySeed, _OS13k.GetNote
 // @js_externs _OS13k.Random, _OS13k.randomSeed 
 // @js_externs _OS13k.Clamp, _OS13k.Percent, _OS13k.Lerp, _OS13k.StripHTML
 // @js_externs iframeContent.OS13k, iframeContent.OS13kStart, iframeContent.zzfx
@@ -228,43 +252,47 @@ if (typeof programs == 'undefined')
 
 class _OS13k
 {
-    Trophy(game, name='', icon='', message='')
+    Trophy(game='OS13k', name='', icon='', message='', saveTrophies=1)
     {
-        // skip if there is no game name
-        if (!game)
-            return;
-    
         // build key
         const key = game + ',' + name + ',' + icon;
-        
-        // add or update trophy list
-        const trophyIndex = trophies.findIndex(e=>e[0]==key)
-        trophyIndex < 0 ? 
-            trophies.push( [key, message] ) :
-            trophies[trophyIndex] = [key, message];
-
-        // save local storage
-        localStorage['OS13kTrophy,' + key] = message;
-        localStorage.OS13kTrophies = JSON.stringify(trophies);
+        const storageKey = 'OS13kTrophy,' + key;
         
         // strip html
-        icon = this.StripHTML(icon);
+        icon = this.StripHTML(icon) || '🏆';
         name = this.StripHTML(name);
         game = this.StripHTML(game);
         message = this.StripHTML(message);
         
+        // find in trophy list
+        const trophyIndex = trophies.findIndex(e=>e[4]==key)
+        
+        // skip if no game or same message
+        if (!game || trophyIndex >=0 && trophies[trophyIndex][3] == message)
+            return;
+        
+        // add or update trophy list
+        const trophyData = [game, name, icon, message, key];
+        trophyIndex < 0 ? 
+            trophies.push( trophyData ) :
+            trophies[trophyIndex] = trophyData;
+
+        // save local storage
+        if (saveTrophies)
+        {
+            localStorage[storageKey] = message;
+            localStorage.OS13kTrophies = JSON.stringify(trophies);
+        }
+        
         // use game as name if there is no name
         name || (name = game, game = '');
-        
-        // use only first icon character and set default
-        icon = (icon.length ? [...icon][0] : '🏆');
 
         // build popup element
         const trophyElement = document.createElement('div');
         trophyElement.className = 'trophyPopup';
         trophyElement.innerHTML = 
-            '<div class=flexCenter style=flex-direction:column>' +
-                '<div style="font-size:40;padding:9;text-shadow:2px 2px 4px #000">' + 
+            '<div class=flexCenter style=overflow:hidden;flex-direction:column>' +
+                '<div style="white-space:nowrap;font-size:40;padding:9;text-shadow:2px 2px 4px #000">' + 
                     icon +                                  // icon
                 '</div>' +
                 '<div style=width:100%;overflow:hidden>' +  // info
@@ -278,10 +306,11 @@ class _OS13k
         trophyPopups.appendChild(trophyElement);
         
         // refresh trophy window if it is being displayed
-        trophyProgram.window && trophyProgram.window.iframeContent.OS13kStart();
+        trophyProgram && trophyProgram.window && trophyProgram.window.iframeContent &&
+            trophyProgram.window.iframeContent.OS13kStart();
     }
     
-    GetTrophies() { return trophies; } 
+    GetTrophies() { return trophies } 
     
     KeyDirection(keyCode)
     {
@@ -291,7 +320,7 @@ class _OS13k
         (keyCode == 83 || keyCode == 40) && --y; // down
         (keyCode == 68 || keyCode == 39) && ++x; // right
         (keyCode == 65 || keyCode == 37) && --x; // left
-        return {x, y}
+        return {x, y};
     }
     
     PlaySeed(seed, lengthScale=1, volume=1, randomness=.05)
@@ -348,7 +377,7 @@ class _OS13k
         return rootNoteFrequency * 2**(semitoneOffset/12);
     }
 
-    Speak(text) { speechSynthesis.speak(new SpeechSynthesisUtterance(text)); }
+    Speak(text) { speechSynthesis.speak(new SpeechSynthesisUtterance(text)) }
     
     CreateShader(canvas, code)
     {
@@ -381,6 +410,7 @@ class _OS13k
             '#version 300 es\n' +
             'precision mediump float;' +
             'uniform float iTime;' +
+            'uniform int iFrame;' +
             'uniform vec4 iMouse;' +
             'uniform vec3 iResolution;' +
             'uniform sampler2D iChannel0;' +
@@ -410,7 +440,7 @@ class _OS13k
         return shaderProgram;
     }
     
-    RenderShader(canvas, shaderProgram, time=0)
+    RenderShader(canvas, shaderProgram, time=0, frame=0)
     {
         // get webgl context
         const x = canvas.getContext('webgl2');
@@ -419,6 +449,7 @@ class _OS13k
         const uniformLocation=name=>x.getUniformLocation(shaderProgram, name);
         x.uniform3f(uniformLocation('iResolution'), canvas.width, canvas.height, 1);
         x.uniform1f(uniformLocation('iTime'), time);
+        x.uniform1f(uniformLocation('iFrame'), frame);
         x.uniform1i(uniformLocation('iChannel0'), 0);
         
         // render shader
@@ -430,10 +461,10 @@ class _OS13k
     }
     
     // helper functions
-    StripHTML(string)      { return string.replace(/(<([^>]+)>)/ig,''); }
-    Clamp(a, min=0, max=1) { return Math.min(Math.max(a, min),max); }
-    Percent(v, a, b)       { return b-a? this.Clamp((v-a)/(b-a), 0, 1) : 0; }
-    Lerp(p, a, b)          { return a + this.Clamp(p, 0, 1) * (b-a); }
+    StripHTML(string)      { return (string||'').replace(/(<([^>]+)>)/ig,'') }
+    Clamp(a, min=0, max=1) { return Math.min(Math.max(a, min),max) }
+    Percent(v, a, b)       { return b-a? this.Clamp((v-a)/(b-a), 0, 1) : 0 }
+    Lerp(p, a, b)          { return a + this.Clamp(p, 0, 1) * (b-a) }
     Random(max=1, min=0)
     {
         // seeded random numbers - Mersenne Twister
@@ -447,50 +478,46 @@ class _OS13k
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Desktop
 
-const taskbarHeight = 42, iconHeight = 26, titlebarHeight = 46,
-      startWindowOpenX = 50, startWindowOpenY = 99, 
+const taskbarHeight = 42, programHeight = 26, titlebarHeight = 46,
+      startWindowOpenX = 9, startWindowOpenY = 51, 
       trophyPopupTime = 3, defaultVolume = .3;
       
-let grabObject, grabOffsetX, grabOffsetY,
-    activeWindow, activeProgram, activeTaskbarIcon,
-    lastActiveElement, folderIcon, firstIcon, topZ = 0,
+let grabWindow, grabOffsetX, grabOffsetY,
+    activeWindow, activeProgram, firstProgram, activeTaskbarIcon,
+    lastActiveElement, loadIcon, topZ = 0,
     windowOpenX = startWindowOpenX, windowOpenY = startWindowOpenY,
-    trophies = [], trophyProgram;
+    trophies = [], trophyProgram, clockProgram;
 
 const Init=()=>
 {
-    // set taskbar functions
-    trayTrophy.onmousedown = trayTrophy.ontouchstart = ToggleTrophies;
-    trayVolume.onmousedown = trayVolume.ontouchstart = ToggleMute;
-
-    // create top level icon and add folders/icons
-    const taskbarIcon = 
-        folderIcon = new OS13kTaskbarIcon( {icon:'💾', name:'Apps'}, 
-            new OS13kFolder(programs, 0, 0));
-
-    // open first icon in list
-    firstIcon && firstIcon.MouseClick();
-    
     // parse trophy list
     trophies = localStorage.OS13kTrophies ? JSON.parse(localStorage.OS13kTrophies) : [];
 
-    // search local storage for new trophies
+    // search local storage for trophies
     for (let i = localStorage.length; i--;)
     {
         // check if it is a trophy
         const key = localStorage.key(i);
         const keyParts = key.split(',');
         if (keyParts.shift() == 'OS13kTrophy')
-        {
-            // check if trophy is new
-            const trophyIndex = trophies.findIndex(e => e[0] == keyParts.join());
-            
-            // show trophy if new or different
-            const trophyData = localStorage[key];
-            if (trophyIndex < 0 || trophies[trophyIndex][1] != trophyData)
-                OS13k.Trophy(...keyParts, trophyData);
-        }
+            OS13k.Trophy(...keyParts, localStorage[key], 0);
     }
+    
+    // save trophies
+    localStorage.OS13kTrophies = JSON.stringify(trophies);
+    OS13k.Trophy(undefined,'Welcome!','👋');
+    
+    // set taskbar functions
+    trayTrophy.onmousedown = trayTrophy.ontouchstart =()=> trophyProgram.Toggle();
+    trayVolume.onmousedown = trayVolume.ontouchstart = ToggleMute;
+    trayTime.onmousedown = trayTime.ontouchstart =()=> clockProgram.Toggle();
+
+    // create the folder taskbar icon and add folders/programs
+    loadIcon = new OS13kTaskbarIcon( {icon:'💾', name:'Apps'} );
+    loadIcon.window = new OS13kFolder(programs);
+    
+    // focus on first program
+    firstProgram.MouseClick();
 }
 
 const Update=()=>
@@ -514,7 +541,7 @@ const Update=()=>
         // use copy of trophies to prevent skipping if removed
         for(const popup of [...trophyPopups.children])
         {
-            let y = parseInt(popup.style.top) + offsetHeight - 8;
+            let y = parseInt(popup.style.top) + offsetHeight - 9;
             if (y < taskbarHeight)
             {
                 if (!waitToFade && !(popup.style.opacity = (popup.style.opacity || trophyPopupTime) - .01))
@@ -535,10 +562,9 @@ const Update=()=>
     trayTrophy.innerHTML = trophies.length + ' 🏆';
     
     // set time
-    const date = new Date();
-    trayTime.innerHTML = date.getHours()%12 + 
-        (date.getMinutes()<=9?':0':':') + date.getMinutes();
-    trayTime.title = date;
+    trayTime.title = new Date();
+    const time = trayTime.title.slice(16,24).split(':')
+    trayTime.innerHTML = (time[0]%12?time[0]%12:12) + ':' + time[1];
 }
 
 const CloseFolders=()=>
@@ -546,7 +572,7 @@ const CloseFolders=()=>
     // hide all drop down folders
     for (const c of programsFolder.children)
         c.localName == 'os13k-folder' && (c.style.visibility = 'hidden');
-
+        
     // hide menu
     menu.style.visibility = '';
 }
@@ -560,6 +586,8 @@ const CloseWindows=()=>
     // reset window open position
     windowOpenX = startWindowOpenX;
     windowOpenY = startWindowOpenY;
+    
+    OS13k.Trophy(undefined,'Coffee Is For Closers','☕','Closed All');
 }
 
 const FocusTopWindow=()=>
@@ -579,43 +607,33 @@ const ToggleMute=()=>
 {
     gain.gain.value = gain.gain.value ? 0 : defaultVolume;
     trayVolume.innerHTML = (gain.gain.value ? '🔊' : '🔇');
+            
+    OS13k.Trophy(undefined,'Shut Up','🔇','Muted');
 }
-
-const ToggleTrophies=()=>
-{
-    if (trophyProgram.window)
-        trophyProgram.window.Close()
-    else
-        trophyProgram.MouseClick(
-            windowOpenX = startWindowOpenX,
-            windowOpenY = startWindowOpenY);
-}
-
+    
 /////////////////////////////////////////////////////////////////////////////
 // OS13kTaskbarIcon
 
 class OS13kTaskbarIcon extends HTMLElement
 {
-	constructor(icon, element = 0)
+	constructor(program, window = 0)
     {
 		super();
         
         // create icon
         this.className = 'taskbarIcon';
-        this.innerHTML = '<div style=pointer-events:none>' + icon.icon;
-        this.element = element;
-        this.title = icon.name +
-            (icon.isDweet ? ' - Dweet' : icon.isShader ? ' - Shader' : '') +
-            (icon.author ? '\nBy ' + icon.author : '');
+        this.innerHTML = '<div style=pointer-events:none>' + program.icon;
+        this.window = window;
+        this.title = program.title || program.name;
         
         // add to taskbar
         traySpace.before(this);
     }
     
     MouseClick()
-    {
+    {  
         // focus on window or drop down folder
-        this.element.Focus(1);
+        this.window.Focus(1);
     }
     
     SetActive(active=1)
@@ -634,7 +652,7 @@ customElements.define('os13k-taskbar-icon', OS13kTaskbarIcon);
 
 class OS13kFolder extends HTMLElement
 {
-	constructor(icons, x, y, parentFolder)
+	constructor(infos, x=0, y=0, parentFolder)
     {
 		super();
         
@@ -645,17 +663,17 @@ class OS13kFolder extends HTMLElement
         this.parentFolder = parentFolder;
         programsFolder.appendChild(this);
         
-        // add icons to folder
-        for (const icon of icons)
-            this.appendChild(icon.program = new OS13kProgram(icon));
+        // add programs to folder
+        for (const info of infos)
+            this.appendChild(info.program = new OS13kProgram(info));
         
         // get width offset and add new folders recursively
         const rect = this.getBoundingClientRect();
-        for (const icon of icons)
+        for (const info of infos)
         {
-            // create the folder and hook up to icon
-            icon.folder && (icon.program.folder = new OS13kFolder(icon.folder, rect.right - 2, y, this));
-            y += iconHeight;
+            // create the folder and hook up to programs
+            info.folder && (info.program.folder = new OS13kFolder(info.folder, rect.right - 2, y, this));
+            y += programHeight;
         }
     }
 
@@ -689,33 +707,41 @@ customElements.define('os13k-folder', OS13kFolder);
 
 class OS13kProgram extends HTMLElement
 {
-	constructor({'x':x, 'y':y, 'name':name, 'icon':icon, 'src':src, 'width':width=1280, 'height':height=720, 'author':author, 'folder':folder, 'reload':reload, 'code':code})
+	constructor({'x':x, 'y':y, 'name':name, 'icon':icon, 'src':src='', 'width':width=720, 'height':height=405, 'author':author, 'folder':folder, 'full':full=1, 'reload':reload, 'code':code, 'sleep':sleep=1, 'sticky':sticky})
     {
 		super();
         
+        const srcParts = src.split('.');
+        
         // set icon defaults
         src = src || '';
-        name = name || src.split('.')[0];
-        icon = icon || (name[0] ? name[0].toUpperCase() : '' );     
+        name = name || srcParts[0];
+        icon = icon || '💠';
         
         // check for special extensions
-        const extension = src? src.split('.')[1] : '';
+        const extension = src? srcParts[1] : '';
         this.isDweet = extension == 'dweet';
         this.isShader = extension == 'shader';
         this.hasExtension = this.isDweet || this.isShader
-        this.hasExtension && (reload = 1);
-        firstIcon || src && (firstIcon = this);
 
         // set icon data
         this.className = 'program';
         this.name = name;
         this.icon = icon;
         this.src = src;
+        this.srcShort = srcParts[0];
         this.width = width;
         this.height = height;
         this.author = author;
-        this.reload = reload;
-        this.code = code || this.hasExtension;
+        this.sleep = sleep;
+        this.full = full;
+        this.reload = reload || (this.hasExtension && reload === undefined);
+        this.code = code || (this.hasExtension && code === undefined);
+        
+        // set title
+        this.title = name +
+            ( this.isDweet ? ' - Dweet' :  this.isShader ? ' - Shader' : '') +
+            (author ? '\nBy ' + author : '');
             
         // icon
         const iconDisplay = document.createElement('div');
@@ -737,9 +763,19 @@ class OS13kProgram extends HTMLElement
             folderDisplay.innerHTML = '▶';
             this.appendChild(folderDisplay);
         }
+        
+        // save trophy program
+        src.substr(0,15) == 'system/trophies' && (trophyProgram = this);
+        
+        // save clock program
+        src.substr(0,12) == 'system/clock' && (clockProgram = this);
+
+        // check for sticky
+        if (sticky && this.LoadInfo().open)
+            this.MouseClick();
             
-        // save trophy icon
-        src.substr(0,8) == 'trophies' && (trophyProgram = this);
+        // save first program in list
+        firstProgram || src && (firstProgram=this).MouseClick();
     }
     
     MouseMove()
@@ -751,14 +787,20 @@ class OS13kProgram extends HTMLElement
     }
     
     MouseClick() 
-    {
+    { 
         if (this.src)
         {
+            // load save info
+            const info = this.LoadInfo();
+
             // open the window
-            this.window || (this.window = new OS13kWindow(this));
+            this.window || (this.window = new OS13kWindow(this, info.x, info.y));
 
             // set focus to window
             this.window.Focus(1);
+            
+            // save info
+            this.SaveInfo(1);
         }
         else if (!this.folder)
         {
@@ -766,6 +808,27 @@ class OS13kProgram extends HTMLElement
             CloseFolders();
             CloseWindows();
         }
+        
+        this == trophyProgram && OS13k.Trophy(undefined,'Hoarder','','Viewed Trophys');
+        this == clockProgram && OS13k.Trophy(undefined,'Clock Watcher','🕰️','Checked Time');
+    }
+    
+    Toggle() { this.window ? this.window.Close() : this.MouseClick() }
+    
+    SaveInfo(open)
+    {
+        // save info to local storage
+        const rect = this.window.getBoundingClientRect();
+        localStorage['OS13k'+this.srcShort] = 
+            JSON.stringify({x:rect.x, y:rect.y, open});
+    }
+    
+    LoadInfo()
+    {
+        // try to load saved window data from local storage
+        const saveWindowJSON = localStorage['OS13k'+this.srcShort];
+        return saveWindowJSON ?
+            JSON.parse(saveWindowJSON) : {x:windowOpenX, y:windowOpenY, open:0}
     }
 } // OS13kProgram
 
@@ -776,22 +839,22 @@ customElements.define('os13k-program', OS13kProgram);
 
 class OS13kWindow extends HTMLElement
 {
-	constructor(icon)
+	constructor(program, x, y)
     {
 		super();
-        
+
         // add to desktop
         desktop.appendChild(this);
         
-        // create taskbar icon
-        this.icon = icon;
-        this.taskbarIcon = new OS13kTaskbarIcon(icon, this);
+        // create taskbar program
+        this.taskbarIcon = new OS13kTaskbarIcon(program, this);
+        this.program = program;
         
         // set window position
-        this.style.left = windowOpenX;
-        this.style.top = windowOpenY;
-        (windowOpenY += titlebarHeight) > 250 && (windowOpenY = startWindowOpenY);
-        (windowOpenX += titlebarHeight) > 500 && (windowOpenX = startWindowOpenX);
+        this.style.left = x;
+        this.style.top = y;
+        (windowOpenY += titlebarHeight) > 200 && (windowOpenY = startWindowOpenY);
+        (windowOpenX += titlebarHeight) > 400 && (windowOpenX = startWindowOpenX);
         
         // create shadow root
 		this.shadow = this.attachShadow({mode: 'open'});
@@ -800,6 +863,7 @@ class OS13kWindow extends HTMLElement
         // create title bar
         this.titlebar = document.createElement('div');
         this.titlebar.id = 'titlebar';
+        this.titlebar.title = program.title;
         this.shadowRoot.appendChild(this.titlebar);
         
         // create title bar name
@@ -810,13 +874,13 @@ class OS13kWindow extends HTMLElement
         // icon
         const iconDisplay = document.createElement('div');
         iconDisplay.className = 'icon';
-        iconDisplay.innerHTML = icon.icon;
+        iconDisplay.innerHTML = program.icon;
         this.titlebarName.appendChild(iconDisplay);
         
         // name
         const nameDisplay = document.createElement('div');
         nameDisplay.className = 'titleBarElement';
-        nameDisplay.innerHTML = icon.name + (icon.author? ' - ' + icon.author: '');
+        nameDisplay.innerHTML = program.name;
         this.titlebarName.appendChild(nameDisplay);
         
         // create title bar icons
@@ -827,14 +891,14 @@ class OS13kWindow extends HTMLElement
             icon.title = title;
             this.titlebar.appendChild(icon);
         }
-        AddtitlebarIcon('full', 'Full Screen');
-        icon.code && AddtitlebarIcon('code', 'Show Code');
-        icon.reload && AddtitlebarIcon('reload', 'Reload');
+        program.full && AddtitlebarIcon('full', 'Full Screen');
+        program.code && AddtitlebarIcon('code', 'Show Code');
+        program.reload && AddtitlebarIcon('reload', 'Reload');
         AddtitlebarIcon('close', 'Close');
         
         // create thin black line below title bar
         const titlebarGap = document.createElement('div');
-        titlebarGap.style.height = 2;
+        titlebarGap.style='height:2;background:#222';
         this.shadowRoot.appendChild(titlebarGap);
 
         // create content wrapper
@@ -843,16 +907,17 @@ class OS13kWindow extends HTMLElement
         this.shadowRoot.appendChild(frameWrapper);
         
         // limit window size to inner size
-        this.style.width = Math.min(this.icon.width, innerWidth-4);
-        frameWrapper.style.width  = Math.min(this.icon.width,  innerWidth-4);
-        frameWrapper.style.height = Math.min(this.icon.height, innerHeight);
+        this.style.width = Math.min(program.width, innerWidth-4);
+        frameWrapper.style.width  = Math.min(program.width,  innerWidth-4);
+        frameWrapper.style.height = Math.min(program.height, innerHeight);
 
         // create iframe
         const iframe = this.iframe = document.createElement('iframe'); 
         iframe.id = 'frame';
         iframe.style.visibility = 'hidden';
-        iframe.src = icon.src;
+        iframe.src = program.src;
         frameWrapper.appendChild(iframe);
+        this.Focus();
                 
         // load frame
         iframe.onload=e=>
@@ -865,7 +930,7 @@ class OS13kWindow extends HTMLElement
             {
                 // get the document and text, will fail if cross site
                 iframeDocument = iframeContent.document;
-                iframeText = this.icon.hasExtension ?
+                iframeText = program.hasExtension ?
                     iframeDocument.body.innerText : iframeDocument.body.innerHTML;
 
                 // create code display
@@ -885,14 +950,17 @@ class OS13kWindow extends HTMLElement
                 iframeContent.OS13kStart && iframeContent.OS13kStart();
             }
 
+            // show iframe and set focus
+            iframe.style.visibility = '';
+
             // check for extensions
-            if (iframeDocument && this.icon.hasExtension)
+            if (iframeDocument && program.hasExtension)
             {
                 // create full size canvas
                 iframeDocument.body.innerHTML = 
-                    '<canvas id=c width=1920 height=1080 style=' +
+                    `<canvas id=c width=1920 height=1080 style=` +
                     'width:100%;background:#' +
-                    (this.icon.isDweet ? 'fff' : '000') +'>';
+                    (program.isDweet ? 'fff' : '000') +'>';
                 iframeDocument.body.style = 
                     'background:#111;' +
                     'overflow:hidden;' +
@@ -901,7 +969,7 @@ class OS13kWindow extends HTMLElement
                     'align-items:center';
 
                 // create dweet
-                this.icon.isDweet && iframeContent.eval(
+                program.isDweet && iframeContent.eval(
                     'u=t=>{' + iframeText + '};' +
                     'x=c.getContext`2d`;' +
                     'S=Math.sin;' +
@@ -909,36 +977,32 @@ class OS13kWindow extends HTMLElement
                     'T=Math.tan;' +
                     'R=(r,g,b,a=1)=>`rgba(${0|r},${0|g},${0|b},${a})`;' +
                     'loop=t=>requestAnimationFrame(loop,' +
-                        'document.hasFocus()&&' +
+                        `${program.sleep?'document.hasFocus()':1}&&` +
                         'u((60*(frame++/60)-frame-1|0?frame-1:frame)/60));' +
                     'loop(frame=0)');
 
                 // create shader
-                this.icon.isShader && iframeContent.eval(
+                program.isShader && iframeContent.eval(
                     'g=c.getContext`webgl2`;' +
-                    'x=y=z=w=0;' +
+                    'x=y=z=w=f=0;' +
                     'onmousemove=e=>e.buttons&&(x=e.x,y=c.height-e.y);' +
                     'onmousedown=e=>(x=z=e.x,y=w=c.height-e.y);' +
                     'onmouseup=e=>z=w=0;' +
                     'loop=t=>requestAnimationFrame(loop,' +
-                        'document.hasFocus()&&(' +
+                        `${program.sleep?'document.hasFocus()':1}&&(` +
                         'c.width=innerWidth,' + 
                         'c.height=innerHeight,' + 
                         'g.uniform4f(g.getUniformLocation(s,"iMouse"),x,y,z,w),' +
-                        'OS13k.RenderShader(c,s,t/1e3)));' + 
+                        'OS13k.RenderShader(c,s,t/1e3,f++)));' + 
                     'loop(s=OS13k.CreateShader(c,`' + iframeText + '`))');
             }
-
-            // show iframe and set focus
-            iframe.style.visibility = '';
-            this.Focus();
         }
     }
     
     MouseDown(e, originalTarget)
     {
         // set grab object if name is clicked on
-        originalTarget.id == 'name' && (grabObject = this);
+        originalTarget.id == 'name' && (grabWindow = this);
         
         // set focus
         this.Focus();
@@ -984,8 +1048,8 @@ class OS13kWindow extends HTMLElement
                 this.style.zIndex = ++topZ;
 
                 // show menu buttons
-                buttonShowCode.style.display = this.icon.code? '' : 'none';
-                buttonReload.style.display   = this.icon.reload? '' : 'none';
+                buttonShowCode.style.display = this.program.code? '' : 'none';
+                buttonReload.style.display   = this.program.reload? '' : 'none';
             }
         
             // close folders and menu
@@ -994,7 +1058,7 @@ class OS13kWindow extends HTMLElement
             
         // set active
         activeWindow = active && this;
-        this.style.filter = active ? '' : 'saturate(.7)brightness(.7';
+        this.style.filter = active || !this.program.sleep? '' : 'saturate(.7)brightness(.7';
         this.titlebar.className = 'titlebar' + (active? ' titlebarActive' : '')
         this.taskbarIcon.SetActive();
     }
@@ -1008,6 +1072,8 @@ class OS13kWindow extends HTMLElement
             fullScreenElement.webkitRequestFullScreen();
         else if (fullScreenElement.mozRequestFullScreen)
             fullScreenElement.mozRequestFullScreen();
+            
+        OS13k.Trophy(undefined,'Pro Gamer','🕹️','Went Fullscreen');
     }
     
     ShowCode()
@@ -1016,6 +1082,8 @@ class OS13kWindow extends HTMLElement
         this.Focus();
         this.codeDisplay.style.display = 
             (this.showCode = !this.showCode) ? 'block' : '';
+            
+        OS13k.Trophy(undefined,'Hacker','👨‍💻','Viewed Code');
     }
     
     Reload()
@@ -1027,8 +1095,11 @@ class OS13kWindow extends HTMLElement
     
     Close()
     {
+        // save info
+        this.program.SaveInfo(0);
+        
         // destroy window
-        this.icon.window = 0;
+        this.program.window = 0;
         this.taskbarIcon.remove();
         this.remove();
         
@@ -1048,7 +1119,7 @@ onmousedown=e=>
     document.activeElement.blur();
 
     // prevent getting stuck
-    if (grabObject)
+    if (grabWindow)
         return onclick(e);
     
     // ignore menu buttons
@@ -1059,7 +1130,7 @@ onmousedown=e=>
     e.target.offsetParent.id != 'menu' && (menu.style.visibility = '');
         
     // hide folders if not clicked on
-    e.target.offsetParent.className != 'folder' && e.target != folderIcon &&
+    e.target.offsetParent.className != 'folder' && e.target != loadIcon &&
         CloseFolders();
 
     // only look for left mouse button
@@ -1070,11 +1141,11 @@ onmousedown=e=>
     const originalTarget = e.originalTarget || e.path[0];
     e.target.MouseDown && e.target.MouseDown(e, originalTarget);
     
-    if (grabObject)
+    if (grabWindow)
     {
         // set grabbing mode
-        document.body.style.cursor = grabObject.titlebarName.style.cursor = 'grabbing';
-        grabObject.frameWrapper.style.pointerEvents = 'none';
+        document.body.style.cursor = grabWindow.titlebarName.style.cursor = 'grabbing';
+        grabWindow.frameWrapper.style.pointerEvents = 'none';
         
         // save grab offset
         const rect = e.target.getBoundingClientRect();
@@ -1085,14 +1156,17 @@ onmousedown=e=>
 
 onmousemove=e=>
 {
-    if (grabObject)
+    if (grabWindow)
     {
-        // update grab object position
-        grabObject.style.left = e.x - grabOffsetX;
-        grabObject.style.top = e.y - grabOffsetY;
+        // update grab position
+        grabWindow.style.left = e.x - grabOffsetX;
+        grabWindow.style.top = e.y - grabOffsetY;
+        
+        // save info
+        grabWindow.program.SaveInfo(1);
     }
     
-    // unselect active icon
+    // unselect active program
     activeProgram && (activeProgram.className = 'program');
     
     // handle mouse move
@@ -1103,21 +1177,21 @@ onclick=e=>
 {
     // allow pointer events and reset cursor
     document.body.style.cursor = '';
-    if (grabObject)
+    if (grabWindow)
     {
-        grabObject.titlebarName.style.cursor = 'grab';
-        grabObject.frameWrapper.style.pointerEvents = '';
-    }
+        grabWindow.titlebarName.style.cursor = 'grab';
+        grabWindow.frameWrapper.style.pointerEvents = '';
         
-    // release grab object
-    grabObject = 0;
+        // release grab object
+        grabWindow = 0;
+    }
     
     // hide menu
     menu.style.visibility = '';
         
     // focus on active window
     const originalTarget = e.originalTarget || e.path[0];
-    e.target != folderIcon && e.target.localName != 'os13k-program' && activeWindow && 
+    e.target != loadIcon && e.target.localName != 'os13k-program' && activeWindow && 
         originalTarget.id != 'codeDisplay' && activeWindow.Focus();
 
     // handle click
@@ -1126,21 +1200,17 @@ onclick=e=>
 
 oncontextmenu=e=>
 {
-    // hide menu
-    menu.style.visibility = '';
-    
-    // ignore events except from windows and taskbar icons
     let menuElement = menu;
-    if (!e.target.SetActive || e.target == folderIcon)
+    if (!e.target.SetActive || e.target == loadIcon)
     {
         // open folder if clicked on desktop or folder icon
         menuElement = programsFolder;
-        folderIcon.MouseClick();
+        loadIcon.MouseClick();
     }
-    if (e.target.element)
+    if (e.target.window)
     {
         // set target frame active if it is an icon
-        e.target.element.SetActive && e.target.element.SetActive();
+        e.target.window.SetActive && e.target.window.SetActive();
     }
     else 
     {
@@ -1161,8 +1231,8 @@ ondblclick=e=>
 {
     // go fullscreen if titlebar name or icon is double clicked
     const originalTarget = e.originalTarget || e.path[0];
-    const target = e.target.element || e.target;
-    if ((originalTarget.id == 'name') || e.target.element)
+    const target = e.target.window || e.target;
+    if ((originalTarget.id == 'name') || e.target.window)
         target.FullScreen && target.FullScreen();
 }
 
@@ -1182,7 +1252,7 @@ audioContext.createBufferSource = (s = audioContext.Z())=>
 // setup gain node
 const gain = audioContext.createGain();
 gain.connect(audioContext.destination);
-ToggleMute(gain.gain.value = 0);
+gain.gain.value = defaultVolume;
 
 // play zzfx sound
 const zzfx =

@@ -14,12 +14,14 @@
     display:inline-block;
     overflow:hidden;
     user-select:none;
+    font-family:arial;
 }
 .icon
 {
     font-size:28;
     padding:3;
     text-shadow:2px 2px 4px #000;
+    white-space:nowrap;
 }
 </style>
 <body bgcolor=#222>
@@ -34,36 +36,27 @@ var OS13kStart=()=>
     for (const trophy of OS13k.GetTrophies())
     {
         // get trophy info
-        const key = trophy[0];
-        const message = OS13k.StripHTML(trophy[1]);
-        const keyParts = key.split(',');
-        let game = OS13k.StripHTML(keyParts[0]);
-        let name = OS13k.StripHTML(keyParts[1]);
-        let icon = OS13k.StripHTML(keyParts[2]);
-        
-        // use only first icon character and set default
-        icon = (icon.length ? [...icon][0] : '🏆')
-        
-        // use game as name if there is no name
-        name || (name = game, game = '');
+        const game = trophy[0];
+        const name = trophy[1];
+        const icon = trophy[2];
+        const message = trophy[3];
         
         // set title
-        const title = name + '\n' + game + (message? '\n"' + message + '"' : '');
-        title.replace("'",'');
+        const title = icon + ' ' + name + '\n' + game + '\n' + message;
         
         // create the medal div
         const div = document.createElement('div');
         div.className = 'trophy';
         div.title = title;
         div.innerHTML =
-            '<div class=icon>' + icon +                  // icon
-            '</div><div>' +                              // info
-                (name? '<b>' + name + '</b><br>' : '') + // name
-                '<i>' + game;                            // game
+            '<div class=icon>' + icon +                    // icon
+            '</div><div class=text>' +                     // info
+                '<b>' + name + '</b><br>' +                // name
+                '<i>' + game + '</i>' +                    // game
+                '<br><span style=font-size:14>' + message; // message
         
         // add to document
         this.document.body.appendChild(div); 
     }
 }
-
 </script>
