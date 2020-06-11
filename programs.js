@@ -1,14 +1,15 @@
 const programs = 
-[{name:'Close All', icon:'❌',},
+[
+{name:'Close All', icon:'❌',},
 {name:'Help', icon:'<b><span style=color:#0f0>?', src:'help.html?15', width:380, height:380},
 {name:'More Info', icon:'👨‍💻', src:'info.html?9'},
 {name:'JS13k Website', icon:'<b><span style=font-family:currier;color:#b33>13k', src:'https://js13kgames.com'},
 {name:'System', icon:'⚙️', folder:
 [
-    {name:'Trophy Case', icon:'🏆', src:'system/trophies.html?8'},
-    {name:'Clock', icon:'🕰️', src:'system/clock.dweet.js?7', width:200, height:200, reload:0, sleep:0, full:0},
+    {name:'Trophy Case', icon:'🏆', src:'system/trophies.html?8', sticky:1},
+    {name:'Clock', icon:'🕰️', src:'system/clock.dweet.js?7', width:200, height:200, reload:0, sleep:0, full:0, sticky:1},
     {name:'Shell', icon:'<span style=color:#0f0;background:#000>&nbsp;>&nbsp;', src:'system/shell.html?1', reload:1},
-    {name:'Test', src:'system/test.html?11', reload:1, code:1, width:600, height:400},
+    {name:'Test', src:'system/test.html?11', reload:1, code:1, width:600, height:400, sticky:1},
     {name:'Test Folder', icon:'📁', folder:
     [
         {name:'Hello!', icon:'✌️😄', src:'system/test.html?11', width:600, height:400},
@@ -16,7 +17,7 @@ const programs =
 ]},
 {name:'Tools', icon:'🔧', folder:
 [
-    {name:'Sticky Note', icon:'✍️', src:'tools/stickyNote.html?2', width:300, height:264, full:0},
+    {name:'Sticky Note', icon:'✍️', src:'tools/stickyNote.html?2', width:300, height:264, full:0, sticky:1},
     {name:'Photo Booth', icon:'📸', src:'tools/photoBooth.html', width:1400, height:550 },
     {name:'Unicode Toys', icon:'𝖀', author:'Xem', src:'tools/unicodeToys.html', width:500, height:800},
     {name:'Mini Shadertoy', icon:'𝓢', src:'tools/miniShadertoy.html', width:340, height:400},
