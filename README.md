@@ -16,7 +16,7 @@ OS13k is a tiny pseudo operating system designed for a JS13k community project. 
 - We could easily pack 1k with just like 10 or more cool tiny dweets and shaders
 - **A very important rule to the contest is that all content must be new, so no old stuff!
 - You can start with an old project but polish it up a lot, minify it and make it work with OS13k
-- We will need to curate the best and perhaps smallest content for what actualy lands in the JS13k build
+- We will need to curate the best and perhaps smallest content for what actually lands in the JS13k build
 - Anything left out of the JS13k build will still be available in the full GitHub version
 - We make this repo public on day 1 of JS13k and open source everything, I haven't decided on license yet
 
@@ -35,7 +35,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 ### Programs
 - OS13k can open any html file and it will work the same as if opened directly
 - Chrome is recommended for development, but Firefox is also supported
-- [Some browsers like Firefox may not work localy because it treats local files as cross-origin](https://discourse.mozilla.org/t/firefox-68-local-files-now-treated-as-cross-origin-1558299/42493/9)
+- [Some browsers like Firefox may not work locally because it treats local files as cross-origin](https://discourse.mozilla.org/t/firefox-68-local-files-now-treated-as-cross-origin-1558299/42493/9)
 - Strict mode is recommended to prevent bugs and make minification easier with Google Closure
 - To force a page to refresh you can add ?(version) to the src link... {src:'Help.html?1'}
 - Try to keep your program paused or light on cpu when it does not have focus, !document.hasFocus()
@@ -52,7 +52,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 - Don't over golf code, there is very little overhead for common functions calls and strings
 - For example it's better to use Math.PI then some approximation
 - Don't compress your code in any way, let zip do the work for us
-- Dweets and shadertoys are good for making programs with no setup cost
+- Dweets and Shadertoys are good for making programs with no setup cost
 - You do not need charset=utf-8, it will be applied automatically
 - We plan to pack everything together into one giant html file before zipping to save space
 
@@ -63,7 +63,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 - Use local storage to save your game's data (prefix keys with OS13kYourProgramName)
 
 ### Apps
-- We will incude some non-game apps that are small and fun to use
+- We will include some non-game apps that are small and fun to use
 - Use local storage to save your app's data
 - *Apps can play sounds and have trophies too
 
@@ -73,18 +73,18 @@ Add an icon config to programs.js to register your program, and send me pull req
 - The idea is that players can listen to music while playing with games and apps
 - The music tools can even work in conjunction with each other (step sequencer drum kit + piano)
 
-### Shadertoys and Dweets
-- Programs with the extension .shader.js or .dweet.js will automatically load as dweets or shadertoys!
-- Shadertoys and dweets are automatically paused when they don't have focus
+### Dweets and Shadertoys
+- Programs with the extension .dweet.js or .shader.txt or will automatically load as Dweets or Shadertoys!
+- Shadertoys and Dweets are automatically paused when they don't have focus
 - They also automatically have reload and show code options applied
-- Dweets do not need to be under 140 characers, there is no size limit
+- Dweets do not need to be 140 characters, there is no size limit
 - Dweets can do anything that other programs can do including access OS13k and ZzFX
 - Shaders support iTime, iFrame, iMouse, iResolution, and iChannel0
 - iChannel0 is a saved image of the previous frame, this can be used to store game logic or make effects
 
 ### System Calls
-- The function OS13kStart() is called on child frames immediatly after load
-- To acces OS13k features, use the OS13k object
+- The function OS13kStart() is called on child frames immediately after load
+- Use the OS13k object to access OS13k features
 - OS13k.CreateShader(canvas, shaderCode) - Create a shadertoy compatible webgl shader
 - OS13k.RenderShader(canvas, shaderProgram, time=0, frame=0) - Render a shader
 - OS13k.KeyDirection(key) - Get {x, y} position from a key code for WASD and arrow keys
@@ -101,7 +101,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 
 ### ZzFX
 - ZzFX is my super tiny sound synth which is also on GitHub, but don't let it's size fool you
-- Here is the sound desinger for ZzFX with a link to the public repo https://zzfx.3d2k.com/
+- Here is the sound designer for ZzFX with a link to the public repo https://zzfx.3d2k.com/
 - ZzFx sounds can played directly by calling zzfx, volume is controlled by the system
 - A seeded ZzFX sound player is available to save space with much smaller sound calls
 - Example OS13k.PlaySeed(1006)
@@ -115,7 +115,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 - author - Name of creator (optional)
 - reload (0) - Shows the reload option, always true for dweets/shaders
 - code (0) - Shows code option, always true for dweets/shaders
-- full (1) - Enables fullscreen option
+- full (1) - Enables full screen option
 - sleep (1) - Dims window and pauses dweets/shaders when not focused
 - sticky (0) - Enable auto open of program on restart
  
