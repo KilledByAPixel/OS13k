@@ -7,9 +7,9 @@ const programs =
 {name:'System', icon:'⚙️', folder:
 [
     {name:'Trophy Case', icon:'🏆', src:'system/trophies.html?3'},
+    {name:'Clock', icon:'🕰️', src:'system/clock.dweet.js', width:200, height:200, reload:0, code:0, sleep:0},
     {name:'Shell', icon:'<span style=color:#0f0;background:#000>&nbsp;>&nbsp;', src:'system/shell.html?1', reload:1},
     {name:'Test', icon:'😄', src:'system/test.html?10', reload:1, code:1},
-    {name:'Clock', icon:'🕰️', src:'system/clock.dweet.js', width:200, height:200, reload:0, code:0, sleep:0},
     {name:'Test Folder', icon:'📁', folder:
     [
         {name:'Test2', icon:'✌️', src:'system/test.html?6'},
