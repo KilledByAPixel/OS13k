@@ -16,14 +16,14 @@ const programs =
 ]},
 {name:'Tools', icon:'🔧', folder:
 [
-    {name:'ZzFX', icon:'<b>ℤℤ', src:'https://zzfx.3d2k.com', height:880},
-    {name:'CapJS', icon:'𝓒𝓪𝓹', src:'https://capjs.3d2k.com', height:900},
-    {name:'Dweet View', icon:'<span style=color:#f00;background:#000><b>&nbsp;III&nbsp;', src:'https://dweetview.3d2k.com'},
+    {name:'Sticky Note', icon:'🟨', src:'tools/stickyNote.html?2', width:300, height:264, full:0},
     {name:'Photo Booth', icon:'📸', src:'tools/photoBooth.html', width:1400 },
     {name:'Unicode Toys', icon:'𝖀', author:'Xem', src:'tools/unicodeToys.html', width:500, height:800},
     {name:'Mini Shadertoy', icon:'𝓢', src:'tools/miniShadertoy.html', width:340, height:400},
     {name:'Text Editor', icon:'📝', src:'tools/textEditor.html'},
-    {name:'Sticky Note', icon:'🟨', src:'tools/stickyNote.html?2', width:300, height:264, full:0},
+    {name:'ZzFX', icon:'<b>ℤℤ', src:'https://zzfx.3d2k.com', height:880},
+    {name:'CapJS', icon:'𝓒𝓪𝓹', src:'https://capjs.3d2k.com', height:900},
+    {name:'Dweet View', icon:'<span style=color:#f00;background:#000><b>&nbsp;III&nbsp;', src:'https://dweetview.3d2k.com'}
 ]},
 {name:'Games', icon:'🎮', folder:
 [
@@ -44,19 +44,18 @@ const programs =
 {name:'Toys', icon:'🤖', folder:
 [
     {name:'ZzFX Soundboard', icon:'𝐙𝐙', src:'toys/zzfxSoundBoard.html?1'},
+    {name:'ZzArt Landscape', icon:'𝓩', src:'toys/zzart.shader.txt?3'},
     {name:'Yin Yangs', icon:'☯️', src:'toys/infiniteYinYangs.shader.txt?2'},
     {name:'Vogel Spiral', icon:'🌀', src:'toys/vogelSpiral.shader.txt?2'},
     {name:'Meta OS13k', icon:'𝐎𝐒', src:'index.html'},
-    {name:'ZzArt Landscape', icon:'𝓩', src:'toys/zzart.shader.txt?3'},
 ]},
 {name:'Dweets', icon:'<b>III', folder:
 [
     {name:'Black Hole', icon:'🌌', src:'dweets/blackHole.dweet.js'},
-    {name:'Mandelbrot Nebula', icon:'🌟', src:'dweets/mandelbrotNebula.dweet.js'},
-    {name:'Bogus Roads', icon:'🛣️', src:'dweets/bogusRoads.dweet.js'},
-    {name:'Automatic Breakout', icon:'●', src:'dweets/breakout.dweet.js'},
     {name:'Underwater Cavern', icon:'🌊', author:'Pavel', src:'dweets/underwaterCavern.dweet.js'},
     {name:'City Traffic', icon:'🚌', author:'Tomxor', src:'dweets/cityTraffic.dweet.js'},
     {name:'Train Set', icon:'🚂', author:'jylikangas', src:'dweets/trainSet.dweet.js'},
+    {name:'Bogus Roads', icon:'🛣️', src:'dweets/bogusRoads.dweet.js'},
+    {name:'Automatic Breakout', icon:'●', src:'dweets/breakout.dweet.js'},
 ]},
 ];
