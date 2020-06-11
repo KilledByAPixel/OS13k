@@ -8,16 +8,16 @@ const programs =
     {name:'Trophy Case', icon:'🏆', src:'system/trophies.html?8'},
     {name:'Clock', icon:'🕰️', src:'system/clock.dweet.js?6', width:200, height:200, reload:0, sleep:0, full:0},
     {name:'Shell', icon:'<span style=color:#0f0;background:#000>&nbsp;>&nbsp;', src:'system/shell.html?1', reload:1},
-    {name:'Test', src:'system/test.html?10', reload:1, code:1},
+    {name:'Test', src:'system/test.html?10', reload:1, code:1, width:600, height:400},
     {name:'Test Folder', icon:'📁', folder:
     [
-        {name:'Hello!', icon:'✌️😄', src:'system/test.html?6'},
+        {name:'Hello!', icon:'✌️😄', src:'system/test.html?6', width:600, height:400},
     ]},
 ]},
 {name:'Tools', icon:'🔧', folder:
 [
     {name:'Sticky Note', icon:'🟨', src:'tools/stickyNote.html?2', width:300, height:264, full:0},
-    {name:'Photo Booth', icon:'📸', src:'tools/photoBooth.html', width:1400 },
+    {name:'Photo Booth', icon:'📸', src:'tools/photoBooth.html', width:1400, height:550 },
     {name:'Unicode Toys', icon:'𝖀', author:'Xem', src:'tools/unicodeToys.html', width:500, height:800},
     {name:'Mini Shadertoy', icon:'𝓢', src:'tools/miniShadertoy.html', width:340, height:400},
     {name:'Text Editor', icon:'📝', src:'tools/textEditor.html'},
@@ -29,7 +29,7 @@ const programs =
 [
     {name:'Bounce Back', icon:'❤️', src:'https://bounceback.3d2k.com', author:'Frank Force'},
     {name:'Swatch', icon:'🌈', src:'games/swatch.html?1', author:'Nicholas Ortenzio', width:320, height:340},
-    {name:'Lava Rush', icon:'🌋', author:'Jeremy Burns', src:'games/lavaRush.html?4', width:640, height:400},
+    {name:'Lava Rush', icon:'🌋', author:'Jeremy Burns', src:'games/lavaRush.html?4', width:960, height:600},
     {name:'Sn1ke', icon:'👀', author:'Codegolf Team', src:'games/sn1ke.html', width:450, height:330},
     {name:'Tetris', icon:'<span style=font-size:10>▀█▀', author:'Veubeke', src:'games/tetris.html', width:340, height:430, reload:1},
     {name:`Queen's Gambit`, icon:'<span style=color:#f0f>♛', src:'games/queensGambit.html?4', reload:1},
@@ -43,7 +43,7 @@ const programs =
 ]},
 {name:'Toys', icon:'🤖', folder:
 [
-    {name:'ZzFX Soundboard', icon:'𝐙𝐙', src:'toys/zzfxSoundBoard.html?1'},
+    {name:'ZzFX Soundboard', icon:'𝐙𝐙', src:'toys/zzfxSoundBoard.html?1', width:700, height:420},
     {name:'ZzArt Landscape', icon:'𝓩', src:'toys/zzart.shader.txt?3'},
     {name:'Yin Yangs', icon:'☯️', src:'toys/infiniteYinYangs.shader.txt?2'},
     {name:'Vogel Spiral', icon:'🌀', src:'toys/vogelSpiral.shader.txt?2'},
