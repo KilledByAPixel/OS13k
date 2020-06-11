@@ -645,9 +645,7 @@ class OS13kTaskbarIcon extends HTMLElement
         this.className = 'taskbarIcon';
         this.innerHTML = '<div style=pointer-events:none>' + program.icon;
         this.window = window;
-        this.title = program.name +
-            (program.isDweet ? ' - Dweet' : program.isShader ? ' - Shader' : '') +
-            (program.author ? '\nBy ' + program.author : '');
+        this.title = program.title || program.name;
         
         // add to taskbar
         traySpace.before(this);
@@ -758,6 +756,11 @@ class OS13kProgram extends HTMLElement
         this.full = full;
         this.reload = reload || (this.hasExtension && reload === undefined);
         this.code = code || (this.hasExtension && code === undefined);
+        
+        // set title
+        this.title = name +
+            ( this.isDweet ? ' - Dweet' :  this.isShader ? ' - Shader' : '') +
+            (author ? '\nBy ' + author : '');
             
         // icon
         const iconDisplay = document.createElement('div');
@@ -848,6 +851,7 @@ class OS13kWindow extends HTMLElement
         // create title bar
         this.titlebar = document.createElement('div');
         this.titlebar.id = 'titlebar';
+        this.titlebar.title = program.title;
         this.shadowRoot.appendChild(this.titlebar);
         
         // create title bar name
@@ -864,8 +868,7 @@ class OS13kWindow extends HTMLElement
         // name
         const nameDisplay = document.createElement('div');
         nameDisplay.className = 'titleBarElement';
-        nameDisplay.innerHTML = program.name + 
-            (program.author? ' - ' + program.author: '');
+        nameDisplay.innerHTML = program.name;
         this.titlebarName.appendChild(nameDisplay);
         
         // create title bar icons
