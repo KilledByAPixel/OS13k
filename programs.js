@@ -57,5 +57,6 @@ const programs =
     {name:'Train Set', icon:'🚂', author:'jylikangas', src:'dweets/trainSet.dweet.js'},
     {name:'Automatic Breakout', icon:'●', src:'dweets/breakout.dweet.js'},
     {name:'Bogus Roads', icon:'🛣️', src:'dweets/bogusRoads.dweet.js'},
+    {name:'Color Zoom', icon:'❤ ', src:'dweets/colorZoom.dweet.js'},
 ]},
 ];
