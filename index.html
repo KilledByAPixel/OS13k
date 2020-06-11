@@ -202,7 +202,7 @@ div svg       { width:100%; pointer-events:none; }
 <button id=buttonShowCode onclick=activeWindow.ShowCode()>Show Code
 <button id=buttonReload onclick=activeWindow.Reload()>Reload
 <button id=buttonClose onclick=activeWindow.Close()>Close
-<script src=programs.js?31></script>
+<script src=programs.js?32></script>
 <script>
     
 // load test programs if none found
@@ -611,7 +611,7 @@ const ToggleClock=()=>
             windowOpenX = startWindowOpenX,
             windowOpenY = startWindowOpenY);
             
-    OS13k.Trophy('OS13k','Timer','🕰️','Checked Time');
+    OS13k.Trophy('OS13k','Timer','🕑','Checked Time');
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -712,7 +712,7 @@ customElements.define('os13k-folder', OS13kFolder);
 
 class OS13kProgram extends HTMLElement
 {
-	constructor({'x':x, 'y':y, 'name':name, 'icon':icon, 'src':src, 'width':width=1280, 'height':height=720, 'author':author, 'folder':folder, 'reload':reload, 'code':code, 'sleep':sleep=1}, info)
+	constructor({'x':x, 'y':y, 'name':name, 'icon':icon, 'src':src, 'width':width=1280, 'height':height=720, 'author':author, 'folder':folder, 'full':full=1, 'reload':reload, 'code':code, 'sleep':sleep=1}, info)
     {
 		super();
         
@@ -738,6 +738,7 @@ class OS13kProgram extends HTMLElement
         this.height = height;
         this.author = author;
         this.sleep = sleep;
+        this.full = full;
         this.reload = reload || (this.hasExtension && reload === undefined);
         this.code = code || (this.hasExtension && code === undefined);
             
@@ -855,7 +856,7 @@ class OS13kWindow extends HTMLElement
             icon.title = title;
             this.titlebar.appendChild(icon);
         }
-        AddtitlebarIcon('full', 'Full Screen');
+        program.full && AddtitlebarIcon('full', 'Full Screen');
         program.code && AddtitlebarIcon('code', 'Show Code');
         program.reload && AddtitlebarIcon('reload', 'Reload');
         AddtitlebarIcon('close', 'Close');

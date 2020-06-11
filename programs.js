@@ -1,13 +1,12 @@
 const programs = 
-[
-{name:'Close All', icon:'❌',},
+[{name:'Close All', icon:'❌',},
 {name:'Help', icon:'<b><span style=color:#0f0>?', src:'help.html?12', width:380, height:380},
 {name:'More Info', icon:'👨‍💻', src:'info.html?9'},
 {name:'JS13k Website', icon:'<b><span style=font-family:currier;color:#b33>13k', src:'https://js13kgames.com'},
 {name:'System', icon:'⚙️', folder:
 [
     {name:'Trophy Case', icon:'🏆', src:'system/trophies.html?3'},
-    {name:'Clock', icon:'🕰️', src:'system/clock.dweet.js', width:200, height:200, reload:0, code:0, sleep:0},
+    {name:'Clock', icon:'🕰️', src:'system/clock.dweet.js', width:200, height:200, reload:0, code:0, sleep:0, full:0},
     {name:'Shell', icon:'<span style=color:#0f0;background:#000>&nbsp;>&nbsp;', src:'system/shell.html?1', reload:1},
     {name:'Test', icon:'😄', src:'system/test.html?10', reload:1, code:1},
     {name:'Test Folder', icon:'📁', folder:
@@ -24,7 +23,7 @@ const programs =
     {name:'Unicode Toys', icon:'𝖀', author:'Xem', src:'tools/unicodeToys.html', width:500, height:800},
     {name:'Mini Shadertoy', icon:'𝓢', src:'tools/miniShadertoy.html', width:340, height:400},
     {name:'Text Editor', icon:'📝', src:'tools/textEditor.html'},
-    {name:'Post-it', icon:'🟨', src:'tools/postIt.html', width:400, height:320},
+    {name:'Sticky Note', icon:'🟨', src:'tools/stickyNote.html', width:300, height:300, full:0},
 ]},
 {name:'Games', icon:'🎮', folder:
 [
