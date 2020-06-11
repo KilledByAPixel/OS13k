@@ -90,7 +90,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 - OS13k.KeyDirection(key) - Get {x, y} position from a key code for WASD and arrow keys
 - OS13k.PlaySamples(samples, sampleRate=44100) - Play audio samples
 - OS13k.PlaySeed(seed, lengthScale=1, volume=1, randomness=.05) - Play a zzfx sound from seed
-- OS13k.Speak(text) - Play speech of the text
+- OS13k.Speak(text, volume=1, pitch=1, rate=1) - Play speech of the text
 
 ### Math Library
 - OS13k.Random(max=1, min=0) - Get a seeded random value, OS13k.randomSeed to set the seed
