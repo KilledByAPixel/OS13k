@@ -1006,8 +1006,8 @@ class OS13kWindow extends HTMLElement
                     'loop(s=OS13k.CreateShader(c,`' + iframeText + '`))');
             }
 
-            // show iframe and set focus
-            this.style.visibility = '';
+            // make visible
+            this.style.visibility = this.iframe.style.visibility = '';
             
             // focus on iframe
             this.Focus();
