@@ -1,5 +1,5 @@
 # Welcome to OS13k!
-OS13k is a tiny pseudo operating system designed for a JS13k community project. It includes native support for shadertoys, dweets, zzfx sounds, music, trophies, fullscreen, touch control, and more. The OS (incuding zzfx, shadertoy, and dwitter support) is around 6k when zipped.
+OS13k is a tiny pseudo operating system designed for a JS13k community project. It includes native support for shadertoys, dweets, zzfx sounds, music, trophies, fullscreen, touch control, and more. The OS is only around 6k zipped and much if that is shared code.
 
 ## Please keep this project confidential!
 
@@ -8,54 +8,59 @@ OS13k is a tiny pseudo operating system designed for a JS13k community project. 
 # [Trello Board](https://trello.com/b/1PNeOZfM/os13k) (ask for an invite)
 
 ## The Plan
-- The idea is to make a tiny OS and host a variety of games, music, and apps that fit in 13k
-- OS13k is around 6k by itself, a big part of that is shared ZzFX, shader code, and dweet setup
-- By sharing code with dweets, shaders, and zzfx we can pack a lot into 13k
+- The idea is to build a tiny OS to host a variety of games, music, and apps that fit in 13k
+- OS13k is around 6k zipped, so by sharing code with dweets, shaders, and zzfx we can pack a lot into 13k
 - I'd like to see as many people as possible contribute tiny games and apps
 - Programs should be in the 100-1000 byte range, what matters most is how well it compresses
-- We hope to fit on the order of 20 programs in total
-- We could easily pack 1k of that with just like 10 or more really cool dweets and shaders
-- A very important rule to the contest is that all content must be new, so no old stuff!
+- We hope to fit on the order of 20 programs in total, [(maybe even 27 😅)](http://js13kgames.com/entries/26-games-in-1)
+- We could easily pack 1k with just like 10 or more cool tiny dweets and shaders
+- **A very important rule to the contest is that all content must be new, so no old stuff!
 - You can start with an old project but polish it up a lot, minify it and make it work with OS13k
 - We will need to curate the best and perhaps smallest content for what actualy lands in the JS13k build
 - Anything left out of the JS13k build will still be available in the full GitHub version
-- Another big part of this is the trophy system that ANY JS13k game (even non-OS13k) can opt into
-- We make this repo public on day 1 of Js13k and open source everything, I haven't decided on license
+- We make this repo public on day 1 of JS13k and open source everything, I haven't decided on license yet
 
-You can learn more about JS13k here, I won 2nd place last year!
-https://js13kgames.com/
+### [You can learn more about JS13k here](https://js13kgames.com/) (I won 2nd place last year) 
 
 ## Programming Info
 - OS13k stores it's list of programs in programs.js
-- For fast iteration when deveoping, the first program in the list opens automatically
+- For fast iteration when developing, the first program in the list opens automatically
 
 Add an icon config to programs.js to register your program, and send me pull request, examples...
-- {name:'Test', icon:'✌️', src:'system/test.html', multiple:1, reload:1, code:1}
-- {name:'Underwater Cavern', icon:'🌊', author:'Pavel', src:'dweets/underwaterCavern.dweet.js'}
-- {name:'Yin Yangs', icon:'☯️', src:'toys/infiniteYinYangs.shader.txt'}
-- {src:'help.html'}
+- {name:'Hello!', icon:'✌️😄', src:'system/test.html', reload:1, code:1, sticky:1}
+- {icon:'🌊', author:'Pavel', src:'dweets/UnderwaterCavern.dweet.js'}
+- {icon:'☯', src:'toys/InfiniteYinYangs.shader.txt'}
+- {src:'Help.html'}
 
 ### Programs
-- OS13k can open any html file with javascript and it will work the same as if opened directly
-- Chrome is recommended for development, but Firefox is also supported.
-- Firefox and other bowers may not work localy because it treats local files as cross-origin
-- Strict mode is not enforced but recommended to make minification easier with Google Closure
-- To force a page to refresh you can add ?(version) to the src link... {src:'help.html?1'}
-- Your program should be paused or light on cpu when it does not have focus, !document.hasFocus()
-- Dweets and Shadertoys are automatically paused when not focued
-- You do not need charset=utf-8, it will be applied automatically
+- OS13k can open any html file and it will work the same as if opened directly
+- Chrome is recommended for development, but Firefox is also supported
+- [Some browsers like Firefox may not work localy because it treats local files as cross-origin](https://discourse.mozilla.org/t/firefox-68-local-files-now-treated-as-cross-origin-1558299/42493/9)
+- Strict mode is recommended to prevent bugs and make minification easier with Google Closure
+- To force a page to refresh you can add ?(version) to the src link... {src:'Help.html?1'}
+- Try to keep your program paused or light on cpu when it does not have focus, !document.hasFocus()
+- Dweets and Shadertoys are automatically paused when not focused (unless sleep:0 is set)
 - Prefix local storage keys with OS13k(program name) to prevent collisions
-- OS13k works well on mobile devices, so we plan to have a separate entry for the JS13k mobile category
-- Make use of the built in features of OS13k to save space in your code
+- OS13k works well on mobile devices, so we can have a separate entry for the JS13k mobile category
+
+### Minification Tips
 - For now don't worry about submitting fully minified versions of your code, just keep it clean
-- I will make a separate folder specifically for our minified build
+- Soon we will set up a separate branch with only minified programs
+- For the OS13k core system I am using (Google Closer)[https://closure-compiler.appspot.com/home] and (Terser)[https://xem.github.io/terser-online/]
 - There is very little overhead for OS13k function call names, remember this will be zipped
+- Don't over golf code, commonly used functions will be compressed super well
+- Dweets and shadertoys are good for making programs with no setup cost
+- You do not need charset=utf-8, it will be applied automatically
+- We plan to pack everything together into one giant html file before zipping to save more space
 
 ### Games
-- JS13k is a game development competiion, so games are one of the main things we need
-- Don't put music in your games, music will be handled by music specific apps
-- This way players can mix and match music with games!
-- You can use dweets and shadertoys to make games too
+- JS13k is a game development competition, so we need to focus on games and fun apps
+- Don't put music in your games, music will be handled by music specific programs
+- This way players can mix and match music with games
+- Use JS13k features like trophies and seeded sounds
+
+### Music
+- We are working on a music system to play tracker songs with ZzFX sound effects [(WIP DEMO)](https://keithclark.co.uk/temp/zzfx-music/build/)
 
 ### Shadertoys and Dweets
 - Programs with the extension .shader.js or .dweet.js will automatically load as dweets or shadertoys!
@@ -85,9 +90,6 @@ Add an icon config to programs.js to register your program, and send me pull req
 - ZzFx sounds can played directly by calling zzfx, volume is controlled by the system
 - A seeded ZzFX sound player is available to save space with much smaller sound calls
 - Example OS13k.PlaySeed(1006), I will create a tool for looking for sound seeds soon
-
-### Music
-- Comming Soon!
 
 ### Math Library
 - OS13k.Random(max=1, min=0) - Get a seeded random value, OS13k.randomSeed to set the seed
