@@ -485,7 +485,7 @@ const taskbarHeight = 42, programHeight = 26, titlebarHeight = 46,
       
 let grabWindow, grabOffsetX, grabOffsetY,
     activeWindow, activeProgram, firstProgram, activeTaskbarIcon,
-    lastActiveElement, loadIcon, topZ = 0,
+    lastActiveElement, loadIcon, topZ = 0, loading = 0,
     windowOpenX = startWindowOpenX, windowOpenY = startWindowOpenY,
     trophies = [], trophyProgram, clockProgram;
 
@@ -568,7 +568,7 @@ const Update=timeStamp=>
     trayTime.innerHTML = (time[0]%12?time[0]%12:12) + ':' + time[1];
     
     // fade in desktop
-    desktop.style.opacity = timeStamp/5e2;
+    loading || (desktop.style.opacity = timeStamp/5e2);
 }
 
 const CloseFolders=()=>
@@ -928,6 +928,9 @@ class OS13kWindow extends HTMLElement
         iframe.style.visibility = 'hidden';
         iframe.src = program.src;
         frameWrapper.appendChild(iframe);
+        
+        // track if programs are loading
+        ++loading;
                 
         // load frame
         iframe.onload=e=>
@@ -1009,6 +1012,9 @@ class OS13kWindow extends HTMLElement
             
             // focus on iframe
             this.Focus();
+        
+            // track if programs are loading
+            --loading;
         }
     }
     
