@@ -1,3 +1,15 @@
+<!--
+
+OS13k is a tiny pseudo operating system designed for a JS13k community project. It has native support for Shadertoys, Dweets, ZzFX, trophies, and much more.
+
+Your mission, if you choose to accept it, is to help us fill it up with as much cool stuff as we can fit.
+
+Please keep this project confidential!
+
+✌️😄 ❤️ OS13k Team
+
+-->
+
 <title>OS13k - A tiny operating system for JS13k</title>
 <link rel=icon type=image/x-icon href='favicon.png?1'/>
 <meta charset=utf-8>
@@ -202,16 +214,22 @@ div svg       { width:100%; pointer-events:none; }
 <button id=buttonShowCode onclick=activeWindow.ShowCode()>Show Code
 <button id=buttonReload onclick=activeWindow.Reload()>Reload
 <button id=buttonClose onclick=activeWindow.Close()>Close
-<script src=programs.js?44></script>
+<script src=programs.js?45></script>
 <script>
 
+/////////////////////////////////////////////////////////////////////////////
+// OS13k Debug Stuff (remove from minified)
+
 // version check
-if (localStorage.OS13kVersion != 2)
-    localStorage.clear(localStorage.OS13kVersion = 2);
+if (localStorage.OS13kVersion != 5)
+    localStorage.clear(),localStorage.OS13kVersion = 5;
     
-// load test programs if none found
+// load default programs if none found
 if (typeof programs == 'undefined')
     programs = [{src:'system/test.html'},{src:'system/trophies.html'},{src:'system/clock.dweet.js',width:200,height:200,sleep:0}];
+
+/////////////////////////////////////////////////////////////////////////////
+// Use Strict and Closure Config
 
 'use strict';
 
@@ -234,7 +252,7 @@ if (typeof programs == 'undefined')
 
 class _OS13k
 {
-    Trophy(game, name='', icon='', message='')
+    Trophy(game, name='', icon='', message='', saveTrophies=1)
     {
         // build key
         const key = game + ',' + name + ',' + icon;
@@ -249,6 +267,12 @@ class _OS13k
                 trophies[trophyIndex][3] == message))
             return;
         
+        // strip html
+        icon = this.StripHTML(icon) || '🏆';
+        name = this.StripHTML(name);
+        game = this.StripHTML(game);
+        message = this.StripHTML(message);
+        
         // add or update trophy list
         const trophyData = [game, name, icon, message, key];
         trophyIndex < 0 ? 
@@ -256,14 +280,11 @@ class _OS13k
             trophies[trophyIndex] = trophyData;
 
         // save local storage
-        localStorage[storageKey] = message;
-        localStorage.OS13kTrophies = JSON.stringify(trophies);
-        
-        // strip html
-        icon = this.StripHTML(icon) || '🏆';
-        name = this.StripHTML(name);
-        game = this.StripHTML(game);
-        message = this.StripHTML(message);
+        if (saveTrophies)
+        {
+            localStorage[storageKey] = message;
+            localStorage.OS13kTrophies = JSON.stringify(trophies);
+        }
         
         // use game as name if there is no name
         name || (name = game, game = '');
@@ -492,9 +513,11 @@ const Init=()=>
         const key = localStorage.key(i);
         const keyParts = key.split(',');
         if (keyParts.shift() == 'OS13kTrophy')
-            OS13k.Trophy(...keyParts, localStorage[key]);
+            OS13k.Trophy(...keyParts, localStorage[key], 0);
     }
     
+    // save trophies
+    localStorage.OS13kTrophies = JSON.stringify(trophies);
     OS13k.Trophy('OS13k','Welcome!','👋');
 }
 
@@ -541,9 +564,8 @@ const Update=()=>
     
     // set time
     trayTime.title = new Date();
-    const date = trayTime.title.slice(16,24).split(':')
-    trayTime.innerHTML = (date[0]%12?date[0]%12:12) 
-        + (date[1]<=9?':0':':') + date[1];
+    const time = trayTime.title.slice(16,24).split(':')
+    trayTime.innerHTML = (time[0]%12?time[0]%12:12) + ':' + time[1];
 }
 
 const CloseFolders=()=>
@@ -598,6 +620,8 @@ const ToggleTrophies=()=>
         trophyProgram.MouseClick(
             windowOpenX = startWindowOpenX,
             windowOpenY = startWindowOpenY);
+            
+    OS13k.Trophy('OS13k','Hoarder','','Viewed Trophy Case');
 }
 
 const ToggleClock=()=>

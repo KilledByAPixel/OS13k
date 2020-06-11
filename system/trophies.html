@@ -42,8 +42,7 @@ var OS13kStart=()=>
         const message = trophy[3];
         
         // set title
-        const title = name + '\n' + game + (message? '\n"' + message + '"' : '');
-        title.replace("'",'');
+        const title = icon + ' ' + name + '\n' + game + '\n' + message;
         
         // create the medal div
         const div = document.createElement('div');
@@ -52,15 +51,12 @@ var OS13kStart=()=>
         div.innerHTML =
             '<div class=icon>' + icon +                    // icon
             '</div><div class=text>' +                     // info
-                (name? '<b>' + name + '</b><br>' : '') +   // name
+                '<b>' + name + '</b><br>' +                // name
                 '<i>' + game + '</i>' +                    // game
                 '<br><span style=font-size:14>' + message; // message
         
         // add to document
         this.document.body.appendChild(div); 
     }
-            
-    OS13k.Trophy('OS13k','Hoarder','','Viewed Trophy Case');
 }
-
 </script>
