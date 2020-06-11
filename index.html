@@ -565,7 +565,7 @@ const Update=timeStamp=>
     trayTime.innerHTML = (time[0]%12?time[0]%12:12) + ':' + time[1];
     
     // fade in desktop
-    loading || (desktop.style.opacity = timeStamp/5e2);
+    loading || (desktop.style.opacity = timeStamp/1e3);
 }
 
 const CloseFolders=()=>
