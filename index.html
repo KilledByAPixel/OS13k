@@ -202,7 +202,7 @@ div svg       { width:100%; pointer-events:none; }
 <button id=buttonShowCode onclick=activeWindow.ShowCode()>Show Code
 <button id=buttonReload onclick=activeWindow.Reload()>Reload
 <button id=buttonClose onclick=activeWindow.Close()>Close
-<script src=programs.js?30></script>
+<script src=programs.js?31></script>
 <script>
     
 // load test programs if none found
@@ -281,7 +281,8 @@ class _OS13k
         trophyPopups.appendChild(trophyElement);
         
         // refresh trophy window if it is being displayed
-        trophyProgram.window && trophyProgram.window.iframeContent.OS13kStart();
+        trophyProgram.window && trophyProgram.window.iframeContent &&
+            trophyProgram.window.iframeContent.OS13kStart();
     }
     
     GetTrophies() { return trophies; } 
@@ -495,6 +496,8 @@ const Init=()=>
                 OS13k.Trophy(...keyParts, trophyData);
         }
     }
+    
+    OS13k.Trophy('OS13k','Welcome!','👋');
 }
 
 const Update=()=>
