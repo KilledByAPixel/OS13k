@@ -62,7 +62,8 @@ Add an icon config to programs.js to register your program, and send me pull req
 - Dweets can do anything that other programs can do including access OS13k and zzfx
 - Shadertoy shaders support iTime, iMouse, iResolution, and iChannel0
 - iChannel0 is a loop back image of the previous frame, this can be used to store game logic or make effects
-- Keep in mind that the entry for JS13k will be zipped, so repeating your code is better then a full golf
+- Keep in mind that the entry for JS13k will be zipped, so repeated code may compress better
+- Think of commonly used function calls as using only 1 byte
 
 ### System Calls
 - The function OS13kStart() is called on child frames when opened
