@@ -202,7 +202,7 @@ div svg       { width:100%; pointer-events:none; }
 <button id=buttonShowCode onclick=activeWindow.ShowCode()>Show Code
 <button id=buttonReload onclick=activeWindow.Reload()>Reload
 <button id=buttonClose onclick=activeWindow.Close()>Close
-<script src=programs.js?41></script>
+<script src=programs.js?43></script>
 <script>
     
 // load test programs if none found
@@ -251,23 +251,20 @@ class _OS13k
         localStorage.OS13kTrophies = JSON.stringify(trophies);
         
         // strip html
-        icon = this.StripHTML(icon);
+        icon = this.StripHTML(icon) || '🏆';
         name = this.StripHTML(name);
         game = this.StripHTML(game);
         message = this.StripHTML(message);
         
         // use game as name if there is no name
         name || (name = game, game = '');
-        
-        // use only first icon character and set default
-        icon = (icon.length ? [...icon][0] : '🏆');
 
         // build popup element
         const trophyElement = document.createElement('div');
         trophyElement.className = 'trophyPopup';
         trophyElement.innerHTML = 
-            '<div class=flexCenter style=flex-direction:column>' +
-                '<div style="font-size:40;padding:9;text-shadow:2px 2px 4px #000">' + 
+            '<div class=flexCenter style=overflow:hidden;flex-direction:column>' +
+                '<div style="white-space:nowrap;font-size:40;padding:9;text-shadow:2px 2px 4px #000">' + 
                     icon +                                  // icon
                 '</div>' +
                 '<div style=width:100%;overflow:hidden>' +  // info
@@ -568,7 +565,7 @@ const CloseWindows=()=>
     windowOpenX = startWindowOpenX;
     windowOpenY = startWindowOpenY;
     
-    OS13k.Trophy('OS13k','Coffee Is For Closers','❌','Closed All');
+    OS13k.Trophy('OS13k','Coffee Is For Closers','☕','Closed All');
 }
 
 const FocusTopWindow=()=>
@@ -600,8 +597,6 @@ const ToggleTrophies=()=>
         trophyProgram.MouseClick(
             windowOpenX = startWindowOpenX,
             windowOpenY = startWindowOpenY);
-            
-    OS13k.Trophy('OS13k','Hoarder','','Viewed Trophy Case');
 }
 
 const ToggleClock=()=>
@@ -613,7 +608,7 @@ const ToggleClock=()=>
             windowOpenX = startWindowOpenX,
             windowOpenY = startWindowOpenY);
             
-    OS13k.Trophy('OS13k','Clock Watcher','🕑','Checked Time');
+    OS13k.Trophy('OS13k','Clock Watcher','🕰️','Checked Time');
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1039,7 +1034,7 @@ class OS13kWindow extends HTMLElement
         else if (fullScreenElement.mozRequestFullScreen)
             fullScreenElement.mozRequestFullScreen();
             
-        OS13k.Trophy('OS13k','Pro Gamer','🎮','Went Fullscreen');
+        OS13k.Trophy('OS13k','Pro Gamer','🕹️','Went Fullscreen');
     }
     
     ShowCode()
@@ -1049,7 +1044,7 @@ class OS13kWindow extends HTMLElement
         this.codeDisplay.style.display = 
             (this.showCode = !this.showCode) ? 'block' : '';
             
-        OS13k.Trophy('OS13k','Hacker','⌨️','Viewed Code');
+        OS13k.Trophy('OS13k','Hacker','👨‍💻','Viewed Code');
     }
     
     Reload()

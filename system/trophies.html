@@ -21,6 +21,7 @@
     font-size:28;
     padding:3;
     text-shadow:2px 2px 4px #000;
+    white-space:nowrap;
 }
 </style>
 <body bgcolor=#222>
@@ -40,10 +41,7 @@ var OS13kStart=()=>
         const keyParts = key.split(',');
         let game = OS13k.StripHTML(keyParts[0]);
         let name = OS13k.StripHTML(keyParts[1]);
-        let icon = OS13k.StripHTML(keyParts[2]);
-        
-        // use only first icon character and set default
-        icon = (icon.length ? [...icon][0] : '🏆')
+        let icon = OS13k.StripHTML(keyParts[2]) || '🏆';
         
         // use game as name if there is no name
         name || (name = game, game = '');
@@ -66,6 +64,8 @@ var OS13kStart=()=>
         // add to document
         this.document.body.appendChild(div); 
     }
+            
+    OS13k.Trophy('OS13k','Hoarder','','Viewed Trophy Case');
 }
 
 </script>
