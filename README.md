@@ -93,7 +93,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 - OS13k.Lerp(p, a, b) - Lerp clamped percent between a and b
 - Let me know if anything else should be included, I am considering adding a vector class
 
-### Icon settings
+### Program settings
 - width and height - Size of window
 - author - Name of creator
 - multiple - Allows multiple copies of the window to open
