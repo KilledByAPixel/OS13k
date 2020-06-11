@@ -55,7 +55,7 @@ const programs =
     {name:'Underwater Cavern', icon:'🌊', author:'Pavel', src:'dweets/underwaterCavern.dweet.js'},
     {name:'City Traffic', icon:'🚌', author:'Tomxor', src:'dweets/cityTraffic.dweet.js'},
     {name:'Train Set', icon:'🚂', author:'jylikangas', src:'dweets/trainSet.dweet.js'},
-    {name:'Bogus Roads', icon:'🛣️', src:'dweets/bogusRoads.dweet.js'},
     {name:'Automatic Breakout', icon:'●', src:'dweets/breakout.dweet.js'},
+    {name:'Bogus Roads', icon:'🛣️', src:'dweets/bogusRoads.dweet.js'},
 ]},
 ];
