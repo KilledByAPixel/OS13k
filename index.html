@@ -214,15 +214,15 @@ div svg       { width:100%; pointer-events:none; }
 <button id=buttonShowCode onclick=activeWindow.ShowCode()>Show Code
 <button id=buttonReload onclick=activeWindow.Reload()>Reload
 <button id=buttonClose onclick=activeWindow.Close()>Close
-<script src=programs.js?45></script>
+<script src=programs.js?46></script>
 <script>
 
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Debug Stuff (remove from minified)
 
 // version check
-if (localStorage.OS13kVersion != 5)
-    localStorage.clear(),localStorage.OS13kVersion = 5;
+if (localStorage.OS13kVersion != 7)
+    localStorage.clear(),localStorage.OS13kVersion = 7;
     
 // load default programs if none found
 if (typeof programs == 'undefined')
@@ -252,7 +252,7 @@ if (typeof programs == 'undefined')
 
 class _OS13k
 {
-    Trophy(game, name='', icon='', message='', saveTrophies=1)
+    Trophy(game='OS13k', name='', icon='', message='', saveTrophies=1)
     {
         // build key
         const key = game + ',' + name + ',' + icon;
@@ -261,7 +261,7 @@ class _OS13k
         // find in trophy list
         const trophyIndex = trophies.findIndex(e=>e[4]==key)
         
-        // skip if no game or same message
+        // skip if no game same message
         if (!game || trophyIndex >=0 && 
                 (trophies[trophyIndex][2] == icon &&
                 trophies[trophyIndex][3] == message))
@@ -518,7 +518,7 @@ const Init=()=>
     
     // save trophies
     localStorage.OS13kTrophies = JSON.stringify(trophies);
-    OS13k.Trophy('OS13k','Welcome!','👋');
+    OS13k.Trophy(undefined,'Welcome!','👋');
 }
 
 const Update=()=>
@@ -588,7 +588,7 @@ const CloseWindows=()=>
     windowOpenX = startWindowOpenX;
     windowOpenY = startWindowOpenY;
     
-    OS13k.Trophy('OS13k','Coffee Is For Closers','☕','Closed All');
+    OS13k.Trophy(undefined,'Coffee Is For Closers','☕','Closed All');
 }
 
 const FocusTopWindow=()=>
@@ -609,7 +609,7 @@ const ToggleMute=()=>
     gain.gain.value = gain.gain.value ? 0 : defaultVolume;
     trayVolume.innerHTML = (gain.gain.value ? '🔊' : '🔇');
             
-    OS13k.Trophy('OS13k','Shut Up','🔇','Muted');
+    OS13k.Trophy(undefined,'Shut Up','🔇','Muted');
 }
 
 const ToggleTrophies=()=>
@@ -797,11 +797,8 @@ class OS13kProgram extends HTMLElement
     
     MouseClick() 
     {
-        if (this == trophyProgram)
-            OS13k.Trophy('OS13k','Hoarder','','Viewed Trophy Case');
-        
-        if (this == clockProgram)
-            OS13k.Trophy('OS13k','Clock Watcher','🕰️','Checked Time');
+        this == trophyProgram && OS13k.Trophy(undefined,'Hoarder','','Viewed Trophys');
+        this == clockProgram && OS13k.Trophy(undefined,'Clock Watcher','🕰️','Checked Time');
           
         if (this.src)
         {
@@ -1061,7 +1058,7 @@ class OS13kWindow extends HTMLElement
         else if (fullScreenElement.mozRequestFullScreen)
             fullScreenElement.mozRequestFullScreen();
             
-        OS13k.Trophy('OS13k','Pro Gamer','🕹️','Went Fullscreen');
+        OS13k.Trophy(undefined,'Pro Gamer','🕹️','Went Fullscreen');
     }
     
     ShowCode()
@@ -1071,7 +1068,7 @@ class OS13kWindow extends HTMLElement
         this.codeDisplay.style.display = 
             (this.showCode = !this.showCode) ? 'block' : '';
             
-        OS13k.Trophy('OS13k','Hacker','👨‍💻','Viewed Code');
+        OS13k.Trophy(undefined,'Hacker','👨‍💻','Viewed Code');
     }
     
     Reload()
