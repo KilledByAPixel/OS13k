@@ -22,7 +22,7 @@ const programs =
     {name:'Mini Shadertoy', icon:'𝓢', src:'tools/miniShadertoy.html', width:340, height:400},
     {name:'Text Editor', icon:'📝', src:'tools/textEditor.html'},
     {name:'ZzFX', icon:'<b>ℤℤ', src:'https://zzfx.3d2k.com', height:880},
-    {name:'CapJS', icon:'𝓒𝓪𝓹', src:'https://capjs.3d2k.com', height:900},
+    {name:'CapJS', icon:'𝓒𝓪𝓹', src:'https://capjs.3d2k.com', height:750},
     {name:'Dweet View', icon:'<span style=color:#f00;background:#000><b>&nbsp;III&nbsp;', src:'https://dweetview.3d2k.com'}
 ]},
 {name:'Games', icon:'🎮', folder:
