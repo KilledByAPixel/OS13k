@@ -20,7 +20,7 @@ OS13k is a tiny pseudo operating system designed for a JS13k community project. 
 - Anything left out of the JS13k build will still be available in the full GitHub version
 - We make this repo public on day 1 of JS13k and open source everything, I haven't decided on license yet
 
-### [You can learn more about JS13k here](https://js13kgames.com/) (I won 2nd place last year) 
+### [You can learn more about JS13k here](https://js13kgames.com/)
 
 ## Programming Info
 - OS13k stores it's list of programs in programs.js
