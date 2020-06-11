@@ -27,9 +27,9 @@ OS13k is a tiny pseudo operating system designed for a JS13k community project. 
 - For fast iteration when developing, the first program in the list opens automatically
 
 Add an icon config to programs.js to register your program, and send me pull request, examples...
-- {name:'Hello!', icon:'✌️😄', src:'system/test.html', reload:1, code:1, sticky:1}
-- {icon:'🌊', author:'Pavel', src:'dweets/UnderwaterCavern.dweet.js'}
-- {icon:'☯', src:'toys/InfiniteYinYangs.shader.txt'}
+- {src:'system/test.html', name:'Hello!', icon:'✌️😄', reload:1, code:1, sticky:1}
+- {src:'dweets/UnderwaterCavern.dweet.js', icon:'🌊', author:'Pavel'}
+- {src:'toys/InfiniteYinYangs.shader.txt', icon:'☯'}
 - {src:'Help.html'}
 
 ### Programs
