@@ -216,7 +216,7 @@ div svg       { width:100%; pointer-events:none; }
 <button id=buttonShowCode onclick=activeWindow.ShowCode()>Show Code
 <button id=buttonReload onclick=activeWindow.Reload()>Reload
 <button id=buttonClose onclick=activeWindow.Close()>Close
-<script src=programs.js?68></script>
+<script src=programs.js?69></script>
 <script>
 
 /////////////////////////////////////////////////////////////////////////////
@@ -819,7 +819,14 @@ class OS13kProgram extends HTMLElement
         if (this.src)
         {
             // load save info
-            const info = this.LoadInfo();
+            const info = this.LoadInfo(windowOpenX, windowOpenY);
+
+            // update window open positions
+            if (info.updatePosition)
+            {
+                (windowOpenY += titlebarHeight) > 200 && (windowOpenY = startWindowOpenY);
+                (windowOpenX += titlebarHeight) > 400 && (windowOpenX = startWindowOpenX);
+            }
 
             // open the window
             this.window || (this.window = new OS13kWindow(this, info.x, info.y));
@@ -851,12 +858,12 @@ class OS13kProgram extends HTMLElement
             JSON.stringify({x:rect.x, y:rect.y, open});
     }
     
-    LoadInfo()
+    LoadInfo( x, y )
     {
         // try to load saved window data from local storage
         const saveWindowJSON = localStorage['OS13k'+this.srcShort];
         return saveWindowJSON ?
-            JSON.parse(saveWindowJSON) : {x:windowOpenX, y:windowOpenY, open:0}
+            JSON.parse(saveWindowJSON) : {x, y, updatePosition:1}
     }
 } // OS13kProgram
 
@@ -881,8 +888,6 @@ class OS13kWindow extends HTMLElement
         // set window position
         this.style.left = x;
         this.style.top = y;
-        (windowOpenY += titlebarHeight) > 200 && (windowOpenY = startWindowOpenY);
-        (windowOpenX += titlebarHeight) > 400 && (windowOpenX = startWindowOpenX);
         
         // create shadow root
 		this.shadow = this.attachShadow({mode: 'open'});

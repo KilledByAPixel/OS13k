@@ -1,7 +1,7 @@
 const programs = 
 [
 {name:'Close All', icon:'❌',},
-{src:'help.html?15', icon:'<b><span style=color:#0f0>?', width:380, height:380},
+{src:'help.html?15', icon:'<b><span style=color:#0f0>?', width:380, height:400},
 {src:'moreInfo.html?9', icon:'👨‍💻'},
 {src:'https://js13kgames.com', name:'JS13k Website', icon:'<b><span style=font-family:currier;color:#b33>13k'},
 {name:'System', icon:'⚙️', folder:
