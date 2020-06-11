@@ -17,7 +17,7 @@ const programs =
 ]},
 {name:'Tools', icon:'🔧', folder:
 [
-    {src:'tools/stickyNote.html?2', icon:'✍️', width:300, height:264, full:0, sticky:1},
+    {src:'tools/stickyNote.html?2', icon:'✍️', width:300, height:264, full:0, sticky:1, sleep:0},
     {src:'tools/photoBooth.html', icon:'📸', width:1400, height:550 },
     {src:'tools/unicodeToys.html', icon:'𝖀', author:'Xem', width:500, height:800},
     {src:'tools/miniShadertoy.html', icon:'𝓢', width:340, height:400},

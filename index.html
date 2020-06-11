@@ -215,7 +215,7 @@ div svg       { width:100%; pointer-events:none; }
 <button id=buttonShowCode onclick=activeWindow.ShowCode()>Show Code
 <button id=buttonReload onclick=activeWindow.Reload()>Reload
 <button id=buttonClose onclick=activeWindow.Close()>Close
-<script src=programs.js?63></script>
+<script src=programs.js?65></script>
 <script>
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1013,7 +1013,7 @@ class OS13kWindow extends HTMLElement
             // track if programs are loading
             --loading;
     
-            // focus on first program after load
+            // load first program in list on startup
             loading || finishedStartup || firstProgram.MouseClick(finishedStartup = 1);
         }
     }
