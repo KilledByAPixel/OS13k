@@ -1,5 +1,5 @@
 # Welcome to OS13k!
-OS13k is a tiny pseudo operating system designed for a JS13k community project. It includes native support for shadertoys, dweets, zzfx sounds, trophies, fullscreen, mobile support, and more. The OS (incuding zzfx, shadertoy, and dwitter support) is around 6k when zipped.
+OS13k is a tiny pseudo operating system designed for a JS13k community project. It includes native support for shadertoys, dweets, zzfx sounds, music, trophies, fullscreen, touch control, and more. The OS (incuding zzfx, shadertoy, and dwitter support) is around 6k when zipped.
 
 ## Please keep this project confidential!
 
@@ -9,11 +9,11 @@ OS13k is a tiny pseudo operating system designed for a JS13k community project. 
 
 ## The Plan
 - The idea is to make a tiny OS and host a variety of games, music, and apps that fit in 13k
-- By sharing code with shaders, dweets, and zzfx we can pack a lot into 13k
-- OS13k is around 6k by itself, but a big part of that is ZzFX, shader code, and dweet setup
+- OS13k is around 6k by itself, a big part of that is shared ZzFX, shader code, and dweet setup
+- By sharing code with dweets, shaders, and zzfx we can pack a lot into 13k
 - I'd like to see as many people as possible contribute tiny games and apps
 - Programs should be in the 100-1000 byte range, what matters most is how well it compresses
-- If apps are 500 bytes on average leveraging shared code, we can fit over 14 of them, probably more
+- We hope to fit on the order of 20 programs in total
 - We could easily pack 1k of that with just like 10 or more really cool dweets and shaders
 - A very important rule to the contest is that all content must be new, so no old stuff!
 - You can start with an old project but polish it up a lot, minify it and make it work with OS13k
@@ -96,21 +96,24 @@ Add an icon config to programs.js to register your program, and send me pull req
 - OS13k.Lerp(p, a, b) - Lerp clamped percent between a and b
 - Let me know if anything else should be included, I am considering adding a vector class
 
-### Program settings
-- width and height - Size of window
-- author - Name of creator
-- multiple - Allows multiple copies of the window to open
-- reload - Shows the reload page icon to reload your program
-- code - Option to show the code for your program
-- full - Set to 0 to disable fullscreen
-- sleep - Set to 0 to disable sleeping
+### Program Settings and Defaults
+- name - Display name
+- src - Source location
+- icon - Can contain html tags, don't close tags to save space, fits about 2 emojis
+- width (720) and height (405) - Size of window (default is 16:9 aspect)
+- author - Name of creator (optional)
+- reload (0) - Shows the reload option, always true for dweets/shaders
+- code (0) - Shows code option, always true for dweets/shaders
+- full (1) - Enables fullscreen option
+- sleep (1) - Dims window and pauses dweets/shaders when not focused
+- sticky (0) - Enable auto open of program on restart
  
  ### Trophies
  - Apps can register trophies for their games, the os tracks which are unlocked
  - A function is provided for apps to unlock trophies, OS13k.Trophy(gameName, trophyName, icon, message)
  - Only gameName is necessary, the rest are optional
  - The gameName,trophyName,icon together form the unique id for the trophy
- - When a new trophy is unlocked or message is changed a popup will appear
+ - When a new trophy is unlocked or the message is changed a popup will appear
  - Total trophy count is shown in the taskbar and the trophy case shows all unlocked trophies
  - Trophies can be tested with the System/Test tool
  
@@ -118,7 +121,7 @@ Add an icon config to programs.js to register your program, and send me pull req
  - To add a trophies to any JS13k game, just save a special key to localStorage
  - The simplest way to add a single trophies is save localStorage["OS13kTrophy,GameName"]=""
  - For more control use localStorage["OS13kTrophy,GameName,TrophyName,Icon"] = "Message"
- - You can change the message to update the trophy, like if it is a highscore
+ - You can change the message to update the trophy, like a highscore for example
  - When OS13k is next run, it will search locaStorage and display popups for new trophies
  - This is possible because all JS13k games share the same local storage! Pretty cool right?
  
