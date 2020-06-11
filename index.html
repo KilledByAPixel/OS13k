@@ -221,8 +221,8 @@ div svg       { width:100%; pointer-events:none; }
 // OS13k Debug Stuff (remove from minified)
 
 // version check
-if (localStorage.OS13kVersion != 7)
-    localStorage.clear(),localStorage.OS13kVersion = 7;
+if (localStorage.OS13kVersion != 9)
+    localStorage.clear(),localStorage.OS13kVersion = 9;
     
 // load default programs if none found
 if (typeof programs == 'undefined')
@@ -258,18 +258,18 @@ class _OS13k
         const key = game + ',' + name + ',' + icon;
         const storageKey = 'OS13kTrophy,' + key;
         
+        // strip html
+        icon = this.StripHTML(icon) || '🏆';
+        name = this.StripHTML(name);
+        game = this.StripHTML(game);
+        message = this.StripHTML(message);
+        
         // find in trophy list
         const trophyIndex = trophies.findIndex(e=>e[4]==key)
         
         // skip if no game or same message
         if (!game || trophyIndex >=0 && trophies[trophyIndex][3] == message)
             return;
-        
-        // strip html
-        icon = this.StripHTML(icon) || '🏆';
-        name = this.StripHTML(name);
-        game = this.StripHTML(game);
-        message = this.StripHTML(message);
         
         // add or update trophy list
         const trophyData = [game, name, icon, message, key];
