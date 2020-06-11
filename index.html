@@ -216,7 +216,7 @@ div svg       { width:100%; pointer-events:none; }
 <button id=buttonShowCode onclick=activeWindow.ShowCode()>Show Code
 <button id=buttonReload onclick=activeWindow.Reload()>Reload
 <button id=buttonClose onclick=activeWindow.Close()>Close
-<script src=programs.js?65></script>
+<script src=programs.js?66></script>
 <script>
 
 /////////////////////////////////////////////////////////////////////////////
@@ -720,9 +720,9 @@ class OS13kProgram extends HTMLElement
         src = src || '';
         icon = icon || '💠';
         
-        // infer name from camel case src
         if (!name)
         {
+            // infer name from camel case src
             let srcCleanName = srcParts[0].split('/');
             srcCleanName = srcCleanName[Math.max(0,srcCleanName.length-1)].replace(/([a-z](?=[A-Z]))/g, '$1 ');
             name = srcCleanName.charAt(0).toUpperCase() + srcCleanName.slice(1);
@@ -765,9 +765,9 @@ class OS13kProgram extends HTMLElement
         nameDisplay.innerHTML = name;
         this.appendChild(nameDisplay);
         
-        // folder arrow
         if (folder)
         {
+            // folder arrow
             const folderDisplay = document.createElement('div');
             folderDisplay.style = 'pointer-events:none'
             folderDisplay.innerHTML = '▶';
