@@ -55,7 +55,7 @@ body
     padding-right:9;
 }
 .trayIcon       { padding-left:5; padding-right:5; }
-.trayIcon:hover { background:#fff3;}
+.trayIcon:hover { background:#fff3; }
 #menu
 {
     visibility:hidden;
@@ -114,13 +114,14 @@ body
     align-items:center;
     justify-content:center;
 }
+.activeWindow { border:3px solid #aaa; }
 </style>
-<template id=template>
+<template id=templateWindow>
 <style>
 :host
 {
     box-shadow:5px 5px 9px;
-    border:2px solid #222;
+    border:3px solid #222;
     background:#000;
     display:flex;
     flex-direction:column;
@@ -886,21 +887,21 @@ class OS13kWindow extends HTMLElement
         this.taskbarIcon = new OS13kTaskbarIcon(program, this);
         this.program = program;
         
-        // set window position
+        // set position
         this.style.left = x;
         this.style.top = y;
         
-        // create shadow root
+        // shadow root
 		this.shadow = this.attachShadow({mode: 'open'});
-        this.shadowRoot.innerHTML = template.innerHTML;
+        this.shadowRoot.innerHTML = templateWindow.innerHTML;
         
-        // create title bar
+        // title bar
         this.titlebar = document.createElement('div');
         this.titlebar.id = 'titlebar';
         this.titlebar.title = program.title;
         this.shadowRoot.appendChild(this.titlebar);
         
-        // create title bar name
+        // title bar name
         this.titlebarName = document.createElement('div');
         this.titlebarName.id = 'name';
         this.titlebar.appendChild(this.titlebarName);
@@ -930,9 +931,9 @@ class OS13kWindow extends HTMLElement
         program.reload && AddtitlebarIcon('reload', 'Reload');
         AddtitlebarIcon('close', 'Close');
         
-        // create thin black line below title bar
+        // create thin line below title bar
         const titlebarGap = document.createElement('div');
-        titlebarGap.style='height:2;background:#222';
+        titlebarGap.style='height:2';
         this.shadowRoot.appendChild(titlebarGap);
 
         // create content wrapper
@@ -1105,6 +1106,7 @@ class OS13kWindow extends HTMLElement
         activeWindow = active && this;
         this.style.filter = active || !this.program.sleep? '' : 'saturate(.7)brightness(.7';
         this.titlebar.className = 'titlebar' + (active? ' titlebarActive' : '');
+        this.className = active? 'activeWindow' : '';
     }
     
     FullScreen()
