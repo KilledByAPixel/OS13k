@@ -65,6 +65,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 ### Apps
 - We will include some non-game apps that are small and fun to use
 - Keep text short and essential, try using emojis instead
+- Design your app well and let players have fun figuring out how to use it
 - *Apps can play sounds and have trophies too!
 
 ### Music
