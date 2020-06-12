@@ -538,7 +538,7 @@ const Init=()=>
     loadIcon.window = new OS13kFolder(programs);
 }
 
-const Update=timeStamp=>
+const Update=()=>
 {
     requestAnimationFrame(Update);
 
@@ -585,7 +585,7 @@ const Update=timeStamp=>
     trayTime.innerHTML = (time[0]%12?time[0]%12:12) + ':' + time[1];
     
     // fade in desktop
-    loading || (desktop.style.opacity = timeStamp/1e3);
+    loading || (desktop.style.opacity = .01 + desktop.style.opacity*1);
 }
 
 const CloseMenus=()=>
