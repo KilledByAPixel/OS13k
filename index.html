@@ -409,7 +409,11 @@ class _OS13k
     }
 
     Speak(text, rate=1, pitch=1, volume=1, language='en')
-    { 
+    {
+        // common languages (not supported in all browsers)
+        // it - italian, fr - french,  de - german,   es - spanish, pl - polish
+        // hi - hindi,   ru - russian, ja - japanese, zh - chinese, ko - korean
+    
         if (!speechSynthesis)
             return;
         
