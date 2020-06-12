@@ -570,7 +570,6 @@ const Init=()=>
     
     // save trophies
     localStorage.OS13kTrophies = JSON.stringify(trophies);
-    OS13k.Trophy(undefined,'Welcome!','👋');
     
     // set taskbar functions
     trayTrophy.onmousedown = trayTrophy.ontouchstart =()=> trophyProgram.Toggle();
@@ -580,6 +579,8 @@ const Init=()=>
     // create the folder taskbar icon and add folders/programs
     loadIcon = new OS13kTaskbarIcon( {icon:'💾', name:'Load Program'} );
     loadIcon.window = new OS13kFolder(programs);
+    
+    OS13k.Trophy(undefined,'Welcome!','👋');
 }
 
 const Update=()=>
