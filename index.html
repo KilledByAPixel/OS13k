@@ -40,7 +40,7 @@ body
     font-size:22;
     width:50;
     height:40;
-    text-shadow:1px 1px 2px #000;
+    text-shadow:1px 1px 3px #000;
     border-radius:22px;
 }
 #tray
@@ -150,31 +150,30 @@ body
 {
     background:linear-gradient(#eee,#88f);
 }
-#frame
-{
-    width:100%;
-    height:100%;
-    border:none;
-    background:#000;
-    overflow:hidden;
-    background:#fff;
-}
-#name
+#nameWrapper
 {
     width:100%;
     cursor:grab;
     overflow:hidden;
 }
-.icon
+#icon
 {
-    text-shadow:1px 1px 2px #000;
+    text-shadow:1px 1px 3px #000;
     margin-left:9;
     margin-right:9;
 }
-.titleBarElement, .icon
+#name, #icon
 {
     pointer-events:none;
     display:inline;
+}
+#frame
+{
+    width:100%;
+    height:100%;
+    background:#fff;
+    border:none;
+    overflow:hidden;
 }
 #helpDisplay
 {
@@ -228,7 +227,7 @@ div svg       { width:100%; pointer-events:none; }
 <button id=buttonShowCode onclick=activeWindow.ShowHelp()>Show Code
 <button id=buttonReload onclick=activeWindow.Reload()>Reload
 <button id=buttonClose onclick=activeWindow.Close()>Close
-<script src=programs.js?74></script>
+<script src=programs.js?75></script>
 <script>
 
 /////////////////////////////////////////////////////////////////////////////
@@ -241,7 +240,10 @@ if (localStorage.OS13kVersion != OS13kVersion)
     
 // load default programs if none found
 if (typeof programs == 'undefined')
-    programs = [{src:'system/test.html'},{src:'system/trophyCase.html'},{src:'system/clock.dweet.js',width:200,height:200,sleep:0}];
+{
+    alert('No programs found, using defaults!')
+    programs = [{src:'system/test.html'},{src:'system/trophyCase.html'},{src:'system/clock.dweet.js', icon:'🕰️', width:200, height:200, sleep:0, full:0, reload:0, sticky:1}];
+}
 
 /////////////////////////////////////////////////////////////////////////////
 // Use Strict and Closure Config
@@ -788,7 +790,7 @@ class OS13kProgram extends HTMLElement
             
         // icon
         const iconDisplay = document.createElement('div');
-        iconDisplay.style = 'pointer-events:none;width:45;text-shadow:1px 1px 2px #000;text-align:center';
+        iconDisplay.style = 'pointer-events:none;width:45;text-shadow:1px 1px 3px #000;text-align:center';
         iconDisplay.innerHTML = icon;
         this.appendChild(iconDisplay);
         
@@ -892,6 +894,9 @@ class OS13kWindow extends HTMLElement
 	constructor(program, x, y)
     {
 		super();
+        
+        // track if programs are loading
+        ++loading;
 
         // add to desktop
         desktop.appendChild(this);
@@ -914,22 +919,22 @@ class OS13kWindow extends HTMLElement
         this.titlebar.title = program.title;
         this.shadowRoot.appendChild(this.titlebar);
         
-        // title bar name
-        this.titlebarName = document.createElement('div');
-        this.titlebarName.id = 'name';
-        this.titlebar.appendChild(this.titlebarName);
-        
+        // title bar wrapper
+        this.nameWrapper = document.createElement('div');
+        this.nameWrapper.id = 'nameWrapper';
+        this.titlebar.appendChild(this.nameWrapper);
+
         // icon
         const iconDisplay = document.createElement('div');
-        iconDisplay.className = 'icon';
+        iconDisplay.id = 'icon';
         iconDisplay.innerHTML = program.icon;
-        this.titlebarName.appendChild(iconDisplay);
+        this.nameWrapper.appendChild(iconDisplay);
         
         // name
         const nameDisplay = document.createElement('div');
-        nameDisplay.className = 'titleBarElement';
+        nameDisplay.id = 'name';
         nameDisplay.innerHTML = program.name;
-        this.titlebarName.appendChild(nameDisplay);
+        this.nameWrapper.appendChild(nameDisplay);
         
         // create title bar icons
         const AddTitlebarIcon=(id, title)=>
@@ -952,13 +957,13 @@ class OS13kWindow extends HTMLElement
 
         // create content wrapper
         const frameWrapper = this.frameWrapper = document.createElement('div');
-        frameWrapper.style.background = '#000'
+        frameWrapper.style.background = '#000';
         this.shadowRoot.appendChild(frameWrapper);
         
-        // limit window size to inner size
-        this.style.width = Math.min(program.width, innerWidth-4);
-        frameWrapper.style.width  = Math.min(program.width,  innerWidth-4);
-        frameWrapper.style.height = Math.min(program.height, innerHeight);
+        // limit window size to inner size while preserving aspect
+        const width = Math.min(program.width, innerWidth-6);
+        this.frameWrapper.style.width  = width;
+        this.frameWrapper.style.height = width * program.height / program.width;
 
         // create iframe
         const iframe = this.iframe = document.createElement('iframe'); 
@@ -966,9 +971,6 @@ class OS13kWindow extends HTMLElement
         this.style.visibility = 'hidden';
         iframe.src = program.src;
         frameWrapper.appendChild(iframe);
-        
-        // track if programs are loading
-        ++loading;
                 
         // load frame
         iframe.onload=e=>
@@ -1053,19 +1055,17 @@ class OS13kWindow extends HTMLElement
             
             // only focus if not grabbing
             grabWindow || this.Focus();
-        
-            // track if programs are loading
-            --loading;
     
             // focus on first program in list after startup
-            loading || finishedStartup || firstProgram.window.Focus(finishedStartup=1);
+            --loading || finishedStartup ||
+                firstProgram.window.Focus(finishedStartup=1);
         }
     }
     
     MouseDown(e, originalTarget)
     {
         // set grab object if name is clicked on
-        originalTarget.id == 'name' && (grabWindow = this);
+        originalTarget.id == 'nameWrapper' && (grabWindow = this);
         
         // set focus
         this.Focus();
@@ -1136,10 +1136,11 @@ class OS13kWindow extends HTMLElement
         
         // set full screen
         const fullScreenElement = this.frameWrapper;
+        fullScreenElement.webkitRequestFullScreen = 
+            fullScreenElement.webkitRequestFullScreen || 
+            fullScreenElement.mozRequestFullScreen
         if (fullScreenElement.webkitRequestFullScreen)
             fullScreenElement.webkitRequestFullScreen();
-        else if (fullScreenElement.mozRequestFullScreen)
-            fullScreenElement.mozRequestFullScreen();
             
         OS13k.Trophy(undefined,'Pro Gamer','🕹️','Went Fullscreen');
     }
@@ -1203,7 +1204,7 @@ onmousedown=e=>
     if (grabWindow)
     {
         // set grabbing mode
-        document.body.style.cursor = grabWindow.titlebarName.style.cursor = 'grabbing';
+        document.body.style.cursor = grabWindow.nameWrapper.style.cursor = 'grabbing';
         grabWindow.frameWrapper.style.pointerEvents = 'none';
         
         // save grab offset
@@ -1238,7 +1239,7 @@ onclick=e=>
     document.body.style.cursor = '';
     if (grabWindow)
     {
-        grabWindow.titlebarName.style.cursor = 'grab';
+        grabWindow.titlebar.style.cursor = 'grab';
         grabWindow.frameWrapper.style.pointerEvents = '';
         
         // release grab object
