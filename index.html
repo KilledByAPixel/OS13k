@@ -1294,7 +1294,7 @@ oncontextmenu=e=>
 {
     CloseMenus();
     let menuElement = menu, x = e.x, y = e.y;
-    if (e.window && e.window != window)
+    if (e.currentTarget != window)
     {
         // add window position and taskbar
         const rect = activeWindow.getBoundingClientRect();
