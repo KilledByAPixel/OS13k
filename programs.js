@@ -17,7 +17,7 @@ const programs =
 ]},
 {name:'Apps', icon:'🛠️', folder:
 [
-    {src:'apps/stickyNote.html?2', icon:'✍️', width:300, height:264, full:0, sticky:1, sleep:0, help:'This note is persistant.\n\nYou can use commands like Ctrl+B, Ctrl+I, and Ctrl+U to add formatting.'},
+    {src:'apps/stickyNote.html?2', icon:'✍️', width:300, height:264, full:0, sticky:1, help:'This note is persistant.\n\nYou can use commands like Ctrl+B, Ctrl+I, and Ctrl+U to add formatting.'},
     {src:'apps/photoBooth.html', icon:'📸', width:1400, height:550 },
     {src:'apps/unicodeToys.html', icon:'𝖀', author:'Xem', width:500, height:800},
     {src:'apps/miniShadertoy.html', icon:'𝓢', width:340, height:400},
