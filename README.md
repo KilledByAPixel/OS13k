@@ -29,7 +29,7 @@ OS13k is a tiny pseudo operating system designed for a JS13k community project. 
 Add an icon config to programs.js to register your program, and send me pull request, examples...
 - {src:'system/test.html', name:'Hello!', icon:'✌️😄', reload:1, code:1, sticky:1}
 - {src:'dweets/UnderwaterCavern.dweet.js', icon:'🌊', author:'Pavel'}
-- {src:'toys/InfiniteYinYangs.shader.txt', icon:'☯'}
+- {src:'toys/InfiniteYinYangs.shader.txt', icon:'☯', help:'Put instructions here.'}
 - {src:'Help.html'}
 
 ### Programs
