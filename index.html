@@ -277,7 +277,7 @@ if (typeof programs == 'undefined')
 
 class _OS13k
 {
-    Trophy(game='OS13k', name='', icon='', message='' )
+    Trophy(game='OS13k', name='', icon='', message='')
     {
         // remove commas
         game = game.replace(',','');
@@ -538,10 +538,11 @@ const Init=()=>
     // parse trophy list
     trophies = localStorage.OS13kTrophies ? JSON.parse(localStorage.OS13kTrophies) : [];
 
-    const CheckForTrophy =key=>
+    const CheckForTrophy=key=>
     {
         const keyParts = key.split(',');
-        if (keyParts.shift() == 'OS13kTrophy')
+        keyParts.length = 4;
+        if (keyParts.shift() == 'OS13kTrophy') 
             OS13k.Trophy(...keyParts, localStorage[key])
     }
 
