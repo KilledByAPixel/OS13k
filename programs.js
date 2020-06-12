@@ -6,7 +6,7 @@ const programs =
 {src:'https://js13kgames.com', name:'JS13k Website', icon:'<b><span style=font-family:currier;color:#b33>13k'},
 {name:'System', icon:'⚙️', folder:
 [
-    {src:'system/trophyCase.html?8', icon:'🏆', width:680, help:'All your trophies are shown here.\nTotal trophy count is show in the titlebar.\n\nPlay games and experiment to win more trophies!'},
+    {src:'system/trophyCase.html?8', icon:'🏆', width:680, help:'All your trophies are shown here.\nTotal trophy count is displayed in the titlebar.\n\nPlay games and experiment to win more trophies!'},
     {src:'system/clock.dweet.js?8', icon:'🕰️', width:200, height:200, reload:0, sleep:0, full:0, sticky:1},
     {src:'system/shell.html?1',icon:'<span style=color:#0f0;background:#000>&nbsp;>&nbsp;',  reload:1},
     {src:'system/test.html?12', reload:1, code:1, width:600, height:400, sticky:1},
