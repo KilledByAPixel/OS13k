@@ -235,7 +235,7 @@ div svg       { width:100%; pointer-events:none; }
 // OS13k Debug Stuff (remove from minified)
 
 // version check, clear local storage if older
-const OS13kVersion = 17;
+const OS13kVersion = 18;
 if (localStorage.OS13kVersion != OS13kVersion)
     localStorage.clear(), localStorage.OS13kVersion = OS13kVersion;
     
@@ -275,9 +275,9 @@ class _OS13k
         
         // remove html tags
         const RemoveHTML =string=> (string||'').replace('<','');
-        icon = RemoveHTML(icon) || '🏆';
-        name = RemoveHTML(name);
-        game = RemoveHTML(game);
+        icon    = RemoveHTML(icon) || '🏆';
+        name    = RemoveHTML(name);
+        game    = RemoveHTML(game);
         message = RemoveHTML(message);
         
         // find in trophy list
