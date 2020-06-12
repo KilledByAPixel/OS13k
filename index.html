@@ -91,6 +91,14 @@ body
     margin:9;
     border-radius:9px;
     pointer-events:none;
+    overflow:hidden;
+}
+.trophyIcon
+{
+    font-size:40;
+    padding:9;
+    text-shadow:2px 2px 4px #000;
+    white-space:nowrap;
 }
 .program
 {
@@ -153,8 +161,8 @@ body
 #nameWrapper
 {
     width:100%;
-    cursor:grab;
     overflow:hidden;
+    cursor:grab;
 }
 #icon
 {
@@ -305,26 +313,23 @@ class _OS13k
         // use game as name if there is no name
         name || (name = game, game = '');
         
-        // play voice of the trophy name
+        // speak the trophy name
         this.Speak(name);
 
-        // build popup element
-        const trophyElement = document.createElement('div');
-        trophyElement.className = 'trophyPopup';
-        trophyElement.innerHTML = 
-            '<div class=flexCenter style=overflow:hidden;flex-direction:column>' +
-                '<div style="white-space:nowrap;font-size:40;padding:9;text-shadow:2px 2px 4px #000">' + 
-                    icon +                                  // icon
-                '</div>' +
-                '<div style=width:100%;overflow:hidden>' +  // info
-                    '<b>' + name + '</b><br>' +             // name
-                    '<i>' + game + '</i>' +                 // game
-                '</div>' +
-            '<div style=font-size:20;padding:8>' + message; // message
+        // build trophy popup element
+        const trophyPopup = document.createElement('div');
+        trophyPopup.className = 'trophyPopup';
+        trophyPopup.innerHTML =
+            '<div class=trophyIcon>' + icon + '</div>' + // icon
+            '<div>' +                                    // info
+                '<b>' + name + '</b><br>' +              // name
+                '<i>' + game + '</i>' +                  // game
+            '</div>' +
+            '<div style=font-size:20>' + message;        // message
             
         // add trophy to bottom of screen
-        trophyElement.style.top = innerHeight;
-        trophyPopups.appendChild(trophyElement);
+        trophyPopup.style.top = innerHeight;
+        trophyPopups.appendChild(trophyPopup);
         
         // refresh trophy window if it is being displayed
         trophyProgram && trophyProgram.window && trophyProgram.window.iframeContent &&
