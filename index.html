@@ -12,8 +12,10 @@ Please keep this project confidential!
 
 <title>OS13k - A tiny operating system for JS13k</title>
 <link rel=icon type=image/x-icon href='favicon.png?1'/>
-<meta charset=utf-8>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
+<!-- HTML above this is not needed for minified -->
+
+<meta charset=utf-8>
 <style>
 body
 {
@@ -272,6 +274,12 @@ if (typeof programs == 'undefined')
 // @output_file_name OS13k.min.js
 // ==/ClosureCompiler==
 
+// Minification Steps
+// 1. Remove touch support
+// 2. Google Closure
+// 3. Terser
+// 4. HTML Compressor
+
 /////////////////////////////////////////////////////////////////////////////
 // OS13k System
 
@@ -425,8 +433,7 @@ class _OS13k
         utterance.lang = language;
     
         // speak if not muted
-        gain.gain.value && speechSynthesis && 
-            speechSynthesis.speak(utterance) 
+        gain.gain.value && speechSynthesis && speechSynthesis.speak(utterance);
     }
     
     CreateShader(canvas, code)
