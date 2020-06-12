@@ -46,6 +46,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 ### Minification Tips
 - The goal is to fit as much as we can into 13 kilobytes so everything must be small
 - For now don't worry about submitting fully minified versions of your code, just keep it clean
+- Also try to limit your use of non repeated text strings, that compresses the worst.
 - Soon we will set up a separate branch with only minified programs
 - For the OS13k core system I am using [Google Closer](https://closure-compiler.appspot.com/home] and [Terser](https://xem.github.io/terser-online)
 - *Always remember, this will be zipped!
