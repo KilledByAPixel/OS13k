@@ -47,11 +47,12 @@ Add an icon config to programs.js to register your program, and send me pull req
 - For inclusion in the JS13k build, programs need be around 100-500 bytes when minified
 - *Always remember, this will be zipped! Don't over golf your code.
 - There is very little overhead for common functions calls and strings
-- Also try to limit your use of non repeated text strings, those compresses the worst
+- Don't worry to much about html tags, they will appear often and compress well
+- Try to limit your use of non repeated text strings, those compresses the worst, use emojis where possible
 - Don't compress your code in any way, let zip do the work for you
 - Dweets and Shadertoys are great for making programs with reduced setup cost
 - You do not need charset=utf-8, it will be applied automatically
-- For the OS13k core system I am using [Google Closer](https://closure-compiler.appspot.com/home] and [Terser](https://xem.github.io/terser-online)
+- For the OS13k core system I am using [Google Closer](https://closure-compiler.appspot.com/home) and [Terser](https://xem.github.io/terser-online)
 - We will pack everything together into one giant html file before zipping to save space
 
 ### Games
@@ -63,15 +64,16 @@ Add an icon config to programs.js to register your program, and send me pull req
 
 ### Apps
 - We will include some non-game apps that are small and fun to use
-- Keep use of text to a minimum in your apps
+- Keep text short and essential, try using emojis instead
 - *Apps can play sounds and have trophies too!
 
 ### Music
-- We are working on a music system to play tracker songs with ZzFX sound effects [(DEMO)](https://github.com/keithclark/ZzFXM)
-- There will be music generators, synth instruments, and even mini albums
-- The idea is that players can listen to music while playing with games and apps
+- [Keith Clark created a system to play tracker songs with ZzFX sound effects]https://github.com/keithclark/ZzFXM)
+- We will include this in the OS as a core feature soon, something like OS13k.PlayMusic(musicData)
+- We need music generators, synth instruments, and maybe even mini albums
+- The idea is that players can listen to music while messing with games and apps
 - The music tools can even work in conjunction with each other (step sequencer drum kit + piano)
-- Music programs should continue playing even if the window loses focus
+- Music programs should continue playing if the frame loses focus, but maybe with reduced graphics to lower the load
 
 ### Dweets and Shadertoys
 - Programs with the extension .dweet.js or .shader.txt or will automatically load as Dweets or Shadertoys!
