@@ -224,7 +224,7 @@ div svg       { width:100%; pointer-events:none; }
 // OS13k Debug Stuff (remove from minified)
 
 // version check, clear local storage if older
-const OS13kVersion = 15;
+const OS13kVersion = 16;
 if (localStorage.OS13kVersion != OS13kVersion)
     localStorage.clear(), localStorage.OS13kVersion = OS13kVersion;
     
@@ -766,6 +766,7 @@ class OS13kProgram extends HTMLElement
         this.full = full;
         this.reload = reload || (this.hasExtension && reload === undefined);
         this.code = code || (this.hasExtension && code === undefined);
+        this.sticky = sticky;
         
         // set title if not a folder
         if (!folder)
@@ -836,8 +837,8 @@ class OS13kProgram extends HTMLElement
             // set focus to window
             this.window.Focus(1);
             
-            // save info
-            this.SaveInfo(1);
+            // save info on open if sticky
+            this.sticky && this.SaveInfo(1);
         }
         else if (!this.folder)
         {
@@ -1040,8 +1041,8 @@ class OS13kWindow extends HTMLElement
             // track if programs are loading
             --loading;
     
-            // load first program in list on startup
-            loading || finishedStartup || firstProgram.MouseClick(finishedStartup = 1);
+            // focus on first program in list after startup
+            loading || finishedStartup || firstProgram.window.Focus(finishedStartup=1);
         }
     }
     
