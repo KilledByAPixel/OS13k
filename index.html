@@ -1293,7 +1293,7 @@ onclick=e=>
 oncontextmenu=e=>
 {
     CloseMenus();
-    let menuElement = menu, x = e.x, y = e.y;
+    let menuElement = menu;
     if (!e.target.SetActive || e.target == loadIcon)
     {
         // open folder if clicked on desktop or folder icon
@@ -1306,8 +1306,8 @@ oncontextmenu=e=>
     target.SetActive && target.SetActive();
     
     // show menu
-    menuElement.style.left = x;
-    menuElement.style.top = y;
+    menuElement.style.left = e.x;
+    menuElement.style.top = e.y;
     menuElement.style.visibility = 'visible';
     
     // prevent default context menu
