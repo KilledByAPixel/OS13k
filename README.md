@@ -112,7 +112,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 - src - Source filename
 - icon - Can contain html tags, fits about 2 emojis (you don't need to close tags)
 - width (720) and height (405) - Size of window (default is 16:9 aspect)
-- help (optional) - Help message or instructions, shows an icon on the window's titlebar
+- help (optional) - Help message, shows an icon on the window's titlebar (keep it short!)
 - author (optional) - Name of creator
 - reload (0) - Shows the reload option, defaults to true for dweets/shaders
 - code (0) - Shows code option, defaults to true for dweets/shaders, help is shown instead if it exists
