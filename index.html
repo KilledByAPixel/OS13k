@@ -1034,9 +1034,8 @@ class OS13kWindow extends HTMLElement
             // make visible
             this.style.visibility = this.iframe.style.visibility = '';
             
-            // release window if grabbing
-            if (!grabWindow)
-                this.Focus();
+            // only focus if not grabbing
+            grabWindow || this.Focus();
         
             // track if programs are loading
             --loading;
