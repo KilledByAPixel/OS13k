@@ -22,7 +22,7 @@ const programs =
     {src:'apps/unicodeToys.html', icon:'𝖀', author:'Xem', width:500, height:800},
     {src:'apps/miniShadertoy.html', icon:'𝓢', width:340, height:400},
     {src:'apps/textEditor.html', icon:'📝'},
-    {src:'tools/sheets.html', icon:'🔠', width:650, height:130},
+    {src:'apps/sheets.html', icon:'🔠', width:650, height:130},
     {src:'https://dweetview.3d2k.com', name:'Dweet View', icon:'<span style=color:#f00;background:#000><b>&nbsp;III&nbsp;'},
 ]},
 {name:'Games', icon:'🎮', folder:
