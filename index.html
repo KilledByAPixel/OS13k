@@ -8,12 +8,20 @@ Please keep this project confidential!
 
 ✌️😄 ❤️ OS13k Team
 
+// Minification Steps
+// 1. Remove touch support
+// 2. Paste programs.js to top
+// 3. Google Closure
+// 4. Terser
+// 5. HTML Compressor
+
 -->
 
 <title>OS13k - A tiny operating system for JS13k</title>
 <link rel=icon type=image/x-icon href='favicon.png?1'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<!-- HTML above this is not needed for minified -->
+
+<!-- HTML above is optional -->
 
 <meta charset=utf-8>
 <style>
@@ -30,12 +38,12 @@ body
 #taskbar
 {
     position:absolute;
-    border:2px solid;
     z-index:10000;
     width:100%;
-    background:linear-gradient(#888,#333);
     left:-2;
+    background:linear-gradient(#888,#333);
     box-shadow:0px 1px 9px;
+    border:2px solid;
 }
 .taskbarIcon
 {
@@ -48,14 +56,14 @@ body
 #tray
 {
     font-size:22;
-    border:1px solid;
     margin:2;
     padding:2;
-    background:linear-gradient(#000,#333);
-    color:#fff;
-    border-radius:6px;
     padding-left:9;
     padding-right:9;
+    color:#fff;
+    background:linear-gradient(#000,#333);
+    border:1px solid;
+    border-radius:6px;
 }
 .trayIcon       
 { 
@@ -74,31 +82,31 @@ body
 .folder, #menu
 {
     position:absolute;
-    border:2px solid;
     z-index:20000;
     box-shadow:5px 5px 9px;
+    border:2px solid;
 }
 .trophyPopup
 {
     position:relative;
-    border:2px solid;
     z-index:10001;
-    box-shadow:9px 9px 19px;
     width:200;
+    margin:9;
     padding:8;
+    white-space:normal;
+    pointer-events:none;
+    overflow:hidden;
     font-size:26;
     text-align:center;
     background:linear-gradient(#eee,#888);
-    white-space:normal;
-    margin:9;
+    box-shadow:9px 9px 19px;
+    border:2px solid;
     border-radius:9px;
-    pointer-events:none;
-    overflow:hidden;
 }
 .trophyIcon
 {
-    font-size:40;
     padding:9;
+    font-size:40;
     text-shadow:2px 2px 4px #000;
     white-space:nowrap;
 }
@@ -136,25 +144,25 @@ body
 <style>
 :host
 {
-    box-shadow:5px 5px 9px;
-    border:3px solid #222;
-    background:#000;
+    position:absolute;
     display:flex;
     flex-direction:column;
     overflow:hidden;
-    position:absolute;
+    background:#000;
+    box-shadow:5px 5px 9px;
+    border:3px solid #222;
     border-radius:6px;
 }
 .titlebar
 {
     height:44;
     font-size:26;
-    background:linear-gradient(#ccc,#444);
     display:flex;
     align-items:center;
     justify-content:center;
     overflow:hidden;
     white-space:nowrap;
+    background:linear-gradient(#ccc,#444);
 }
 .titlebarActive
 {
@@ -181,18 +189,18 @@ body
 {
     width:100%;
     height:100%;
+    overflow:hidden;
     background:#fff;
     border:none;
-    overflow:hidden;
 }
 #helpDisplay
 {
     height:99;
     resize:none;
-    background:#000;
-    color:#fff;
     display:none;
+    background:#000;
     border:1px solid #fff;
+    color:#fff;
     outline:none;
 }
 #reload,
@@ -233,18 +241,18 @@ div svg       { width:100%; pointer-events:none; }
 <div id=title>OS13k
 <div id=menu>
 <button id=buttonFullScreen onclick=activeWindow.FullScreen()>Fullscreen
-<button id=buttonShowHelp onclick=activeWindow.ShowHelp()>Show Help
-<button id=buttonShowCode onclick=activeWindow.ShowHelp()>Show Code
+<button id=buttonShowHelp onclick=activeWindow.ShowHelp()>Help
+<button id=buttonShowCode onclick=activeWindow.ShowHelp()>Code
 <button id=buttonReload onclick=activeWindow.Reload()>Reload
 <button id=buttonClose onclick=activeWindow.Close()>Close
-<script src=programs.js?80></script>
+<script src=programs.js?82></script>
 <script>
 
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Debug Stuff (remove from minified)
 
 // version check, clear local storage if older
-const OS13kVersion = 19;
+const OS13kVersion = 20;
 if (localStorage.OS13kVersion != OS13kVersion)
     localStorage.clear(), localStorage.OS13kVersion = OS13kVersion;
     
@@ -256,29 +264,24 @@ if (typeof programs == 'undefined')
 }
 
 /////////////////////////////////////////////////////////////////////////////
-// Use Strict and Closure Config
+// Use Strict and Google Closure Config
 
 'use strict';
 
 // ==ClosureCompiler==
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // @language_out ECMASCRIPT_2019
-// @js_externs OS13k, OS13kFolder, OS13kProgram, OS13kWindow, OS13kTaskbarIcon
-// @js_externs zzfx, zzfxV, icon.folder
-// @js_externs _OS13k.Trophy, _OS13k.GetTrophies, _OS13k.KeyDirection, _OS13k.Speak
-// @js_externs _OS13k.CreateShader, _OS13k.RenderShader, _OS13k.CreateCanvas
-// @js_externs _OS13k.PlaySamples, _OS13k.PlaySeed, _OS13k.GetNote
-// @js_externs _OS13k.Random, _OS13k.randomSeed 
-// @js_externs _OS13k.Clamp, _OS13k.Percent, _OS13k.Lerp
+// @js_externs OS13kFolder, OS13kProgram, OS13kWindow, OS13kTaskbarIcon
+// @js_externs OS13k, zzfx
+// @js_externs OS13k.Trophy, OS13k.GetTrophies, OS13k.KeyDirection, OS13k.Speak
+// @js_externs OS13k.CreateShader, OS13k.RenderShader, OS13k.CreateCanvas
+// @js_externs OS13k.PlaySamples, OS13k.PlaySeed, OS13k.GetNote
+// @js_externs OS13k.Random, OS13k.randomSeed 
+// @js_externs OS13k.Clamp, OS13k.Percent, OS13k.Lerp
 // @js_externs iframeContent.OS13k, iframeContent.OS13kStart, iframeContent.zzfx
+// @js_externs localStorage.OS13kTrophies, localStorage.OS13kVersion
 // @output_file_name OS13k.min.js
 // ==/ClosureCompiler==
-
-// Minification Steps
-// 1. Remove touch support
-// 2. Google Closure
-// 3. Terser
-// 4. HTML Compressor
 
 /////////////////////////////////////////////////////////////////////////////
 // OS13k System
@@ -570,8 +573,8 @@ const Init=()=>
     
     // set taskbar functions
     trayTrophy.onmousedown = trayTrophy.ontouchstart =()=> trophyProgram.Toggle();
-    trayVolume.onmousedown = trayVolume.ontouchstart = ToggleMute;
     trayTime.onmousedown = trayTime.ontouchstart =()=> clockProgram.Toggle();
+    trayVolume.onmousedown = trayVolume.ontouchstart = ToggleMute;
 
     // create the folder taskbar icon and add folders/programs
     loadIcon = new OS13kTaskbarIcon( {icon:'💾', name:'Load Program'} );
@@ -767,7 +770,7 @@ customElements.define('os13k-folder', OS13kFolder);
 
 class OS13kProgram extends HTMLElement
 {
-	constructor({'x':x, 'y':y, 'name':name, 'icon':icon, 'src':src='', 'width':width=720, 'height':height=405, 'author':author, 'folder':folder, 'help':help, 'full':full=1, 'reload':reload, 'code':code, 'sleep':sleep=1, 'sticky':sticky})
+	constructor({x, y, name, icon, src='', width=720, height=405, author, folder, help, full=1, reload=1, code, sleep=1, sticky})
     {
 		super();
         
@@ -802,7 +805,7 @@ class OS13kProgram extends HTMLElement
         this.author = author;
         this.sleep = sleep;
         this.full = full;
-        this.reload = reload || (this.hasExtension && reload === undefined);
+        this.reload = reload;
         this.code = code || (this.hasExtension && code === undefined);
         this.sticky = sticky;
         this.help = help;
@@ -830,7 +833,7 @@ class OS13kProgram extends HTMLElement
             // folder arrow
             const folderDisplay = document.createElement('div');
             folderDisplay.style = 'pointer-events:none'
-            folderDisplay.innerHTML = '▶';
+            folderDisplay.innerHTML = '&nbsp;&nbsp;▶';
             this.appendChild(folderDisplay);
         }
         
@@ -970,8 +973,8 @@ class OS13kWindow extends HTMLElement
             this.titlebar.appendChild(icon);
         }
         program.full && AddTitlebarIcon('full', 'Full Screen');
-        program.help && AddTitlebarIcon('help', 'Show Help');
-        program.help || program.code && AddTitlebarIcon('code', 'Show Code');
+        program.help && AddTitlebarIcon('help', 'Help');
+        program.help || program.code && AddTitlebarIcon('code', 'Code');
         program.reload && AddTitlebarIcon('reload', 'Reload');
         AddTitlebarIcon('close', 'Close');
         
@@ -1423,7 +1426,7 @@ const zzfx =
 
 const OS13k = new _OS13k;
 Init();
-Update(0);
+Update();
 
 /////////////////////////////////////////////////////////////////////////////////////
 // Touch Input (optional)
