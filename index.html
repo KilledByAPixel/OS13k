@@ -716,23 +716,21 @@ class OS13kFolder extends HTMLElement
         }
     }
 
-    Focus(fromTaskbar)
+    Focus(fromClick)
     {
         // check if it is visible
         const wasVisible = !this.style.visibility;
         CloseMenus();
         
-        // set visibility
-        if (fromTaskbar && wasVisible)
-            activeWindow && activeWindow.Focus();
-        else
-        { 
+        if (!fromClick || !wasVisible)
+        {
+            // make visible
             this.parentFolder && this.parentFolder.Focus();
             this.style.visibility = '';
         }
         
-        // reset position if programs folder
-        if (fromTaskbar)
+        // reset position if from taskbar click
+        if (fromClick)
         {
             programsFolder.style.left = 0;
             programsFolder.style.top = taskbarHeight;
@@ -846,8 +844,8 @@ class OS13kProgram extends HTMLElement
             // update window open positions
             if (info.updatePosition)
             {
-                (windowOpenY += titlebarHeight) > 200 && (windowOpenY = startWindowOpenY);
                 (windowOpenX += titlebarHeight) > 400 && (windowOpenX = startWindowOpenX);
+                (windowOpenY += titlebarHeight) > 200 && (windowOpenY = startWindowOpenY);
             }
 
             // open the window
@@ -1265,6 +1263,7 @@ onclick=e=>
 
 oncontextmenu=e=>
 {
+    CloseMenus();
     let menuElement = menu;
     if (!e.target.SetActive || e.target == loadIcon)
     {
@@ -1272,16 +1271,10 @@ oncontextmenu=e=>
         menuElement = programsFolder;
         loadIcon.MouseClick();
     }
-    if (e.target.window)
-    {
-        // set target frame active if it is an icon
-        e.target.window.SetActive && e.target.window.SetActive();
-    }
-    else 
-    {
-        // set active if it is a window
-        e.target.SetActive && e.target.SetActive();
-    }
+    
+    // set target active
+    const target = (e.target.window || e.target);
+    target.SetActive && target.SetActive();
     
     // show menu
     menuElement.style.left = e.x;
