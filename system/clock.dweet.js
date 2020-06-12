@@ -6,8 +6,8 @@ x.fillStyle='#111'
 x.fillRect(0,0,2e3,2e3)
 x.translate(99,99)
 x.setLineDash([z=Math.PI/2,z*5])
-x.arc(0,0,90,-z/60,7)
 x.lineWidth=3
+x.arc(0,0,90,-z/60,7)
 x.strokeStyle=x.fillStyle='#fff'
 x.stroke()
 x.setLineDash([z*=3,z*9])
