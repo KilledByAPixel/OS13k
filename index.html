@@ -1031,7 +1031,7 @@ class OS13kWindow extends HTMLElement
                 iframeContent.OS13kStart && iframeContent.OS13kStart();
                 
                 // prevent right clicking in frames
-                iframeContent.oncontextmenu =()=> false;
+                iframeContent.oncontextmenu =e=> oncontextmenu(e);
             }
 
             // check for extensions
@@ -1293,8 +1293,14 @@ onclick=e=>
 oncontextmenu=e=>
 {
     CloseMenus();
-    let menuElement = menu;
-    if (!e.target.SetActive || e.target == loadIcon)
+    let menuElement = menu, x = e.x, y = e.y;
+    if (e.window != window)
+    {
+        const rect = activeWindow.getBoundingClientRect();
+        x += rect.left;
+        y += rect.top + taskbarHeight;
+    }
+    else if (!e.target.SetActive || e.target == loadIcon)
     {
         // open folder if clicked on desktop or folder icon
         menuElement = programsFolder;
@@ -1306,8 +1312,8 @@ oncontextmenu=e=>
     target.SetActive && target.SetActive();
     
     // show menu
-    menuElement.style.left = e.x;
-    menuElement.style.top = e.y;
+    menuElement.style.left = x;
+    menuElement.style.top = y;
     menuElement.style.visibility = 'visible';
     
     // prevent default context menu
