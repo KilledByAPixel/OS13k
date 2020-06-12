@@ -1,15 +1,15 @@
 const programs = 
 [
 {name:'Close All', icon:'❌',},
-{src:'help.html?15', icon:'<b><span style=color:#0f0>?', width:380, height:400},
-{src:'moreInfo.html?9', icon:'👨‍💻'},
+{src:'help.html?16', icon:'<b><span style=color:#0f0>?', width:380, height:400, help:'Click this icon to see instructions when available.'},
+{src:'moreInfo.html?10', icon:'👨‍💻'},
 {src:'https://js13kgames.com', name:'JS13k Website', icon:'<b><span style=font-family:currier;color:#b33>13k'},
 {name:'System', icon:'⚙️', folder:
 [
     {src:'system/trophyCase.html?8', icon:'🏆', width:680},
     {src:'system/clock.dweet.js?8', icon:'🕰️', width:200, height:200, reload:0, sleep:0, full:0, sticky:1},
     {src:'system/shell.html?1',icon:'<span style=color:#0f0;background:#000>&nbsp;>&nbsp;',  reload:1},
-    {src:'system/test.html?11', reload:1, code:1, width:600, height:400, sticky:1},
+    {src:'system/test.html?12', reload:1, code:1, width:600, height:400, sticky:1},
     {name:'Test Folder', icon:'📁', folder:
     [
         {src:'system/test.html', name:'Hello!', icon:'✌️😄', width:600, height:400},

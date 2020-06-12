@@ -169,7 +169,7 @@ body
     pointer-events:none;
     display:inline;
 }
-#codeDisplay
+#helpDisplay
 {
     height:99;
     resize:none;
@@ -181,6 +181,7 @@ body
 }
 #reload,
 #full,
+#help,
 #code         { width:40; }
 #close        { width:28; }
 #help:hover   { background:#0ff; }
@@ -191,6 +192,8 @@ body
 div svg       { width:100%; pointer-events:none; }
 </style>
 <svg width=0 height=0>
+<symbol id=icon-help viewBox='0 0 10 10'>
+    <path stroke=#000 stroke-width=.7 fill=none d='M5 8L8 2L2 2L5 8L8 2'/>
 <symbol id=icon-code viewBox='0 0 10 10'>
     <path stroke=#000 stroke-width=.7 fill=none d='M5 2L8 8L2 8L5 2L8 8'/>
 <symbol id=icon-full viewBox='0 0 10 10'>
@@ -214,17 +217,18 @@ div svg       { width:100%; pointer-events:none; }
 <div id=title>OS13k
 <div id=menu>
 <button id=buttonFullScreen onclick=activeWindow.FullScreen()>Fullscreen
-<button id=buttonShowCode onclick=activeWindow.ShowCode()>Show Code
+<button id=buttonShowHelp onclick=activeWindow.ShowHelp()>Show Help
+<button id=buttonShowCode onclick=activeWindow.ShowHelp()>Show Code
 <button id=buttonReload onclick=activeWindow.Reload()>Reload
 <button id=buttonClose onclick=activeWindow.Close()>Close
-<script src=programs.js?69></script>
+<script src=programs.js?70></script>
 <script>
 
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Debug Stuff (remove from minified)
 
 // version check, clear local storage if older
-const OS13kVersion = 16;
+const OS13kVersion = 17;
 if (localStorage.OS13kVersion != OS13kVersion)
     localStorage.clear(), localStorage.OS13kVersion = OS13kVersion;
     
@@ -729,7 +733,7 @@ customElements.define('os13k-folder', OS13kFolder);
 
 class OS13kProgram extends HTMLElement
 {
-	constructor({'x':x, 'y':y, 'name':name, 'icon':icon, 'src':src='', 'width':width=720, 'height':height=405, 'author':author, 'folder':folder, 'full':full=1, 'reload':reload, 'code':code, 'sleep':sleep=1, 'sticky':sticky})
+	constructor({'x':x, 'y':y, 'name':name, 'icon':icon, 'src':src='', 'width':width=720, 'height':height=405, 'author':author, 'folder':folder, 'help':help, 'full':full=1, 'reload':reload, 'code':code, 'sleep':sleep=1, 'sticky':sticky})
     {
 		super();
         
@@ -767,6 +771,7 @@ class OS13kProgram extends HTMLElement
         this.reload = reload || (this.hasExtension && reload === undefined);
         this.code = code || (this.hasExtension && code === undefined);
         this.sticky = sticky;
+        this.help = help;
         
         // set title if not a folder
         if (!folder)
@@ -920,17 +925,18 @@ class OS13kWindow extends HTMLElement
         this.titlebarName.appendChild(nameDisplay);
         
         // create title bar icons
-        const AddtitlebarIcon=(id, title)=>
+        const AddTitlebarIcon=(id, title)=>
         {
             const icon = document.createElement('div');
             icon.innerHTML = `<svg><use href=#icon-${icon.id = id}>`;
             icon.title = title;
             this.titlebar.appendChild(icon);
         }
-        program.full && AddtitlebarIcon('full', 'Full Screen');
-        program.code && AddtitlebarIcon('code', 'Show Code');
-        program.reload && AddtitlebarIcon('reload', 'Reload');
-        AddtitlebarIcon('close', 'Close');
+        program.full && AddTitlebarIcon('full', 'Full Screen');
+        program.help && AddTitlebarIcon('help', 'Show Help');
+        program.help || program.code && AddTitlebarIcon('code', 'Show Code');
+        program.reload && AddTitlebarIcon('reload', 'Reload');
+        AddTitlebarIcon('close', 'Close');
         
         // create thin line below title bar
         const titlebarGap = document.createElement('div');
@@ -971,12 +977,12 @@ class OS13kWindow extends HTMLElement
                 iframeText = program.hasExtension ?
                     iframeDocument.body.innerText : iframeDocument.body.innerHTML;
 
-                // create code display
-                this.codeDisplay = document.createElement('textarea');
-                this.codeDisplay.id = 'codeDisplay'; 
-                this.codeDisplay.setAttribute('readOnly', 1);
-                this.codeDisplay.value = iframeText;
-                this.shadowRoot.appendChild(this.codeDisplay);
+                // create help display
+                this.helpDisplay = document.createElement('textarea');
+                this.helpDisplay.id = 'helpDisplay'; 
+                this.helpDisplay.setAttribute('readOnly', 1);
+                this.helpDisplay.value = this.program.help || iframeText;
+                this.shadowRoot.appendChild(this.helpDisplay);
             }
             catch (e) {}
             
@@ -1062,10 +1068,10 @@ class OS13kWindow extends HTMLElement
     {
         // check for title bar buttons
         target.id == 'full'        && this.FullScreen();
-        target.id == 'code'        && this.ShowCode();
         target.id == 'reload'      && this.Reload();
         target.id == 'close'       && this.Close();
-        target.id != 'codeDisplay' && this.Focus();
+        target.id != 'helpDisplay' && this.Focus();
+        (target.id == 'help' || target.id == 'code') && this.ShowHelp();
     }
     
     Focus(clampToWindow)
@@ -1098,6 +1104,7 @@ class OS13kWindow extends HTMLElement
 
                 // show menu buttons
                 buttonFullScreen.style.display = this.program.full?   '' : 'none';
+                buttonShowHelp.style.display   = this.program.help?   '' : 'none';
                 buttonShowCode.style.display   = this.program.code?   '' : 'none';
                 buttonReload.style.display     = this.program.reload? '' : 'none';
             }
@@ -1108,9 +1115,10 @@ class OS13kWindow extends HTMLElement
             
         // set active
         activeWindow = active && this;
-        this.style.filter = active || !this.program.sleep? '' : 'saturate(.7)brightness(.7';
         this.titlebar.className = 'titlebar' + (active? ' titlebarActive' : '');
         this.className = active? 'activeWindow' : '';
+        (this.program.sleep ? this : this.titlebar).style.filter = 
+            active? '' : 'saturate(.7)brightness(.7';
     }
     
     FullScreen()
@@ -1129,14 +1137,16 @@ class OS13kWindow extends HTMLElement
         OS13k.Trophy(undefined,'Pro Gamer','🕹️','Went Fullscreen');
     }
     
-    ShowCode()
+    ShowHelp()
     {
         // toggle showing code
         this.Focus();
-        this.codeDisplay.style.display = 
-            (this.showCode = !this.showCode) ? 'block' : '';
-            
-        OS13k.Trophy(undefined,'Hacker','👨‍💻','Viewed Code');
+        this.helpDisplay.style.display = 
+            (this.showHelp = !this.showHelp) ? 'block' : '';
+        
+        this.program.help?
+            OS13k.Trophy(undefined,'Avid Reader','📘','Viewed Help') :
+            OS13k.Trophy(undefined,'Hacker','👨‍💻','Viewed Code');
     }
     
     Reload()
@@ -1234,7 +1244,7 @@ onclick=e=>
     // focus on active window
     const originalTarget = e.originalTarget || e.path[0];
     e.target != loadIcon && e.target.localName != 'os13k-program' && activeWindow && 
-        originalTarget.id != 'codeDisplay' && activeWindow.Focus();
+        originalTarget.id != 'helpDisplay' && activeWindow.Focus();
 
     // handle click
     e.target.MouseClick && e.target.MouseClick(originalTarget);
