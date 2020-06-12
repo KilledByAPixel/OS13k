@@ -19,7 +19,7 @@ x.rotate(a=Math.PI*(2*P-1))
 x.fillRect(-W/2,-6,W,L)
 x.rotate(-a)}
 D=D.slice(16,24).split`:`
-L(D[0]%12/12,6,59)
-L(D[1]/60,3,85)
+L((D[0]%12+D[1]/60)/12,6,59)
+L(D[1]/60+D[2]/3600,3,85)
 x.fillStyle='#f00'
 L(D[2]/60,2,99)

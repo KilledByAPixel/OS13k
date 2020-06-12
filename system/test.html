@@ -5,17 +5,14 @@ Text area with local storage
 Hello OS13k!
 </textarea>
 <br><button onClick=OS13k.Speak(a.value)>Test Speech</button>
-<button onClick="z&&z.stop();z=OS13k.PlaySeed(r=++r%1e4);seed.innerHTML=r">
+<button onClick="sound&&sound.stop();sound=OS13k.PlaySeed(r=++r%1e4);seed.innerHTML=r">
 Test ZzFX</button> <span id=seed></span>
-
 <br>
 <br>Test WASD input direction
 <br><input id=move readonly>
-
 </td><td>
 Test Shader
-<br><canvas id=c style='border:1px solid'></canvas>
-</td>
+<br><canvas id=c style='border:1px solid'>
 </table>
 <br><br>
 Trophies
@@ -24,21 +21,19 @@ Trophies
 <br><input id=icon>
 <br><input id=message value=Message>
 <br>
-<button onClick=OS13k.Trophy(game.value,trophy.value,icon.value,message.value)>Add Trophy</button>
+<button onClick=OS13k.Trophy(game.value,trophy.value,icon.value,message.value)>
+Add Trophy</button>
 <button onClick='delete localStorage.OS13kTrophies'>Reset Popups</button>
 <button onClick=ClearTrophies()>Clear Trophies</button>
-
 <script>
 
 'use strict';
 
 const ClearTrophies=()=>
 {
-    // delete all trophies
     delete localStorage.OS13kTrophies
     for (let i = localStorage.length; i--;)
     {
-        // check if it is a trophy
         const key = localStorage.key(i);
         const keyParts = key.split(',');
         if (keyParts.shift() == 'OS13kTrophy')
@@ -46,13 +41,15 @@ const ClearTrophies=()=>
     }
 }
 
-// load local storage text area
-localStorage.OS13kTest && (a.value = localStorage.OS13kTest);
-
 // init variables
 let shader;
-let z;
+let sound;
 let r = Date.now();
+
+// load local storage text area
+a.value = localStorage.OS13kTest || '';
+
+// input test
 onkeydown=e=>
 {
     const p = OS13k.KeyDirection(e.keyCode); 
@@ -71,7 +68,7 @@ const loop=t=>
 // wait for os13k start
 var OS13kStart=()=>
 {
-    // create a shader
+    // create a simple shader
     shader = OS13k.CreateShader
     (
         c, 
