@@ -1,12 +1,12 @@
 const programs = 
 [
 {name:'Close All', icon:'❌',},
-{src:'help.html?16', icon:'<b><span style=color:#0f0>?', width:380, height:400, help:'Click this icon to see instructions when available.'},
+{src:'help.html?16', icon:'<b><span style=color:#0f0>?', width:380, height:400, help:'Check here to see help when available.\nSome programs have a option to show code instead.\n\nHave fun! ✌️😄'},
 {src:'moreInfo.html?10', icon:'👨‍💻'},
 {src:'https://js13kgames.com', name:'JS13k Website', icon:'<b><span style=font-family:currier;color:#b33>13k'},
 {name:'System', icon:'⚙️', folder:
 [
-    {src:'system/trophyCase.html?8', icon:'🏆', width:680},
+    {src:'system/trophyCase.html?8', icon:'🏆', width:680, help:'All your trophies are shown here.\nTotal trophy count is show in the titlebar.\n\nPlay games and experiment to win more trophies!'},
     {src:'system/clock.dweet.js?8', icon:'🕰️', width:200, height:200, reload:0, sleep:0, full:0, sticky:1},
     {src:'system/shell.html?1',icon:'<span style=color:#0f0;background:#000>&nbsp;>&nbsp;',  reload:1},
     {src:'system/test.html?12', reload:1, code:1, width:600, height:400, sticky:1},
@@ -17,7 +17,7 @@ const programs =
 ]},
 {name:'Apps', icon:'🛠️', folder:
 [
-    {src:'apps/stickyNote.html?2', icon:'✍️', width:300, height:264, full:0, sticky:1, sleep:0},
+    {src:'apps/stickyNote.html?2', icon:'✍️', width:300, height:264, full:0, sticky:1, sleep:0, help:'This note is persistant.\n\nYou can use commands like Ctrl+B, Ctrl+I, and Ctrl+U to add formatting.'},
     {src:'apps/photoBooth.html', icon:'📸', width:1400, height:550 },
     {src:'apps/unicodeToys.html', icon:'𝖀', author:'Xem', width:500, height:800},
     {src:'apps/miniShadertoy.html', icon:'𝓢', width:340, height:400},
@@ -45,7 +45,7 @@ const programs =
 [
     {src:'toys/zzfxSoundBoard.html?1', name:'ZzFX Sound Board', icon:'𝐙𝐙', width:700, height:420},
     {src:'toys/zzartLandscape.shader.txt?3', name:'ZzArt Landscape', icon:'𝓩'},
-    {src:'toys/infiniteYinYangs.shader.txt?2', icon:'☯'},
+    {src:'toys/infiniteYinYangs.shader.txt?2', icon:'<span style=color:#f00>☯'},
     {src:'toys/vogelSpiral.shader.txt?2', icon:'🌀'},
     {src:'index.html', name:'Meta OS13k', icon:'𝐎𝐒'},
 ]},
