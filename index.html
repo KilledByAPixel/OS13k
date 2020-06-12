@@ -279,6 +279,11 @@ class _OS13k
 {
     Trophy(game='OS13k', name='', icon='', message='', saveTrophies=1)
     {
+        // remove commas
+        game = game.replace(',','');
+        name = name.replace(',','');
+        icon = icon.replace(',','');
+    
         // build key
         const key = game + ',' + name + ',' + icon;
         const storageKey = 'OS13kTrophy,' + key;
