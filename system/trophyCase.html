@@ -1,27 +1,27 @@
 <style>
 .trophy
 {
-    border:2px solid;
-    border-radius:19px;
-    box-shadow:5px 5px 9px;
+    font-family:arial;
     width:120;
     height:120;
-    padding:8;
     margin:9;
-    font-size:18;
-    text-align:center;
-    background:linear-gradient(#eee,#888);
+    padding:8;
     display:inline-block;
     overflow:hidden;
     user-select:none;
-    font-family:arial;
+    font-size:18;
+    text-align:center;
+    background:linear-gradient(#eee,#888);
+    box-shadow:5px 5px 9px;
+    border:2px solid;
+    border-radius:19px;
 }
 .icon
 {
-    font-size:28;
     padding:3;
-    text-shadow:2px 2px 4px #000;
     white-space:nowrap;
+    font-size:28;
+    text-shadow:2px 2px 4px #000;
 }
 </style>
 <body bgcolor=#222>
@@ -29,10 +29,14 @@
 
 'use strict';
 
+// ==ClosureCompiler==
+// @compilation_level ADVANCED_OPTIMIZATIONS
+// @js_externs OS13k, OS13k.GetTrophies, OS13kStart
+// @language_out ECMASCRIPT_2019
+// ==/ClosureCompiler==
+
 var OS13kStart=()=>
 {
-    document.body.innerHTML='';
-
     for (const trophy of OS13k.GetTrophies())
     {
         // get trophy info
@@ -59,4 +63,8 @@ var OS13kStart=()=>
         this.document.body.appendChild(div); 
     }
 }
+
+// Force closure to include OS13k
+OS13kStart;
+
 </script>
