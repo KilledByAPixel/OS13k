@@ -242,7 +242,7 @@ div svg       { width:100%; pointer-events:none; }
 // OS13k Debug Stuff (remove from minified)
 
 // version check, clear local storage if older
-const OS13kVersion = 18;
+const OS13kVersion = 19;
 if (localStorage.OS13kVersion != OS13kVersion)
     localStorage.clear(), localStorage.OS13kVersion = OS13kVersion;
     
@@ -277,7 +277,7 @@ if (typeof programs == 'undefined')
 
 class _OS13k
 {
-    Trophy(game='OS13k', name='', icon='', message='', saveTrophies=1)
+    Trophy(game='OS13k', name='', icon='', message='' )
     {
         // remove commas
         game = game.replace(',','');
@@ -308,8 +308,8 @@ class _OS13k
             trophies.push( trophyData ) :
             trophies[trophyIndex] = trophyData;
 
-        // save local storage
-        if (saveTrophies)
+        // save local storage if loading is finished
+        if (loadIcon)
         {
             localStorage[storageKey] = message;
             localStorage.OS13kTrophies = JSON.stringify(trophies);
@@ -408,7 +408,7 @@ class _OS13k
         return rootNoteFrequency * 2**(semitoneOffset/12);
     }
 
-    Speak(text, volume=1, pitch=1, rate=1)
+    Speak(text, rate=1, pitch=1, volume=1, language='en')
     { 
         if (!speechSynthesis)
             return;
@@ -418,6 +418,7 @@ class _OS13k
         utterance.volume = volume * gain.gain.value;
         utterance.pitch = pitch;
         utterance.rate = rate;
+        utterance.lang = language;
     
         // speak if not muted
         gain.gain.value && speechSynthesis && 
@@ -537,15 +538,19 @@ const Init=()=>
     // parse trophy list
     trophies = localStorage.OS13kTrophies ? JSON.parse(localStorage.OS13kTrophies) : [];
 
-    // search local storage for trophies
-    for (let i = localStorage.length; i--;)
+    const CheckForTrophy =key=>
     {
-        // check if it is a trophy
-        const key = localStorage.key(i);
         const keyParts = key.split(',');
         if (keyParts.shift() == 'OS13kTrophy')
-            OS13k.Trophy(...keyParts, localStorage[key], 0);
+            OS13k.Trophy(...keyParts, localStorage[key])
     }
+
+    // search local storage for trophies
+    for (let i = localStorage.length; i--;)
+        CheckForTrophy(localStorage.key(i));
+    
+    // listen for trophies from other windows
+    window.onstorage =e=> CheckForTrophy(e.key);
     
     // save trophies
     localStorage.OS13kTrophies = JSON.stringify(trophies);
@@ -654,7 +659,7 @@ const ToggleMute=()=>
     gain.gain.value = gain.gain.value ? 0 : defaultVolume;
     trayVolume.innerHTML = (gain.gain.value ? '🔊' : '🔇');
 }
-    
+
 /////////////////////////////////////////////////////////////////////////////
 // OS13kTaskbarIcon
 
@@ -879,14 +884,14 @@ class OS13kProgram extends HTMLElement
     {
         // save info to local storage
         const rect = this.window.getBoundingClientRect();
-        localStorage['OS13k'+this.srcShort] = 
+        localStorage['OS13kProgram'+this.src] = 
             JSON.stringify({x:rect.x, y:rect.y, open});
     }
     
-    LoadInfo( x, y )
+    LoadInfo(x, y)
     {
         // try to load saved window data from local storage
-        const saveWindowJSON = localStorage['OS13k'+this.srcShort];
+        const saveWindowJSON = localStorage['OS13kProgram'+this.src];
         return saveWindowJSON ?
             JSON.parse(saveWindowJSON) : {x, y, updatePosition:1}
     }
@@ -977,10 +982,8 @@ class OS13kWindow extends HTMLElement
         const iframe = this.iframe = document.createElement('iframe'); 
         iframe.id = 'frame';
         this.style.visibility = 'hidden';
-        iframe.src = program.src;
-        frameWrapper.appendChild(iframe);
                 
-        // load frame
+        // wait for frame to load
         iframe.onload=e=>
         {
             // set up iframe          
@@ -1068,6 +1071,10 @@ class OS13kWindow extends HTMLElement
             --loading || finishedStartup ||
                 firstProgram.window.Focus(finishedStartup=1);
         }
+        
+        // load the iframe
+        iframe.src = program.src;
+        frameWrapper.appendChild(iframe);
     }
     
     MouseDown(e, originalTarget)

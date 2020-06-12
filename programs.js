@@ -45,7 +45,7 @@ const programs =
     {src:'toys/zzartLandscape.shader.txt?3', name:'ZzArt Landscape', icon:'𝓩'},
     {src:'toys/infiniteYinYangs.shader.txt?2', icon:'<span style=color:#f00>☯'},
     {src:'toys/vogelSpiral.shader.txt?2', icon:'🌀'},
-    {src:'index.html', name:'Meta OS13k', icon:'𝐎𝐒'},
+    {src:'index.html?1', name:'Meta OS13k', icon:'𝐎𝐒'},
 ]},
 {name:'Dweets', icon:'<b>III', folder:
 [
