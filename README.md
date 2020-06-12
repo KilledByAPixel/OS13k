@@ -114,8 +114,8 @@ Add an icon config to programs.js to register your program, and send me pull req
 - width (720) and height (405) - Size of window (default is 16:9 aspect)
 - help (optional) - Help message or instructions, shows an icon on the window's titlebar
 - author (optional) - Name of creator
-- reload (0) - Shows the reload option, always true for dweets/shaders
-- code (0) - Shows code option, always true for dweets/shaders, help is shown instead if it exists
+- reload (0) - Shows the reload option, defaults to true for dweets/shaders
+- code (0) - Shows code option, defaults to true for dweets/shaders, help is shown instead if it exists
 - full (1) - Enables full screen option
 - sleep (1) - Dims window and pauses dweets/shaders when not focused
 - sticky (0) - Enable auto open of program on restart
