@@ -3,7 +3,7 @@ const programs =
 {name:'Close All', icon:'❌',},
 {src:'help.html?16', icon:'<b><span style=color:#0f0>?', width:380, height:400, help:'Check here to see help when available.\nSome programs have a option to show code instead.\n\nHave fun! ✌️😄'},
 {src:'moreInfo.html?10', icon:'👨‍💻'},
-{src:'https://js13kgames.com', name:'JS13k Website', icon:'<b><span style=font-family:currier;color:#b33>13k'},
+{src:'https://js13kgames.com', name:'JS13k Website', icon:'<b><span style=font-family:currier;color:#b33>13k', width:1100},
 {name:'System', icon:'⚙️', folder:
 [
     {src:'system/trophyCase.html?8', icon:'🏆', width:680, help:'All your trophies are shown here.\nTotal trophy count is displayed in the taskbar.\n\nPlay games and experiment to win more trophies!'},
