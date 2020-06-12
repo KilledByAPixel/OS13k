@@ -13,10 +13,10 @@ x.stroke()
 x.setLineDash([z*=3,z*9])
 x.lineWidth=9
 x.stroke()
-L=(P,W,L)=>{
-x.rotate(a=Math.PI*(2*P-1))
-x.fillRect(-W/2,-6,W,L)
-x.rotate(-a)}
+L=(P,W,L)=>
+x.rotate(a=Math.PI*(1-2*P),
+x.fillRect(-W/2,-6,W,L,
+x.rotate(-a)))
 D=D.slice(16,24).split`:`
 L(D[0]%12/12+D[1]/720,6,59)
 L(D[1]/60,3,85)
