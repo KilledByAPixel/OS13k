@@ -1,0 +1,30 @@
+<style>
+.trophy
+{
+font-family:arial;
+width:120;
+height:120;
+margin:9;
+padding:8;
+display:inline-block;
+overflow:hidden;
+user-select:none;
+font-size:18;
+text-align:center;
+background:linear-gradient(#eee,#888);
+box-shadow:5px 5px 9px;
+border:2px solid;
+border-radius:19px;
+}
+.icon
+{
+padding:3;
+white-space:nowrap;
+font-size:28;
+text-shadow:2px 2px 4px #000;
+}
+</style>
+<body bgcolor=#222>
+<script>
+'use strict';var OS13kStart=()=>{for(const a of OS13k.GetTrophies()){const c=a[0],d=a[1],e=a[2],f=a[3],g=e+" "+d+"\n"+c+"\n"+f,b=document.createElement("div");b.className="trophy";b.title=g;b.innerHTML="<div class=icon>"+e+"</div><div class=text><b>"+d+"</b><br><i>"+c+"</i><br><span style=font-size:14>"+f;this.document.body.appendChild(b)}}
+</script>
