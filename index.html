@@ -41,6 +41,7 @@ body
     width:50;
     height:40;
     text-shadow:1px 1px 2px #000;
+    border-radius:22px;
 }
 #tray
 {
@@ -50,11 +51,16 @@ body
     padding:2;
     background:linear-gradient(#000,#333);
     color:#fff;
-    border-radius:7px;
+    border-radius:6px;
     padding-left:9;
     padding-right:9;
 }
-.trayIcon       { padding-left:5; padding-right:5; }
+.trayIcon       
+{ 
+    padding-left:5;
+    padding-right:5;
+    border-radius:6px;
+}
 .trayIcon:hover { background:#fff3; }
 #menu
 {
@@ -75,7 +81,7 @@ body
     position:relative;
     border:2px solid;
     z-index:10001;
-    box-shadow:5px 5px 9px;
+    box-shadow:9px 9px 19px;
     width:200;
     padding:8;
     font-size:26;
@@ -127,6 +133,7 @@ body
     flex-direction:column;
     overflow:hidden;
     position:absolute;
+    border-radius:6px;
 }
 .titlebar
 {
