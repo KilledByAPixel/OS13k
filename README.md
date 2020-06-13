@@ -1,5 +1,5 @@
 # Welcome to OS13k!
-OS13k is a tiny pseudo operating system designed for a JS13k community project. It includes native support for Shadertoys, Dweets, ZzFX sounds, music, trophies, fullscreen, touch control, and more. The OS is only around 6k zipped and much if that is shared code.
+OS13k is a tiny pseudo operating system designed for a JS13k community project. It includes native support for Shadertoys, Dweets, ZzFX sounds, music, trophies, fullscreen, touch control, and more.
 
 ## Please keep this project confidential!
 
@@ -9,7 +9,7 @@ OS13k is a tiny pseudo operating system designed for a JS13k community project. 
 
 ## The Plan
 - The idea is to build a tiny OS to host a variety of games, music, and apps that fits in 13 kilobytes
-- The core of OS13k is under 7k zipped, so by sharing code with we can pack a lot into 13k
+- The core of OS13k is around 7k zipped, and by using it's shared features we can pack a lot into 13k
 - Programs should be in the 100-500 byte range, what matters most is how well it zips with everything else
 - We plan to fit 10-20 programs [(probably not 26!)](http://js13kgames.com/entries/26-games-in-1) 😅
 - We could easily pack 1k with just like 5 or so cool tiny dweets and shaders
@@ -17,7 +17,7 @@ OS13k is a tiny pseudo operating system designed for a JS13k community project. 
 - You can start with an old project but polish it up a lot, minify it and make it work with OS13k
 - We will need to curate the best and perhaps smallest content for what actually lands in the JS13k build
 - Anything left out of the JS13k build will still be available in the full GitHub version
-- We make this repo public on day 1 of JS13k and open source everything, we haven't decided on license yet
+- We make this repo public on day 1 of JS13k and open source everything, haven't decided on license yet
 
 ### [You can learn more about JS13k here](https://js13kgames.com/)
 
@@ -66,6 +66,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 ### Apps
 - We will include some non-game apps that are small and fun to use
 - Keep text short and essential, try using emojis instead
+- Apps where the user creates something are ideal
 - Design your app well and let players have fun figuring out how to use it
 - *Apps can play sounds and have trophies too!
 
@@ -97,11 +98,12 @@ Add an icon config to programs.js to register your program, and send me pull req
 - OS13k.Speak(text, rate=1, pitch=1, volume=1, language='en') - Play speech of the text
 
 ### Math Library
-- OS13k.Random(max=1, min=0) - Get a seeded random value, OS13k.randomSeed to set the seed
+- Some basic math functions are provided to help reduce code duplication
+- OS13k.Random(max=1, min=0) - Get a seeded random value clamped between min and max
+- OS13k.randomSeed - You must set the seed before calling OS13k.Random
 - OS13k.Clamp(a, min=0, max=1) - Clamp value between min and max
 - OS13k.Percent(v, a, b) - Get clamped percent between a and b
 - OS13k.Lerp(p, a, b) - Lerp clamped percent between a and b
-- Let me know if there is anything else you think should be included
 
 ### ZzFX
 - ZzFX is a super tiny open source JavaScript sound effect synth, but don't let it's size fool you!
@@ -117,13 +119,13 @@ Add an icon config to programs.js to register your program, and send me pull req
 - src - Source filename
 - icon - Can contain html tags, fits about 2 emojis (you don't need to close tags)
 - width (720) and height (405) - Size of window (default is 16:9 aspect)
-- help (optional) - Help message, shows an icon on the window's titlebar (keep it short!)
+- help (optional) - Help message, shows an icon on the window's titlebar (try to keep it short)
 - author (optional) - Name of creator
 - reload (1) - Shows the reload option
 - code (0) - Shows code option, defaults to true for dweets/shaders, help is shown instead if it exists
 - full (1) - Enables full screen option
 - sleep (1) - Dims window and pauses dweets/shaders when not focused
-- sticky (0) - Enable auto open of program on restart
+- sticky (0) - Will automatically open of program on restart if it was open
  
  ### Trophies
  - Apps can register trophies for their games, the OS tracks which are unlocked
