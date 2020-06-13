@@ -247,14 +247,14 @@ div svg       { width:28;pointer-events:none; }
 <button id=buttonResetSize>Reset Size
 <button id=buttonReload>Reload
 <button id=buttonClose>Close
-<script src=programs.js?99></script>
+<script src=programs.js?100></script>
 <script>
 
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Debug Stuff (remove from minified)
 
 // version check, clear local storage if older
-const OS13kVersion = 21;
+const OS13kVersion = 22;
 if (localStorage.OS13kVersion != OS13kVersion)
     localStorage.clear(), localStorage.OS13kVersion = OS13kVersion;
     
@@ -589,8 +589,8 @@ const Init=()=>
     
     OS13k.Trophy(undefined,'Welcome!','👋');
     
-    if (localStorage['OS13kSH'])
-        OS13k.Trophy(undefined,'Frozen','🧊',`Froze The Browser\n"${localStorage['OS13kSHF']}"`);
+    if (localStorage['OS13kFrozen'])
+        OS13k.Trophy(undefined,'Frozen','🧊',`Froze The Browser\n"${localStorage['OS13kFrozenText']}"`);
 }
 
 const Update=()=>
