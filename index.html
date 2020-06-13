@@ -1127,8 +1127,8 @@ class OS13kWindow extends HTMLElement
         target.id == 'close'       && this.Close();
         target.id != 'helpDisplay' && this.Focus();
         (target.id == 'help' || target.id == 'code') && this.ShowHelp();
-        target.id == 'shrink'      && this.Resize(this.scale - .1);
-        target.id == 'grow'        && this.Resize(this.scale + .1);
+        target.id == 'shrink'      && this.Resize(this.scale - .5);
+        target.id == 'grow'        && this.Resize(this.scale + .5);
     }
     
     Resize(scale=1)
@@ -1144,8 +1144,6 @@ class OS13kWindow extends HTMLElement
     
         // adjust window position for offset
         this.style.left = parseInt(this.style.left) + w - wNew;
-        
-        wNew == 300 && OS13k.Trophy(undefined,'A Window For Ants?','🐜','Fully Minimized A Window');
     }
     
     Focus(clampToWindow)
