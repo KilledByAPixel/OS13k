@@ -27,6 +27,8 @@
 <body bgcolor=#222>
 <script>
 
+const OS13k = parent.OS13k;
+
 'use strict';
 
 // ==ClosureCompiler==
@@ -35,36 +37,30 @@
 // @language_out ECMASCRIPT_2019
 // ==/ClosureCompiler==
 
-var OS13kStart=()=>
+for (const trophy of OS13k.GetTrophies())
 {
-    for (const trophy of OS13k.GetTrophies())
-    {
-        // get trophy info
-        const game = trophy[0];
-        const name = trophy[1];
-        const icon = trophy[2];
-        const message = trophy[3];
-        
-        // set title
-        const title = icon + ' ' + name + '\n' + game + '\n' + message;
-        
-        // create the medal div
-        const div = document.createElement('div');
-        div.className = 'trophy';
-        div.title = title;
-        div.innerHTML =
-            '<div class=icon>' + icon +                    // icon
-            '</div><div class=text>' +                     // info
-                '<b>' + name + '</b><br>' +                // name
-                '<i>' + game + '</i>' +                    // game
-                '<br><span style=font-size:14>' + message; // message
-        
-        // add to document
-        this.document.body.appendChild(div); 
-    }
-}
+    // get trophy info
+    const game = trophy[0];
+    const name = trophy[1];
+    const icon = trophy[2];
+    const message = trophy[3];
 
-// Force closure to include OS13k
-OS13kStart;
+    // set title
+    const title = icon + ' ' + name + '\n' + game + '\n' + message;
+
+    // create the medal div
+    const div = document.createElement('div');
+    div.className = 'trophy';
+    div.title = title;
+    div.innerHTML =
+        '<div class=icon>' + icon +                    // icon
+        '</div><div class=text>' +                     // info
+            '<b>' + name + '</b><br>' +                // name
+            '<i>' + game + '</i>' +                    // game
+            '<br><span style=font-size:14>' + message; // message
+
+    // add to document
+    this.document.body.appendChild(div); 
+}
 
 </script>

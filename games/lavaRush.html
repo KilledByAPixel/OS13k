@@ -23,12 +23,7 @@ h1
 // lava rush by jaburns
 // https://github.com/jaburns/lava-rush-2k
 
-OS13kStart=()=>
-{
-    $shader = OS13k.CreateShader(a, shaderCode);
-    $init();
-    $main();
-}
+const OS13k = parent.OS13k;
 
 $init = $a => (
     $shaderWriteBuffer = [0,0,0,-30,0,40,0,0,0,0,0,0],
@@ -132,7 +127,7 @@ $main = $a => {
     $shaderWriteBuffer[WON_FRAMES] && $shaderWriteBuffer[WON_FRAMES]++;
 }
 
-shaderCode=`
+const shaderCode = `
 
 uniform vec4 g[3];
 
@@ -321,6 +316,11 @@ void mainImage( out vec4 _FragColor, in vec2 _FragCoord )
     _FragColor = vec4(color,1.);
     //_FragColor = vec4(1.,0.,0,1.); //test
 }
-`; // shader
+`;
+
+$shader = OS13k.CreateShader(a, shaderCode);
+$init();
+$main();
+
 
 </script>

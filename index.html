@@ -23,6 +23,7 @@ Please keep this project confidential!
 
 <!-- HTML above is optional -->
 
+<script>var OS13k</script>
 <meta charset=utf-8>
 <style>
 body
@@ -245,7 +246,7 @@ div svg       { width:100%; pointer-events:none; }
 <button id=buttonShowCode onclick=activeWindow.ShowHelp()>Code
 <button id=buttonReload onclick=activeWindow.Reload()>Reload
 <button id=buttonClose onclick=activeWindow.Close()>Close
-<script src=programs.js?86></script>
+<script src=programs.js?87></script>
 <script>
 
 /////////////////////////////////////////////////////////////////////////////
@@ -272,13 +273,12 @@ if (typeof programs == 'undefined')
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // @language_out ECMASCRIPT_2019
 // @js_externs OS13kFolder, OS13kProgram, OS13kWindow, OS13kTaskbarIcon
-// @js_externs OS13k, zzfx
+// @js_externs OS13k, zzfx, iframeContent.zzfx
 // @js_externs OS13k.Trophy, OS13k.GetTrophies, OS13k.KeyDirection, OS13k.Speak
 // @js_externs OS13k.CreateShader, OS13k.RenderShader, OS13k.CreateCanvas
 // @js_externs OS13k.PlaySamples, OS13k.PlaySeed, OS13k.GetNote
 // @js_externs OS13k.Random, OS13k.randomSeed 
 // @js_externs OS13k.Clamp, OS13k.Percent, OS13k.Lerp
-// @js_externs iframeContent.OS13k, iframeContent.OS13kStart, iframeContent.zzfx
 // @js_externs localStorage.OS13kTrophies, localStorage.OS13kVersion
 // @output_file_name OS13k.min.js
 // ==/ClosureCompiler==
@@ -1025,10 +1025,8 @@ class OS13kWindow extends HTMLElement
             
             if (iframeDocument)
             {
-                // pass OS13k to iframe
-                iframeContent.OS13k = OS13k;
+                // pass zzfx to iframe
                 iframeContent.zzfx = zzfx;
-                iframeContent.OS13kStart && iframeContent.OS13kStart();
                 
                 // prevent right clicking in frames
                 iframeContent.oncontextmenu =()=> false;
@@ -1426,7 +1424,7 @@ const zzfx =
 /////////////////////////////////////////////////////////////////////////////
 // Start OS13k!
 
-const OS13k = new _OS13k;
+OS13k = new _OS13k;
 Init();
 Update();
 

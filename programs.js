@@ -5,10 +5,10 @@ const programs =
 {src:'moreInfo.html?10', icon:'👨‍💻'},
 {name:'System', icon:'⚙️', folder:
 [
-    {src:'system/trophyCase.html?9', icon:'🏆', width:680, help:'All your trophies are shown here.\nTotal trophy count is displayed in the taskbar.\n\nPlay games and experiment to win more trophies!'},
+    {src:'system/trophyCase.html?10', icon:'🏆', width:680, help:'All your trophies are shown here.\nTotal trophy count is displayed in the taskbar.\n\nPlay games and experiment to win more trophies!'},
     {src:'system/clock.dweet.js?13', icon:'🕰️', width:200, height:200, reload:0, sleep:0, full:0, sticky:1},
     {src:'system/shell.html?1',icon:'<span style=color:#0f0;background:#000>&nbsp;>&nbsp;'},
-    {src:'system/test.html?14', code:1, width:600, height:400, sticky:1},
+    {src:'system/test.html?15', code:1, width:600, height:400, sticky:1},
     {name:'Test Folder', icon:'📁', folder:
     [
         {src:'system/test.html', name:'Hello!', icon:'✌️😄', width:600, height:400},
@@ -28,7 +28,7 @@ const programs =
 [
     {src:'https://bounceback.3d2k.com', name:'Bounce Back', icon:'❤️', author:'Frank Force'},
     {src:'games/swatch.html?2', icon:'🌈', author:'Nicholas Ortenzio', width:320, height:340},
-    {src:'games/lavaRush.html?4', icon:'🌋', author:'Jeremy Burns', width:640, height:400},
+    {src:'games/lavaRush.html?5', icon:'🌋', author:'Jeremy Burns', width:640, height:400},
     {src:'games/sn1ke.html', icon:'👀', author:'Codegolf Team', width:450, height:330},
     {src:'games/tetris.html', icon:'<span style=font-size:10>▀█▀', author:'Veubeke', width:340, height:430},
     {src:'games/queensGambit.html?4', icon:'<span style=color:#f0f>♛'},
