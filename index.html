@@ -170,11 +170,7 @@ body
 }
 .titlebarSticky
 {
-    background:linear-gradient(#ccc,#884);
-}
-.titlebarStickyActive
-{
-    background:linear-gradient(#eee,#8f8);
+    background:linear-gradient(#ccc,#844);
 }
 #nameWrapper
 {
@@ -1202,8 +1198,7 @@ class OS13kWindow extends HTMLElement
         activeWindow = active && this;
         this.className = active? 'activeWindow' : '';
         this.titlebar.className = 'titlebar titlebar' 
-            + (this.program.sticky ? 'Sticky' : '')
-            + (active ? 'Active' : '');
+            + (active ? 'Active' : this.program.sticky ? 'Sticky' : '');
         (this.program.sleep ? this : this.titlebar).style.filter = 
             active? '' : 'saturate(.7)brightness(.7';
     }
