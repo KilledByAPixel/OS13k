@@ -251,7 +251,7 @@ div svg       { width:28;pointer-events:none; }
 <button id=buttonResetSize>Reset Size
 <button id=buttonReload>Reload
 <button id=buttonClose>Close
-<script src=programs.js?103></script>
+<script src=programs.js?104></script>
 <script>
 
 /////////////////////////////////////////////////////////////////////////////
@@ -353,7 +353,7 @@ class _OS13k
         
         // refresh trophy window if it is being displayed
         trophyProgram && trophyProgram.window && trophyProgram.window.iframeContent &&
-            trophyProgram.window.iframeContent.OS13kStart();
+            trophyProgram.window.iframeContent.Refresh();
     }
     
     GetTrophies() { return trophies } 
@@ -372,7 +372,7 @@ class _OS13k
     PlaySeed(seed, lengthScale=1, volume=1, randomness=.05)
     {
         // set random seed
-        const R=()=>this.Random(), C=()=>R()<.5, S=()=>C()?1:-1;
+        const R =()=> this.Random(), C =()=> R()<.5, S =()=> C()?1:-1;
         this.randomSeed = seed;
         
         // randomize sound length
@@ -550,7 +550,7 @@ let grabWindow, grabOffsetX, grabOffsetY, finishedStartup,
     windowOpenX = startWindowOpenX, windowOpenY = startWindowOpenY,
     trophies = [], trophyProgram, clockProgram;
 
-const Init=()=>
+const Init =()=>
 {
     // parse trophy list
     trophies = localStorage.OS13kTrophies ? JSON.parse(localStorage.OS13kTrophies) : [];
@@ -600,7 +600,7 @@ const Init=()=>
     HandleStartup();
 }
 
-const HandleStartup=()=>
+const HandleStartup =()=>
 {
     if (!loading && !finishedStartup)
     {
@@ -614,7 +614,7 @@ const HandleStartup=()=>
     }
 }
 
-const Update=()=>
+const Update =()=>
 {
     requestAnimationFrame(Update);
 
@@ -664,7 +664,7 @@ const Update=()=>
     loading || (desktop.style.opacity = .02 + desktop.style.opacity*1);
 }
 
-const CloseMenus=()=>
+const CloseMenus =()=>
 {
     // hide all drop down folders
     for (const c of programsFolder.children)
@@ -674,7 +674,7 @@ const CloseMenus=()=>
     menu.style.visibility = '';
 }
 
-const FocusTopWindow=()=>
+const FocusTopWindow =()=>
 {
     // find the top window and focus on it
     let topWindow;
@@ -687,7 +687,7 @@ const FocusTopWindow=()=>
     topWindow && topWindow.Focus();
 }
 
-const ToggleMute=()=>
+const ToggleMute =()=>
 {
     speechSynthesis && speechSynthesis.cancel();
     gain.gain.value = gain.gain.value ? 0 : defaultVolume;
@@ -760,6 +760,8 @@ class OS13kFolder extends HTMLElement
 
     Focus()
     {
+        window.focus();
+    
         // check if it is visible
         //const wasVisible = !this.style.visibility;
         
@@ -874,8 +876,10 @@ class OS13kProgram extends HTMLElement
         (this.folder? this.folder : this.offsetParent).Focus();
     }
     
-    Click() 
+    Click()
     {
+        if (this.window)
+            this.window.SetActive(1);
         if (this.src)
         {
             // load save info
@@ -1479,18 +1483,20 @@ try
     const ProcessTouch=e=>
     {
         const touching = e.touches.length;
+
         if (touching)
         {
             // set event pos
             e.x = e.touches[0].clientX;
             e.y = e.touches[0].clientY;
             
-            // pass event on to mouse input
-            !wasTouching && onmousedown(e);
+            // pass event to mousemove
             onmousemove(e);
         }
-        else
-            wasTouching && onclick(e);
+        
+        if (!e.target.Move || !e.target.folder)
+            !wasTouching && touching && onmousedown(e);
+        wasTouching && !touching && onmouseup(e);
         wasTouching = touching;
         
         return false; // prevent default
