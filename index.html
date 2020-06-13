@@ -715,7 +715,7 @@ class OS13kTaskbarIcon extends HTMLElement
         traySpace.before(this);
     }
     
-    Click() { this.windowOrFolder.Focus(1); }
+    Click() { this.windowOrFolder.Focus(1); return true; }
     
     SetActive(active=1)
     {
@@ -760,22 +760,12 @@ class OS13kFolder extends HTMLElement
 
     Focus()
     {
-        window.focus();
-    
-        // check if it is visible
-        //const wasVisible = !this.style.visibility;
-        
         // close menus so they can reopen with this focused
         CloseMenus();
         
-        // reset position if from taskbar click
-        //if (!wasVisible)
-        {
-            // make visible
-            this.parentFolder && this.parentFolder.Focus();
-            this.style.visibility = '';
-        }
-        
+        // make visible
+        this.parentFolder && this.parentFolder.Focus();
+        this.style.visibility = '';
     }
 } // OS13kFolder
 
@@ -916,6 +906,8 @@ class OS13kProgram extends HTMLElement
         
         this == trophyProgram && OS13k.Trophy(undefined,'Hoarder','','Viewed Trophys');
         this == clockProgram && OS13k.Trophy(undefined,'Clock Watcher','🕰️','Checked Time');
+        
+        return true;
     }
     
     Toggle() { this.window ? this.window.Close() : this.Click() }
@@ -1139,7 +1131,9 @@ class OS13kWindow extends HTMLElement
         target.id == 'grow'        && this.Resize(this.scale + .5);
         
         // set focus
-        this.Focus();
+        target.id == 'helpDisplay' || this.Focus();
+        
+        return target.id == 'helpDisplay';
     }
     
     Resize(scale=1)
@@ -1295,6 +1289,7 @@ onmousedown =e=>
             menuElement.style.visibility = 'visible';
         }
     
+        // prevent default if menu upened
         return openMenu;
     }
     
@@ -1304,7 +1299,15 @@ onmousedown =e=>
     CloseMenus();
     
     // handle mouse down
-    e.target.Click && e.target.Click(e, e.originalTarget || e.path[0]);
+    let allowDefault = true;
+    if (e.target.Click)
+        allowDefault = e.target.Click(e, e.originalTarget || e.path[0]);
+    else
+    {
+        activeWindow && activeWindow.Focus();
+        return false;
+    }
+    console.log(allowDefault);
     
     if (grabWindow)
     {
@@ -1318,8 +1321,11 @@ onmousedown =e=>
         grabOffsetY = e.y - rect.y;
     }
     
+    // reset program folder position
     programsFolder.style.left = 0;
     programsFolder.style.top = taskbarHeight;
+    
+    return allowDefault;
 }
 
 onmousemove =e=>
@@ -1351,6 +1357,7 @@ onmouseup =e=>
         grabWindow.frameWrapper.style.pointerEvents = '';
         
         // release grab object
+        grabWindow && grabWindow.Focus(0);
         grabWindow = 0;
     }
 }
@@ -1494,12 +1501,14 @@ try
             onmousemove(e);
         }
         
-        if (!e.target.Move || !e.target.folder)
-            !wasTouching && touching && onmousedown(e);
+        // handle mouse down if not clicking on a folder icon
+        e.target.folder || !wasTouching && touching && onmousedown(e);
+            
         wasTouching && !touching && onmouseup(e);
         wasTouching = touching;
         
-        return false; // prevent default
+        // prevent default
+        return false;
     }
 
     // set all touch events
