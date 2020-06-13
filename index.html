@@ -262,7 +262,7 @@ div svg       { width:28;pointer-events:none; }
 // OS13k Debug Stuff (remove from minified)
 
 // version check, clear local storage if older
-const OS13kVersion = 25;
+const OS13kVersion = 26;
 if (localStorage.OS13kVersion != OS13kVersion)
     localStorage.clear(), localStorage.OS13kVersion = OS13kVersion;
     
@@ -601,6 +601,21 @@ const Init=()=>
     }
     
     CloseMenus();
+    HandleStartup();
+}
+
+const HandleStartup=()=>
+{
+    if (!loading && !finishedStartup)
+    {
+        finishedStartup = 1;
+        
+        // focus on first program in list after startup if not sticky closed
+        firstProgram.window ? 
+            firstProgram.window.Focus(1) :
+            (firstProgram.sticky && firstProgram.LoadInfo().open==0) || 
+            firstProgram.Click();
+    }
 }
 
 const Update=()=>
@@ -932,9 +947,6 @@ class OS13kWindow extends HTMLElement
 	constructor(program, x, y)
     {
 		super();
-        
-        // track if programs are loading
-        ++loading;
 
         // add to desktop
         desktop.appendChild(this);
@@ -1012,10 +1024,16 @@ class OS13kWindow extends HTMLElement
         const iframe = this.iframe = document.createElement('iframe'); 
         iframe.id = 'frame';
         this.style.visibility = 'hidden';
+        
+        // track if programs are loading
+        ++loading;
                 
         // wait for frame to load
         iframe.onload=e=>
         {
+            // track if programs are loading
+            --loading;
+        
             // set up iframe          
             const iframeContent = this.iframeContent = e.target.contentWindow;
             let iframeDocument, iframeText;
@@ -1042,8 +1060,9 @@ class OS13kWindow extends HTMLElement
                 iframeContent.OS13k || (iframeContent.OS13k = OS13k);
                 iframeContent.zzfx = zzfx;
                 
-                // prevent right clicking in frames
+                // prevent iframes context menu
                 iframeContent.oncontextmenu =()=> false;
+                
             }
 
             // check for extensions
@@ -1096,14 +1115,8 @@ class OS13kWindow extends HTMLElement
             // only focus if not grabbing
             grabWindow || this.Focus(1);
     
-            if (!--loading && !finishedStartup)
-            {
-                // focus on first program in list after startup
-                finishedStartup = 1;
-                firstProgram.window ? 
-                    firstProgram.window.Focus(1) :
-                    firstProgram.sticky || firstProgram.Click();
-            }
+            // special logic during startup
+            HandleStartup();
         }
         
         // load the iframe
@@ -1251,9 +1264,9 @@ customElements.define('os13k-window', OS13kWindow);
 /////////////////////////////////////////////////////////////////////////////
 // Mouse Input
 
-onmousedown=e=>
+onmousedown =e=>
 {
-    // prevent getting stuck
+    // prevent stuck grab
     if (grabWindow)
         return onmouseup(e);
     
@@ -1310,7 +1323,7 @@ onmousedown=e=>
     programsFolder.style.top = taskbarHeight;
 }
 
-onmousemove=e=>
+onmousemove =e=>
 {
     if (grabWindow)
     {
@@ -1329,40 +1342,21 @@ onmousemove=e=>
     e.target.Move && e.target.Move();
 }
 
-onmouseup=e=>
+onmouseup =e=>
 {
     // allow pointer events and reset cursor
     document.body.style.cursor = '';
     if (grabWindow)
     {
-        document.body.style.cursor = grabWindow.nameWrapper.style.cursor = '';
+        grabWindow.nameWrapper.style.cursor =
         grabWindow.frameWrapper.style.pointerEvents = '';
         
         // release grab object
         grabWindow = 0;
     }
-    
-    /*
-    // hide menu
-    menu.style.visibility = '';
-        
-    // focus on active window
-    const originalTarget = e.originalTarget || e.path[0];
-    e.target != loadIcon && e.target.localName != 'os13k-program' && activeWindow && 
-        originalTarget.id != 'helpDisplay' && activeWindow.Focus();
-*/
-
-
-    // handle click
-    //e.target.MouseClick && e.target.MouseClick(originalTarget);
 }
 
-oncontextmenu=e=>
-{
-    return false;
-}
-
-ondblclick=e=>
+ondblclick =e=>
 {
     // go fullscreen if titlebar name or icon is double clicked
     const originalTarget = e.originalTarget || e.path[0];
@@ -1370,6 +1364,9 @@ ondblclick=e=>
     if ((originalTarget.id == 'name') || e.target.window)
         target.FullScreen && target.FullScreen();
 }
+
+// prevent default context menu
+oncontextmenu =e=> false;
 
 /////////////////////////////////////////////////////////////////////////////
 // ZzFXMicro - Zuper Zmall Zound Zynth 
