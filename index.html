@@ -577,7 +577,7 @@ const Init=()=>
     buttonFullScreen.onclick    =()=> activeWindow.FullScreen();
     buttonShowHelp.onclick      =()=> activeWindow.ShowHelp();
     buttonShowCode.onclick      =()=> activeWindow.ShowHelp();
-    buttonResetSize.onclick     =()=> activeWindow.Resize(1);
+    buttonResetSize.onclick     =()=> activeWindow.Resize();
     buttonReload.onclick        =()=> activeWindow.Reload();
     buttonClose.onclick         =()=> activeWindow.Close();
 
@@ -1131,7 +1131,7 @@ class OS13kWindow extends HTMLElement
         target.id == 'grow'        && this.Resize(this.scale + .1);
     }
     
-    Resize(scale)
+    Resize(scale=1)
     {
         // change size of window
         const wNew = OS13k.Clamp(this.program.width * scale, 300, 2e3);
