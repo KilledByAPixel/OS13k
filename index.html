@@ -1254,9 +1254,6 @@ customElements.define('os13k-window', OS13kWindow);
 
 onmousedown=e=>
 {
-    // take context from active elment
-    document.activeElement.blur();
-
     // prevent getting stuck
     if (grabWindow)
         return onclick(e);
@@ -1266,8 +1263,7 @@ onmousedown=e=>
         return e.button == 2; // prevent default except right click
     
     // handle mouse down
-    const originalTarget = e.originalTarget || e.path[0];
-    e.target.MouseDown && e.target.MouseDown(e, originalTarget);
+    e.target.MouseDown && e.target.MouseDown(e, e.originalTarget || e.path[0]);
     
     if (grabWindow)
     {
