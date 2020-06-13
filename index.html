@@ -715,7 +715,7 @@ class OS13kTaskbarIcon extends HTMLElement
         traySpace.before(this);
     }
     
-    Click() { this.windowOrFolder.Focus(); }
+    Click() { this.windowOrFolder.Focus(1); }
     
     SetActive(active=1)
     {
