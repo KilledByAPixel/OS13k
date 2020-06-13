@@ -24,7 +24,7 @@ Trophies
 <button onClick=OS13k.Trophy(game.value,trophy.value,icon.value,message.value)>
 Add Trophy</button>
 <button onClick='delete localStorage.OS13kTrophies'>Reset Popups</button>
-<button onClick=localStorage.clear()>Clear Local Storage</button>
+<button onClick="confirm('Are you sure?')&&localStorage.clear()">Clear Local Storage</button>
 <script>
 
 'use strict';
