@@ -38,6 +38,7 @@ const programs =
 {name:'Music', icon:'🎶', folder:
 [
     {src:'music/minBytes.html?6', icon:'<span style=color:#f00>𝓜', width:450, height:450, resize:0},
+    {src:'music/piano.html', icon:'🎹', width:800, height:300},
 ]},
 {name:'Toys', icon:'🤖', folder:
 [
