@@ -35,6 +35,7 @@ body
     user-select:none;
     white-space:nowrap;
     background:#000;
+    font-size:22;
 }
 #taskbar
 {
@@ -48,7 +49,6 @@ body
 }
 .taskbarIcon
 {
-    font-size:22;
     width:50;
     height:40;
     text-shadow:1px 1px 3px #000;
@@ -56,7 +56,6 @@ body
 }
 #tray
 {
-    font-size:22;
     margin:2;
     padding:2;
     padding-left:9;
@@ -97,7 +96,7 @@ body
     white-space:normal;
     pointer-events:none;
     overflow:hidden;
-    font-size:26;
+    font-size:20;
     text-align:center;
     background:linear-gradient(#eee,#888);
     box-shadow:9px 9px 19px;
@@ -204,29 +203,30 @@ body
     color:#fff;
     outline:none;
 }
-#reload,
-#full,
-#help,
-#code         { width:40; }
-#close        { width:28; }
-#help:hover   { background:#0ff; }
-#code:hover   { background:#0f0; }
 #full:hover   { background:#fff; }
+#help:hover   { background:#0ff; }
+#code:hover   { background:#f0f; }
+#shrink:hover,
+#grow:hover   { background:#0f0; }
 #reload:hover { background:#ff0; }
 #close:hover  { background:#f00; }
-div svg       { width:100%; pointer-events:none; }
+div svg       { width:28;pointer-events:none; }
 </style>
-<svg width=0 height=0>
-<symbol id=icon-help viewBox='0 0 10 10'>
-    <path stroke=#000 stroke-width=.7 fill=none d='M5 8L8 2L2 2L5 8L8 2'/>
-<symbol id=icon-code viewBox='0 0 10 10'>
-    <path stroke=#000 stroke-width=.7 fill=none d='M5 2L8 8L2 8L5 2L8 8'/>
+<svg height=0 width=0>
 <symbol id=icon-full viewBox='0 0 10 10'>
-    <rect stroke=#000 stroke-width=.7 fill=none x=1 y=2 width=8 height=6 />
+    <rect stroke=#000 fill=none x=1 y=2 width=8 height=6 />
+<symbol id=icon-help viewBox='0 0 10 10'>
+    <path stroke=#000 fill=none d='M5 8L8 2L2 2L5 8L8 2'/>
+<symbol id=icon-code viewBox='0 0 10 10'>
+    <path stroke=#000 fill=none d='M5 2L8 8L2 8L5 2L8 8'/>
+<symbol id=icon-shrink viewBox='0 0 10 10'>
+    <path stroke=#000 d='M2 5L8 5'/>
+<symbol id=icon-grow viewBox='0 0 10 10'>
+    <path stroke=#000 d='M2 5L8 5M5 8L5 2'/>
 <symbol id=icon-reload viewBox='0 0 10 10'>
-    <circle stroke=#000 stroke-width=.7 fill=none cx=5 cy=5 r=3 />
+    <circle stroke=#000 fill=none cx=5 cy=5 r=3 />
 <symbol id=icon-close viewBox='0 0 10 10'>
-    <path stroke=#000 d='M1 1L9 9M9 1L1 9'/>
+    <path stroke=#000 d='M2 2L8 8M8 2L2 8'/>
 </template>
 <div id=desktop style=opacity:0>
 <div id=taskbar>
@@ -241,12 +241,13 @@ div svg       { width:100%; pointer-events:none; }
 <div id=programsFolder style=position:absolute></div>
 <div id=title>OS13k
 <div id=menu>
-<button id=buttonFullScreen onclick=activeWindow.FullScreen()>Fullscreen
-<button id=buttonShowHelp onclick=activeWindow.ShowHelp()>Help
-<button id=buttonShowCode onclick=activeWindow.ShowHelp()>Code
-<button id=buttonReload onclick=activeWindow.Reload()>Reload
-<button id=buttonClose onclick=activeWindow.Close()>Close
-<script src=programs.js?87></script>
+<button id=buttonFullScreen>Fullscreen
+<button id=buttonShowHelp>Help
+<button id=buttonShowCode>Code
+<button id=buttonResetSize>Reset Size
+<button id=buttonReload>Reload
+<button id=buttonClose>Close
+<script src=programs.js?99></script>
 <script>
 
 /////////////////////////////////////////////////////////////////////////////
@@ -340,8 +341,7 @@ class _OS13k
             '<div>' +                                    // info
                 '<b>' + name + '</b><br>' +              // name
                 '<i>' + game + '</i>' +                  // game
-            '</div>' +
-            '<div style=font-size:20>' + message;        // message
+            '</div>' + message;                          // message
             
         // add trophy to bottom of screen
         trophyPopup.style.top = innerHeight;
@@ -571,16 +571,26 @@ const Init=()=>
     // save trophies
     localStorage.OS13kTrophies = JSON.stringify(trophies);
     
-    // set taskbar functions
-    trayTrophy.onmousedown = trayTrophy.ontouchstart =()=> trophyProgram.Toggle();
-    trayTime.onmousedown = trayTime.ontouchstart =()=> clockProgram.Toggle();
-    trayVolume.onmousedown = trayVolume.ontouchstart = ToggleMute;
+    // set functions
+    trayTrophy.onmousedown   = trayTrophy.ontouchstart =()=> trophyProgram.Toggle();
+    trayTime.onmousedown     = trayTime.ontouchstart =()=> clockProgram.Toggle();
+    trayVolume.onmousedown   = trayVolume.ontouchstart = ToggleMute;
+
+    buttonFullScreen.onclick    =()=> activeWindow.FullScreen();
+    buttonShowHelp.onclick      =()=> activeWindow.ShowHelp();
+    buttonShowCode.onclick      =()=> activeWindow.ShowHelp();
+    buttonResetSize.onclick     =()=> activeWindow.Resize(1);
+    buttonReload.onclick        =()=> activeWindow.Reload();
+    buttonClose.onclick         =()=> activeWindow.Close();
 
     // create the folder taskbar icon and add folders/programs
     loadIcon = new OS13kTaskbarIcon( {icon:'💾', name:'Load Program'} );
     loadIcon.window = new OS13kFolder(programs);
     
     OS13k.Trophy(undefined,'Welcome!','👋');
+    
+    if (localStorage['OS13kSH'])
+        OS13k.Trophy(undefined,'Frozen','🧊',`Froze The Browser\n"${localStorage['OS13kSHF']}"`);
 }
 
 const Update=()=>
@@ -772,7 +782,7 @@ customElements.define('os13k-folder', OS13kFolder);
 
 class OS13kProgram extends HTMLElement
 {
-	constructor({x, y, name, icon, src='', width=720, height=405, author, folder, help, full=1, reload=1, code, sleep=1, sticky})
+	constructor({x, y, name, icon, src='', width=720, height=405, author, folder, help, full=1, reload=1, code, sleep=1, sticky, resize=1})
     {
 		super();
         
@@ -811,6 +821,7 @@ class OS13kProgram extends HTMLElement
         this.code = code || (this.hasExtension && code === undefined);
         this.sticky = sticky;
         this.help = help;
+        this.resize = resize;
         
         // set title if not a folder
         if (!folder)
@@ -976,7 +987,9 @@ class OS13kWindow extends HTMLElement
         }
         program.full && AddTitlebarIcon('full', 'Full Screen');
         program.help && AddTitlebarIcon('help', 'Help');
-        program.help || program.code && AddTitlebarIcon('code', 'Code');
+        program.help || program.code && AddTitlebarIcon('code', 'Code')
+        program.resize && 
+        ( AddTitlebarIcon('shrink', 'Shrink'), AddTitlebarIcon('grow', 'Grow'));
         program.reload && AddTitlebarIcon('reload', 'Reload');
         AddTitlebarIcon('close', 'Close');
         
@@ -991,9 +1004,12 @@ class OS13kWindow extends HTMLElement
         this.shadowRoot.appendChild(frameWrapper);
         
         // limit window size to inner size while preserving aspect
-        const width = Math.min(program.width, innerWidth-6);
+        const width = program.resize ? 
+            Math.min(program.width, innerWidth-6) : program.width;
         this.frameWrapper.style.width  = width;
         this.frameWrapper.style.height = width * program.height / program.width;
+        this.scale = width / program.width;
+        this.titlebar.style.width = width;
 
         // create iframe
         const iframe = this.iframe = document.createElement('iframe'); 
@@ -1072,8 +1088,8 @@ class OS13kWindow extends HTMLElement
                         'c.width=innerWidth,' + 
                         'c.height=innerHeight,' + 
                         'g.uniform4f(g.getUniformLocation(s,"iMouse"),x,y,z,w),' +
-                        'OS13k.RenderShader(c,s,t/1e3,f++)));' + 
-                    'loop(s=OS13k.CreateShader(c,`' + iframeText + '`))');
+                        'parent.OS13k.RenderShader(c,s,t/1e3,f++)));' + 
+                    'loop(s=parent.OS13k.CreateShader(c,`' + iframeText + '`))');
             }
 
             // make visible
@@ -1109,6 +1125,25 @@ class OS13kWindow extends HTMLElement
         target.id == 'close'       && this.Close();
         target.id != 'helpDisplay' && this.Focus();
         (target.id == 'help' || target.id == 'code') && this.ShowHelp();
+        target.id == 'shrink'      && this.Resize(this.scale - .1);
+        target.id == 'grow'        && this.Resize(this.scale + .1);
+    }
+    
+    Resize(scale)
+    {
+        // change size of window
+        const wNew = OS13k.Clamp(this.program.width * scale, 300, 2e3);
+        const hNew = this.program.height * (this.scale = wNew / this.program.width);
+        
+        // set new size
+        const w = parseInt(this.frameWrapper.style.width);
+        this.titlebar.style.width = this.frameWrapper.style.width = wNew;
+        this.frameWrapper.style.height = hNew;
+    
+        // adjust window position for offset
+        this.style.left = parseInt(this.style.left) + w - wNew;
+        
+        wNew == 300 && OS13k.Trophy(undefined,'A Window For Ants?','🐜','Fully Minimized A Window');
     }
     
     Focus(clampToWindow)
@@ -1144,6 +1179,7 @@ class OS13kWindow extends HTMLElement
                 buttonShowHelp.style.display   = this.program.help?   '' : 'none';
                 buttonShowCode.style.display   = this.program.code?   '' : 'none';
                 buttonReload.style.display     = this.program.reload? '' : 'none';
+                buttonResetSize.style.display  = this.program.resize? '' : 'none';
             }
             
             this.taskbarIcon.SetActive();
