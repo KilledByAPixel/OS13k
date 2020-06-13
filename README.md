@@ -71,7 +71,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 - *Apps can play sounds and have trophies too!
 
 ### Music
-- [Keith Clark created a system to play tracker songs with ZzFX sound effects]https://github.com/keithclark/ZzFXM)
+- [Keith Clark created a system to play tracker songs with ZzFX sound effects](https://github.com/keithclark/ZzFXM)
 - We will include this in the OS as a core feature soon, something like OS13k.PlayMusic(musicData)
 - We need music generators, synth instruments, and maybe even mini albums
 - The idea is that players can listen to music while messing with games and apps
