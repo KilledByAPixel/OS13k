@@ -7,7 +7,7 @@ c.checked=localStorage.OS13kShellc!='0'
 o.checked=localStorage.OS13kShello|0
 i.onkeydown=E=>{
 if(E.keyCode==13){try{
-localStorage.OS13kFrozen=r=f.contentWindow.eval(i.value)
+r=f.contentWindow.eval(localStorage.OS13kFrozen=i.value)
 s='<br><span style=color:#0cc>{<br>'
 for(k in r)v=r[k],q=typeof v=='string'?'"':'',s+=`&nbsp;&nbsp;${k}: ${q}${v}${q}<br>`
 }catch(e){r=e.message,E=0}
