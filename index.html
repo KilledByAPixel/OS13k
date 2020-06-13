@@ -1271,7 +1271,7 @@ onclick=e=>
     document.body.style.cursor = '';
     if (grabWindow)
     {
-        grabWindow.titlebar.style.cursor = 'grab';
+        document.body.style.cursor = grabWindow.nameWrapper.style.cursor = '';
         grabWindow.frameWrapper.style.pointerEvents = '';
         
         // release grab object
