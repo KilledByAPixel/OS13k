@@ -61,6 +61,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 - Use local storage to save your game's data (prefix keys with OS13kYourProgramName)
 - Use JS13k features like trophies, seeded sound effects, and speech to enrich your games
 - To add sounds with little space, use seeded sounds with a tiny function call OS13k.PlaySeed(seed)
+- Dweets and Shaders are the smallest way to make games, check out Lava Rush for a shader example
 
 ### Apps
 - We will include some non-game apps that are small and fun to use
