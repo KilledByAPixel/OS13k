@@ -1,6 +1,19 @@
-<script>R=(c)=>{r=''
-if(c=='ls'){for ([k,v] of Object.entries(parent.desktop.children)){r+=v.title?v.title+'<br>':''}}else{try{r=eval(c)}catch(e){r=e.message+". Type JS expression. Eg. 6*7"}}win.innerHTML=win.innerHTML+"> "+c+"<br>"+r+"<br>"
-IN.value=''
-win.scrollTop=1e4}</script><style>body,#in,#in:focus{font-family:courier;background-color:black;color:#00ff58;border:0;outline:0;}
-#win{overflow-y:auto;max-height:90%;}</style><form onSubmit="R(IN.value);return false"><div id='win'></div><div id='command-line'>[js shell]>
-<input id=IN style=width:80%>
+<style>
+*
+{
+font-size:20;
+font-family:monospace;
+background:#000;
+color:#ccc;
+}
+</style>
+JS>&nbsp;<input id=I style=background:#111 autocomplete=off><div id=W><br>Type JS code, try not to freeze the browser! 😅</div>
+<script>
+I.onkeydown=e=>{
+if(e.keyCode == 13){
+try{ r = eval( localStorage['OS13kSHF'] = I.value )}
+catch(e){ r = e.message }
+localStorage['OS13kSH'] = 0
+W.innerHTML=`<br>> ${I.value}<br>${r}<br>${W.innerHTML}`
+}}
+</script>
