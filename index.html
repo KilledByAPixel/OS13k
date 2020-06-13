@@ -593,7 +593,6 @@ const Init =()=>
     HandleStartup();
     
     OS13k.Trophy(undefined,'Welcome!','👋');
-    console.log(localStorage.OS13kFrozen)
     if (localStorage.OS13kFrozen)
     {
         OS13k.Trophy(undefined,'Frozen','🧊',`Froze The Browser\n${localStorage.OS13kFrozen}`);
@@ -716,7 +715,7 @@ class OS13kTaskbarIcon extends HTMLElement
         traySpace.before(this);
     }
     
-    Click() { this.windowOrFolder.Focus(1); return true; }
+    Click() { this.windowOrFolder.Focus(1); return !!this.windowOrFolder; }
     
     SetActive(active=1)
     {
@@ -724,6 +723,8 @@ class OS13kTaskbarIcon extends HTMLElement
         activeTaskbarIcon && activeTaskbarIcon.SetActive(activeTaskbarIcon = 0);
         activeTaskbarIcon = this;
         this.className = 'taskbarIcon' + (active ? ' taskbarIconActive' : '');
+        
+        //this.windowOrFolder && this.windowOrFolder.Focus();
     }
 } // OS13kTaskbarIcon
 
@@ -1172,9 +1173,11 @@ class OS13kWindow extends HTMLElement
     {
         if (active)
         {
-            this.taskbarIcon.SetActive();
             if (activeWindow != this)
             {
+                // set taskbar icon
+                this.taskbarIcon.SetActive();
+            
                 // deactivate old window
                 activeWindow && activeWindow.SetActive(0);
 
@@ -1308,7 +1311,6 @@ onmousedown =e=>
         activeWindow && activeWindow.Focus();
         return false;
     }
-    console.log(allowDefault);
     
     if (grabWindow)
     {
