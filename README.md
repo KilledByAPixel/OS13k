@@ -12,7 +12,7 @@ OS13k is a tiny pseudo operating system designed for a JS13k community project. 
 - The core of OS13k is under 7k zipped, so by sharing code with we can pack a lot into 13k
 - Programs should be in the 100-500 byte range, what matters most is how well it zips with everything else
 - We plan to fit 10-20 programs [(probably not 26!)](http://js13kgames.com/entries/26-games-in-1) 😅
-- We could easily pack 1k with just like 4 or so cool tiny dweets and shaders
+- We could easily pack 1k with just like 5 or so cool tiny dweets and shaders
 - **A very important rule for JS13k is that all content must be new, so no old stuff!
 - You can start with an old project but polish it up a lot, minify it and make it work with OS13k
 - We will need to curate the best and perhaps smallest content for what actually lands in the JS13k build
