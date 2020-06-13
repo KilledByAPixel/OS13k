@@ -12,7 +12,6 @@ OS13k is a tiny pseudo operating system designed for a JS13k community project. 
 - The core of OS13k is around 7k zipped, and by using it's shared features we can pack a lot into 13k
 - Programs should be in the 100-500 byte range, what matters most is how well it zips with everything else
 - We plan to fit 10-20 programs [(probably not 26!)](http://js13kgames.com/entries/26-games-in-1) 😅
-- We could easily pack 1k with just like 5 or so cool tiny dweets and shaders
 - **A very important rule for JS13k is that all content must be new, so no old stuff!
 - You can start with an old project but polish it up a lot, minify it and make it work with OS13k
 - We will need to curate the best and perhaps smallest content for what actually lands in the JS13k build
@@ -148,9 +147,9 @@ Add an icon config to programs.js to register your program, and send me pull req
  - *Don't abuse the trophy system, lets agree to around 5 trophies per game
 
  ### Resources
- - [Dwitter](https://www.dwitter.net/) - Many ideas for tiny programs we can rework into games
+ - [Dwitter](https://www.dwitter.net/) - Many ideas for tiny programs we can repurpose
  - [The Dweetabase](http://dweetabase.3d2k.com/) - An offline searable database of every dweet
- - [Shadertoy](https://www.shadertoy.com/) - There are many amazing tiny sized shaders here [(2TC)](https://www.shadertoy.com/results?query=2TC)
+ - [Shadertoy](https://www.shadertoy.com/) - There are many amazing tiny sized shaders here, [check the 2TC tag](https://www.shadertoy.com/results?query=2TC)
  - [JS1k](https://js1k.com/) - Another great resource though these programs may be a bit to large
  - [JS13k](https://js13kgames.com/) - This is the contest we are entering
 
