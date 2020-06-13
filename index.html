@@ -31,11 +31,11 @@ body
     touch-action:none;
     margin:0;
     overflow:hidden;
-    font-family:arial;
+    font-family:sans-serif;
+    font-size:22;
     user-select:none;
     white-space:nowrap;
     background:#000;
-    font-size:22;
 }
 #taskbar
 {
@@ -127,9 +127,9 @@ body
     width:100%;
     height:100%;
     color:#0002;
-    font-family:impact;
-    font-weight:900;
+    font-family:fantasy;
     font-size:20vw;
+    font-weight:900;
     background:linear-gradient(#223,#322);
 }
 .flexCenter, .taskbarIcon, #taskbar, .program, #tray, #title
@@ -167,6 +167,14 @@ body
 .titlebarActive
 {
     background:linear-gradient(#eee,#88f);
+}
+.titlebarSticky
+{
+    background:linear-gradient(#ccc,#884);
+}
+.titlebarStickyActive
+{
+    background:linear-gradient(#eee,#8f8);
 }
 #nameWrapper
 {
@@ -247,14 +255,14 @@ div svg       { width:28;pointer-events:none; }
 <button id=buttonResetSize>Reset Size
 <button id=buttonReload>Reload
 <button id=buttonClose>Close
-<script src=programs.js?101></script>
+<script src=programs.js?102></script>
 <script>
 
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Debug Stuff (remove from minified)
 
 // version check, clear local storage if older
-const OS13kVersion = 23;
+const OS13kVersion = 25;
 if (localStorage.OS13kVersion != OS13kVersion)
     localStorage.clear(), localStorage.OS13kVersion = OS13kVersion;
     
@@ -574,24 +582,25 @@ const Init=()=>
     trayTime.onmousedown     = trayTime.ontouchstart =()=> clockProgram.Toggle();
     trayVolume.onmousedown   = trayVolume.ontouchstart = ToggleMute;
 
-    buttonFullScreen.onclick    =()=> activeWindow.FullScreen();
-    buttonShowHelp.onclick      =()=> activeWindow.ShowHelp();
-    buttonShowCode.onclick      =()=> activeWindow.ShowHelp();
-    buttonResetSize.onclick     =()=> activeWindow.Resize();
-    buttonReload.onclick        =()=> activeWindow.Reload();
-    buttonClose.onclick         =()=> activeWindow.Close();
+    buttonFullScreen.onmousedown =()=> activeWindow.FullScreen();
+    buttonShowHelp.onmousedown   =()=> activeWindow.ShowHelp();
+    buttonShowCode.onmousedown   =()=> activeWindow.ShowHelp();
+    buttonResetSize.onmousedown  =()=> activeWindow.Resize();
+    buttonReload.onmousedown     =()=> activeWindow.Reload();
+    buttonClose.onmousedown      =()=> activeWindow.Close();
 
     // create the folder taskbar icon and add folders/programs
     loadIcon = new OS13kTaskbarIcon( {icon:'💾', name:'Load Program'} );
-    loadIcon.window = new OS13kFolder(programs);
+    loadIcon.windowOrFolder = new OS13kFolder(programs);
     
     OS13k.Trophy(undefined,'Welcome!','👋');
-    
-    if (localStorage['OS13kFrozen'])
+    if (localStorage.OS13kFrozen)
     {
-        OS13k.Trophy(undefined,'Frozen','🧊',`Froze The Browser\n"${localStorage['OS13kFrozen']}"`);
-        delete localStorage['OS13kFrozen'];
+        OS13k.Trophy(undefined,'Frozen','🧊',`Froze The Browser\n${localStorage.OS13kFrozen}`);
+        delete localStorage.OS13kFrozen;
     }
+    
+    CloseMenus();
 }
 
 const Update=()=>
@@ -654,19 +663,6 @@ const CloseMenus=()=>
     menu.style.visibility = '';
 }
 
-const CloseWindows=()=>
-{
-    // use copy of children to prevent skipping
-    for (const c of [...desktop.children])
-        c.Close && c.Close()
-
-    // reset window open position
-    windowOpenX = startWindowOpenX;
-    windowOpenY = startWindowOpenY;
-    
-    OS13k.Trophy(undefined,'Coffee Is For Closers','☕','Closed All');
-}
-
 const FocusTopWindow=()=>
 {
     // find the top window and focus on it
@@ -694,25 +690,21 @@ const ToggleMute=()=>
 
 class OS13kTaskbarIcon extends HTMLElement
 {
-	constructor(program, window = 0)
+	constructor(program, windowOrFolder = 0)
     {
 		super();
         
         // create icon
         this.className = 'taskbarIcon';
         this.innerHTML = '<div style=pointer-events:none>' + program.icon;
-        this.window = window;
+        this.windowOrFolder = windowOrFolder;
         this.title = program.title || program.name;
         
         // add to taskbar
         traySpace.before(this);
     }
     
-    MouseClick()
-    {  
-        // focus on window or drop down folder
-        this.window.Focus(1);
-    }
+    Click() { this.windowOrFolder.Focus(); }
     
     SetActive(active=1)
     {
@@ -755,25 +747,22 @@ class OS13kFolder extends HTMLElement
         }
     }
 
-    Focus(fromClick)
+    Focus()
     {
         // check if it is visible
-        const wasVisible = !this.style.visibility;
+        //const wasVisible = !this.style.visibility;
+        
+        // close menus so they can reopen with this focused
         CloseMenus();
         
-        if (!fromClick || !wasVisible)
+        // reset position if from taskbar click
+        //if (!wasVisible)
         {
             // make visible
             this.parentFolder && this.parentFolder.Focus();
             this.style.visibility = '';
         }
         
-        // reset position if from taskbar click
-        if (fromClick)
-        {
-            programsFolder.style.left = 0;
-            programsFolder.style.top = taskbarHeight;
-        }
     }
 } // OS13kFolder
 
@@ -860,13 +849,13 @@ class OS13kProgram extends HTMLElement
 
         // check for sticky
         if (sticky && this.LoadInfo().open)
-            this.MouseClick();
+            this.Click();
             
         // save first program in list
-        firstProgram || src && (firstProgram=this).MouseClick();
+        firstProgram || src && (firstProgram=this);
     }
     
-    MouseMove()
+    Move()
     {
         // set active
         activeProgram = this;
@@ -874,8 +863,8 @@ class OS13kProgram extends HTMLElement
         (this.folder? this.folder : this.offsetParent).Focus();
     }
     
-    MouseClick() 
-    { 
+    Click() 
+    {
         if (this.src)
         {
             // load save info
@@ -892,23 +881,29 @@ class OS13kProgram extends HTMLElement
             this.window || (this.window = new OS13kWindow(this, info.x, info.y));
 
             // set focus to window
-            this.window.Focus(1);
+            //this.window.Focus(1);
             
             // save info on open if sticky
             this.sticky && this.SaveInfo(1);
         }
         else if (!this.folder)
         {
-            // close all
-            CloseMenus();
-            CloseWindows();
+            // close all windows if no src or folder
+            for (const c of [...desktop.children])
+                c.Close && c.Close()
+
+            // reset window open position
+            windowOpenX = startWindowOpenX;
+            windowOpenY = startWindowOpenY;
+
+            OS13k.Trophy(undefined,'Coffee Is For Closers','☕','Closed All');
         }
         
         this == trophyProgram && OS13k.Trophy(undefined,'Hoarder','','Viewed Trophys');
         this == clockProgram && OS13k.Trophy(undefined,'Clock Watcher','🕰️','Checked Time');
     }
     
-    Toggle() { this.window ? this.window.Close() : this.MouseClick() }
+    Toggle() { this.window ? this.window.Close() : this.Click() }
     
     SaveInfo(open)
     {
@@ -922,7 +917,7 @@ class OS13kProgram extends HTMLElement
     {
         // try to load saved window data from local storage
         const saveWindowJSON = localStorage['OS13kProgram'+this.src];
-        return saveWindowJSON ?
+        return saveWindowJSON && this.sticky ?
             JSON.parse(saveWindowJSON) : {x, y, updatePosition:1}
     }
 } // OS13kProgram
@@ -1044,6 +1039,7 @@ class OS13kWindow extends HTMLElement
             if (iframeDocument)
             {
                 // pass zzfx to iframe
+                iframeContent.OS13k || (iframeContent.OS13k = OS13k);
                 iframeContent.zzfx = zzfx;
                 
                 // prevent right clicking in frames
@@ -1098,11 +1094,16 @@ class OS13kWindow extends HTMLElement
             this.style.visibility = this.iframe.style.visibility = '';
             
             // only focus if not grabbing
-            grabWindow || this.Focus();
+            grabWindow || this.Focus(1);
     
-            // focus on first program in list after startup
-            --loading || finishedStartup ||
-                firstProgram.window.Focus(finishedStartup=1);
+            if (!--loading && !finishedStartup)
+            {
+                // focus on first program in list after startup
+                finishedStartup = 1;
+                firstProgram.window ? 
+                    firstProgram.window.Focus(1) :
+                    firstProgram.sticky || firstProgram.Click();
+            }
         }
         
         // load the iframe
@@ -1110,17 +1111,11 @@ class OS13kWindow extends HTMLElement
         frameWrapper.appendChild(iframe);
     }
     
-    MouseDown(e, originalTarget)
+    Click(e, target)
     {
         // set grab object if name is clicked on
-        originalTarget.id == 'nameWrapper' && (grabWindow = this);
+        target.id == 'nameWrapper' && (grabWindow = this);
         
-        // set focus
-        this.Focus();
-    }
-    
-    MouseClick(target)
-    {
         // check for title bar buttons
         target.id == 'full'        && this.FullScreen();
         target.id == 'reload'      && this.Reload();
@@ -1129,6 +1124,9 @@ class OS13kWindow extends HTMLElement
         (target.id == 'help' || target.id == 'code') && this.ShowHelp();
         target.id == 'shrink'      && this.Resize(this.scale - .5);
         target.id == 'grow'        && this.Resize(this.scale + .5);
+        
+        // set focus
+        this.Focus();
     }
     
     Resize(scale=1)
@@ -1146,13 +1144,13 @@ class OS13kWindow extends HTMLElement
         this.style.left = parseInt(this.style.left) + w - wNew;
     }
     
-    Focus(clampToWindow)
+    Focus(clamp)
     {
         // set focus
         this.iframeContent && this.iframeContent.focus();
         this.SetActive();
         
-        if (clampToWindow)
+        if (clamp)
         {
             // clamp window to screen
             const rect = this.getBoundingClientRect();
@@ -1166,6 +1164,7 @@ class OS13kWindow extends HTMLElement
     {
         if (active)
         {
+            this.taskbarIcon.SetActive();
             if (activeWindow != this)
             {
                 // deactivate old window
@@ -1182,14 +1181,16 @@ class OS13kWindow extends HTMLElement
                 buttonResetSize.style.display  = this.program.resize? '' : 'none';
             }
             
-            this.taskbarIcon.SetActive();
+            // close menus incase iframe stole focus
             CloseMenus();
         }
             
         // set active
         activeWindow = active && this;
-        this.titlebar.className = 'titlebar' + (active? ' titlebarActive' : '');
         this.className = active? 'activeWindow' : '';
+        this.titlebar.className = 'titlebar titlebar' 
+            + (this.program.sticky ? 'Sticky' : '')
+            + (active ? 'Active' : '');
         (this.program.sleep ? this : this.titlebar).style.filter = 
             active? '' : 'saturate(.7)brightness(.7';
     }
@@ -1254,14 +1255,44 @@ onmousedown=e=>
 {
     // prevent getting stuck
     if (grabWindow)
-        return onclick(e);
+        return onmouseup(e);
     
     // only look for left mouse button
     if (e.button)
-        return e.button == 2; // prevent default except right click
+    {
+        CloseMenus();
+        const openMenu = e.button == 2;
+        if (openMenu)
+        {
+            // open context menu
+            let menuElement = menu;
+            if (!e.target.SetActive || e.target == loadIcon)
+            {
+                // open folder if clicked on desktop or folder icon
+                menuElement = programsFolder;
+                loadIcon.Click();
+            }
+
+            // set target active
+            const target = (e.target.window || e.target);
+            target.SetActive && target.SetActive();
+
+            // show menu
+            menuElement.style.left = e.x;
+            menuElement.style.top = e.y;
+            menuElement.style.visibility = 'visible';
+        }
+    
+        return openMenu;
+    }
+    
+    // close menus if visible and loadIcon clicked on 
+    if (e.target == loadIcon && !loadIcon.windowOrFolder.style.visibility)
+        return CloseMenus();
+    CloseMenus();
     
     // handle mouse down
-    e.target.MouseDown && e.target.MouseDown(e, e.originalTarget || e.path[0]);
+    e.target.Click && e.target.Click(e, e.originalTarget || e.path[0]);
     
     if (grabWindow)
     {
@@ -1274,6 +1305,9 @@ onmousedown=e=>
         grabOffsetX = e.x - rect.x;
         grabOffsetY = e.y - rect.y;
     }
+    
+    programsFolder.style.left = 0;
+    programsFolder.style.top = taskbarHeight;
 }
 
 onmousemove=e=>
@@ -1292,10 +1326,10 @@ onmousemove=e=>
     activeProgram && (activeProgram.className = 'program');
     
     // handle mouse move
-    e.target.MouseMove && e.target.MouseMove();
+    e.target.Move && e.target.Move();
 }
 
-onclick=e=>
+onmouseup=e=>
 {
     // allow pointer events and reset cursor
     document.body.style.cursor = '';
@@ -1308,6 +1342,7 @@ onclick=e=>
         grabWindow = 0;
     }
     
+    /*
     // hide menu
     menu.style.visibility = '';
         
@@ -1315,32 +1350,15 @@ onclick=e=>
     const originalTarget = e.originalTarget || e.path[0];
     e.target != loadIcon && e.target.localName != 'os13k-program' && activeWindow && 
         originalTarget.id != 'helpDisplay' && activeWindow.Focus();
+*/
+
 
     // handle click
-    e.target.MouseClick && e.target.MouseClick(originalTarget);
+    //e.target.MouseClick && e.target.MouseClick(originalTarget);
 }
 
 oncontextmenu=e=>
 {
-    CloseMenus();
-    let menuElement = menu;
-    if (!e.target.SetActive || e.target == loadIcon)
-    {
-        // open folder if clicked on desktop or folder icon
-        menuElement = programsFolder;
-        loadIcon.MouseClick();
-    }
-    
-    // set target active
-    const target = (e.target.window || e.target);
-    target.SetActive && target.SetActive();
-    
-    // show menu
-    menuElement.style.left = e.x;
-    menuElement.style.top = e.y;
-    menuElement.style.visibility = 'visible';
-    
-    // prevent default context menu
     return false;
 }
 

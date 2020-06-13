@@ -1,13 +1,13 @@
 const programs = 
 [
 {name:'Close All', icon:'❌',},
-{src:'help.html?17', icon:'<b><span style=color:#0f0>?', width:380, height:400, help:'Check here to see help when available.\nSome programs have a option to show code instead.\n\nHave fun! ✌️😄', reload:0},
+{src:'help.html?17', icon:'<b><span style=color:#0f0>?', width:380, height:400, help:'Check here to see help when available.\nSome programs have a option to show code instead.\n\nHave fun! ✌️😄', reload:0, sticky:1},
 {src:'moreInfo.html?10', icon:'👨‍💻'},
 {name:'System', icon:'⚙️', folder:
 [
-    {src:'system/trophyCase.html?10', icon:'🏆', width:680, help:'All your trophies are shown here.\nTotal trophy count is displayed in the taskbar.\n\nPlay games and experiment to win more trophies!'},
+    {src:'system/trophyCase.html?10', icon:'🏆', width:680, sticky:1, help:'All your trophies are shown here.\nTotal trophy count is displayed in the taskbar.\n\nPlay games and experiment to win more trophies!'},
     {src:'system/clock.dweet.js?13', icon:'🕰️', width:200, height:200, reload:0, sleep:0, full:0, sticky:1, resize:0},
-    {src:'system/shell.html?5',icon:'<span style=color:#0f0;background:#000;font-family:monospace>&nbsp;>&nbsp;'},
+    {src:'system/shell.html?7',icon:'<span style=color:#0f0;background:#000;font-family:monospace>&nbsp;>&nbsp;', sticky:1},
     {src:'system/test.html?15', code:1, width:600, height:400, sticky:1},
     {name:'Test Folder', icon:'📁', folder:
     [
@@ -16,7 +16,7 @@ const programs =
 ]},
 {name:'Apps', icon:'🛠️', folder:
 [
-    {src:'apps/stickyNote.html?2', icon:'✍️', width:300, height:264, full:0, sticky:1, resize:0, reload:0, help:'You can use commands like Ctrl+B, Ctrl+I, and Ctrl+U to add formatting.'},
+    {src:'apps/stickyNote.html?4', icon:'✍️', width:300, height:264, full:0, sticky:1, resize:0, reload:0, help:'Ctrl+B - Bold\nCtrl+I - Italic\nCtrl+U - Underline'},
     {src:'apps/photoBooth.html', icon:'📸', width:1400, height:550 },
     {src:'apps/unicodeToys.html', icon:'𝖀', author:'Xem', width:500, height:800},
     {src:'apps/miniShadertoy.html', icon:'𝓢', width:340, height:400, resize:0},
@@ -37,7 +37,7 @@ const programs =
 ]},
 {name:'Music', icon:'🎶', folder:
 [
-    {src:'music/minBytes.html?5', icon:'<span style=color:#f00>𝓜', width:450, height:450, resize:0},
+    {src:'music/minBytes.html?6', icon:'<span style=color:#f00>𝓜', width:450, height:450, resize:0},
 ]},
 {name:'Toys', icon:'🤖', folder:
 [
