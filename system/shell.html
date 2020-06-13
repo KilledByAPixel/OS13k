@@ -11,10 +11,9 @@ JS>&nbsp;<input id=I style=background:#111 autocomplete=off><div id=W><br>Type J
 <script>
 I.onkeydown=e=>{
 if(e.keyCode==13){
-localStorage['OS13kFrozen']=1
-try{r=eval(localStorage['OS13kFrozenText']=I.value)}
+try{r=eval(localStorage['OS13kFrozen']=I.value)}
 catch(e){r=e.message}
-localStorage['OS13kFrozen']=0
+delete localStorage['OS13kFrozen']
 W.innerHTML=`<br>> ${I.value}<br>${r}<br>${W.innerHTML}`
 }}
 </script>

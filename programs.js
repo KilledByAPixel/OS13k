@@ -7,7 +7,7 @@ const programs =
 [
     {src:'system/trophyCase.html?10', icon:'🏆', width:680, help:'All your trophies are shown here.\nTotal trophy count is displayed in the taskbar.\n\nPlay games and experiment to win more trophies!'},
     {src:'system/clock.dweet.js?13', icon:'🕰️', width:200, height:200, reload:0, sleep:0, full:0, sticky:1, resize:0},
-    {src:'system/shell.html?4',icon:'<span style=color:#0f0;background:#000;font-family:monospace>&nbsp;>&nbsp;'},
+    {src:'system/shell.html?5',icon:'<span style=color:#0f0;background:#000;font-family:monospace>&nbsp;>&nbsp;'},
     {src:'system/test.html?15', code:1, width:600, height:400, sticky:1},
     {name:'Test Folder', icon:'📁', folder:
     [
