@@ -17,7 +17,7 @@ OS13k is a tiny pseudo operating system designed for a JS13k community project. 
 - You can start with an old project but polish it up a lot, minify it and make it work with OS13k
 - We will need to curate the best and perhaps smallest content for what actually lands in the JS13k build
 - Anything left out of the JS13k build will still be available in the full GitHub version
-- We make this repo public on day 1 of JS13k and open source everything, I haven't decided on license yet
+- We make this repo public on day 1 of JS13k and open source everything, we haven't decided on license yet
 
 ### [You can learn more about JS13k here](https://js13kgames.com/)
 
@@ -41,6 +41,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 - Dweets and Shadertoys are automatically paused when not focused (unless sleep:0 is set)
 - Prefix all local storage keys with OS13kYourProgramName to prevent collisions during JS13k
 - OS13k works well on mobile devices, so we could have a separate entry for the JS13k mobile category
+- We recommend [Brackets](http://brackets.io/) for development, but you can use whatever you want
 
 ### Minification Tips
 - The goal is to fit as much as possible into 13 kilobytes so everything must be small and clean
@@ -52,7 +53,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 - Don't compress your code in any way, let zip do the work for you
 - Dweets and Shadertoys are great for making programs with reduced setup cost
 - You do not need charset=utf-8, it will be applied automatically
-- For the OS13k core system I am using [Google Closer](https://closure-compiler.appspot.com/home) and [Terser](https://xem.github.io/terser-online)
+- For the OS13k core system we am using [Google Closer](https://closure-compiler.appspot.com/home) and [Terser](https://xem.github.io/terser-online)
 - We will pack everything together into one giant html file before zipping to save space
 
 ### Games
@@ -109,7 +110,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 - A seeded ZzFX sound player is available to save space with much smaller sound calls
 - OS13k.PlaySeed(seed, lengthScale=1, volume=1, randomness=.05)
 - Example OS13k.PlaySeed(1006), or make a function PlaySound=sound=>OS13k.PlaySeed([1006,5023,7][sound])
-- *I will create a tool for browsing sound seeds soon
+- *We will create a tool for browsing sound seeds soon
 
 ### Program Settings and Defaults
 - name - Display name (if absent will build nice name from camel case src filename)
