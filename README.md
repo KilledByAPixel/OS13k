@@ -88,8 +88,9 @@ Add an icon config to programs.js to register your program, and send me pull req
 - iChannel0 is an image of the previous frame, this can be used to make effects or even store game logic
 
 ### System Calls
-- add 'OS13k = parent.OS13k' to the top of your code to expose the OS13k system
-- zzfx will become available after your program loads and can be called directly
+- use the OS13k object to access the OS13k system
+- OS13k is set after load, so if you need it on load use parent.OS13k
+- zzfx also becomes available after your program loads and can be called directly
 - Use the OS13k object to access OS13k features
 - OS13k.CreateShader(canvas, shaderCode) - Create a shadertoy compatible webgl shader
 - OS13k.RenderShader(canvas, shaderProgram, time=0, frame=0) - Render a shader
