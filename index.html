@@ -723,8 +723,6 @@ class OS13kTaskbarIcon extends HTMLElement
         activeTaskbarIcon && activeTaskbarIcon.SetActive(activeTaskbarIcon = 0);
         activeTaskbarIcon = this;
         this.className = 'taskbarIcon' + (active ? ' taskbarIconActive' : '');
-        
-        //this.windowOrFolder && this.windowOrFolder.Focus();
     }
 } // OS13kTaskbarIcon
 
@@ -768,6 +766,10 @@ class OS13kFolder extends HTMLElement
         // make visible
         this.parentFolder && this.parentFolder.Focus();
         this.style.visibility = '';
+        
+        // focus on window
+        document.activeElement && document.activeElement.blur();
+        window.focus();
     }
 } // OS13kFolder
 
@@ -886,9 +888,6 @@ class OS13kProgram extends HTMLElement
 
             // open the window
             this.window || (this.window = new OS13kWindow(this, info.x, info.y));
-
-            // set focus to window
-            //this.window.Focus(1);
             
             // save info on open if sticky
             this.sticky && this.SaveInfo(1);
