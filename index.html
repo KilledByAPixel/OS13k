@@ -425,19 +425,17 @@ class _OS13k
         // it - italian, fr - french,  de - german,   es - spanish, pl - polish
         // hi - hindi,   ru - russian, ja - japanese, zh - chinese, ko - korean
     
-        // must have speech
-        if (!speechSynthesis)
-            return;
-        
-        // set speech parameters
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.volume = volume * gain.gain.value;
-        utterance.pitch = pitch;
-        utterance.rate = rate;
-        utterance.lang = language;
-    
-        // speak if not muted
-        gain.gain.value && speechSynthesis && speechSynthesis.speak(utterance);
+        // must have speech and not be muted
+        if (speechSynthesis && gain.gain.value)
+        {
+            // speak with utterance parameters
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.volume = volume;
+            utterance.pitch = pitch;
+            utterance.rate = rate;
+            utterance.lang = language;
+            speechSynthesis.speak(utterance);
+        }
     }
     
     CreateShader(canvas, code)
@@ -685,9 +683,10 @@ const FocusTopWindow=()=>
 const ToggleMute=()=>
 {
     speechSynthesis && speechSynthesis.cancel();
-    OS13k.Trophy(undefined,'Shut Up','🔇','Muted');
     gain.gain.value = gain.gain.value ? 0 : defaultVolume;
-    trayVolume.innerHTML = (gain.gain.value ? '🔊' : '🔇');
+    trayVolume.innerHTML = gain.gain.value ? '🔊' : '🔇';
+    
+    OS13k.Trophy(undefined,'Shut Up','🔇','Muted');
 }
 
 /////////////////////////////////////////////////////////////////////////////
