@@ -100,6 +100,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 - OS13k.PlaySamples(samples, sampleRate=44100) - Play audio samples
 - OS13k.PlaySeed(seed, lengthScale=1, volume=1, randomness=.05) - Play a zzfx sound from seed
 - OS13k.Speak(text, rate=1, pitch=1, volume=1, language='en') - Play speech of the text
+- OS13k.KillHTML(string) - Stops HTML in string by setting all '<' to ''
 
 ### Math Library
 - Some basic math functions are provided to help reduce code duplication
@@ -134,14 +135,21 @@ Add an icon config to programs.js to register your program, and send me pull req
  
  ### Trophies
  - Apps can register trophies for their games, the OS tracks which are unlocked
- - A function is provided for apps to unlock trophies, OS13k.Trophy(gameName, trophyName, icon, message)
- - You can also pass in a value for message like a high score for example
+ - To unlock trophies use OS13k.Trophy(gameName, trophyName, icon, message)
+ - You can pass in a value for message like a high score for example
  - "OS13kTrophy,gameName,trophyName,icon" is the unique local storage key for each trophy
  - When a new trophy is unlocked or the message is changed a popup will automatically appear
  - Total trophy count is shown in the taskbar and the trophy case shows all unlocked trophies
+ - You can use tophies to unlock stuff! Use OS13k.GetTrophy to check if player has a trophy
  - *Keep your trophy names and messages short!*
  - Trophies can be tested and cleared with the System/Test tool
  - You can even add unnamed trophies with just an icon and message
+ - HTML tags can not be used in trophies and will appear garbled
+
+ ### Trophy Functions
+ - OS13k.Trophy(game='', name='', icon='', message='') - Unlock a trophy
+ - OS13k.GetTrophy(game=0, name=0, icon=0) - Get most recent matching trophy, 0 if no trophy
+ - OS13k.Trophies() - Get full list of trophy objects
  
  ### Any JS13k game can use trophies, even if not part of OS13k!
  - To add a trophies to any JS13k game, just save a special key to localStorage!
