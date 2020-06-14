@@ -1339,8 +1339,8 @@ onmousedown =e=>
     programsFolder.style.left = 0;
     programsFolder.style.top = taskbarHeight;
     
-    //return allowDefault;
-    return false;
+    // allow default to steal focus from iframe
+    return allowDefault;
 }
 
 onmousemove =e=>
