@@ -27,7 +27,7 @@ const programs =
 {name:'Games', icon:'🎮', folder:
 [
     {src:'https://bounceback.3d2k.com', name:'Bounce Back', icon:'❤️', author:'Frank Force'},
-    {src:'games/swatch.html?2', icon:'🌈', author:'Nicholas Ortenzio', width:320, height:340, resize:0},
+    {src:'games/swatch.html?3', icon:'🌈', author:'Nicholas Ortenzio', width:320, height:340, resize:0},
     {src:'games/lavaRush.html?5', icon:'🌋', author:'Jeremy Burns', width:640, height:400},
     {src:'games/sn1ke.html', icon:'👀', author:'Codegolf Team', width:400, height:280, resize:0},
     {src:'games/tetris.html', icon:'<span style=font-size:10>▀█▀', author:'Veubeke', width:210, height:380, resize:0},
