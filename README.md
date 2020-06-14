@@ -12,7 +12,7 @@ OS13k is a tiny pseudo operating system designed for a JS13k community project. 
 - The core of OS13k is around 7k zipped, and by using it's shared features we can pack a lot into 13k
 - Programs should be in the 100-500 byte range, what matters most is how well it zips with everything else
 - We plan to fit 10-20 programs [(probably not 26!)](http://js13kgames.com/entries/26-games-in-1) 😅
-- **A very important rule for JS13k is that all content must be new, so no old stuff!
+- **A very important rule for JS13k is that all content must be new, so no old stuff!**
 - You can start with an old project but polish it up a lot, minify it and make it work with OS13k
 - We will need to curate the best and perhaps smallest content for what actually lands in the JS13k build
 - Anything left out of the JS13k build will still be available in the full GitHub version
@@ -45,7 +45,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 ### Minification Tips
 - The goal is to fit as much as possible into 13 kilobytes so everything must be small and clean
 - For inclusion in the JS13k build, programs need be around 100-500 bytes when minified
-- *Always remember, this will be zipped! Don't over golf your code.
+- *Always remember, this will be zipped! Don't over golf your code.*
 - There is very little overhead for common functions calls and strings
 - Don't worry to much about html tags, they will appear often and compress well
 - Try to limit your use of non repeated text strings, those compresses the worst, use emojis where possible
@@ -56,7 +56,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 - We will pack everything together into one giant html file before zipping to save space
 
 ### Games
-- *JS13k is a game development competition, so we need to focus on games and fun apps
+- *JS13k is a game development competition, so we need to focus on games and fun apps*
 - Don't put music in your games, music will be handled by music specific programs
 - Use local storage to save your game's data (prefix keys with OS13kYourProgramName)
 - Use JS13k features like trophies, seeded sound effects, and speech to enrich your games
@@ -68,7 +68,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 - Keep text short and essential, try using emojis instead
 - Apps where the user creates something are ideal
 - Design your app well and let players have fun figuring out how to use it
-- *Apps can play sounds and have trophies too!
+- *Apps can play sounds and have trophies too!*
 
 ### Music
 - [Keith Clark created a system to play tracker songs with ZzFX sound effects](https://github.com/keithclark/ZzFXM)
@@ -114,7 +114,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 - A seeded ZzFX sound player is available to save space with much smaller sound calls
 - OS13k.PlaySeed(seed, lengthScale=1, volume=1, randomness=.05)
 - Example OS13k.PlaySeed(1006), or make a function PlaySound=sound=>OS13k.PlaySeed([1006,5023,7][sound])
-- *We will create a tool for browsing sound seeds soon
+- *We will create a tool for browsing sound seeds soon*
 
 ### Program Settings and Defaults
 - name - Display name (if absent will build nice name from camel case src filename)
@@ -136,8 +136,9 @@ Add an icon config to programs.js to register your program, and send me pull req
  - "OS13kTrophy,gameName,trophyName,icon" is the unique local storage key for each trophy
  - When a new trophy is unlocked or the message is changed a popup will automatically appear
  - Total trophy count is shown in the taskbar and the trophy case shows all unlocked trophies
- - *Keep your trophy names and messages short!
+ - *Keep your trophy names and messages short!*
  - Trophies can be tested and cleared with the System/Test tool
+ - You can even add unnamed trophies with just an icon and message
  
  ### Any JS13k game can use trophies, even if not part of OS13k!
  - To add a trophies to any JS13k game, just save a special key to localStorage!
@@ -146,7 +147,7 @@ Add an icon config to programs.js to register your program, and send me pull req
  - You can change the message to update the trophy, like a highscore for example
  - OS13k automatically checks localStorage and display popups for new trophies
  - This is possible because all JS13k games share the same local storage! Pretty cool right?
- - *Don't abuse the trophy system, lets agree to around 5 trophies per game
+ - *Don't abuse the trophy system, lets agree to around 5 trophies per game*
 
  ### Resources
  - [Dwitter](https://www.dwitter.net/) - Many ideas for tiny programs we can repurpose
