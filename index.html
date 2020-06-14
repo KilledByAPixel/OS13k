@@ -875,7 +875,13 @@ class OS13kProgram extends HTMLElement
     Click()
     {
         if (this.window)
-            this.window.SetActive(1);
+        {
+            // focus on window if it exists
+            this.window.Focus(1);
+            
+            // prevent main document focus
+            return false;
+        }
         if (this.src)
         {
             // load save info
