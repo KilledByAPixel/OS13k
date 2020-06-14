@@ -164,7 +164,7 @@ Add an icon config to programs.js to register your program, and send me pull req
  ### Resources
  - [Dwitter](https://www.dwitter.net/) - Many ideas for tiny programs we can repurpose
  - [The Dweetabase](http://dweetabase.3d2k.com/) - An offline searable database of every dweet
- - [Shadertoy](https://www.shadertoy.com/) - There are many amazing tiny sized shaders here, [check the 2TC tag](https://www.shadertoy.com/results?query=2TC)
+ - [Shadertoy](https://www.shadertoy.com/) - There are many amazing tiny sized shaders [(check out the 2TC tag)](https://www.shadertoy.com/results?query=2TC)
  - [JS1k](https://js1k.com/) - Another great resource though these programs may be a bit to large
  - [JS13k](https://js13kgames.com/) - This is the contest we are entering
 -  [Emojipedia](https://emojipedia.org/) - Good reference for emojis
