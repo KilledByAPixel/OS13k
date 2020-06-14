@@ -142,8 +142,8 @@ Add an icon config to programs.js to register your program, and send me pull req
  - *HTML tags and ',' can not used in trophy data, it will apper garbled*
  - When a new trophy is unlocked or the message is changed a popup will automatically appear
  - Total trophy count is shown in the taskbar and the trophy case shows all unlocked trophies
- - You can use tophies to unlock stuff! Use OS13k.GetTrophy to check if player has a trophy
- - *Keep your trophy names and messages short!*
+ - *You can use tophies to unlock stuff!* Use OS13k.GetTrophy to check if player has a trophy
+ - *Keep your trophy names and messages short! Experiment with fun ideas and icons*
  - Trophies can be tested and cleared with the System/Test tool
  - You can even add unnamed trophies with just an icon and message
 
@@ -167,3 +167,4 @@ Add an icon config to programs.js to register your program, and send me pull req
  - [Shadertoy](https://www.shadertoy.com/) - There are many amazing tiny sized shaders here, [check the 2TC tag](https://www.shadertoy.com/results?query=2TC)
  - [JS1k](https://js1k.com/) - Another great resource though these programs may be a bit to large
  - [JS13k](https://js13kgames.com/) - This is the contest we are entering
+-  [Emojipedia](https://emojipedia.org/) - Good reference for emojis
