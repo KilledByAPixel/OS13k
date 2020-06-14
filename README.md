@@ -133,7 +133,8 @@ Add an icon config to programs.js to register your program, and send me pull req
 - sleep (1) - Dims window and pauses dweets/shaders when not focused
 - sticky (0) - Will automatically open of program on restart if it was open
  
- ## Trophies
+ # Trophies
+ - Trophies are perhaps the most important part of OS13k and have many uses
  - Apps can register trophies for their games, the OS tracks which are unlocked
  - To unlock trophies use OS13k.Trophy(gameName, trophyName, icon, message)
  - You can pass in a value for message like a high score for example
