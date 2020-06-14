@@ -922,11 +922,8 @@ class OS13kWindow extends HTMLElement
         // add to desktop
         desktop.appendChild(this);
         
-        // create taskbar program
-        this.taskbarIcon = new OS13kTaskbarIcon(program, this);
+        // save settings
         this.program = program;
-        
-        // set position
         this.style.left = x;
         this.style.top = y;
         
@@ -1079,6 +1076,9 @@ class OS13kWindow extends HTMLElement
                         'parent.OS13k.RenderShader(c,s,t/1e3,f++)));' + 
                     'loop(s=parent.OS13k.CreateShader(c,`' + iframeText + '`))');
             }
+            
+            // add taskbar icon
+            this.taskbarIcon = new OS13kTaskbarIcon(program, this);
 
             // make visible
             this.style.visibility = this.iframe.style.visibility = '';
