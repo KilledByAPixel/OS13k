@@ -613,11 +613,14 @@ const HandleStartup =()=>
         
     finishedStartup = 1;
     
+    // open focus program if sticky open
+    /*localStorage.OS13kFocusProgram
+    
     // focus on last active program if open
     for (const c of desktop.children)
         c.program && 
         c.program.src == localStorage.OS13kFocusProgram
-        && c.Focus();
+        && c.Focus();*/
 }
 
 const Update =()=>
@@ -1302,7 +1305,7 @@ onmousedown =e=>
             menuElement.style.visibility = 'visible';
         }
     
-        // prevent default if menu upened
+        // prevent default if menu opened
         return openMenu;
     }
     
@@ -1337,7 +1340,8 @@ onmousedown =e=>
     programsFolder.style.left = 0;
     programsFolder.style.top = taskbarHeight;
     
-    return allowDefault;
+    //return allowDefault;
+    return false;
 }
 
 onmousemove =e=>
@@ -1379,7 +1383,7 @@ ondblclick =e=>
     // go fullscreen if titlebar name or icon is double clicked
     const originalTarget = e.originalTarget || e.path[0];
     const target = e.target.window || e.target;
-    if ((originalTarget.id == 'name') || e.target.window)
+    if (originalTarget.id == 'name' || e.target.window)
         target.FullScreen && target.FullScreen();
 }
 
@@ -1472,7 +1476,7 @@ const zzfx =
             frequency += pitchJump;         // apply pitch jump
             startFrequency += pitchJump;    // also apply to start frequency
             j = 0;                          // reset pitch jump time
-        };
+        }
 
         if (repeatTime && ++r > repeatTime) // repeat
         {
@@ -1502,7 +1506,6 @@ try
     const ProcessTouch=e=>
     {
         const touching = e.touches.length;
-
         if (touching)
         {
             // set event pos
@@ -1515,7 +1518,8 @@ try
         
         // handle mouse down if not clicking on a folder icon
         e.target.folder || !wasTouching && touching && onmousedown(e);
-            
+        
+        // handle mouse up
         wasTouching && !touching && onmouseup(e);
         wasTouching = touching;
         
