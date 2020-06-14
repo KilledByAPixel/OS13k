@@ -775,9 +775,6 @@ class OS13kFolder extends HTMLElement
         // make visible
         this.parentFolder && this.parentFolder.Focus();
         this.style.visibility = '';
-        
-        // focus on main window
-        window.focus();
     }
 } // OS13kFolder
 
@@ -1504,6 +1501,10 @@ try
     let wasTouching;
     const ProcessTouch=e=>
     {
+        // focus on main window if load icon clicked
+        if (e.target == loadIcon)
+            window.focus();
+    
         const touching = e.touches.length;
         if (touching)
         {
