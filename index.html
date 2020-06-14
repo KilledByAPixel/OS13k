@@ -18,7 +18,7 @@ Please keep this project confidential!
 -->
 
 <title>OS13k - A tiny operating system for JS13k</title>
-<link rel=icon type=image/x-icon href='favicon.png?1'/>
+<link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
 
 <!-- HTML above is optional -->
@@ -281,7 +281,7 @@ if (typeof programs == 'undefined')
 // @js_externs OS13k, zzfx, iframeContent.zzfx
 // @js_externs OS13k.Trophy, OS13k.GetTrophies, OS13k.KeyDirection, OS13k.Speak
 // @js_externs OS13k.CreateShader, OS13k.RenderShader, OS13k.CreateCanvas
-// @js_externs OS13k.PlaySamples, OS13k.PlaySeed, OS13k.GetNote
+// @js_externs OS13k.PlaySamples, OS13k.PlaySeed, OS13k.GetNote, OS13k.StripHTML
 // @js_externs OS13k.Random, OS13k.randomSeed 
 // @js_externs OS13k.Clamp, OS13k.Percent, OS13k.Lerp
 // @js_externs localStorage.OS13kTrophies, localStorage.OS13kVersion
@@ -305,11 +305,10 @@ class _OS13k
         const storageKey = 'OS13kTrophy,' + key;
         
         // remove html tags
-        const RemoveHTML =string=> (string||'').replace('<','');
-        icon    = RemoveHTML(icon) || '🏆';
-        name    = RemoveHTML(name);
-        game    = RemoveHTML(game);
-        message = RemoveHTML(message);
+        icon    = this.StripHTML(icon) || '🏆';
+        name    = this.StripHTML(name);
+        game    = this.StripHTML(game);
+        message = this.StripHTML(message);
         
         // find in trophy list
         const trophyIndex = trophies.findIndex(e=>e[4]==key)
@@ -527,6 +526,7 @@ class _OS13k
     Clamp(a, min=0, max=1) { return Math.min(Math.max(a, min),max) }
     Percent(v, a, b)       { return b-a? this.Clamp((v-a)/(b-a), 0, 1) : 0 }
     Lerp(p, a, b)          { return a + this.Clamp(p, 0, 1) * (b-a) }
+    StripHTML =string=>    (string||'').replace('<','');
     Random(max=1, min=0)
     {
         // seeded random numbers - Mersenne Twister
@@ -812,14 +812,13 @@ class OS13kProgram extends HTMLElement
         // check for sticky open
         if (sticky && this.GetInfo().open)
         {  
-            // if focus program save to open last
+            // open if not focus program, save that for last
             this.src == localStorage.OS13kFocusProgram ?
-                startFocusProgram = this :
-                this.Click();
+                startFocusProgram = this : this.Click();
         }
             
         // save first program in list
-        firstProgram || src && (firstProgram=this);
+        firstProgram || src && (firstProgram = this);
     }
     
     Move()
@@ -827,7 +826,7 @@ class OS13kProgram extends HTMLElement
         // set active
         activeProgram = this;
         this.className = 'program programActive';
-        (this.folder? this.folder : this.offsetParent).Focus();
+        (this.folder ? this.folder : this.offsetParent).Focus();
     }
     
     Click()
@@ -1223,8 +1222,7 @@ class OS13kWindow extends HTMLElement
     Close()
     {
         // save info
-        const open = 0;
-        this.program.SaveInfo(open);
+        this.program.SaveInfo(0);
         
         // close it up
         this.program.window = 0;
@@ -1292,17 +1290,20 @@ onmousedown =e=>
     if (grabWindow)
         return onmouseup(e);
     
-    // only look for left mouse button
     if (e.button)
     {
+        // handle non left click
         CloseMenus();
         if (e.button == 2)
         {
+            // handle right click menu
             const originalTarget = e.originalTarget || e.path[0];
+            
+            // don't open menu if help clicked on
             if (originalTarget.id == 'helpDisplay')
                 return false;
         
-            // open context menu
+            // open menu
             let menuElement = menu;
             if (!e.target.SetActive || e.target == loadIcon)
             {
@@ -1322,13 +1323,20 @@ onmousedown =e=>
         }
     
         // allow main document to take focus
-        return true;
+        return;
     }
     
-    // close menus if visible and loadIcon clicked on 
-    if (e.target == loadIcon && !loadIcon.windowOrFolder.style.visibility)
-        return CloseMenus();
+    // save if menu was visible and close menus
+    const wasVisible = !loadIcon.windowOrFolder.style.visibility;
     CloseMenus();
+    
+    // check if visible load icon was clicked
+    if (e.target == loadIcon && wasVisible)
+    {
+        // focus on active and prevent main focus
+        activeWindow && activeWindow.Focus();
+        return false;
+    }
     
     // handle mouse down
     let allowDefault = true;
@@ -1336,6 +1344,7 @@ onmousedown =e=>
         allowDefault = e.target.Click(e, e.originalTarget || e.path[0]);
     else
     {
+        // focus on active window if desktop clicked
         activeWindow && activeWindow.Focus();
         return false;
     }
