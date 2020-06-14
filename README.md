@@ -119,7 +119,8 @@ Add an icon config to programs.js to register your program, and send me pull req
 ### Program Settings and Defaults
 - name - Display name (if absent will build nice name from camel case src filename)
 - src - Source filename
-- icon - Can contain html tags, fits about 2 emojis (you don't need to close tags)
+- icon - Can contain html tags, fits about 2 emojis
+- don't close html tags, they will automatically be closed
 - width (720) and height (405) - Size of window (default is 16:9 aspect)
 - help (optional) - Help message, shows an icon on the window's titlebar (try to keep it short)
 - author (optional) - Name of creator
