@@ -1126,8 +1126,8 @@ class OS13kWindow extends HTMLElement
         target.id == 'grow'        && this.Resize(this.scale + .5);
         
         // set focus
-        this.Focus();
-        return true;
+        this.Focus();        
+        return target.id == 'helpDisplay' || grabWindow == this;
     }
     
     Resize(scale=1)
