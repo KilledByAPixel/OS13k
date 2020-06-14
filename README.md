@@ -157,4 +157,4 @@ Add an icon config to programs.js to register your program, and send me pull req
  - [JS1k](https://js1k.com/) - Another great resource though these programs may be a bit to large
  - [JS13k](https://js13kgames.com/) - This is the contest we are entering
 
-![OS13k Image](/favicon.png) 
+![OS13k Image](/favicon.ico) 
