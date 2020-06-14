@@ -138,7 +138,6 @@ Add an icon config to programs.js to register your program, and send me pull req
  - Total trophy count is shown in the taskbar and the trophy case shows all unlocked trophies
  - *Keep your trophy names and messages short!*
  - Trophies can be tested and cleared with the System/Test tool
- - You can even add unnamed trophies with just an icon and message
  
  ### Any JS13k game can use trophies, even if not part of OS13k!
  - To add a trophies to any JS13k game, just save a special key to localStorage!
