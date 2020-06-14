@@ -642,7 +642,7 @@ const Update =()=>
         // use copy of trophies to prevent skipping if removed
         for(const popup of [...trophyPopups.children])
         {
-            let y = parseInt(popup.style.top) + offsetHeight - 9;
+            let y = parseFloat(popup.style.top) + offsetHeight - 9;
             if (y < taskbarHeight)
             {
                 if (!waitToFade && !(popup.style.opacity = (popup.style.opacity || trophyPopupTime) - .01))
@@ -894,9 +894,11 @@ class OS13kProgram extends HTMLElement
     SaveInfo(open)
     {
         // save info to local storage
-        const rect = this.window.getBoundingClientRect();
         localStorage['OS13kProgram'+this.src] = 
-            JSON.stringify({x:rect.x, y:rect.y, open});
+            JSON.stringify({
+                x:this.window.style.left,
+                y:this.window.style.top, 
+                open });
     }
     
     GetInfo(x, y)
@@ -1122,12 +1124,12 @@ class OS13kWindow extends HTMLElement
         const hNew = this.program.height * (this.scale = wNew / this.program.width);
         
         // set new size
-        const w = parseInt(this.frameWrapper.style.width);
+        const w = parseFloat(this.frameWrapper.style.width);
         this.titlebar.style.width = this.frameWrapper.style.width = wNew;
         this.frameWrapper.style.height = hNew;
     
         // adjust window position for offset
-        this.style.left = parseInt(this.style.left) + w - wNew;
+        this.style.left = parseFloat(this.style.left) + w - wNew;
     }
     
     Focus(clamp)
@@ -1348,9 +1350,8 @@ onmousedown =e=>
         grabWindow.frameWrapper.style.pointerEvents = 'none';
         
         // save grab offset
-        const rect = e.target.getBoundingClientRect();
-        grabOffsetX = e.x - rect.x;
-        grabOffsetY = e.y - rect.y;
+        grabOffsetX = e.x - parseFloat(e.target.style.left);
+        grabOffsetY = e.y - parseFloat(e.target.style.top);
     }
     
     // reset program folder position
