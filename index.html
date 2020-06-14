@@ -258,7 +258,7 @@ div svg       { width:28;pointer-events:none; }
 // OS13k Debug Stuff (remove from minified)
 
 // version check, clear local storage if older
-const OS13kVersion = 27;
+const OS13kVersion = 28;
 if (localStorage.OS13kVersion != OS13kVersion)
     localStorage.clear(), localStorage.OS13kVersion = OS13kVersion;
     
@@ -293,7 +293,7 @@ if (typeof programs == 'undefined')
 
 class _OS13k
 {
-    Trophy(game='OS13k', name='', icon='', message='')
+    Trophy(game='', name='', icon='', message='')
     {
         // remove commas
         game = game.replace(',','');
@@ -314,8 +314,8 @@ class _OS13k
         // find in trophy list
         const trophyIndex = trophies.findIndex(e=>e[4]==key)
         
-        // skip if no game or same message
-        if (!game || trophyIndex >=0 && trophies[trophyIndex][3] == message)
+        // skip if same message
+        if (trophyIndex >=0 && trophies[trophyIndex][3] == message)
             return;
         
         // add or update trophy list
@@ -335,7 +335,7 @@ class _OS13k
         name || (name = game, game = '');
         
         // speak the trophy name
-        this.Speak(name);
+        this.Speak(name || game || 'trophy');
 
         // build trophy popup element
         const trophyPopup = document.createElement('div');
@@ -595,10 +595,10 @@ const Init =()=>
     CloseMenus();
     HandleStartup();
     
-    OS13k.Trophy(undefined,'Welcome!','👋');
+    OS13k.Trophy('','Welcome to OS13k!','👋');
     if (localStorage.OS13kFrozen)
     {
-        OS13k.Trophy(undefined,'Frozen','🧊',`Froze The Browser\n${localStorage.OS13kFrozen}`);
+        OS13k.Trophy('OS13k','Frozen','🧊',`Froze The Browser\n${localStorage.OS13kFrozen}`);
         delete localStorage.OS13kFrozen;
     }
 }
@@ -687,7 +687,7 @@ const ToggleMute =()=>
     gain.gain.value = gain.gain.value ? 0 : defaultVolume;
     trayVolume.innerHTML = gain.gain.value ? '🔊' : '🔇';
     
-    OS13k.Trophy(undefined,'Shut Up','🔇','Muted');
+    OS13k.Trophy('OS13k','Shut Up','🔇','Muted');
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -897,11 +897,11 @@ class OS13kProgram extends HTMLElement
             windowOpenX = startWindowOpenX;
             windowOpenY = startWindowOpenY;
 
-            OS13k.Trophy(undefined,'Coffee Is For Closers','☕','Closed All');
+            OS13k.Trophy('OS13k','Coffee Is For Closers','☕','Closed All');
         }
         
-        this == trophyProgram && OS13k.Trophy(undefined,'Hoarder','','Viewed Trophys');
-        this == clockProgram && OS13k.Trophy(undefined,'Clock Watcher','🕰️','Checked Time');
+        this == trophyProgram && OS13k.Trophy('OS13k','Hoarder','','Viewed Trophys');
+        this == clockProgram && OS13k.Trophy('OS13k','Clock Watcher','🕰️','Checked Time');
         
         return true;
     }
@@ -1217,7 +1217,7 @@ class OS13kWindow extends HTMLElement
         if (fullScreenElement.webkitRequestFullScreen)
             fullScreenElement.webkitRequestFullScreen();
             
-        OS13k.Trophy(undefined,'Pro Gamer','🕹️','Went Fullscreen');
+        OS13k.Trophy('OS13k','Pro Gamer','🕹️','Went Fullscreen');
     }
     
     ShowHelp()
@@ -1228,8 +1228,8 @@ class OS13kWindow extends HTMLElement
             (this.showHelp = !this.showHelp) ? 'block' : '';
         
         this.program.help?
-            OS13k.Trophy(undefined,'Avid Reader','📘','Viewed Help') :
-            OS13k.Trophy(undefined,'Hacker','👨‍💻','Viewed Code');
+            OS13k.Trophy('OS13k','Avid Reader','📘','Viewed Help') :
+            OS13k.Trophy('OS13k','Hacker','👨‍💻','Viewed Code');
     }
     
     Reload()
