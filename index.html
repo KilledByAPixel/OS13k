@@ -548,7 +548,7 @@ let grabWindow, grabOffsetX, grabOffsetY, finishedStartup,
     activeWindow, activeProgram, firstProgram, activeTaskbarIcon,
     lastActiveElement, loadIcon, topZ = 0, loading = 0,
     windowOpenX = startWindowOpenX, windowOpenY = startWindowOpenY,
-    trophies = [], trophyProgram, clockProgram;
+    trophies = [], trophyProgram, clockProgram, startFocusProgram;
 
 const Init =()=>
 {
@@ -610,17 +610,12 @@ const HandleStartup =()=>
         firstProgram.window.Focus(1) :
         (firstProgram.sticky && firstProgram.GetInfo().open==0) || 
         firstProgram.Click();
-        
+    
+    // finish startup after opening first program
     finishedStartup = 1;
     
-    // open focus program if sticky open
-    /*localStorage.OS13kFocusProgram
-    
-    // focus on last active program if open
-    for (const c of desktop.children)
-        c.program && 
-        c.program.src == localStorage.OS13kFocusProgram
-        && c.Focus();*/
+    // open start focus program
+    startFocusProgram && startFocusProgram.Click();
 }
 
 const Update =()=>
@@ -859,9 +854,14 @@ class OS13kProgram extends HTMLElement
         // save clock program
         name == 'Clock' && (clockProgram = this);
 
-        // check for sticky
+        // check for sticky open
         if (sticky && this.GetInfo().open)
-            this.Click();
+        {  
+            // if focus program save to open last
+            this.src == localStorage.OS13kFocusProgram ?
+                startFocusProgram = this :
+                this.Click();
+        }
             
         // save first program in list
         firstProgram || src && (firstProgram=this);
