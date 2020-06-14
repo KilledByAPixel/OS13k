@@ -258,7 +258,7 @@ div svg       { width:28;pointer-events:none; }
 // OS13k Debug Stuff (remove from minified)
 
 // version check, clear local storage if older
-const OS13kVersion = 28;
+const OS13kVersion = 29;
 if (localStorage.OS13kVersion != OS13kVersion)
     localStorage.clear(), localStorage.OS13kVersion = OS13kVersion;
     
@@ -331,11 +331,11 @@ class _OS13k
             localStorage.OS13kTrophies = JSON.stringify(trophies);
         }
         
-        // use game as name if there is no name
-        name || (name = game, game = '');
+        // use game or icon as name if there is no name
+        name || game && (name = game, game = '');
         
         // speak the trophy name
-        this.Speak(name || game || 'trophy');
+        this.Speak(name || game || message || icon);
 
         // build trophy popup element
         const trophyPopup = document.createElement('div');
@@ -709,7 +709,14 @@ class OS13kTaskbarIcon extends HTMLElement
         traySpace.before(this);
     }
     
-    Click() { this.windowOrFolder.Focus(1); return !!this.windowOrFolder; }
+    Click()
+    { 
+        // focus on window or folder
+        this.windowOrFolder.Focus(1);
+        
+        // allow main document focus if loadIcon
+        return this == loadIcon; 
+    }
     
     SetActive(active=1)
     {
@@ -903,6 +910,7 @@ class OS13kProgram extends HTMLElement
         this == trophyProgram && OS13k.Trophy('OS13k','Hoarder','','Viewed Trophys');
         this == clockProgram && OS13k.Trophy('OS13k','Clock Watcher','🕰️','Checked Time');
         
+        // allow main document focus
         return true;
     }
     
@@ -1121,12 +1129,14 @@ class OS13kWindow extends HTMLElement
         target.id == 'full'        && this.FullScreen();
         target.id == 'reload'      && this.Reload();
         target.id == 'close'       && this.Close();
-        (target.id == 'help' || target.id == 'code') && this.ShowHelp();
         target.id == 'shrink'      && this.Resize(this.scale - .5);
         target.id == 'grow'        && this.Resize(this.scale + .5);
+        (target.id == 'help' || target.id == 'code') && this.ShowHelp();
         
         // set focus
-        this.Focus();        
+        this.Focus();
+        
+        // allow main document focus if help or grabbing
         return target.id == 'helpDisplay' || grabWindow == this;
     }
     
@@ -1321,7 +1331,7 @@ onmousedown =e=>
     programsFolder.style.left = 0;
     programsFolder.style.top = taskbarHeight;
     
-    // allow default to steal focus from iframe
+    // allow main document to take focus from iframe
     return allowDefault;
 }
 
