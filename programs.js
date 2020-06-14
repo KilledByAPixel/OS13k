@@ -57,5 +57,6 @@ const programs =
     {src:'dweets/automaticBreakout.dweet.js', icon:'●'},
     {src:'dweets/bogusRoads.dweet.js', icon:'🛣️'},
     {src:'dweets/colorZoom.dweet.js', icon:'❤', author:'Cantelope'},
+    {src:'dweets/triFractal.dweet.js', icon:'🔺', author:'Cantelope'},
 ]},
 ]
