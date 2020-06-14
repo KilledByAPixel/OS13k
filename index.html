@@ -251,7 +251,7 @@ div svg       { width:28;pointer-events:none; }
 <button id=buttonResetSize>Reset Size
 <button id=buttonReload>Reload
 <button id=buttonClose>Close
-<script src=programs.js?116></script>
+<script src=programs.js?118></script>
 <script>
 
 /////////////////////////////////////////////////////////////////////////////
@@ -664,8 +664,8 @@ const Update =()=>
     const time = trayTime.title.slice(16,24).split(':')
     trayTime.innerHTML = (time[0]%12?time[0]%12:12) + ':' + time[1];
     
-    // fade in desktop
-    loading || (desktop.style.opacity = .02 + desktop.style.opacity*1);
+    // fade in desktop, convert opacity to number
+    loading || (desktop.style.opacity = Math.min(1,.02 + desktop.style.opacity*1));
 }
 
 const CloseMenus =()=>
