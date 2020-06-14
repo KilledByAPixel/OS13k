@@ -678,19 +678,6 @@ const CloseMenus =()=>
     menu.style.visibility = '';
 }
 
-const FocusTopWindow =()=>
-{
-    // find the top window and focus on it
-    let topWindow;
-    for (const c of desktop.children)
-    {
-        c.localName == 'os13k-window' &&
-        (!topWindow || topWindow.style.zIndex < c.style.zIndex) &&
-            (topWindow = c);
-    }
-    topWindow && topWindow.Focus();
-}
-
 const ToggleMute =()=>
 {
     speechSynthesis && speechSynthesis.cancel();
@@ -1258,9 +1245,6 @@ class OS13kWindow extends HTMLElement
         this.program.window = 0;
         this.taskbarIcon.remove();
         this.remove();
-        
-        // try to focus on top window
-        FocusTopWindow();
     }
 } // OS13kWindow
 
