@@ -557,13 +557,10 @@ const Init =()=>
 
     const CheckForTrophy=key=>
     {
-        if (key)
-        {
-            const keyParts = key.split(',');
-            keyParts.length = 4;
-            if (keyParts.shift() == 'OS13kTrophy') 
-                OS13k.Trophy(...keyParts, localStorage[key])
-        }
+        const keyParts = (key+'').split(',');
+        keyParts.length = 4;
+        if (keyParts.shift() == 'OS13kTrophy') 
+            OS13k.Trophy(...keyParts, localStorage[key])
     }
 
     // search local storage for trophies
@@ -859,7 +856,7 @@ class OS13kProgram extends HTMLElement
             this.window || (this.window = new OS13kWindow(this, info.x, info.y));
             
             // save info on open if sticky
-            this.sticky && this.SaveInfo(1);
+            this.sticky && this.SaveInfo();
         }
         else if (!this.folder)
         {
@@ -967,8 +964,11 @@ class OS13kWindow extends HTMLElement
         program.full && AddTitlebarIcon('full', 'Full Screen');
         program.help && AddTitlebarIcon('help', 'Help');
         program.help || program.code && AddTitlebarIcon('code', 'Code')
-        program.resize && 
-        ( AddTitlebarIcon('shrink', 'Shrink'), AddTitlebarIcon('grow', 'Grow'));
+        if (program.resize)
+        {
+            AddTitlebarIcon('shrink', 'Shrink');
+            AddTitlebarIcon('grow', 'Grow');
+        }
         program.reload && AddTitlebarIcon('reload', 'Reload');
         AddTitlebarIcon('close', 'Close');
         
@@ -982,7 +982,7 @@ class OS13kWindow extends HTMLElement
         frameWrapper.style.background = '#000';
         this.shadowRoot.appendChild(frameWrapper);
         
-        // limit window size to inner size while preserving aspect
+        // resize window size to fit inner width while preserving aspect
         const width = program.resize ? 
             Math.min(program.width, innerWidth-6) : program.width;
         this.frameWrapper.style.width  = width;
@@ -1021,64 +1021,60 @@ class OS13kWindow extends HTMLElement
                 this.helpDisplay.setAttribute('readOnly', 1);
                 this.helpDisplay.value = this.program.help || iframeText;
                 this.shadowRoot.appendChild(this.helpDisplay);
-            }
-            catch (e) {}
-            
-            if (iframeDocument)
-            {
+                
                 // pass zzfx to iframe
                 iframeContent.OS13k || (iframeContent.OS13k = OS13k);
                 iframeContent.zzfx = zzfx;
                 
                 // prevent iframes context menu
                 iframeContent.oncontextmenu =()=> false;
-                
+
+                // check for extensions
+                if (program.hasExtension)
+                {
+                    // create full size canvas
+                    iframeDocument.body.innerHTML = 
+                        `<canvas id=c width=1920 height=1080 style=` +
+                        'width:100%;background:#' +
+                        (program.isDweet ? 'fff' : '000') +'>';
+                    iframeDocument.body.style = 
+                        'background:#111;' +
+                        'overflow:hidden;' +
+                        'margin:0;' +
+                        'display:flex;' +
+                        'align-items:center';
+
+                    // create dweet
+                    program.isDweet && iframeContent.eval(
+                        'u=t=>{' + iframeText + '};' +
+                        'x=c.getContext`2d`;' +
+                        'S=Math.sin;' +
+                        'C=Math.cos;' +
+                        'T=Math.tan;' +
+                        'R=(r,g,b,a=1)=>`rgba(${0|r},${0|g},${0|b},${a})`;' +
+                        'loop=t=>requestAnimationFrame(loop,' +
+                            `${ program.sleep? 'document.hasFocus()&&' : '' }` +
+                            'u((60*(frame++/60)-frame-1|0?frame-1:frame)/60));' +
+                        'loop(frame=0)');
+
+                    // create shader
+                    program.isShader && iframeContent.eval(
+                        'g=c.getContext`webgl2`;' +
+                        'x=y=z=w=f=0;' +
+                        'onmousemove=e=>e.buttons&&(x=e.x,y=c.height-e.y);' +
+                        'onmousedown=e=>(x=z=e.x,y=w=c.height-e.y);' +
+                        'onmouseup=e=>z=w=0;' +
+                        'loop=t=>requestAnimationFrame(loop,' +
+                            `${ program.sleep? 'document.hasFocus()&&' : '' }(` +
+                            'c.width=innerWidth,' + 
+                            'c.height=innerHeight,' + 
+                            'g.uniform4f(g.getUniformLocation(s,"iMouse"),x,y,z,w),' +
+                            'parent.OS13k.RenderShader(c,s,t/1e3,f++)));' + 
+                        'loop(s=parent.OS13k.CreateShader(c,`' + iframeText + '`))');
+                } 
             }
+            catch (e) {} // could not load frame, possible cross site error
 
-            // check for extensions
-            if (iframeDocument && program.hasExtension)
-            {
-                // create full size canvas
-                iframeDocument.body.innerHTML = 
-                    `<canvas id=c width=1920 height=1080 style=` +
-                    'width:100%;background:#' +
-                    (program.isDweet ? 'fff' : '000') +'>';
-                iframeDocument.body.style = 
-                    'background:#111;' +
-                    'overflow:hidden;' +
-                    'margin:0;' +
-                    'display:flex;' +
-                    'align-items:center';
-
-                // create dweet
-                program.isDweet && iframeContent.eval(
-                    'u=t=>{' + iframeText + '};' +
-                    'x=c.getContext`2d`;' +
-                    'S=Math.sin;' +
-                    'C=Math.cos;' +
-                    'T=Math.tan;' +
-                    'R=(r,g,b,a=1)=>`rgba(${0|r},${0|g},${0|b},${a})`;' +
-                    'loop=t=>requestAnimationFrame(loop,' +
-                        `${program.sleep?'document.hasFocus()':1}&&` +
-                        'u((60*(frame++/60)-frame-1|0?frame-1:frame)/60));' +
-                    'loop(frame=0)');
-
-                // create shader
-                program.isShader && iframeContent.eval(
-                    'g=c.getContext`webgl2`;' +
-                    'x=y=z=w=f=0;' +
-                    'onmousemove=e=>e.buttons&&(x=e.x,y=c.height-e.y);' +
-                    'onmousedown=e=>(x=z=e.x,y=w=c.height-e.y);' +
-                    'onmouseup=e=>z=w=0;' +
-                    'loop=t=>requestAnimationFrame(loop,' +
-                        `${program.sleep?'document.hasFocus()':1}&&(` +
-                        'c.width=innerWidth,' + 
-                        'c.height=innerHeight,' + 
-                        'g.uniform4f(g.getUniformLocation(s,"iMouse"),x,y,z,w),' +
-                        'parent.OS13k.RenderShader(c,s,t/1e3,f++)));' + 
-                    'loop(s=parent.OS13k.CreateShader(c,`' + iframeText + '`))');
-            }
-            
             // add taskbar icon
             if (!this.taskbarIcon)
                 this.taskbarIcon = new OS13kTaskbarIcon(program, this);
@@ -1170,7 +1166,7 @@ class OS13kWindow extends HTMLElement
                 buttonResetSize.style.display  = this.program.resize? '' : 'none';
 
                 // set taskbar icon
-                this.taskbarIcon.SetActive();
+                this.taskbarIcon && this.taskbarIcon.SetActive();
             }
 
             // save active program
@@ -1181,7 +1177,7 @@ class OS13kWindow extends HTMLElement
             CloseMenus();
         }
             
-        // set active
+        // set active style
         this.className = active? 'activeWindow' : '';
         this.titlebar.className = 'titlebar titlebar' 
             + (active ? 'Active' : this.program.sticky ? 'Sticky' : '');
@@ -1191,17 +1187,16 @@ class OS13kWindow extends HTMLElement
     
     FullScreen()
     {
+        // focus and check if full screen allowed
         this.Focus();
         if (!this.program.full)
             return;
         
         // set full screen
-        const fullScreenElement = this.frameWrapper;
-        fullScreenElement.webkitRequestFullScreen = 
-            fullScreenElement.webkitRequestFullScreen || 
-            fullScreenElement.mozRequestFullScreen
-        if (fullScreenElement.webkitRequestFullScreen)
-            fullScreenElement.webkitRequestFullScreen();
+        if (this.frameWrapper.webkitRequestFullScreen)
+            this.frameWrapper.webkitRequestFullScreen();
+        if (this.frameWrapper.mozRequestFullScreen)
+            this.frameWrapper.mozRequestFullScreen();
             
         OS13k.Trophy('OS13k','Pro Gamer','🕹️','Went Fullscreen');
     }
@@ -1228,9 +1223,10 @@ class OS13kWindow extends HTMLElement
     Close()
     {
         // save info
-        this.program.SaveInfo(0);
+        const open = 0;
+        this.program.SaveInfo(open);
         
-        // destroy window
+        // close it up
         this.program.window = 0;
         this.taskbarIcon.remove();
         this.remove();
@@ -1372,7 +1368,7 @@ onmousemove =e=>
         grabWindow.style.top = e.y - grabOffsetY;
         
         // save info
-        grabWindow.program.SaveInfo(1);
+        grabWindow.program.SaveInfo();
     }
     
     // unselect active program
@@ -1402,7 +1398,7 @@ ondblclick =e=>
     // go fullscreen if titlebar name or icon is double clicked
     const originalTarget = e.originalTarget || e.path[0];
     const target = e.target.window || e.target;
-    if (originalTarget.id == 'name' || e.target.window)
+    (originalTarget.id == 'name' || e.target.window) &&
         target.FullScreen && target.FullScreen();
 }
 
