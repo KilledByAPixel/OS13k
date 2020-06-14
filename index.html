@@ -602,16 +602,22 @@ const Init =()=>
 
 const HandleStartup =()=>
 {
-    if (!loading && !finishedStartup)
-    {
-        finishedStartup = 1;
+    if (loading || finishedStartup)
+        return;
+
+    // focus on first program in list after startup if not sticky closed
+    firstProgram.window ? 
+        firstProgram.window.Focus(1) :
+        (firstProgram.sticky && firstProgram.GetInfo().open==0) || 
+        firstProgram.Click();
         
-        // focus on first program in list after startup if not sticky closed
-        firstProgram.window ? 
-            firstProgram.window.Focus(1) :
-            (firstProgram.sticky && firstProgram.LoadInfo().open==0) || 
-            firstProgram.Click();
-    }
+    finishedStartup = 1;
+    
+    // focus on last active program if open
+    for (const c of desktop.children)
+        c.program && 
+        c.program.src == localStorage.OS13kFocusProgram
+        && c.Focus();
 }
 
 const Update =()=>
@@ -855,7 +861,7 @@ class OS13kProgram extends HTMLElement
         name == 'Clock' && (clockProgram = this);
 
         // check for sticky
-        if (sticky && this.LoadInfo().open)
+        if (sticky && this.GetInfo().open)
             this.Click();
             
         // save first program in list
@@ -877,7 +883,7 @@ class OS13kProgram extends HTMLElement
         if (this.src)
         {
             // load save info
-            const info = this.LoadInfo(windowOpenX, windowOpenY);
+            const info = this.GetInfo(windowOpenX, windowOpenY);
 
             // update window open positions
             if (info.updatePosition)
@@ -921,7 +927,7 @@ class OS13kProgram extends HTMLElement
             JSON.stringify({x:rect.x, y:rect.y, open});
     }
     
-    LoadInfo(x, y)
+    GetInfo(x, y)
     {
         // try to load saved window data from local storage
         const saveWindowJSON = localStorage['OS13kProgram'+this.src];
@@ -1190,6 +1196,10 @@ class OS13kWindow extends HTMLElement
                 buttonReload.style.display     = this.program.reload? '' : 'none';
                 buttonResetSize.style.display  = this.program.resize? '' : 'none';
             }
+                
+            // save active program
+            if (finishedStartup)
+                localStorage.OS13kFocusProgram = this.program.src;
             
             // close menus incase iframe stole focus
             CloseMenus();
