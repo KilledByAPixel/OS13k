@@ -8,6 +8,23 @@ Show Objects
 <iframe id=f style=display:none></iframe>
 <script>
 
+// error check
+E=E=>(
+
+// save error to e
+e=E,
+
+// set that code is BAD
+C=0,
+
+// check with iframe if it thinks its an error
+f.contentWindow.eval('parent.e instanceof Error')
+
+// this way also works if there is no cross frame communication
+//e&&e.stack&&e.message&&typeof e.stack==='string'&&typeof e.message==='string'
+
+) // end error check
+
 // set os13k if available
 f.contentWindow.OS13k=parent.OS13k
 
@@ -19,37 +36,55 @@ c.checked=localStorage.OS13kCc!='false'
 o.checked=localStorage.OS13kCo!='false'
 
 // listen for key down
-i.onkeydown=E=>{
+i.onkeydown=K=>{
 
-// check if enter was pressed
-if(E.keyCode==13){
+// check if enter was pressed, set that code is OK
+if(C=K.keyCode==13){
 
-// try to eval code in parens first, fixes {1:2, 'x':'y'}
-// save frozen input
+// try to eval code in parens first, fixes {1:2}
+// save input to check frozen on restart
 try{r=f.contentWindow.eval(`(${localStorage.OS13kFrozen=i.value})`)}
 
 // check if code was invalid
 catch(e){
 
-// set error message
-r=e.message
+// check if it was an error
+if(E(e))
+{
+
+// set that code is OK again (for now)
+C=1
 
 // try to eval code without parens
 try{r=f.contentWindow.eval(i.value)}
 
 // check if code was invalid
-catch(e){r=e.message;E=0}}
+catch(e)
+{
 
-// save that code didn't freeze up
+// save result
+r=e
+
+// set that code is BAD and if if there was an error
+E(e)?K=0:0
+
+// end of try/catch madness
+}}}
+
+// save that code did not freeze
 delete localStorage.OS13kFrozen
 
 // build object info
 s='<pre style=color:#0cc>{\n'
 for(k in r)v=r[k],q=typeof v=='string'?'"':'',s+=`  ${k}: ${q}${v}${q}\n`
 
-// show result
-w.innerHTML=`<br><pre>JS> ${i.value}</pre><br><pre ${E?'':'style=color:#f00'}>${r}</pre><br>${(typeof r=='object')&o.checked&&E?s+'}</pre><br>':''}`+w.innerHTML
+// show formatted result
+w.innerHTML=`<br><pre style=white-space:pre-wrap>JS> ${i.value}</pre><br><pre ${C?'':'style=color:#f00'}>${K?r:r.message}</pre><br>${(typeof r=='object')&o.checked&&C?s+'}</pre><br>':''}`+w.innerHTML
 
 // clear input
-c.checked?i.value='':0}}
+c.checked?i.value='':0
+
+}// end enter pressed
+}// end of key down
+
 </script>
