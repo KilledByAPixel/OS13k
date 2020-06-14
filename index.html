@@ -251,7 +251,7 @@ div svg       { width:28;pointer-events:none; }
 <button id=buttonResetSize>Reset Size
 <button id=buttonReload>Reload
 <button id=buttonClose>Close
-<script src=programs.js?112></script>
+<script src=programs.js?115></script>
 <script>
 
 /////////////////////////////////////////////////////////////////////////////
@@ -887,7 +887,7 @@ class OS13kProgram extends HTMLElement
             this.Click();
     }
     
-    SaveInfo(open)
+    SaveInfo(open=1)
     {
         // save info to local storage
         localStorage['OS13kProgram'+this.src] = 

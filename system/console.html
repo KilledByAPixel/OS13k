@@ -1,16 +1,47 @@
 <style>*{font-family:monospace;font-size:20;background:#000;color:#ccc}</style>JS>&nbsp;<input id=i style=background:#222;color:#fff autocomplete=off> <input id=c type=checkbox value=test onclick=localStorage.OS13kCc=c.checked|0> Clear Input <input id=o type=checkbox value=test onclick=localStorage.OS13kCo=o.checked|0> Show Objects<div id=w><br>Enter JS code. Try not to freeze the browser! 😅</div><iframe id=f style=display:none></iframe>
 <script>
-i.focus()
+
+// set os13k if available
 f.contentWindow.OS13k=parent.OS13k
+
+// focus on input
+i.focus()
+
+// set saved config
 c.checked=localStorage.OS13kCc!='0'
 o.checked=localStorage.OS13kCo|0
+
+// listen for key down
 i.onkeydown=E=>{
-if(E.keyCode==13){try{
-r=f.contentWindow.eval(localStorage.OS13kFrozen=i.value)
+
+// check if enter was pressed
+if(E.keyCode==13){
+
+// try to eval the code, save code if frozen
+try{r=f.contentWindow.eval(localStorage.OS13kFrozen=i.value)}
+
+// check if code was invalid
+catch(e){
+
+// set error message
+r=e.message
+
+// try to eval code in parens, fixes {1:2} and {x: 'y'}
+try{r=f.contentWindow.eval(`(${i.value})`)}
+
+// check if code was invalid
+catch(e) {r=e.message;E=0}}
+
+// save that code didn't freeze up
+delete localStorage.OS13kFrozen
+
+// build object info
 s='<br><span style=color:#0cc>{<br>'
 for(k in r)v=r[k],q=typeof v=='string'?'"':'',s+=`&nbsp;&nbsp;${k}: ${q}${v}${q}<br>`
-}catch(e){r=e.message,E=0}
-delete localStorage.OS13kFrozen
+
+// show result
 w.innerHTML=`<br>JS> ${i.value.replace('<','&lt;')}<br><span ${E?'':'style=color:#f00'}>${r}</span>${(typeof r=='object')&&E&&o.checked?s+'}':''}</span><br>${w.innerHTML}`
-c.checked?i.value='':0}}
+
+// clear input
+c.checked&&(i.value='')}}
 </script>
