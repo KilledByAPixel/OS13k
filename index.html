@@ -1279,7 +1279,7 @@ class OS13kTaskbarIcon extends HTMLElement
             activeTaskbarIcon = this;
 
             // set window or folder to active
-            this.windowOrFolder.SetActive && this.windowOrFolder.SetActive();
+            this.windowOrFolder && this.windowOrFolder.Focus(1);
         }
     }
 } // OS13kTaskbarIcon
