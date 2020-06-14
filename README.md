@@ -1,6 +1,8 @@
 # Welcome to OS13k!
 OS13k is a tiny operating system designed for a JS13k community project. It includes native support for Shadertoys, Dweets, ZzFX sounds, music, trophies, fullscreen, touch control, and more.
 
+![OS13k Image](/favicon.ico) 
+
 ## Please keep this project confidential!
 
 # [Live Demo](https://killedbyapixel.github.io/OS13k)
@@ -156,5 +158,3 @@ Add an icon config to programs.js to register your program, and send me pull req
  - [Shadertoy](https://www.shadertoy.com/) - There are many amazing tiny sized shaders here, [check the 2TC tag](https://www.shadertoy.com/results?query=2TC)
  - [JS1k](https://js1k.com/) - Another great resource though these programs may be a bit to large
  - [JS13k](https://js13kgames.com/) - This is the contest we are entering
-
-![OS13k Image](/favicon.ico) 
