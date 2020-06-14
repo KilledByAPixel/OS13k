@@ -881,7 +881,15 @@ class OS13kProgram extends HTMLElement
         return true;
     }
     
-    Toggle() { this.window ? this.window.Close() : this.Click() }
+    Toggle()
+    {
+        // close if active, focus if open, open if shut
+        this.window ? 
+            activeWindow == this.window ? 
+                this.window.Close() : 
+                this.window.Focus(1) :
+            this.Click();
+    }
     
     SaveInfo(open)
     {
