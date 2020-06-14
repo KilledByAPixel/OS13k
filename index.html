@@ -1291,6 +1291,10 @@ onmousedown =e=>
         CloseMenus();
         if (e.button == 2)
         {
+            const originalTarget = e.originalTarget || e.path[0];
+            if (originalTarget.id == 'helpDisplay')
+                return false;
+        
             // open context menu
             let menuElement = menu;
             if (!e.target.SetActive || e.target == loadIcon)
