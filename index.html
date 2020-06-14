@@ -777,9 +777,8 @@ class OS13kFolder extends HTMLElement
         this.style.visibility = '';
         
         // focus on main window
-        let e = window;
-        while (e.frameElement !== null) {e = e.parent;}
-        e.parent.focus();
+        document.activeElement.blur();
+        window.focus();
     }
 } // OS13kFolder
 
