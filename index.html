@@ -691,45 +691,6 @@ const ToggleMute =()=>
 }
 
 /////////////////////////////////////////////////////////////////////////////
-// OS13kTaskbarIcon
-
-class OS13kTaskbarIcon extends HTMLElement
-{
-	constructor(program, windowOrFolder = 0)
-    {
-		super();
-        
-        // create icon
-        this.className = 'taskbarIcon';
-        this.innerHTML = '<div style=pointer-events:none>' + program.icon;
-        this.windowOrFolder = windowOrFolder;
-        this.title = program.title || program.name;
-        
-        // add to taskbar
-        traySpace.before(this);
-    }
-    
-    Click()
-    { 
-        // focus on window or folder
-        this.windowOrFolder.Focus(1);
-        
-        // allow main document focus if loadIcon
-        return this == loadIcon; 
-    }
-    
-    SetActive(active=1)
-    {
-        // unselect old icon and set style
-        activeTaskbarIcon && activeTaskbarIcon.SetActive(activeTaskbarIcon = 0);
-        activeTaskbarIcon = this;
-        this.className = 'taskbarIcon' + (active ? ' taskbarIconActive' : '');
-    }
-} // OS13kTaskbarIcon
-
-customElements.define('os13k-taskbar-icon', OS13kTaskbarIcon);
-
-/////////////////////////////////////////////////////////////////////////////
 // OS13kFolder
 
 class OS13kFolder extends HTMLElement
@@ -1183,11 +1144,9 @@ class OS13kWindow extends HTMLElement
         {
             if (activeWindow != this)
             {
-                // set taskbar icon
-                this.taskbarIcon.SetActive();
-            
                 // deactivate old window
                 activeWindow && activeWindow.SetActive(0);
+                activeWindow = this;
 
                 // move z to top
                 this.style.zIndex = ++topZ;
@@ -1198,8 +1157,11 @@ class OS13kWindow extends HTMLElement
                 buttonShowCode.style.display   = this.program.code?   '' : 'none';
                 buttonReload.style.display     = this.program.reload? '' : 'none';
                 buttonResetSize.style.display  = this.program.resize? '' : 'none';
+
+                // set taskbar icon
+                this.taskbarIcon.SetActive();
             }
-                
+
             // save active program
             if (finishedStartup)
                 localStorage.OS13kFocusProgram = this.program.src;
@@ -1209,7 +1171,6 @@ class OS13kWindow extends HTMLElement
         }
             
         // set active
-        activeWindow = active && this;
         this.className = active? 'activeWindow' : '';
         this.titlebar.className = 'titlebar titlebar' 
             + (active ? 'Active' : this.program.sticky ? 'Sticky' : '');
@@ -1268,6 +1229,54 @@ class OS13kWindow extends HTMLElement
 customElements.define('os13k-window', OS13kWindow);
 
 /////////////////////////////////////////////////////////////////////////////
+// OS13kTaskbarIcon
+
+class OS13kTaskbarIcon extends HTMLElement
+{
+	constructor(program, windowOrFolder = 0)
+    {
+		super();
+        
+        // create icon
+        this.className = 'taskbarIcon';
+        this.innerHTML = '<div style=pointer-events:none>' + program.icon;
+        this.windowOrFolder = windowOrFolder;
+        this.title = program.title || program.name;
+        
+        // add to taskbar
+        traySpace.before(this);
+    }
+    
+    Click()
+    { 
+        // focus on window or folder
+        this.windowOrFolder.Focus(1);
+        
+        // allow main document focus if loadIcon
+        return this == loadIcon; 
+    }
+    
+    SetActive(active=1)
+    {
+        // set style
+        this.className = 'taskbarIcon' + (active ? ' taskbarIconActive' : '');
+        
+        if (active)
+        {
+            // unselect old icon
+            activeTaskbarIcon && activeTaskbarIcon != this &&
+                activeTaskbarIcon.SetActive(0);
+            activeTaskbarIcon = this;
+
+            // set window or folder to active
+            this.windowOrFolder.SetActive && this.windowOrFolder.SetActive();
+        }
+    }
+} // OS13kTaskbarIcon
+
+customElements.define('os13k-taskbar-icon', OS13kTaskbarIcon);
+
+/////////////////////////////////////////////////////////////////////////////
 // Mouse Input
 
 onmousedown =e=>
@@ -1280,8 +1289,7 @@ onmousedown =e=>
     if (e.button)
     {
         CloseMenus();
-        const openMenu = e.button == 2;
-        if (openMenu)
+        if (e.button == 2)
         {
             // open context menu
             let menuElement = menu;
@@ -1302,8 +1310,8 @@ onmousedown =e=>
             menuElement.style.visibility = 'visible';
         }
     
-        // prevent default if menu opened
-        return openMenu;
+        // allow main document to take focus
+        return true;
     }
     
     // close menus if visible and loadIcon clicked on 
