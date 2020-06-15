@@ -1142,8 +1142,8 @@ class OS13kWindow extends HTMLElement
         target.id == 'full'        && this.FullScreen();
         target.id == 'reload'      && this.Reload();
         target.id == 'close'       && this.Close();
-        target.id == 'shrink'      && this.Resize(this.scale - .5);
-        target.id == 'grow'        && this.Resize(this.scale + .5);
+        target.id == 'shrink'      && this.Resize(this.scale - .2);
+        target.id == 'grow'        && this.Resize(this.scale + .2);
         (target.id == 'help' || target.id == 'code') && this.ShowHelp();
         
         // set focus
