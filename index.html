@@ -250,7 +250,7 @@ div svg       { width:28;pointer-events:none; }
 
 {
     // version check, clear local storage if older
-    const OS13kVersion = 35;
+    const OS13kVersion = 36;
     if (localStorage.OS13kVersion && localStorage.OS13kVersion != OS13kVersion)
     {
         alert('OS13k version out of date! System reset in 3, 2, 1...');
@@ -709,12 +709,6 @@ class _OS13kManager
 
         // kick off update
         OS13kManager.Update();
-
-        OS13k.Trophy('','Welcome to OS13k!','👋');
-        if (localStorage.OS13kFrozen)
-        {
-            OS13k.Trophy('OS13k','Frozen','🧊',`Froze The Browser\n${localStorage.OS13kFrozen}`);
-        }
     }
 
     // wait for startup to finish to open first program
@@ -1444,6 +1438,12 @@ onmousedown =e=>
         // save trophies
         localStorage.OS13kTrophies = JSON.stringify(trophies);
         preventTrophySave = 0;
+        
+        OS13k.Trophy('','Welcome to OS13k!','👋');
+        if (localStorage.OS13kFrozen)
+        {
+            OS13k.Trophy('OS13k','Frozen','🧊',`Froze The Browser\n${localStorage.OS13kFrozen}`);
+        }
     }
     
     // check if clicked on load icon while folders were visible
