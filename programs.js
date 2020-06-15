@@ -56,6 +56,6 @@ const programs =
     {src:'dweets/trainSet.dweet.js', icon:'🚂', author:'jylikangas'},
     {src:'dweets/automaticBreakout.dweet.js', icon:'●'},
     {src:'dweets/colorZoom.dweet.js', icon:'❤', author:'Cantelope'},
-    {src:'dweets/triFractal.dweet.js', icon:'🔺', author:'Cantelope'},
+    {src:'dweets/triFractal.dweet.js?1', icon:'🔺', author:'Cantelope'},
 ]},
 ]
