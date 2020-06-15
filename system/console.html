@@ -87,10 +87,10 @@ i.onkeydown=K=>{
                 try{R=f.contentWindow.eval(I)}
 
                 // check if code was invalid
-                catch(f)
+                catch(f){
                 
-                // save error message
-                {R=E(e)?e.message:e}
+                    // save error message
+                    R=E(e=E(f)?e:f)?e.message:e}
             }
         }
 
