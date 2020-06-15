@@ -1032,14 +1032,14 @@ class OS13kWindow extends HTMLElement
             icon.title = title;
             this.titlebar.appendChild(icon);
         }
-        program.full && AddTitlebarIcon('full', 'Full Screen');
-        program.help && AddTitlebarIcon('help', 'Help');
-        program.help || program.code && AddTitlebarIcon('code', 'Code')
         if (program.resize)
         {
             AddTitlebarIcon('shrink', 'Shrink');
             AddTitlebarIcon('grow', 'Grow');
         }
+        program.full && AddTitlebarIcon('full', 'Full Screen');
+        program.help && AddTitlebarIcon('help', 'Help');
+        program.help || program.code && AddTitlebarIcon('code', 'Code')
         program.reload && AddTitlebarIcon('reload', 'Reload');
         AddTitlebarIcon('close', 'Close');
         
