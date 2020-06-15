@@ -246,6 +246,28 @@ div svg       { width:28;pointer-events:none; }
 } // strict & closure config
 
 /////////////////////////////////////////////////////////////////////////////
+// OS13k Debug Stuff (remove from minified)
+
+{
+    // version check, clear local storage if older
+    const OS13kVersion = 34;
+    if (localStorage.OS13kVersion && localStorage.OS13kVersion != OS13kVersion)
+    {
+        alert('OS13k version out of date! System reset in 3, 2, 1...');
+        localStorage.clear();
+    }
+
+    localStorage.OS13kVersion = OS13kVersion;
+
+    // load default programs if none found
+    if (typeof programs == 'undefined')
+    {
+        alert('No programs found, using defaults!')
+        programs = [{src:'system/test.html'},{src:'system/trophyCase.html', icon:'🏆'},{src:'system/clock.dweet.js', icon:'🕰️', width:200, height:200, sleep:0, full:0, reload:0, sticky:1}];
+    }
+} // debug stuff
+
+/////////////////////////////////////////////////////////////////////////////
 // OS13k System
 
 class _OS13k
@@ -1663,28 +1685,6 @@ const zzfx = (
     
     return OS13k.PlaySamples(b);
 } // zzfx
-
-/////////////////////////////////////////////////////////////////////////////
-// OS13k Debug Stuff (remove from minified)
-
-{
-    // version check, clear local storage if older
-    const OS13kVersion = 33;
-    if (localStorage.OS13kVersion && localStorage.OS13kVersion != OS13kVersion)
-    {
-        alert('OS13k version out of date! System reset in 3, 2, 1...');
-        localStorage.clear();
-    }
-
-    localStorage.OS13kVersion = OS13kVersion;
-
-    // load default programs if none found
-    if (typeof programs == 'undefined')
-    {
-        alert('No programs found, using defaults!')
-        programs = [{src:'system/test.html'},{src:'system/trophyCase.html', icon:'🏆'},{src:'system/clock.dweet.js', icon:'🕰️', width:200, height:200, sleep:0, full:0, reload:0, sticky:1}];
-    }
-} // debug stuff
 
 /////////////////////////////////////////////////////////////////////////////////////
 // Mobile Support (optional)
