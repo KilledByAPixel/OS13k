@@ -1171,7 +1171,7 @@ class OS13kWindow extends HTMLElement
         
         // add program name to words and speak
         OS13k.AddWords(this.program.name, 0, 
-            this.program.name != 'Help' || trophies.length);
+            (this.program.name != 'Help' || trophies.length) && finishedStartup);
                 
         // wait for frame to load
         iframe.onload=e=>
