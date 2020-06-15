@@ -1,6 +1,5 @@
 <h1 class="code-line" data-line-start=0 data-line-end=1 ><a id="Welcome_to_OS13k_0"></a>Welcome to OS13k!</h1>
 <p class="has-line-data" data-line-start="1" data-line-end="2">OS13k is a tiny operating system designed for a JS13k community project. It includes native support for Shadertoys, Dweets, ZzFX sounds, music, trophies, fullscreen, touch control, and more.</p>
-<p class="has-line-data" data-line-start="3" data-line-end="4"><img src="/favicon.ico" alt="OS13k Image"></p>
 <h2 class="code-line" data-line-start=5 data-line-end=6 ><a id="Please_keep_this_project_confidential_5"></a>Please keep this project confidential!</h2>
 <h1 class="code-line" data-line-start=7 data-line-end=8 ><a id="Live_DemohttpskilledbyapixelgithubioOS13k_7"></a><a href="https://killedbyapixel.github.io/OS13k">Live Demo</a></h1>
 <h1 class="code-line" data-line-start=8 data-line-end=9 ><a id="Discordhttpsdiscordggn8vxUcZ_8"></a><a href="https://discord.gg/n8vxUcZ">Discord</a></h1>
@@ -104,69 +103,81 @@
 <li class="has-line-data" data-line-start="98" data-line-end="99">OS13k.KeyDirection(key) - Get {x, y} position from a key code for WASD and arrow keys</li>
 <li class="has-line-data" data-line-start="99" data-line-end="100">OS13k.PlaySamples(samples, sampleRate=44100) - Play audio samples</li>
 <li class="has-line-data" data-line-start="100" data-line-end="101">OS13k.PlaySeed(seed, lengthScale=1, volume=1, randomness=.05) - Play a zzfx sound from seed</li>
-<li class="has-line-data" data-line-start="101" data-line-end="103">OS13k.Speak(text, rate=1, pitch=1, volume=1, language=‘en’) - Play speech of the text</li>
+<li class="has-line-data" data-line-start="101" data-line-end="102">OS13k.Speak(text, rate=1, pitch=1, volume=1, language=‘en’) - Play speech of the text</li>
+<li class="has-line-data" data-line-start="102" data-line-end="103">OS13k.KillHTML(string) - Stops HTML in string by setting all ‘&lt;’ to ‘’</li>
+<li class="has-line-data" data-line-start="103" data-line-end="105">OS13k.Glitch(string, count) - Applies corruption to a string</li>
 </ul>
-<h3 class="code-line" data-line-start=103 data-line-end=104 ><a id="Math_Library_103"></a>Math Library</h3>
+<h3 class="code-line" data-line-start=105 data-line-end=106 ><a id="Math_Library_105"></a>Math Library</h3>
 <ul>
-<li class="has-line-data" data-line-start="104" data-line-end="105">Some basic math functions are provided to help reduce code duplication</li>
-<li class="has-line-data" data-line-start="105" data-line-end="106">OS13k.Random(max=1, min=0) - Get a seeded random value clamped between min and max</li>
-<li class="has-line-data" data-line-start="106" data-line-end="107">OS13k.randomSeed - You must set the seed before calling OS13k.Random</li>
-<li class="has-line-data" data-line-start="107" data-line-end="108">OS13k.Clamp(a, min=0, max=1) - Clamp value between min and max</li>
-<li class="has-line-data" data-line-start="108" data-line-end="109">OS13k.Percent(v, a, b) - Get clamped percent between a and b</li>
-<li class="has-line-data" data-line-start="109" data-line-end="111">OS13k.Lerp(p, a, b) - Lerp clamped percent between a and b</li>
+<li class="has-line-data" data-line-start="106" data-line-end="107">Some basic math functions are provided to help reduce code duplication</li>
+<li class="has-line-data" data-line-start="107" data-line-end="108">OS13k.Random(max=1, min=0) - Get a seeded random value clamped between min and max</li>
+<li class="has-line-data" data-line-start="108" data-line-end="109">OS13k.randomSeed - You must set the seed before calling OS13k.Random</li>
+<li class="has-line-data" data-line-start="109" data-line-end="110">OS13k.Clamp(a, min=0, max=1) - Clamp value between min and max</li>
+<li class="has-line-data" data-line-start="110" data-line-end="111">OS13k.Percent(v, a, b) - Get clamped percent between a and b</li>
+<li class="has-line-data" data-line-start="111" data-line-end="113">OS13k.Lerp(p, a, b) - Lerp clamped percent between a and b</li>
 </ul>
-<h3 class="code-line" data-line-start=111 data-line-end=112 ><a id="ZzFX_111"></a>ZzFX</h3>
+<h3 class="code-line" data-line-start=113 data-line-end=114 ><a id="ZzFX_113"></a>ZzFX</h3>
 <ul>
-<li class="has-line-data" data-line-start="112" data-line-end="113">ZzFX is a super tiny open source JavaScript sound effect synth, but don’t let it’s size fool you!</li>
-<li class="has-line-data" data-line-start="113" data-line-end="114">Here is the sound designer for ZzFX with a link to the public repo <a href="https://zzfx.3d2k.com/">https://zzfx.3d2k.com/</a></li>
-<li class="has-line-data" data-line-start="114" data-line-end="115">ZzFx sounds can played directly by calling zzfx, volume is controlled by the system</li>
-<li class="has-line-data" data-line-start="115" data-line-end="116">A seeded ZzFX sound player is available to save space with much smaller sound calls</li>
-<li class="has-line-data" data-line-start="116" data-line-end="117">OS13k.PlaySeed(seed, lengthScale=1, volume=1, randomness=.05)</li>
-<li class="has-line-data" data-line-start="117" data-line-end="118">Example OS13k.PlaySeed(1006), or make a function PlaySound=sound=&gt;OS13k.PlaySeed([1006,5023,7][sound])</li>
-<li class="has-line-data" data-line-start="118" data-line-end="120"><em>We will create a tool for browsing sound seeds soon</em></li>
+<li class="has-line-data" data-line-start="114" data-line-end="115">ZzFX is a super tiny open source JavaScript sound effect synth, but don’t let it’s size fool you!</li>
+<li class="has-line-data" data-line-start="115" data-line-end="116">Here is the sound designer for ZzFX with a link to the public repo <a href="https://zzfx.3d2k.com/">https://zzfx.3d2k.com/</a></li>
+<li class="has-line-data" data-line-start="116" data-line-end="117">ZzFx sounds can played directly by calling zzfx, volume is controlled by the system</li>
+<li class="has-line-data" data-line-start="117" data-line-end="118">A seeded ZzFX sound player is available to save space with much smaller sound calls</li>
+<li class="has-line-data" data-line-start="118" data-line-end="119">OS13k.PlaySeed(seed, lengthScale=1, volume=1, randomness=.05)</li>
+<li class="has-line-data" data-line-start="119" data-line-end="120">Example OS13k.PlaySeed(1006), or make a function PlaySound=sound=&gt;OS13k.PlaySeed([1006,5023,7][sound])</li>
+<li class="has-line-data" data-line-start="120" data-line-end="122"><em>We will create a tool for browsing sound seeds soon</em></li>
 </ul>
-<h3 class="code-line" data-line-start=120 data-line-end=121 ><a id="Program_Settings_and_Defaults_120"></a>Program Settings and Defaults</h3>
+<h3 class="code-line" data-line-start=122 data-line-end=123 ><a id="Program_Settings_and_Defaults_122"></a>Program Settings and Defaults</h3>
 <ul>
-<li class="has-line-data" data-line-start="121" data-line-end="122">name - Display name (if absent will build nice name from camel case src filename)</li>
-<li class="has-line-data" data-line-start="122" data-line-end="123">src - Source filename</li>
-<li class="has-line-data" data-line-start="123" data-line-end="124">icon - Can contain html tags, fits about 2 emojis</li>
-<li class="has-line-data" data-line-start="124" data-line-end="125">don’t close html tags, they will automatically be closed</li>
-<li class="has-line-data" data-line-start="125" data-line-end="126">width (720) and height (405) - Size of window (default is 16:9 aspect)</li>
-<li class="has-line-data" data-line-start="126" data-line-end="127">help (optional) - Help message, shows an icon on the window’s titlebar (try to keep it short)</li>
-<li class="has-line-data" data-line-start="127" data-line-end="128">author (optional) - Name of creator</li>
-<li class="has-line-data" data-line-start="128" data-line-end="129">reload (1) - Shows the reload option</li>
-<li class="has-line-data" data-line-start="129" data-line-end="130">code (0) - Shows code option, defaults to true for dweets/shaders, help is shown instead if it exists</li>
-<li class="has-line-data" data-line-start="130" data-line-end="131">full (1) - Enables full screen option</li>
-<li class="has-line-data" data-line-start="131" data-line-end="132">sleep (1) - Dims window and pauses dweets/shaders when not focused</li>
-<li class="has-line-data" data-line-start="132" data-line-end="134">sticky (0) - Will automatically open of program on restart if it was open</li>
+<li class="has-line-data" data-line-start="123" data-line-end="124">name - Display name (if absent will build nice name from camel case src filename)</li>
+<li class="has-line-data" data-line-start="124" data-line-end="125">src - Source filename</li>
+<li class="has-line-data" data-line-start="125" data-line-end="126">icon - Can contain html tags, fits about 2 emojis</li>
+<li class="has-line-data" data-line-start="126" data-line-end="127">don’t close html tags, they will automatically be closed</li>
+<li class="has-line-data" data-line-start="127" data-line-end="128">width (720) and height (405) - Size of window (default is 16:9 aspect)</li>
+<li class="has-line-data" data-line-start="128" data-line-end="129">help (optional) - Help message, shows an icon on the window’s titlebar (try to keep it short)</li>
+<li class="has-line-data" data-line-start="129" data-line-end="130">author (optional) - Name of creator</li>
+<li class="has-line-data" data-line-start="130" data-line-end="131">reload (1) - Shows the reload option</li>
+<li class="has-line-data" data-line-start="131" data-line-end="132">code (0) - Shows code option, defaults to true for dweets/shaders, help is shown instead if it exists</li>
+<li class="has-line-data" data-line-start="132" data-line-end="133">full (1) - Enables full screen option</li>
+<li class="has-line-data" data-line-start="133" data-line-end="134">sleep (1) - Dims window and pauses dweets/shaders when not focused</li>
+<li class="has-line-data" data-line-start="134" data-line-end="136">sticky (0) - Will automatically open of program on restart if it was open</li>
 </ul>
-<h3 class="code-line" data-line-start=134 data-line-end=135 ><a id="Trophies_134"></a>Trophies</h3>
+<h1 class="code-line" data-line-start=136 data-line-end=137 ><a id="Trophies_136"></a>Trophies</h1>
 <ul>
-<li class="has-line-data" data-line-start="135" data-line-end="136">Apps can register trophies for their games, the OS tracks which are unlocked</li>
-<li class="has-line-data" data-line-start="136" data-line-end="137">A function is provided for apps to unlock trophies, OS13k.Trophy(gameName, trophyName, icon, message)</li>
-<li class="has-line-data" data-line-start="137" data-line-end="138">You can also pass in a value for message like a high score for example</li>
-<li class="has-line-data" data-line-start="138" data-line-end="139">“OS13kTrophy,gameName,trophyName,icon” is the unique local storage key for each trophy</li>
-<li class="has-line-data" data-line-start="139" data-line-end="140">When a new trophy is unlocked or the message is changed a popup will automatically appear</li>
-<li class="has-line-data" data-line-start="140" data-line-end="141">Total trophy count is shown in the taskbar and the trophy case shows all unlocked trophies</li>
-<li class="has-line-data" data-line-start="141" data-line-end="142"><em>Keep your trophy names and messages short!</em></li>
-<li class="has-line-data" data-line-start="142" data-line-end="143">Trophies can be tested and cleared with the System/Test tool</li>
-<li class="has-line-data" data-line-start="143" data-line-end="145">You can even add unnamed trophies with just an icon and message</li>
+<li class="has-line-data" data-line-start="137" data-line-end="138">Trophies are perhaps the most important part of OS13k and have many uses</li>
+<li class="has-line-data" data-line-start="138" data-line-end="139">Apps can register trophies for their games, the OS tracks which are unlocked</li>
+<li class="has-line-data" data-line-start="139" data-line-end="140">To unlock trophies use OS13k.Trophy(gameName, trophyName, icon, message)</li>
+<li class="has-line-data" data-line-start="140" data-line-end="141">You can pass in a value for message like a high score for example</li>
+<li class="has-line-data" data-line-start="141" data-line-end="142">“OS13kTrophy,gameName,trophyName,icon” is the unique local storage key for each trophy</li>
+<li class="has-line-data" data-line-start="142" data-line-end="143"><em>HTML tags and ‘,’ can not used in trophy data, it will apper garbled</em></li>
+<li class="has-line-data" data-line-start="143" data-line-end="144">When a new trophy is unlocked or the message is changed a popup will automatically appear</li>
+<li class="has-line-data" data-line-start="144" data-line-end="145">Total trophy count is shown in the taskbar and the trophy case shows all unlocked trophies</li>
+<li class="has-line-data" data-line-start="145" data-line-end="146"><em>You can use tophies to unlock stuff!</em> Use OS13k.GetTrophy to check if player has a trophy</li>
+<li class="has-line-data" data-line-start="146" data-line-end="147"><em>Keep your trophy names and messages short! Experiment with fun ideas and icons</em></li>
+<li class="has-line-data" data-line-start="147" data-line-end="148">Trophies can be tested and cleared with the System/Test tool</li>
+<li class="has-line-data" data-line-start="148" data-line-end="150">You can even add unnamed trophies with just an icon and message</li>
 </ul>
-<h3 class="code-line" data-line-start=145 data-line-end=146 ><a id="Any_JS13k_game_can_use_trophies_even_if_not_part_of_OS13k_145"></a>Any JS13k game can use trophies, even if not part of OS13k!</h3>
+<h3 class="code-line" data-line-start=150 data-line-end=151 ><a id="Trophy_Functions_150"></a>Trophy Functions</h3>
 <ul>
-<li class="has-line-data" data-line-start="146" data-line-end="147">To add a trophies to any JS13k game, just save a special key to localStorage!</li>
-<li class="has-line-data" data-line-start="147" data-line-end="148">The simplest way to add a single trophy is localStorage[‘OS13kTrophy,GameName’]=’’</li>
-<li class="has-line-data" data-line-start="148" data-line-end="149">For more control use localStorage[‘OS13kTrophy,GameName,TrophyName,Icon’] = Message</li>
-<li class="has-line-data" data-line-start="149" data-line-end="150">You can change the message to update the trophy, like a highscore for example</li>
-<li class="has-line-data" data-line-start="150" data-line-end="151">OS13k automatically checks localStorage and display popups for new trophies</li>
-<li class="has-line-data" data-line-start="151" data-line-end="152">This is possible because all JS13k games share the same local storage! Pretty cool right?</li>
-<li class="has-line-data" data-line-start="152" data-line-end="154"><em>Don’t abuse the trophy system, lets agree to around 5 trophies per game</em></li>
+<li class="has-line-data" data-line-start="151" data-line-end="152">OS13k.Trophy(game=’’, name=’’, icon=’’, message=’’) - Unlock a trophy</li>
+<li class="has-line-data" data-line-start="152" data-line-end="153">OS13k.GetTrophy(game=0, name=0, icon=0) - Get most recent matching trophy, 0 if no trophy</li>
+<li class="has-line-data" data-line-start="153" data-line-end="155">OS13k.Trophies() - Get full list of trophy objects</li>
 </ul>
-<h3 class="code-line" data-line-start=154 data-line-end=155 ><a id="Resources_154"></a>Resources</h3>
+<h3 class="code-line" data-line-start=155 data-line-end=156 ><a id="Any_JS13k_game_can_use_trophies_even_if_not_part_of_OS13k_155"></a>Any JS13k game can use trophies, even if not part of OS13k!</h3>
 <ul>
-<li class="has-line-data" data-line-start="155" data-line-end="156"><a href="https://www.dwitter.net/">Dwitter</a> - Many ideas for tiny programs we can repurpose</li>
-<li class="has-line-data" data-line-start="156" data-line-end="157"><a href="http://dweetabase.3d2k.com/">The Dweetabase</a> - An offline searable database of every dweet</li>
-<li class="has-line-data" data-line-start="157" data-line-end="158"><a href="https://www.shadertoy.com/">Shadertoy</a> - There are many amazing tiny sized shaders here, <a href="https://www.shadertoy.com/results?query=2TC">check the 2TC tag</a></li>
-<li class="has-line-data" data-line-start="158" data-line-end="159"><a href="https://js1k.com/">JS1k</a> - Another great resource though these programs may be a bit to large</li>
-<li class="has-line-data" data-line-start="159" data-line-end="160"><a href="https://js13kgames.com/">JS13k</a> - This is the contest we are entering</li>
+<li class="has-line-data" data-line-start="156" data-line-end="157">To add a trophies to any JS13k game, just save a special key to localStorage!</li>
+<li class="has-line-data" data-line-start="157" data-line-end="158">The simplest way to add a single trophy is localStorage[‘OS13kTrophy,GameName’]=’’</li>
+<li class="has-line-data" data-line-start="158" data-line-end="159">For more control use localStorage[‘OS13kTrophy,GameName,TrophyName,Icon’] = Message</li>
+<li class="has-line-data" data-line-start="159" data-line-end="160">You can change the message to update the trophy, like a highscore for example</li>
+<li class="has-line-data" data-line-start="160" data-line-end="161">OS13k automatically checks localStorage and display popups for new trophies</li>
+<li class="has-line-data" data-line-start="161" data-line-end="162">This is possible because all JS13k games share the same local storage! Pretty cool right?</li>
+<li class="has-line-data" data-line-start="162" data-line-end="164"><em>Don’t abuse the trophy system, lets agree to around 5 trophies per game</em></li>
+</ul>
+<h3 class="code-line" data-line-start=164 data-line-end=165 ><a id="Resources_164"></a>Resources</h3>
+<ul>
+<li class="has-line-data" data-line-start="165" data-line-end="166"><a href="https://www.dwitter.net/">Dwitter</a> - Many ideas for tiny programs we can repurpose</li>
+<li class="has-line-data" data-line-start="166" data-line-end="167"><a href="http://dweetabase.3d2k.com/">The Dweetabase</a> - An offline searable database of every dweet</li>
+<li class="has-line-data" data-line-start="167" data-line-end="168"><a href="https://www.shadertoy.com/">Shadertoy</a> - There are many amazing tiny sized shaders <a href="https://www.shadertoy.com/results?query=2TC">(check out the 2TC tag)</a></li>
+<li class="has-line-data" data-line-start="168" data-line-end="169"><a href="https://js1k.com/">JS1k</a> - Another great resource though these programs may be a bit to large</li>
+<li class="has-line-data" data-line-start="169" data-line-end="170"><a href="https://js13kgames.com/">JS13k</a> - This is the contest we are entering</li>
+<li class="has-line-data" data-line-start="170" data-line-end="171"><a href="https://emojipedia.org/">Emojipedia</a> - Good reference for emojis</li>
 </ul>

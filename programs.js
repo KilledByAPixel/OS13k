@@ -2,7 +2,7 @@ const programs =
 [
 {name:'Close All', icon:'❌',},
 {src:'help.html?19', icon:'<b><span style=color:#0f0>?', width:380, height:400, help:'Check here to see help when available.\nSome programs have a option to show code instead.\n\nHave fun! ✌️😄', reload:0, sticky:1},
-{src:'moreInfo.html?11', icon:'👨‍💻'},
+{src:'moreInfo.html?12', icon:'👨‍💻'},
 {name:'System', icon:'⚙️', folder:
 [
     {src:'system/trophyCase.html?15', icon:'🏆', width:680, sticky:1, help:'All your trophies are shown here.\nTotal trophy count is displayed in the taskbar.\n\nPlay games and experiment to win more trophies!'},
