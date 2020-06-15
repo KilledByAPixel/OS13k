@@ -199,7 +199,7 @@ div svg       { width:28;pointer-events:none; }
 <symbol id=icon-close viewBox='0 0 10 10'>
     <path stroke=#000 d='M2 2L8 8M8 2L2 8'/>
 </template>
-<div id=desktop opacity:0>
+<div id=desktop style=opacity:0>
 <div id=taskbar>
 <div id=traySpace style=flex:1></div>
 <div id=tray>
@@ -212,13 +212,13 @@ div svg       { width:28;pointer-events:none; }
 <div id=programsFolder style=position:absolute></div>
 <div id=title>OS13k
 <div id=menu>
-<button id=buttonFullScreen>Fullscreen
-<button id=buttonShowHelp>Help
-<button id=buttonShowCode>Code
-<button id=buttonResetSize>Reset Size
-<button id=buttonReload>Reload
-<button id=buttonClose>Close
-<script src=programs.js?179></script>
+<button id=buttonFullScreen>Fullscreen</button>
+<button id=buttonShowHelp>Help</button>
+<button id=buttonShowCode>Code</button>
+<button id=buttonResetSize>Reset Size</button>
+<button id=buttonReload>Reload</button>
+<button id=buttonClose>Close</button>
+<script src=programs.js?199></script>
 <script>
 
 /////////////////////////////////////////////////////////////////////////////
@@ -565,7 +565,7 @@ let grabWindow, grabOffsetX, grabOffsetY, finishedStartup, preventTrophySave,
     activeWindow, activeProgram, firstProgram, activeTaskbarIcon,
     lastActiveElement, loadIcon, topZ = 0, loading = 0, hadInput = 0,
     windowOpenX = startWindowOpenX, windowOpenY = startWindowOpenY,
-    trophies = [], trophyProgram, clockProgram, startActiveProgram;
+    trophies = [], trophyProgram, clockProgram, startProgram;
     
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Manager - handles non client facing features of OS13k
@@ -621,16 +621,14 @@ class _OS13kManager
         if (loading || finishedStartup)
             return;
 
-        // open first program in list after active startup if not sticky closed
-        firstProgram.sticky && firstProgram.GetInfo().open==0 || 
-            firstProgram.Click();
-
+        // open first program after active startup if not sticky closed
+        firstProgram.sticky && !firstProgram.GetInfo().open || firstProgram.Click();
 
         // finish startup after opening first program
         finishedStartup = 1;
 
         // open start active program
-        startActiveProgram && startActiveProgram.Click();
+        startProgram && startProgram.Click();
     }
 
     // main update loop
@@ -848,14 +846,15 @@ class OS13kProgram extends HTMLElement
         // save clock program
         name == 'Clock' && (clockProgram = this);
 
-        // check for sticky open
-        if (sticky && this.GetInfo().open)
-        {  
-            // open if not active program, save that for last
-            this.src == localStorage.OS13kActiveProgram ?
-                startActiveProgram = this : this.Click();
-        }
+        // check if start active program
+        this.src == localStorage.OS13kStartProgram ?
             
+            // save start active program
+            startProgram = this :
+
+            // check for sticky open
+            sticky && this.GetInfo().open && this.Click();
+        
         // save first program in list
         firstProgram || src && (firstProgram = this);
     }
@@ -918,22 +917,26 @@ class OS13kProgram extends HTMLElement
     
     Toggle=()=> activeWindow == this.window ? this.window.Close() : this.Click();
     
+    GetInfo(x, y)
+    {
+        // try to load saved program info from local storage
+        const saveProgramJSON = localStorage['OS13kProgram'+this.src];
+        return saveProgramJSON && this.sticky || this == startProgram?
+            JSON.parse(saveProgramJSON) : {x, y, updatePosition:1}
+    }
+    
     SaveInfo(open=1)
     {
+        // remove active program if closed
+        !open && this == startProgram && 
+            (localStorage.OS13kStartProgram = startProgram = 0);
+    
         // save program info to local storage
         localStorage['OS13kProgram'+this.src] = 
             JSON.stringify({
                 x:this.window.style.left,
                 y:this.window.style.top, 
                 open });
-    }
-    
-    GetInfo(x, y)
-    {
-        // try to load saved program info from local storage
-        const saveProgramJSON = localStorage['OS13kProgram'+this.src];
-        return saveProgramJSON && this.sticky ?
-            JSON.parse(saveProgramJSON) : {x, y, updatePosition:1}
     }
 } // OS13kProgram
 customElements.define('os13k-program', OS13kProgram);
@@ -1173,7 +1176,7 @@ class OS13kWindow extends HTMLElement
             return;
         
         // save active program
-        finishedStartup&&(localStorage.OS13kActiveProgram = this.program.src);
+        finishedStartup&&(localStorage.OS13kStartProgram = this.program.src);
 
         // set focus to iframe
         this.iframeContent && this.iframeContent.focus();
