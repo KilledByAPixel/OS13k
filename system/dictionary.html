@@ -22,6 +22,11 @@ button
     border-radius:9px;
     background:#000;
 }
+#T
+{
+    color:#fff;
+    font-size: 40
+}
 </style>
 <body bgcolor=#222>
 <div id=d></div>
@@ -41,9 +46,10 @@ const OS13k = parent.OS13k;
 
 var Refresh=()=>
 {
-    d.innerHTML='';
+    const words = OS13k.GetWords();
+    d.innerHTML='<span id=T>' + words.length + ' Words Unlocked</span><br>';
 
-    for (const word of OS13k.GetWords())
+    for (const word of words)
     {
         // create the word div
         const div = document.createElement('div');

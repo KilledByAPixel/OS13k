@@ -203,6 +203,7 @@ div svg       { width:28;pointer-events:none; }
 <div id=taskbar>
 <div id=traySpace style=flex:1></div>
 <div id=tray>
+    <div id=trayWords class=trayIcon title='Dictionary'></div>
     <div id=trayTrophy class=trayIcon title='Trophy Case'></div>
     <div id=trayVolume class=trayIcon title='Toggle Mute'>🔊</div>
     <div id=trayTime class=trayIcon></div>
@@ -218,7 +219,7 @@ div svg       { width:28;pointer-events:none; }
 <button id=buttonResetSize>Reset Size</button>
 <button id=buttonReload>Reload</button>
 <button id=buttonClose>Close</button>
-<script src=programs.js?240></script>
+<script src=programs.js?241></script>
 <script>
 
 /////////////////////////////////////////////////////////////////////////////
@@ -566,6 +567,8 @@ class _OS13k
     // add a word to the word list
     AddWord =(word='', speak=0)=>
     {
+        let addedWord = 0;
+    
         // dont use it if it has numbers
         if (!/\d/.test(word))
         {
@@ -580,9 +583,15 @@ class _OS13k
                 
                 // speak the word
                 speak && this.Speak(word);
+                
+                // save that word was added
+                addedWord = 1;
             }
         }
         
+        if (!addedWord)
+            return;
+            
         // sort words
         words = words.sort();
         
@@ -688,6 +697,7 @@ class _OS13kManager
         window.onstorage =e=> OS13kManager.GiveTrophy(e.key);
 
         // set tray functions
+        trayWords.onmousedown     =()=> wordsProgram.Toggle();
         trayTrophy.onmousedown    =()=> trophyProgram.Toggle();
         trayTime.onmousedown      =()=> clockProgram.Toggle();
         trayVolume.onmousedown    = OS13kManager.ToggleMute;
@@ -783,6 +793,9 @@ class _OS13kManager
 
         // update trophy count
         trayTrophy.innerHTML = trophies.length + ' 🏆';
+
+        // update word count
+        trayWords.innerHTML = words.length + ' 📕';
 
         // update time
         trayTime.title = new Date();
@@ -1726,6 +1739,7 @@ if('ontouchstart' in window){
             wasTouching = 1;
         
             // check tray functions for touch
+            if (e.target == trayWords)  { trayWords.onmousedown();  return false; }
             if (e.target == trayTrophy) { trayTrophy.onmousedown(); return false; }
             if (e.target == trayTime)   { trayTime.onmousedown();   return false; }
             if (e.target == trayVolume) { trayVolume.onmousedown(); return false; }
