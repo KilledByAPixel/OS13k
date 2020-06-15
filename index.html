@@ -28,7 +28,6 @@ Please keep this project confidential!
 <style>
 body
 {
-    touch-action:none;
     margin:0;
     overflow:hidden;
     font-family:sans-serif;
@@ -37,6 +36,28 @@ body
     white-space:nowrap;
     background:#000;
 }
+#menu
+{
+    visibility:hidden;
+    display:flex;
+    flex-direction:column;
+    background:#000;
+}
+.folder { background:linear-gradient(#fff,#777); }
+#menu, .folder
+{
+    position:absolute;
+    z-index:20000;
+    box-shadow:5px 5px 9px;
+    border:2px solid;
+}
+.program
+{
+    font-size:18;
+    height:18;
+    padding:4;
+}
+.activeWindow { border:3px solid #aaa; }
 #taskbar
 {
     position:absolute;
@@ -47,12 +68,10 @@ body
     box-shadow:0px 1px 9px;
     border:2px solid;
 }
-.taskbarIcon
-{
-    width:50;
-    height:40;
-    text-shadow:1px 1px 3px #000;
-}
+.taskbarIcon { width:50; height:40; text-shadow:1px 1px 3px #000; }
+.programActive,
+.taskbarIconActive         { background:linear-gradient(#ff8,#fff); }
+.taskbarIcon:hover         { background:linear-gradient(#fff,#44f); }
 #tray
 {
     margin:2;
@@ -64,27 +83,8 @@ body
     border:1px solid;
     border-radius:6px;
 }
-.trayIcon       
-{ 
-    padding-left:5;
-    padding-right:5;
-    border-radius:6px;
-}
+.trayIcon { padding-left:5; padding-right:5;  border-radius:6px; }
 .trayIcon:hover { background:#fff3; }
-#menu
-{
-    visibility:hidden;
-    display:flex;
-    flex-direction:column;
-    background:#000;
-}
-.folder, #menu
-{
-    position:absolute;
-    z-index:20000;
-    box-shadow:5px 5px 9px;
-    border:2px solid;
-}
 .trophyPopup
 {
     position:relative;
@@ -109,17 +109,6 @@ body
     text-shadow:2px 2px 4px #000;
     white-space:nowrap;
 }
-.program
-{
-    font-size:18;
-    height:18;
-    padding:4;
-}
-.programActive,
-.taskbarIconActive         { background:linear-gradient(#ff8,#fff); }
-.taskbarIcon:hover         { background:linear-gradient(#fff,#44f); }
-.taskbarIconActive:hover   { background:linear-gradient(#ff8,#44f); }
-.folder                    { background:linear-gradient(#fff,#777); }
 #title
 {
     position:absolute;
@@ -131,13 +120,12 @@ body
     font-weight:900;
     background:linear-gradient(#223,#322);
 }
-.flexCenter, .taskbarIcon, #taskbar, .program, #tray, #title
+.flexCenter, .program, #taskbar, .taskbarIcon, #tray, #title
 {
     display:flex;
     align-items:center;
     justify-content:center;
 }
-.activeWindow { border:3px solid #aaa; }
 </style>
 <template id=templateWindow>
 <style>
@@ -163,31 +151,11 @@ body
     white-space:nowrap;
     background:linear-gradient(#ccc,#444);
 }
-.titlebarActive
-{
-    background:linear-gradient(#eee,#88f);
-}
-.titlebarSticky
-{
-    background:linear-gradient(#ccc,#844);
-}
-#nameWrapper
-{
-    width:100%;
-    overflow:hidden;
-    cursor:grab;
-}
-#icon
-{
-    text-shadow:1px 1px 3px #000;
-    margin-left:9;
-    margin-right:9;
-}
-#name, #icon
-{
-    pointer-events:none;
-    display:inline;
-}
+.titlebarActive { background:linear-gradient(#eee,#88f); }
+.titlebarSticky { background:linear-gradient(#ccc,#844); }
+#nameWrapper { width:100%; overflow:hidden; cursor:grab; }
+#icon { text-shadow:1px 1px 3px #000; margin-left:9; margin-right:9; }
+#name, #icon { pointer-events:none; display:inline; }
 #frame
 {
     width:100%;
@@ -231,7 +199,7 @@ div svg       { width:28;pointer-events:none; }
 <symbol id=icon-close viewBox='0 0 10 10'>
     <path stroke=#000 d='M2 2L8 8M8 2L2 8'/>
 </template>
-<div id=desktop style=opacity:0>
+<div id=desktop opacity:0>
 <div id=taskbar>
 <div id=traySpace style=flex:1></div>
 <div id=tray>
@@ -254,27 +222,9 @@ div svg       { width:28;pointer-events:none; }
 <script>
 
 /////////////////////////////////////////////////////////////////////////////
-// OS13k Debug Stuff (remove from minified)
-
-// version check, clear local storage if older
-const OS13kVersion = 32;
-if (localStorage.OS13kVersion && localStorage.OS13kVersion != OS13kVersion)
-{
-    alert('OS13k version out of date! System reset in 3, 2, 1...');
-    localStorage.clear();
-}
-
-localStorage.OS13kVersion = OS13kVersion;
-    
-// load default programs if none found
-if (typeof programs == 'undefined')
-{
-    alert('No programs found, using defaults!')
-    programs = [{src:'system/test.html'},{src:'system/trophyCase.html'},{src:'system/clock.dweet.js', icon:'🕰️', width:200, height:200, sleep:0, full:0, reload:0, sticky:1}];
-}
-
-/////////////////////////////////////////////////////////////////////////////
 // Use Strict and Google Closure Config
+
+{
 
 'use strict';
 
@@ -292,6 +242,7 @@ if (typeof programs == 'undefined')
 // @js_externs localStorage.OS13kTrophies, localStorage.OS13kVersion
 // @output_file_name OS13k.min.js
 // ==/ClosureCompiler==
+} // strict & closure config
 
 /////////////////////////////////////////////////////////////////////////////
 // OS13k System
@@ -581,8 +532,8 @@ class _OS13k
     // replace html tags in a string
     KillHTML =(string)=> (string+'').replace(/</g,'&lt;');
     
-    // glitch out a string
-    Glitch(string='',count)
+    // add count glitches to a string
+    Glitch(string, count)
     {
         // based on based on dweet by f8f82804
         // https://www.dwitter.net/d/11808
@@ -601,9 +552,10 @@ class _OS13k
         return this.KillHTML(string);
     }
 }; // _OS13k
+OS13k = new _OS13k;
 
 /////////////////////////////////////////////////////////////////////////////
-// OS13k Desktop
+// OS13k Variables
 
 const taskbarHeight = 42, programHeight = 26, titlebarHeight = 50,
       startWindowOpenX = 9, startWindowOpenY = 51, 
@@ -614,161 +566,169 @@ let grabWindow, grabOffsetX, grabOffsetY, finishedStartup, preventTrophySave,
     lastActiveElement, loadIcon, topZ = 0, loading = 0, hadInput = 0,
     windowOpenX = startWindowOpenX, windowOpenY = startWindowOpenY,
     trophies = [], trophyProgram, clockProgram, startActiveProgram;
+    
+/////////////////////////////////////////////////////////////////////////////
+// OS13k Manager - handles non client facing features of OS13k
 
-// start up OS13k
-const StartOS13k =()=>
+class _OS13kManager
 {
-    // create OS13k object
-    OS13k = new _OS13k;
-
-    // parse trophy list
-    trophies = localStorage.OS13kTrophies ? JSON.parse(localStorage.OS13kTrophies) : [];
-    
-    // listen for trophies from other windows
-    window.onstorage =e=> GiveTrophy(e.key);
-    
-    // set tray functions
-    trayTrophy.onmousedown    =()=> trophyProgram.Toggle();
-    trayTime.onmousedown      =()=> clockProgram.Toggle();
-    trayVolume.onmousedown    = ToggleMute;
-
-    // set button functions
-    buttonFullScreen.onmousedown =()=> activeWindow.FullScreen();
-    buttonShowHelp.onmousedown   =()=> activeWindow.ShowHelp();
-    buttonShowCode.onmousedown   =()=> activeWindow.ShowHelp();
-    buttonResetSize.onmousedown  =()=> activeWindow.Resize();
-    buttonReload.onmousedown     =()=> activeWindow.Reload();
-    buttonClose.onmousedown      =()=> activeWindow.Close();
-
-    // create the folder taskbar icon and add folders/programs
-    loadIcon = new OS13kTaskbarIcon( {icon:'💾', name:'Load Program'} );
-    loadIcon.windowOrFolder = new OS13kFolder(programs);
-    
-    // try to handle startup now, but it will need to wait if loading
-    HandleStartup();
-
-    // kick off update
-    Update();
-    
-    OS13k.Trophy('','Welcome to OS13k!','👋');
-    if (localStorage.OS13kFrozen)
+    // start up OS13k
+    Start =()=>
     {
-        OS13k.Trophy('OS13k','Frozen','🧊',`Froze The Browser\n${localStorage.OS13kFrozen}`);
-    }
-}
+        // parse trophy list
+        trophies = localStorage.OS13kTrophies ? JSON.parse(localStorage.OS13kTrophies) : [];
 
-// wait for startup to finish to open first program
-const HandleStartup =()=>
-{
-    // wait for initial frames to finish opening before ending startup
-    if (loading || finishedStartup)
-        return;
+        // listen for trophies from other windows
+        window.onstorage =e=> OS13kManager.GiveTrophy(e.key);
 
-    // open first program in list after active startup if not sticky closed
-    firstProgram.sticky && firstProgram.GetInfo().open==0 || 
-        firstProgram.Click();
-    
-    // finish startup after opening first program
-    finishedStartup = 1;
-    
-    // open start active program
-    startActiveProgram && startActiveProgram.Click();
-}
+        // set tray functions
+        trayTrophy.onmousedown    =()=> trophyProgram.Toggle();
+        trayTime.onmousedown      =()=> clockProgram.Toggle();
+        trayVolume.onmousedown    = OS13kManager.ToggleMute;
 
-// main update loop
-const Update =()=>
-{
-    requestAnimationFrame(Update);
+        // set button functions
+        buttonFullScreen.onmousedown =()=> activeWindow.FullScreen();
+        buttonShowHelp.onmousedown   =()=> activeWindow.ShowHelp();
+        buttonShowCode.onmousedown   =()=> activeWindow.ShowHelp();
+        buttonResetSize.onmousedown  =()=> activeWindow.Resize();
+        buttonReload.onmousedown     =()=> activeWindow.Reload();
+        buttonClose.onmousedown      =()=> activeWindow.Close();
 
-    // listen for iframe becomming new active element
-    const activeElement = document.activeElement;
-    if (lastActiveElement != activeElement)
-    {
-        // set focus to new active element
-        activeElement.SetActive && activeElement.SetActive(1,0);
-        lastActiveElement = activeElement;
-    }
-    
-    // update trophy popups if finished startup and not fullscreen
-    if (finishedStartup && !document.fullscreenElement)
-    {
-        let offsetHeight = 0, isTop = 1;
-        
-        // use copy of trophies to prevent skipping if removed
-        for(const popup of [...trophyPopups.children])
+        // create the folder taskbar icon and add folders/programs
+        loadIcon = new OS13kTaskbarIcon( {icon:'💾', name:'Load Program'} );
+        loadIcon.windowOrFolder = new OS13kFolder(programs);
+
+        // close all the folders that were just opened
+        OS13kManager.CloseMenus();
+
+        // try to handle startup now, but it will need to wait if loading
+        OS13kManager.HandleStartup();
+
+        // kick off update
+        OS13kManager.Update();
+
+        OS13k.Trophy('','Welcome to OS13k!','👋');
+        if (localStorage.OS13kFrozen)
         {
-            // speak the trophy name
-            popup.speak&&(OS13k.Speak(popup.speak),popup.speak=0)
-            
-            // move trophy up
-            let y = parseFloat(popup.style.top) + offsetHeight - 9;
-            if (y < taskbarHeight)
-            {
-                // stop trophy below taskbar
-                y = taskbarHeight;
-                
-                // fade out trophy if at top
-                if (isTop && !(popup.style.opacity = (popup.style.opacity || trophyPopupTime) - .01))
-                {
-                    // remove when invisible and adjust for height
-                    const rect = popup.getBoundingClientRect();
-                    offsetHeight += rect.height;
-                    trophyPopups.removeChild(popup);
-                }
-
-                // set that we are not at the top
-                isTop = 0;
-            }
-
-            // set trophy position
-            popup.style.top = y;
+            OS13k.Trophy('OS13k','Frozen','🧊',`Froze The Browser\n${localStorage.OS13kFrozen}`);
         }
     }
-    
-    // update trophy count
-    trayTrophy.innerHTML = trophies.length + ' 🏆';
-    
-    // update time
-    trayTime.title = new Date();
-    const time = trayTime.title.slice(16,24).split(':')
-    trayTime.innerHTML = (time[0]%12?time[0]%12:12) + ':' + time[1];
-    
-    // fade in desktop, convert opacity to number
-    loading || (desktop.style.opacity = Math.min(1,.02 + desktop.style.opacity*1));
-}
 
-// close all folders and menus
-const CloseMenus =()=>
-{
-    // hide all drop down folders
-    for (const c of programsFolder.children)
-        c.localName == 'os13k-folder' && (c.style.visibility = 'hidden');
-        
-    // hide menu
-    menu.style.visibility = '';
-}
+    // wait for startup to finish to open first program
+    HandleStartup =()=>
+    {
+        // wait for initial frames to finish opening before ending startup
+        if (loading || finishedStartup)
+            return;
 
-// toggle audio
-const ToggleMute =()=>
-{
-    speechSynthesis && speechSynthesis.cancel();
-    gain.gain.value = gain.gain.value ? 0 : defaultVolume;
-    trayVolume.innerHTML = gain.gain.value ? '🔊' : '🔇';
-    
-    OS13k.Trophy('OS13k','Shut Up','🔇','Muted');
-}
+        // open first program in list after active startup if not sticky closed
+        firstProgram.sticky && firstProgram.GetInfo().open==0 || 
+            firstProgram.Click();
 
-// try to give trophy for local storage key
-const GiveTrophy =key=>
-{
-    const keyParts = (key+'').split(',');
-    keyParts.length = 4;
-    if (keyParts.shift() == 'OS13kTrophy') 
-        OS13k.Trophy(...keyParts, localStorage[key])
-}
+
+        // finish startup after opening first program
+        finishedStartup = 1;
+
+        // open start active program
+        startActiveProgram && startActiveProgram.Click();
+    }
+
+    // main update loop
+    Update =()=>
+    {
+        requestAnimationFrame(OS13kManager.Update);
+
+        // listen for iframe becomming new active element
+        const activeElement = document.activeElement;
+        if (lastActiveElement != activeElement)
+        {
+            // set focus to new active element
+            activeElement.SetActive && activeElement.SetActive(1,0);
+            lastActiveElement = activeElement;
+        }
+
+        // update trophy popups if finished startup and not fullscreen
+        if (finishedStartup && !document.fullscreenElement)
+        {
+            let offsetHeight = 0, isTop = 1;
+
+            // use copy of trophies to prevent skipping if removed
+            for(const popup of [...trophyPopups.children])
+            {
+                // speak the trophy name
+                popup.speak&&(OS13k.Speak(popup.speak),popup.speak=0)
+
+                // move trophy up
+                let y = parseFloat(popup.style.top) + offsetHeight - 9;
+                if (y < taskbarHeight)
+                {
+                    // stop trophy below taskbar
+                    y = taskbarHeight;
+
+                    // fade out trophy if at top
+                    if (isTop && !(popup.style.opacity = (popup.style.opacity || trophyPopupTime) - .01))
+                    {
+                        // remove when invisible and adjust for height
+                        const rect = popup.getBoundingClientRect();
+                        offsetHeight += rect.height;
+                        trophyPopups.removeChild(popup);
+                    }
+
+                    // set that we are not at the top
+                    isTop = 0;
+                }
+
+                // set trophy position
+                popup.style.top = y;
+            }
+        }
+
+        // update trophy count
+        trayTrophy.innerHTML = trophies.length + ' 🏆';
+
+        // update time
+        trayTime.title = new Date();
+        const time = trayTime.title.slice(16,24).split(':')
+        trayTime.innerHTML = (time[0]%12?time[0]%12:12) + ':' + time[1];
+
+        // fade in desktop, convert opacity to number
+        loading || (desktop.style.opacity = Math.min(1,.02 + desktop.style.opacity*1));
+    }
+
+    // close all folders and menus
+    CloseMenus =()=>
+    {
+        // hide all drop down folders
+        for (const c of programsFolder.children)
+            c.localName == 'os13k-folder' && (c.style.visibility = 'hidden');
+
+        // hide menu
+        menu.style.visibility = '';
+    }
+
+    // try to give trophy for local storage key
+    GiveTrophy =key=>
+    {
+        const keyParts = (key+'').split(',');
+        keyParts.length = 4;
+        if (keyParts.shift() == 'OS13kTrophy') 
+            OS13k.Trophy(...keyParts, localStorage[key])
+    }
+
+    // toggle audio
+    ToggleMute =()=>
+    {
+        speechSynthesis && speechSynthesis.cancel();
+        gain.gain.value = gain.gain.value ? 0 : defaultVolume;
+        trayVolume.innerHTML = gain.gain.value ? '🔊' : '🔇';
+
+        OS13k.Trophy('OS13k','Shut Up','🔇','Muted');
+    }
+} // OS13kManager
+OS13kManager = new _OS13kManager;
 
 /////////////////////////////////////////////////////////////////////////////
-// OS13kFolder - holds a list of programs
+// OS13kFolder - holds a list of program
 
 class OS13kFolder extends HTMLElement
 {
@@ -800,14 +760,13 @@ class OS13kFolder extends HTMLElement
     SetActive()
     {
         // close menus so they can reopen with this active
-        CloseMenus();
+        OS13kManager.CloseMenus();
         
         // make visible
         this.parentFolder && this.parentFolder.SetActive();
         this.style.visibility = '';
     }
 } // OS13kFolder
-
 customElements.define('os13k-folder', OS13kFolder);
 
 /////////////////////////////////////////////////////////////////////////////
@@ -977,7 +936,6 @@ class OS13kProgram extends HTMLElement
             JSON.parse(saveProgramJSON) : {x, y, updatePosition:1}
     }
 } // OS13kProgram
-
 customElements.define('os13k-program', OS13kProgram);
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1159,7 +1117,7 @@ class OS13kWindow extends HTMLElement
             grabWindow || this.SetActive();
     
             // special logic during startup
-            HandleStartup();
+            OS13kManager.HandleStartup();
         }
         
         // load the iframe
@@ -1219,7 +1177,7 @@ class OS13kWindow extends HTMLElement
 
         // set focus to iframe
         this.iframeContent && this.iframeContent.focus();
-        CloseMenus();
+        OS13kManager.CloseMenus();
 
         if (clamp)
         {
@@ -1301,7 +1259,6 @@ class OS13kWindow extends HTMLElement
         this.remove();
     }
 } // OS13kWindow
-
 customElements.define('os13k-window', OS13kWindow);
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1354,11 +1311,12 @@ class OS13kTaskbarIcon extends HTMLElement
         activeTaskbarIcon = this;
     }
 } // OS13kTaskbarIcon
-
 customElements.define('os13k-taskbar-icon', OS13kTaskbarIcon);
 
 /////////////////////////////////////////////////////////////////////////////
 // Mouse Input
+
+{
 
 onmousedown =e=>
 {
@@ -1370,7 +1328,7 @@ onmousedown =e=>
     
         // search local storage for trophies, prevent saving until the end
         for (let i = localStorage.length; preventTrophySave = i--;)
-            GiveTrophy(localStorage.key(i));
+            OS13kManager.GiveTrophy(localStorage.key(i));
     }
     
     // check if clicked on load icon while folders were visible
@@ -1380,14 +1338,14 @@ onmousedown =e=>
         activeWindow && activeWindow.SetActive(1,0);
         
         // close menus
-        CloseMenus();
+        OS13kManager.CloseMenus();
         
         // prevent main document from taking focus
         return false;
     }
     
     // close menus on mouse down
-    CloseMenus();
+    OS13kManager.CloseMenus();
 
     // prevent stuck grab
     if (grabWindow) return onmouseup(e);
@@ -1509,32 +1467,37 @@ ondblclick =e=>
 // prevent default context menu
 oncontextmenu =e=> false;
 
+} // mouse input
+
 /////////////////////////////////////////////////////////////////////////////
-// ZzFXMicro - Zuper Zmall Zound Zynth 
+// Audio Setup
 
 // init web audio
 const audioContext = new (AudioContext || webkitAudioContext);
-audioContext.Z = audioContext.createBufferSource;
-audioContext.createBufferSource = (s = audioContext.Z())=>
-(
-    s.start = s.start || s.noteOn,
-    s.stop  = s.stop  || s.noteOff,
-    s
-);
-
-// setup gain node
 const gain = audioContext.createGain();
-gain.connect(audioContext.destination);
-gain.gain.value = defaultVolume;
+{
+    audioContext.Z = audioContext.createBufferSource;
+    audioContext.createBufferSource = (s = audioContext.Z())=>
+    (
+        s.start = s.start || s.noteOn,
+        s.stop  = s.stop  || s.noteOff,
+        s
+    );
+
+    // setup gain node
+    gain.connect(audioContext.destination);
+    gain.gain.value = defaultVolume;
+} // setup audio
+
+/////////////////////////////////////////////////////////////////////////////
+// ZzFXMicro - Zuper Zmall Zound Zynth 
 
 // play zzfx sound
-const zzfx =
-(
-    // parameters
-    volume=1, randomness=.05, frequency=220, attack=0, sustain=0, release=.1, shape=0, shapeCurve=1, slide=0, deltaSlide=0, pitchJump=0, pitchJumpTime=0, repeatTime=0, noise=0, modulation=0, bitCrush=0, delay=0,
-
+const zzfx = (
+    volume=1, randomness=.05, frequency=220, attack=0, sustain=0, release=.1, shape=0, shapeCurve=1, slide=0, deltaSlide=0, pitchJump=0, pitchJumpTime=0, repeatTime=0, noise=0, modulation=0, bitCrush=0, delay=0)=>
+{
     // locals
-    PI2 = Math.PI*2,
+    let PI2 = Math.PI*2,
     sampleRate = 44100,
     random = r => r*2*Math.random()-r,
     sign = v => v>0?1:-1,
@@ -1542,9 +1505,8 @@ const zzfx =
     startFrequency = frequency *= (1 + random(randomness)) * PI2 / sampleRate,
     modPhase = sign(modulation) * PI2/4,
     b=[], t=0, tm=0, i=0, j=1, r=0, c=0, s=0, d=.5,
-    length, buffer
-) =>
-{
+    length, buffer;
+
     // init parameters
     attack = 99 + attack * sampleRate | 0;
     sustain = sustain * sampleRate | 0;
@@ -1607,18 +1569,38 @@ const zzfx =
     }
     
     return OS13k.PlaySamples(b);
-}
+} // zzfx
 
 /////////////////////////////////////////////////////////////////////////////
-// Start OS13k!
+// OS13k Debug Stuff (remove from minified)
 
-StartOS13k();
+{
+    // version check, clear local storage if older
+    const OS13kVersion = 32;
+    if (localStorage.OS13kVersion && localStorage.OS13kVersion != OS13kVersion)
+    {
+        alert('OS13k version out of date! System reset in 3, 2, 1...');
+        localStorage.clear();
+    }
+
+    localStorage.OS13kVersion = OS13kVersion;
+
+    // load default programs if none found
+    if (typeof programs == 'undefined')
+    {
+        alert('No programs found, using defaults!')
+        programs = [{src:'system/test.html'},{src:'system/trophyCase.html', icon:'🏆'},{src:'system/clock.dweet.js', icon:'🕰️', width:200, height:200, sleep:0, full:0, reload:0, sticky:1}];
+    }
+} // debug stuff
 
 /////////////////////////////////////////////////////////////////////////////////////
-// Touch Input (optional)
+// Mobile Support (optional)
 
-try
-{
+if('ontouchstart' in window){
+
+    // disable touch actions on document
+    document.body.style.touchAction = 'none';
+    
     // handle touch event
     const ProcessTouch=e=>
     {
@@ -1627,9 +1609,8 @@ try
         
         if (touching)
         {
-            // focus on main window if load icon clicked
-            if (e.target == loadIcon)
-                window.focus();
+            // focus on main window
+            window.focus();
 
             // set event pos
             e.x = e.touches[0].clientX;
@@ -1662,7 +1643,11 @@ try
     trayTrophy.ontouchstart = trayTrophy.onmousedown;
     trayTime.ontouchstart   = trayTime.onmousedown;
     trayVolume.ontouchstart = trayVolume.onmousedown;
-}
-catch(e){}
+} // touch events
+
+/////////////////////////////////////////////////////////////////////////////
+// Start OS13k!
+
+OS13kManager.Start();
 
 </script>
