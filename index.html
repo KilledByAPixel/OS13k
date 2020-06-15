@@ -275,16 +275,16 @@ class _OS13k
         game = game.replace(',','');
         name = name.replace(',','');
         icon = icon.replace(',','');
-    
+        
         // build key
         const key = game + ',' + name + ',' + icon;
         const storageKey = 'OS13kTrophy,' + key;
         
         // remove html tags
-        icon    = this.KillHTML(icon);
-        name    = this.KillHTML(name);
-        game    = this.KillHTML(game);
-        message = this.KillHTML(message);
+        icon    = this.KillHTML(icon,    maxTrophyLength);
+        name    = this.KillHTML(name,    maxTrophyLength);
+        game    = this.KillHTML(game,    maxTrophyLength);
+        message = this.KillHTML(message, maxTrophyLength);
         
         // find in trophy list
         const index = trophies.findIndex(e=>e[4]==key)
@@ -299,13 +299,12 @@ class _OS13k
             trophies.unshift( trophyData ) :
             trophies[index] = trophyData;
 
+        // save trophy
+        localStorage[storageKey] = message;
+            
         // save local storage only after trophies were first checked
         if (!preventTrophySave)
-        {
-            // this is to prevent resaving for every trophy on startup
-            localStorage[storageKey] = message;
             localStorage.OS13kTrophies = JSON.stringify(trophies);
-        }
         
         // use game or icon as name if there is no name
         name || game && (name = game, game = '');
@@ -530,7 +529,14 @@ class _OS13k
 // OS13k Text
 
     // replace html tags in a string
-    KillHTML =(string)=> (string+'').replace(/</g,'&lt;');
+    KillHTML =(string, maxLength)=>
+    {
+        // clamp max length if it exists
+        maxLength >= 0 && (string = string.substring(0, maxLength));
+        
+        // replace < with &lt;
+        return (string+'').replace(/</g,'&lt;');
+    }
     
     // add count glitches to a string
     Glitch(string, count)
@@ -559,7 +565,7 @@ OS13k = new _OS13k;
 
 const taskbarHeight = 42, programHeight = 26, titlebarHeight = 50,
       startWindowOpenX = 9, startWindowOpenY = 51, 
-      trophyPopupTime = 3, defaultVolume = .3;
+      trophyPopupTime = 3, defaultVolume = .3, maxTrophyLength = 32;
       
 let grabWindow, grabOffsetX, grabOffsetY, finishedStartup, preventTrophySave,
     activeWindow, activeProgram, firstProgram, activeTaskbarIcon,
@@ -622,7 +628,7 @@ class _OS13kManager
             return;
 
         // open first program after active startup if not sticky closed
-        firstProgram.sticky && !firstProgram.GetInfo().open || firstProgram.Click();
+        !firstProgram.sticky || firstProgram.GetInfo().open || firstProgram.Click();
 
         // finish startup after opening first program
         finishedStartup = 1;
@@ -1258,7 +1264,7 @@ class OS13kWindow extends HTMLElement
         
         // close it up
         this.program.window = 0;
-        this.taskbarIcon.remove();
+        this.taskbarIcon && this.taskbarIcon.remove();
         this.remove();
     }
 } // OS13kWindow
@@ -1330,8 +1336,12 @@ onmousedown =e=>
         hadInput = 1;
     
         // search local storage for trophies, prevent saving until the end
-        for (let i = localStorage.length; preventTrophySave = i--;)
+        for (let i = localStorage.length; i--;)
             OS13kManager.GiveTrophy(localStorage.key(i));
+        
+        // save trophies
+        localStorage.OS13kTrophies = JSON.stringify(trophies);
+        preventTrophySave = 0;
     }
     
     // check if clicked on load icon while folders were visible
@@ -1601,8 +1611,11 @@ const zzfx = (
 
 if('ontouchstart' in window){
 
-    // disable touch actions on document
+    // disable default touch actions
     document.body.style.touchAction = 'none';
+    
+    // fix hover getting stuck on mobile
+    document.documentElement.classList.add('can-touch');
     
     // handle touch event
     const ProcessTouch=e=>
@@ -1623,14 +1636,28 @@ if('ontouchstart' in window){
             onmousemove(e);
         }
         
-        // handle mouse down if not clicking on a folder icon
-        e.target.folder || touching && !wasTouching && onmousedown(e);
+        // handle mouse down if not clicking on folder icon
+        if (!e.target.folder && touching && !wasTouching)
+        {
+            // set was touching
+            wasTouching = 1;
         
-        // handle mouse up
-        !touching && wasTouching && onmouseup(e);
-        
-        // save touching
-        wasTouching = touching;
+            // check tray functions for touch
+            if (e.target == trayTrophy) { trayTrophy.onmousedown(); return false; }
+            if (e.target == trayTime)   { trayTime.onmousedown();   return false; }
+            if (e.target == trayVolume) { trayVolume.onmousedown(); return false; }
+
+            // handle mouse down if not clicking on a folder icon
+            onmousedown(e);
+        }
+        else if (!touching && wasTouching)
+        {
+            // set was touching
+            wasTouching = 0;
+            
+            // handle mouse up
+            onmouseup(e);
+        }
         
         // prevent default touch interaction
         return false;
@@ -1642,10 +1669,6 @@ if('ontouchstart' in window){
     // set touch events
     ontouchstart = ontouchmove = ontouchend = ontouchcancel = ProcessTouch;
     
-    // set tray functions for touch
-    trayTrophy.ontouchstart = trayTrophy.onmousedown;
-    trayTime.ontouchstart   = trayTime.onmousedown;
-    trayVolume.ontouchstart = trayVolume.onmousedown;
 } // touch events
 
 /////////////////////////////////////////////////////////////////////////////
