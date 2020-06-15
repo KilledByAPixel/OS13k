@@ -101,7 +101,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 - OS13k.PlaySeed(seed, lengthScale=1, volume=1, randomness=.05) - Play a zzfx sound from seed
 - OS13k.Speak(text, rate=1, pitch=1, volume=1, language='en') - Play speech of the text
 - OS13k.KillHTML(string) - Stops HTML in string by setting all '<' to ''
-- OS13k.Glitch(string, glitches) - Applies corruption to a string
+- OS13k.Glitch(string, count) - Applies corruption to a string
 
 ### Math Library
 - Some basic math functions are provided to help reduce code duplication
