@@ -383,7 +383,7 @@ class _OS13k
         return trophyData;
     }
     
-    // get most recent matching trophy, 0 if no trophy
+    // get message, 0 if no trophy
     GetTrophy(game, name, icon)
     {
         // build key
@@ -393,7 +393,7 @@ class _OS13k
         const i = trophies.findIndex( e=>e[4]==key );
         
         // return trophy message
-        return i < 0 ? 0 : trophies[i];
+        return i < 0 ? 0 : trophies[i][3];
     }
     
     // get list of trophies
@@ -934,8 +934,8 @@ class OS13kProgram extends HTMLElement
             // open the window
             this.window || (this.window = new OS13kWindow(this, info.x, info.y));
             
-            // save info on open if sticky
-            this.sticky && this.SaveInfo();
+            // save info on open
+            this.SaveInfo();
         }
         else if (!this.folder)
         {
@@ -961,7 +961,7 @@ class OS13kProgram extends HTMLElement
     
     SaveInfo(open=1)
     {
-        // save info to local storage
+        // save program info to local storage
         localStorage['OS13kProgram'+this.src] = 
             JSON.stringify({
                 x:this.window.style.left,
@@ -971,10 +971,10 @@ class OS13kProgram extends HTMLElement
     
     GetInfo(x, y)
     {
-        // try to load saved window data from local storage
-        const saveWindowJSON = localStorage['OS13kProgram'+this.src];
-        return saveWindowJSON && this.sticky ?
-            JSON.parse(saveWindowJSON) : {x, y, updatePosition:1}
+        // try to load saved program info from local storage
+        const saveProgramJSON = localStorage['OS13kProgram'+this.src];
+        return saveProgramJSON && this.sticky ?
+            JSON.parse(saveProgramJSON) : {x, y, updatePosition:1}
     }
 } // OS13kProgram
 
@@ -1358,7 +1358,7 @@ class OS13kTaskbarIcon extends HTMLElement
 customElements.define('os13k-taskbar-icon', OS13kTaskbarIcon);
 
 /////////////////////////////////////////////////////////////////////////////
-// Input
+// Mouse Input
 
 onmousedown =e=>
 {
