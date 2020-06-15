@@ -8,7 +8,6 @@
     padding:8;
     display:inline-block;
     overflow:hidden;
-    user-select:none;
     font-size:18;
     text-align:center;
     background:linear-gradient(#eee,#888);
@@ -45,7 +44,7 @@ for (const trophy of OS13k.Trophies())
     // get trophy info
     const game = trophy[0];
     const name = trophy[1];
-    const icon = trophy[2];
+    const icon = trophy[2] || '🏆';
     const message = trophy[3];
 
     // set title

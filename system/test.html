@@ -16,15 +16,15 @@ Test Shader
 </table>
 <br><br>
 Trophies
-<br><input id=game value=Game>
-<br><input id=trophy value=Trophy>
-<br><input id=icon>
-<br><input id=message value=Message>
+<br><input id=game value=Game> Game
+<br><input id=trophy value=Trophy> Trophy
+<br><input id=icon> Icon
+<br><input id=message value=Message> Message
 <br>
 <button onClick=OS13k.Trophy(game.value,trophy.value,icon.value,message.value)>
 Add Trophy</button>
 <button onClick='delete localStorage.OS13kTrophies'>Reset Popups</button>
-<button onClick="confirm('Are you sure?')&&localStorage.clear()">Clear Local Storage</button>
+<button onClick=SystemReset()>System Reset</button>
 <script>
 
 'use strict';
@@ -38,6 +38,9 @@ Add Trophy</button>
 // ==/ClosureCompiler==
 
 const OS13k = parent.OS13k;
+
+const SystemReset=()=>
+confirm('Are you sure?')&&(localStorage.clear(),parent.location.reload())
 
 const T=()=>
 {
