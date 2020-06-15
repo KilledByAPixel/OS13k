@@ -251,14 +251,14 @@ div svg       { width:28;pointer-events:none; }
 <button id=buttonResetSize>Reset Size
 <button id=buttonReload>Reload
 <button id=buttonClose>Close
-<script src=programs.js?119></script>
+<script src=programs.js?120></script>
 <script>
 
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Debug Stuff (remove from minified)
 
 // version check, clear local storage if older
-const OS13kVersion = 29;
+const OS13kVersion = 30;
 if (localStorage.OS13kVersion != OS13kVersion)
     localStorage.clear(), localStorage.OS13kVersion = OS13kVersion;
     
@@ -279,9 +279,10 @@ if (typeof programs == 'undefined')
 // @language_out ECMASCRIPT_2019
 // @js_externs OS13kFolder, OS13kProgram, OS13kWindow, OS13kTaskbarIcon
 // @js_externs OS13k, zzfx, iframeContent.zzfx
-// @js_externs OS13k.Trophy, OS13k.GetTrophies, OS13k.KeyDirection, OS13k.Speak
+// @js_externs OS13k.Trophy, OS13k.GetTrophy, OS13k.GetTrophies
+// @js_externs OS13k.KeyDirection, OS13k.Speak
 // @js_externs OS13k.CreateShader, OS13k.RenderShader, OS13k.CreateCanvas
-// @js_externs OS13k.PlaySamples, OS13k.PlaySeed, OS13k.GetNote, OS13k.StripHTML
+// @js_externs OS13k.PlaySamples, OS13k.PlaySeed, OS13k.GetNote, OS13k.KillHTML
 // @js_externs OS13k.Random, OS13k.randomSeed 
 // @js_externs OS13k.Clamp, OS13k.Percent, OS13k.Lerp
 // @js_externs localStorage.OS13kTrophies, localStorage.OS13kVersion
@@ -293,6 +294,7 @@ if (typeof programs == 'undefined')
 
 class _OS13k
 {
+    // award player with trophy, returns 0 if already owned
     Trophy(game='', name='', icon='', message='')
     {
         // remove commas
@@ -305,23 +307,23 @@ class _OS13k
         const storageKey = 'OS13kTrophy,' + key;
         
         // remove html tags
-        icon    = this.StripHTML(icon) || '🏆';
-        name    = this.StripHTML(name);
-        game    = this.StripHTML(game);
-        message = this.StripHTML(message);
+        icon    = this.KillHTML(icon) || '🏆';
+        name    = this.KillHTML(name);
+        game    = this.KillHTML(game);
+        message = this.KillHTML(message);
         
         // find in trophy list
-        const trophyIndex = trophies.findIndex(e=>e[4]==key)
+        const index = trophies.findIndex(e=>e[4]==key)
         
         // skip if same message
-        if (trophyIndex >=0 && trophies[trophyIndex][3] == message)
-            return;
+        if (index >=0 && trophies[index][3] == message)
+            return 0;
         
         // add or update trophy list
         const trophyData = [game, name, icon, message, key];
-        trophyIndex < 0 ? 
-            trophies.push( trophyData ) :
-            trophies[trophyIndex] = trophyData;
+        index < 0 ? 
+            trophies.unshift( trophyData ) :
+            trophies[index] = trophyData;
 
         if (loadIcon)
         {
@@ -353,13 +355,31 @@ class _OS13k
         // refresh trophy window if it is being displayed
         trophyProgram && trophyProgram.window && trophyProgram.window.iframeContent &&
             trophyProgram.window.iframeContent.Refresh();
+            
+        return 1;
     }
     
-    GetTrophies() { return trophies } 
+    // get most recent matching trophy, 0 if no trophy
+    GetTrophy(game=0, name=0, icon=0)
+    {
+        // find in trophy list
+        const index = trophies.findIndex(
+            e=>
+            (game===0||e[0]==game) && 
+            (name===0||e[1]==name) && 
+            (icon===0||e[2]==icon)
+        );
+        
+        // return trophy message
+        return index < 0 ? 0 : trophies[index];
+    }
     
+    // get list of trophies
+    Trophies() { return trophies } 
+    
+    // get direction from wasd or arrow keys
     KeyDirection(keyCode)
     {
-        // get direction from wasd or arrow keys
         let x = 0, y = 0;
         (keyCode == 87 || keyCode == 38) && ++y; // up
         (keyCode == 83 || keyCode == 40) && --y; // down
@@ -381,9 +401,9 @@ class _OS13k
         const release = R()**3*lengthScale;
         const length  = attack + sustain + release;
         
-        // create random sound
-        return zzfx(...
-        [
+        // generate random sound
+        return zzfx
+        (
            volume,               // volume
            randomness,           // randomness
            R()**2*2e3,           // frequency
@@ -400,8 +420,8 @@ class _OS13k
            C() * R()**4,         // noise
            C() * R()**3*9*S(),   // modulation
            C() * R()**4,         // bitCrush
-           C() * R()**3/2,       // delay
-        ]);
+           C() * R()**3/2        // delay
+        );
     }
     
     PlaySamples(samples, sampleRate=44100)
@@ -522,11 +542,31 @@ class _OS13k
         x.texImage2D(x.TEXTURE_2D, 0, x.RGBA, x.RGBA, x.UNSIGNED_BYTE, canvas);
     }
     
-    // helper functions
+    // text functions
+    KillHTML(string)       { return (string+'').replace(/</g,'&lt;') }
+    Glitch(string='', count)
+    {
+        // based on based on dweet by f8f82804
+        // https://www.dwitter.net/d/11808
+        
+        // apply glitches
+        for(count; count--; )
+        {
+            const r = Math.random()*(string+'').length+1;
+            string = (string+='')
+                .slice(0, r)
+                + String.fromCharCode( 768 + Math.random()*99 )
+                + string.slice(r)
+        }
+        
+        // return result with no html
+        return this.KillHTML(string);
+    }
+
+    // math functions
     Clamp(a, min=0, max=1) { return Math.min(Math.max(a, min),max) }
     Percent(v, a, b)       { return b-a? this.Clamp((v-a)/(b-a), 0, 1) : 0 }
     Lerp(p, a, b)          { return a + this.Clamp(p, 0, 1) * (b-a) }
-    StripHTML =string=>    (string||'').replace('<','');
     Random(max=1, min=0)
     {
         // seeded random numbers - Mersenne Twister
@@ -771,7 +811,7 @@ class OS13kProgram extends HTMLElement
         this.sleep = sleep;
         this.full = full;
         this.reload = reload;
-        this.code = code || (this.hasExtension && code === undefined);
+        this.code = code || (this.hasExtension && code == undefined);
         this.sticky = sticky;
         this.help = help;
         this.resize = resize;
