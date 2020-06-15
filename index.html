@@ -250,7 +250,7 @@ div svg       { width:28;pointer-events:none; }
 
 {
     // version check, clear local storage if older
-    const OS13kVersion = 34;
+    const OS13kVersion = 35;
     if (localStorage.OS13kVersion && localStorage.OS13kVersion != OS13kVersion)
     {
         alert('OS13k version out of date! System reset in 3, 2, 1...');
@@ -663,7 +663,7 @@ const taskbarHeight = 42, programHeight = 26, titlebarHeight = 50,
       
 let grabWindow, grabOffsetX, grabOffsetY, finishedStartup, preventTrophySave,
     activeWindow, activeProgram, firstProgram, activeTaskbarIcon,
-    lastActiveElement, loadIcon, topZ = 0, loading = 0, checkTrophies = 0,
+    lastActiveElement, loadIcon, topZ = 0, loading = 0, checkTrophies = 1,
     windowOpenX = startWindowOpenX, windowOpenY = startWindowOpenY,
     trophyProgram, clockProgram, startProgram, wordsProgram
 
