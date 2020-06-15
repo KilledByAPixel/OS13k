@@ -24,8 +24,6 @@ button
 }
 </style>
 <body bgcolor=#222>
-<span style=color:#FFF>Add Word...</span>
-<input id=w maxLength=32 style=width:100%><br>
 <div id=d></div>
 <script>
 
@@ -39,7 +37,7 @@ button
 
 const OS13k = parent.OS13k;
 
-w.onkeydown=(e)=>{e.keyCode==13&&(OS13k.AddWords(w.value,1),Refresh(w.value=''))}
+//w.onkeydown=(e)=>{e.keyCode==13&&(OS13k.AddWords(w.value,1),Refresh(w.value=''))}
 
 var Refresh=()=>
 {
@@ -50,7 +48,7 @@ var Refresh=()=>
         // create the word div
         const div = document.createElement('div');
         div.className = 'word';
-        div.innerHTML = '<div style=display:flex>' + word + '<span style=flex:1></span>' + '<button onclick=OS13k.RemoveWord("'+ word +'")>❌'
+        div.innerHTML = word
 
         // speak the word if clicked
         div.onmousedown=()=>{OS13k.StopSpeech();OS13k.Speak(word)}
