@@ -251,7 +251,7 @@ div svg       { width:28;pointer-events:none; }
 
 {
     // version check, clear local storage if older
-    const OS13kVersion = 40;
+    const OS13kVersion = 42;
     if (localStorage.OS13kVersion && localStorage.OS13kVersion != OS13kVersion)
     {
         alert('OS13k version out of date! System reset in 3, 2, 1...');
@@ -579,7 +579,7 @@ class _OS13k
             if (!/\d/.test(word))
             {
                 // limit word length
-                if (word.length || word.length > maxWordLength) {
+                if (word.length > 1 || word.length > maxWordLength) {
 
                     // add word to list and speak it
                     words.indexOf(word) < 0 &&
@@ -1035,9 +1035,9 @@ class OS13kProgram extends HTMLElement
             OS13k.Trophy('OS13k','Coffee Is For Closers','☕','Closed All');
         }
         
-        this == wordsProgram && OS13k.Trophy('OS13k','Book Worm','🐛','Read Dictionary');
-        this == trophyProgram && OS13k.Trophy('OS13k','Show Off','','Viewed Trophys');
-        this == clockProgram && OS13k.Trophy('OS13k','Clock Watcher','🕰️','Checked Time');
+        //this == wordsProgram && OS13k.Trophy('OS13k','Book Worm','🐛','Read Dictionary');
+        //this == trophyProgram && OS13k.Trophy('OS13k','Show Off','','Viewed Trophys');
+        //this == clockProgram && OS13k.Trophy('OS13k','Clock Watcher','🕰️','Checked Time');
         
         // allow main document focus
         return true;
@@ -1383,9 +1383,7 @@ class OS13kWindow extends HTMLElement
         this.program.spokeHelp=1;
         this.program.SaveInfo();
         
-        this.program.help?
-            OS13k.Trophy('OS13k','Reader Rabbit','🐇','Viewed Help') :
-            OS13k.Trophy('OS13k','Hacker','👨‍💻','Viewed Code');
+        this.program.help || OS13k.Trophy('OS13k','Hacker','👨‍💻','Viewed Code');
     }
     
     Reload()
