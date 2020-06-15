@@ -50,7 +50,7 @@ for (const trophy of OS13k.Trophies())
     // set title
     const title = icon + ' ' + name + '\n' + game + '\n' + message;
 
-    // create the medal div
+    // create the trophy html
     const div = document.createElement('div');
     div.className = 'trophy';
     div.title = title;
@@ -60,6 +60,9 @@ for (const trophy of OS13k.Trophies())
             '<b>' + name + '</b><br>' +                // name
             '<i>' + game + '</i>' +                    // game
             '<br><span style=font-size:14>' + message; // message
+
+    // speak the trophy if clicked
+    div.onmousedown=()=>{OS13k.StopSpeech();OS13k.Speak(name||game||message||icon)}
 
     // add to document
     this.document.body.appendChild(div); 

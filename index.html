@@ -218,7 +218,7 @@ div svg       { width:28;pointer-events:none; }
 <button id=buttonResetSize>Reset Size</button>
 <button id=buttonReload>Reload</button>
 <button id=buttonClose>Close</button>
-<script src=programs.js?199></script>
+<script src=programs.js?229></script>
 <script>
 
 /////////////////////////////////////////////////////////////////////////////
@@ -233,10 +233,11 @@ div svg       { width:28;pointer-events:none; }
 // @language_out ECMASCRIPT_2019
 // @js_externs OS13kFolder, OS13kProgram, OS13kWindow, OS13kTaskbarIcon
 // @js_externs OS13k, zzfx, iframeContent.zzfx
-// @js_externs OS13k.Trophy, OS13k.GetTrophy, OS13k.GetTrophies
+// @js_externs OS13k.Trophy, OS13k.GetTrophy, OS13k.Trophies
 // @js_externs OS13k.KeyDirection, OS13k.Speak
 // @js_externs OS13k.CreateShader, OS13k.RenderShader, OS13k.CreateCanvas
-// @js_externs OS13k.PlaySamples, OS13k.PlaySeed, OS13k.GetNote, OS13k.KillHTML
+// @js_externs OS13k.PlaySamples, OS13k.PlaySeed, OS13k.GetNote
+// @js_externs OS13k.KillHTML, OS13k.Glitch
 // @js_externs OS13k.Random, OS13k.randomSeed 
 // @js_externs OS13k.Clamp, OS13k.Percent, OS13k.Lerp
 // @js_externs localStorage.OS13kTrophies, localStorage.OS13kVersion
@@ -281,10 +282,10 @@ class _OS13k
         const storageKey = 'OS13kTrophy,' + key;
         
         // remove html tags
-        icon    = this.KillHTML(icon,    maxTrophyLength);
-        name    = this.KillHTML(name,    maxTrophyLength);
-        game    = this.KillHTML(game,    maxTrophyLength);
-        message = this.KillHTML(message, maxTrophyLength);
+        icon    = this.KillHTML(icon,    maxWordLength);
+        name    = this.KillHTML(name,    maxWordLength);
+        game    = this.KillHTML(game,    maxWordLength);
+        message = this.KillHTML(message, maxWordLength);
         
         // find in trophy list
         const index = trophies.findIndex(e=>e[4]==key)
@@ -320,6 +321,7 @@ class _OS13k
                 '<b>' + name + '</b><br>' +    // name
                 '<i>' + game + '</i>' +        // game
             '</div>' + message;                // message
+        
             
         // add trophy to bottom of screen
         trophyPopup.style.top = innerHeight;
@@ -329,6 +331,11 @@ class _OS13k
         // refresh trophy window if it is being displayed
         trophyProgram && trophyProgram.window && trophyProgram.window.iframeContent &&
             trophyProgram.window.iframeContent.Refresh();
+            
+        // add trophy words to list
+        this.AddWords(game);
+        this.AddWords(name);
+        this.AddWords(message);
         
         return trophyData;
     }
@@ -346,8 +353,8 @@ class _OS13k
         return i < 0 ? 0 : trophies[i][3];
     }
     
-    // get list of trophies
-    Trophies=()=>trophies;
+    // get the trophy list
+    Trophies=()=> [...trophies];
     
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Audio
@@ -424,6 +431,9 @@ class _OS13k
             speechSynthesis.speak(utterance);
         }
     }
+    
+    // stop any current or queued speech
+    StopSpeech=()=> speechSynthesis && speechSynthesis.cancel();
         
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Shaders
@@ -528,6 +538,68 @@ class _OS13k
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Text
 
+    // add every word in a string to the word list
+    AddWords =(string, speak=1)=> (string+'').split(' ').map(word=>this.AddWord(word, speak));
+    
+    // add a word to the word list
+    AddWord =(word='', speak=1)=>
+    {
+        // dont use it if it has numbers
+        if (!/\d/.test(word))
+        {
+            // get rid of everything but letters
+            word = word.toLowerCase().replace(/[^a-z]/g,'').trim();
+
+            // limit word length
+            if (word.length || word.length > maxWordLength) {
+            
+                // check if word is not in list and add it
+                words.indexOf(word) < 0 && words.unshift(word);
+                
+                // speak the word
+                speak && this.Speak(word);
+            }
+        }
+        
+        // save words
+        localStorage.OS13kWords = JSON.stringify(words);
+        
+        // refresh dictionary window if it is being displayed
+        wordsProgram && wordsProgram.window && wordsProgram.window.iframeContent &&
+            wordsProgram.window.iframeContent.Refresh();
+    }
+    
+    // remove a word from the list
+    RemoveWord =(word, speak=1)=>
+    {
+        // remoe word if it exists
+        words = words.filter(e => e != word);
+        
+        // speak the word
+        speak && this.Speak(word);
+
+        // refresh dictionary window
+        this.AddWord();
+    }
+
+    // get the word list
+    GetWords =()=> [...words];
+
+    // get a random matching word
+    GetWord(minLength=1, maxLength, firstCharacters)
+    {
+        // search for matches
+        const matches = words.filter( o=>
+            o.length >= minLength && 
+            (maxLength == undefined || o.length <= maxLength ) && 
+            (firstCharacters == undefined 
+                || o.substring(0, firstCharacters.length) == 
+                    firstCharacters.toLowerCase() ));
+            
+        // get random match
+        return matches.length > 0 ? matches[Math.random()*matches.length|0] : '';
+    }
+    
     // replace html tags in a string
     KillHTML =(string, maxLength)=>
     {
@@ -565,25 +637,28 @@ OS13k = new _OS13k;
 
 const taskbarHeight = 42, programHeight = 26, titlebarHeight = 50,
       startWindowOpenX = 9, startWindowOpenY = 51, 
-      trophyPopupTime = 3, defaultVolume = .3, maxTrophyLength = 32;
+      trophyPopupTime = 3, defaultVolume = .3, maxWordLength = 32;
       
 let grabWindow, grabOffsetX, grabOffsetY, finishedStartup, preventTrophySave,
     activeWindow, activeProgram, firstProgram, activeTaskbarIcon,
-    lastActiveElement, loadIcon, topZ = 0, loading = 0, hadInput = 0,
+    lastActiveElement, loadIcon, topZ = 0, loading = 0, checkTrophies = 0,
     windowOpenX = startWindowOpenX, windowOpenY = startWindowOpenY,
-    trophies = [], trophyProgram, clockProgram, startProgram;
-    
+    trophyProgram, clockProgram, startProgram, wordsProgram
+
+// parse trophy list
+trophies = localStorage.OS13kTrophies ? JSON.parse(localStorage.OS13kTrophies) : [],
+
+// parse word list
+words = localStorage.OS13kWords ? JSON.parse(localStorage.OS13kWords) : [];
+
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Manager - handles non client facing features of OS13k
-
+    
 class _OS13kManager
 {
     // start up OS13k
     Start =()=>
     {
-        // parse trophy list
-        trophies = localStorage.OS13kTrophies ? JSON.parse(localStorage.OS13kTrophies) : [];
-
         // listen for trophies from other windows
         window.onstorage =e=> OS13kManager.GiveTrophy(e.key);
 
@@ -607,7 +682,7 @@ class _OS13kManager
         // close all the folders that were just opened
         OS13kManager.CloseMenus();
 
-        // try to handle startup now, but it will need to wait if loading
+        // try to handle startup now in case no programs are loading
         OS13kManager.HandleStartup();
 
         // kick off update
@@ -627,14 +702,14 @@ class _OS13kManager
         if (loading || finishedStartup)
             return;
 
-        // open first program after active startup if not sticky closed
-        !firstProgram.sticky || firstProgram.GetInfo().open || firstProgram.Click();
+        // open first program after startup
+        firstProgram.GetInfo().open!=0 && firstProgram.Click();
 
         // finish startup after opening first program
         finishedStartup = 1;
 
         // open start active program
-        startProgram && startProgram.Click();
+        startProgram && startProgram.GetInfo().open!=0 && startProgram.Click();
     }
 
     // main update loop
@@ -722,7 +797,7 @@ class _OS13kManager
     // toggle audio
     ToggleMute =()=>
     {
-        speechSynthesis && speechSynthesis.cancel();
+        OS13k.StopSpeech();
         gain.gain.value = gain.gain.value ? 0 : defaultVolume;
         trayVolume.innerHTML = gain.gain.value ? '🔊' : '🔇';
 
@@ -819,6 +894,9 @@ class OS13kProgram extends HTMLElement
         this.help = help;
         this.resize = resize;
         
+        OS13k.AddWords(this.name);
+        OS13k.AddWords(this.help);
+        
         // set title if not a folder
         if (!folder)
             this.title = name +
@@ -846,11 +924,13 @@ class OS13kProgram extends HTMLElement
             this.appendChild(folderDisplay);
         }
         
-        // save trophy program
-        name == 'Trophy Case' && (trophyProgram = this);
-        
-        // save clock program
+        // save special programs
         name == 'Clock' && (clockProgram = this);
+        name == 'Trophy Case' && (trophyProgram = this);
+        name == 'Dictionary' && (wordsProgram = this);
+        
+        // save first program in list
+        firstProgram || src && (firstProgram = this);
 
         // check if start active program
         this.src == localStorage.OS13kStartProgram ?
@@ -860,9 +940,6 @@ class OS13kProgram extends HTMLElement
 
             // check for sticky open
             sticky && this.GetInfo().open && this.Click();
-        
-        // save first program in list
-        firstProgram || src && (firstProgram = this);
     }
     
     Move()
@@ -899,7 +976,7 @@ class OS13kProgram extends HTMLElement
             this.window || (this.window = new OS13kWindow(this, info.x, info.y));
             
             // save info on open
-            this.SaveInfo();
+            this.SetInfo();
         }
         else if (!this.folder)
         {
@@ -914,24 +991,27 @@ class OS13kProgram extends HTMLElement
             OS13k.Trophy('OS13k','Coffee Is For Closers','☕','Closed All');
         }
         
-        this == trophyProgram && OS13k.Trophy('OS13k','Hoarder','','Viewed Trophys');
+        this == wordsProgram && OS13k.Trophy('OS13k','Book Worm','🐛','Read Dictionary');
+        this == trophyProgram && OS13k.Trophy('OS13k','Show Off','','Viewed Trophys');
         this == clockProgram && OS13k.Trophy('OS13k','Clock Watcher','🕰️','Checked Time');
         
         // allow main document focus
         return true;
     }
     
-    Toggle=()=> activeWindow == this.window ? this.window.Close() : this.Click();
+    Toggle=()=> activeWindow && activeWindow == this.window 
+        ? this.window.Close() : this.Click();
     
     GetInfo(x, y)
     {
         // try to load saved program info from local storage
         const saveProgramJSON = localStorage['OS13kProgram'+this.src];
-        return saveProgramJSON && this.sticky || this == startProgram?
+        return saveProgramJSON &&
+            (this.sticky || this == firstProgram || this == startProgram)?
             JSON.parse(saveProgramJSON) : {x, y, updatePosition:1}
     }
     
-    SaveInfo(open=1)
+    SetInfo(open=1)
     {
         // remove active program if closed
         !open && this == startProgram && 
@@ -1243,7 +1323,7 @@ class OS13kWindow extends HTMLElement
             (this.showHelp = !this.showHelp) ? 'block' : '';
         
         this.program.help?
-            OS13k.Trophy('OS13k','Avid Reader','📘','Viewed Help') :
+            OS13k.Trophy('OS13k','Reader Rabbit','🐇','Viewed Help') :
             OS13k.Trophy('OS13k','Hacker','👨‍💻','Viewed Code');
     }
     
@@ -1260,7 +1340,7 @@ class OS13kWindow extends HTMLElement
     Close()
     {
         // save info
-        this.program.SaveInfo(0);
+        this.program.SetInfo(0);
         
         // close it up
         this.program.window = 0;
@@ -1330,10 +1410,10 @@ customElements.define('os13k-taskbar-icon', OS13kTaskbarIcon);
 onmousedown =e=>
 {
     // wait for first input before checking trophies
-    if (!hadInput)
+    if (checkTrophies)
     {
         // save that there was input
-        hadInput = 1;
+        checkTrophies = 0;
     
         // search local storage for trophies, prevent saving until the end
         for (let i = localStorage.length; i--;)
@@ -1443,7 +1523,7 @@ onmousemove =e=>
         grabWindow.style.top = e.y - grabOffsetY;
         
         // save info
-        grabWindow.program.SaveInfo();
+        grabWindow.program.SetInfo();
     }
     
     // unselect active program
