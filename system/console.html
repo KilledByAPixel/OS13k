@@ -4,7 +4,7 @@ JS> Options:
 Objects
 <input id=c type=checkbox onclick=localStorage.OS13kCc=c.checked>
 Clear
-<span id=G><input id=z type=checkbox>
+<span id=G><input id=z type=checkbox onclick=X=0>
 Glitch
 </span><br>
 <input id=i style=background:#222;color:#fff;width:100% autocomplete=off>
@@ -127,7 +127,7 @@ i.onkeydown=K=>{
             `<br><pre style=white-space:pre-wrap>${
 
                 // show input
-                OS13k.Glitch('JS> '+I,g=z.checked?C?9:1e3:0)
+                OS13k.Glitch('JS> '+I,Math.min(1e3,g=z.checked?C?1+X:9*++X:0))
 
             // create pre tag for result with red color if error
             }</pre><br><pre ${C?'':'style=color:#f00'}>${
