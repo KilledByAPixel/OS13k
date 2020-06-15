@@ -349,7 +349,7 @@ class _OS13k
             trophies[index] = trophyData;
 
         // save local storage only after trophies were first checked
-        if (hasCheckedTrophies)
+        if (!preventTrophySave)
         {
             // this is to prevent resaving for every trophy on startup
             localStorage[storageKey] = message;
@@ -358,9 +358,6 @@ class _OS13k
         
         // use game or icon as name if there is no name
         name || game && (name = game, game = '');
-        
-        // speak the trophy name
-        this.Speak(name || game || message || icon);
 
         // build trophy popup element
         const trophyPopup = document.createElement('div');
@@ -376,6 +373,7 @@ class _OS13k
             
         // add trophy to bottom of screen
         trophyPopup.style.top = innerHeight;
+        trophyPopup.speak = name || game || message || icon;
         trophyPopups.appendChild(trophyPopup);
         
         // refresh trophy window if it is being displayed
@@ -611,9 +609,9 @@ const taskbarHeight = 42, programHeight = 26, titlebarHeight = 50,
       startWindowOpenX = 9, startWindowOpenY = 51, 
       trophyPopupTime = 3, defaultVolume = .3;
       
-let grabWindow, grabOffsetX, grabOffsetY, finishedStartup, hasCheckedTrophies,
+let grabWindow, grabOffsetX, grabOffsetY, finishedStartup, preventTrophySave,
     activeWindow, activeProgram, firstProgram, activeTaskbarIcon,
-    lastActiveElement, loadIcon, topZ = 0, loading = 0,
+    lastActiveElement, loadIcon, topZ = 0, loading = 0, hadInput = 0,
     windowOpenX = startWindowOpenX, windowOpenY = startWindowOpenY,
     trophies = [], trophyProgram, clockProgram, startActiveProgram;
 
@@ -648,18 +646,15 @@ const StartOS13k =()=>
     
     // try to handle startup now, but it will need to wait if loading
     HandleStartup();
-    
+
     // kick off update
     Update();
-}
-
-// try to give trophy for local storage key
-const GiveTrophy =key=>
-{
-    const keyParts = (key+'').split(',');
-    keyParts.length = 4;
-    if (keyParts.shift() == 'OS13kTrophy') 
-        OS13k.Trophy(...keyParts, localStorage[key])
+    
+    OS13k.Trophy('','Welcome to OS13k!','👋');
+    if (localStorage.OS13kFrozen)
+    {
+        OS13k.Trophy('OS13k','Frozen','🧊',`Froze The Browser\n${localStorage.OS13kFrozen}`);
+    }
 }
 
 // wait for startup to finish to open first program
@@ -694,27 +689,38 @@ const Update =()=>
         lastActiveElement = activeElement;
     }
     
-    // update trophy popups if not fullscreen
-    if (!document.fullscreenElement)
+    // update trophy popups if finished startup and not fullscreen
+    if (finishedStartup && !document.fullscreenElement)
     {
-        let offsetHeight = 0, waitToFade = 0;
+        let offsetHeight = 0, isTop = 1;
         
         // use copy of trophies to prevent skipping if removed
         for(const popup of [...trophyPopups.children])
         {
+            // speak the trophy name
+            popup.speak&&(OS13k.Speak(popup.speak),popup.speak=0)
+            
+            // move trophy up
             let y = parseFloat(popup.style.top) + offsetHeight - 9;
             if (y < taskbarHeight)
             {
-                if (!waitToFade && !(popup.style.opacity = (popup.style.opacity || trophyPopupTime) - .01))
+                // stop trophy below taskbar
+                y = taskbarHeight;
+                
+                // fade out trophy if at top
+                if (isTop && !(popup.style.opacity = (popup.style.opacity || trophyPopupTime) - .01))
                 {
                     // remove when invisible and adjust for height
                     const rect = popup.getBoundingClientRect();
                     offsetHeight += rect.height;
                     trophyPopups.removeChild(popup);
                 }
-                waitToFade = y = taskbarHeight;
+
+                // set that we are not at the top
+                isTop = 0;
             }
 
+            // set trophy position
             popup.style.top = y;
         }
     }
@@ -750,6 +756,15 @@ const ToggleMute =()=>
     trayVolume.innerHTML = gain.gain.value ? '🔊' : '🔇';
     
     OS13k.Trophy('OS13k','Shut Up','🔇','Muted');
+}
+
+// try to give trophy for local storage key
+const GiveTrophy =key=>
+{
+    const keyParts = (key+'').split(',');
+    keyParts.length = 4;
+    if (keyParts.shift() == 'OS13kTrophy') 
+        OS13k.Trophy(...keyParts, localStorage[key])
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1348,21 +1363,14 @@ customElements.define('os13k-taskbar-icon', OS13kTaskbarIcon);
 onmousedown =e=>
 {
     // wait for first input before checking trophies
-    if (!hasCheckedTrophies)
+    if (!hadInput)
     {
-        // search local storage for trophies
-        for (let i = localStorage.length; i--;)
+        // save that there was input
+        hadInput = 1;
+    
+        // search local storage for trophies, prevent saving until the end
+        for (let i = localStorage.length; preventTrophySave = i--;)
             GiveTrophy(localStorage.key(i));
-
-        // save trophies
-        hasCheckedTrophies = 
-        localStorage.OS13kTrophies = JSON.stringify(trophies);
-        
-        OS13k.Trophy('','Welcome to OS13k!','👋');
-        if (localStorage.OS13kFrozen)
-        {
-            OS13k.Trophy('OS13k','Frozen','🧊',`Froze The Browser\n${localStorage.OS13kFrozen}`);
-        }
     }
     
     // check if clicked on load icon while folders were visible
