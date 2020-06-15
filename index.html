@@ -960,7 +960,6 @@ class OS13kProgram extends HTMLElement
         name == 'Clock' && (clockProgram = this);
         name == 'Trophy Case' && (trophyProgram = this);
         name == 'Dictionary' && (wordsProgram = this);
-        name == 'Help' && (this.spokeName = 1);
         
         // save first program in list
         firstProgram || src && (firstProgram = this);
@@ -1055,9 +1054,7 @@ class OS13kProgram extends HTMLElement
             return JSON.parse(saveProgramJSON);
         
         return {
-        open:this.open,
-        spokeName:this.spokeName,
-        spokeHelp:this.spokeHelp};
+        open:this.open};
     }
     
     SaveInfo()
@@ -1071,9 +1068,7 @@ class OS13kProgram extends HTMLElement
             JSON.stringify({
                 x:this.window.style.left,
                 y:this.window.style.top, 
-                open:this.open,
-                spokeName:this.spokeName,
-                spokeHelp:this.spokeHelp
+                open:this.open
                 });
     }
 } // OS13kProgram
@@ -1175,8 +1170,8 @@ class OS13kWindow extends HTMLElement
         ++loading;
         
         // add program name to words and speak
-        OS13k.AddWords(this.program.name, 0, !this.program.GetInfo().spokeName);
-        this.program.spokeName=1;
+        OS13k.AddWords(this.program.name, 0, 
+            this.program.name != 'Help' || trophies.length);
                 
         // wait for frame to load
         iframe.onload=e=>
@@ -1378,10 +1373,8 @@ class OS13kWindow extends HTMLElement
         this.helpDisplay.style.display = 
             (this.showHelp = !this.showHelp) ? 'block' : '';
         
-        // add help to words and speak
-        OS13k.AddWords(this.program.help, 0, !this.program.GetInfo().spokeHelp);
-        this.program.spokeHelp=1;
-        this.program.SaveInfo();
+        // add help to words
+        OS13k.AddWords(this.program.help);
         
         this.program.help || OS13k.Trophy('OS13k','Hacker','👨‍💻','Viewed Code');
     }
