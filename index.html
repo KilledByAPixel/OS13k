@@ -203,8 +203,8 @@ div svg       { width:28;pointer-events:none; }
 <div id=taskbar>
 <div id=traySpace style=flex:1></div>
 <div id=tray>
-    <div id=trayWords class=trayIcon title='Dictionary'></div>
     <div id=trayTrophy class=trayIcon title='Trophy Case'></div>
+    <div id=trayWords class=trayIcon title='Dictionary'></div>
     <div id=trayVolume class=trayIcon title='Toggle Mute'>🔊</div>
     <div id=trayTime class=trayIcon></div>
 </div>
@@ -562,32 +562,30 @@ class _OS13k
 // OS13k Text
 
     // add every word in a string to the word list
-    AddWords =(string, speak=0)=> (string+'').split(' ').map(word=>this.AddWord(word, speak));
-    
-    // add a word to the word list
-    AddWord =(word='', speak=0)=>
+    AddWords =(string, speak=0)=>
     {
         let addedWord = 0;
-    
-        // dont use it if it has numbers
-        if (!/\d/.test(word))
-        {
-            // get rid of everything but letters
-            word = word.toLowerCase().replace(/[^a-z]/g,'').trim();
 
-            // limit word length
-            if (word.length || word.length > maxWordLength) {
-            
-                // check if word is not in list and add it
-                words.indexOf(word) < 0 && words.unshift(word);
-                
-                // speak the word
-                speak && this.Speak(word);
-                
-                // save that word was added
-                addedWord = 1;
+        (string+'').split(' ').map(word=>
+        {
+            // dont use it if it has numbers
+            if (!/\d/.test(word))
+            {
+                // get rid of everything but letters
+                word = word.toLowerCase().replace(/[^a-z]/g,'').trim();
+
+                // limit word length
+                if (word.length || word.length > maxWordLength) {
+
+                    // add word to list and speak it
+                    words.indexOf(word) < 0 &&
+                    (words.unshift(word), speak && this.Speak(word))
+
+                    // save that word was added
+                    addedWord = 1;
+                }
             }
-        }
+        });
         
         if (!addedWord)
             return;
@@ -926,9 +924,6 @@ class OS13kProgram extends HTMLElement
         this.help = help;
         this.resize = resize;
         
-        OS13k.AddWords(this.name);
-        OS13k.AddWords(this.help);
-        
         // set title if not a folder
         if (!folder)
             this.title = name +
@@ -1153,6 +1148,9 @@ class OS13kWindow extends HTMLElement
         
         // track if programs are loading
         ++loading;
+        
+        // add program name to words
+        OS13k.AddWords(this.program.name,1);
                 
         // wait for frame to load
         iframe.onload=e=>
@@ -1353,6 +1351,9 @@ class OS13kWindow extends HTMLElement
         // toggle showing code
         this.helpDisplay.style.display = 
             (this.showHelp = !this.showHelp) ? 'block' : '';
+        
+        // add help to words
+        OS13k.AddWords(this.help, 1);
         
         this.program.help?
             OS13k.Trophy('OS13k','Reader Rabbit','🐇','Viewed Help') :
