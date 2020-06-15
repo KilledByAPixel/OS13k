@@ -251,7 +251,7 @@ div svg       { width:28;pointer-events:none; }
 
 {
     // version check, clear local storage if older
-    const OS13kVersion = 38;
+    const OS13kVersion = 40;
     if (localStorage.OS13kVersion && localStorage.OS13kVersion != OS13kVersion)
     {
         alert('OS13k version out of date! System reset in 3, 2, 1...');
@@ -569,14 +569,15 @@ class _OS13k
         // speak the words
         speak && this.Speak(string);
 
-        (string+'').split(' ').map(word=>
+        // get rid of everything but letters
+        (string+'').toLowerCase().replace(/[^a-z]/g,' ').split(' ').map(word=>
         {
+            // remove white space
+            word = word.trim();
+        
             // dont use it if it has numbers
             if (!/\d/.test(word))
             {
-                // get rid of everything but letters
-                word = word.toLowerCase().replace(/[^a-z]/g,'').trim();
-
                 // limit word length
                 if (word.length || word.length > maxWordLength) {
 
@@ -622,7 +623,7 @@ class _OS13k
     GetWords =()=> [...words];
 
     // get a random matching word
-    GetWord(minLength=1, maxLength, firstCharacters)
+    GetWord(minLength=2, maxLength, firstCharacters)
     {
         // search for matches
         const matches = words.filter( o=>
