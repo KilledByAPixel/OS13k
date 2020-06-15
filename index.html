@@ -250,10 +250,10 @@ div svg       { width:28;pointer-events:none; }
 
 {
     // version check, clear local storage if older
-    const OS13kVersion = 36;
+    const OS13kVersion = 37;
     if (localStorage.OS13kVersion && localStorage.OS13kVersion != OS13kVersion)
     {
-        alert('OS13k version out of date! System reset in 3, 2, 1...');
+       // alert('OS13k version out of date! System reset in 3, 2, 1...');
         localStorage.clear();
     }
 
@@ -1431,6 +1431,21 @@ customElements.define('os13k-taskbar-icon', OS13kTaskbarIcon);
 
 onmousedown =e=>
 {
+    // wait for first input before checking trophies
+    if (checkTrophies)
+    {
+        // save that there was input
+        checkTrophies = 0;
+    
+        // search local storage for trophies, prevent saving until the end
+        for (let i = localStorage.length; i--;)
+            OS13kManager.GiveTrophy(localStorage.key(i));
+        
+        // save trophies
+        localStorage.OS13kTrophies = JSON.stringify(trophies);
+        preventTrophySave = 0;
+    }
+    
     // check if clicked on load icon while folders were visible
     if (e.target==loadIcon && !loadIcon.windowOrFolder.style.visibility)
     {
@@ -1542,21 +1557,6 @@ onmousemove =e=>
 
 onmouseup =e=>
 {
-    // wait for first input before checking trophies
-    if (checkTrophies)
-    {
-        // save that there was input
-        checkTrophies = 0;
-    
-        // search local storage for trophies, prevent saving until the end
-        for (let i = localStorage.length; i--;)
-            OS13kManager.GiveTrophy(localStorage.key(i));
-        
-        // save trophies
-        localStorage.OS13kTrophies = JSON.stringify(trophies);
-        preventTrophySave = 0;
-    }
-    
     // allow pointer events and reset cursor
     document.body.style.pointerEvents = 
     document.body.style.cursor = '';
