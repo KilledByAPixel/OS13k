@@ -219,7 +219,7 @@ div svg       { width:28;pointer-events:none; }
 <button id=buttonResetSize>Reset Size</button>
 <button id=buttonReload>Reload</button>
 <button id=buttonClose>Close</button>
-<script src=programs.js?25></script>
+<script src=programs.js?26></script>
 <script>
 
 /////////////////////////////////////////////////////////////////////////////
@@ -251,7 +251,7 @@ div svg       { width:28;pointer-events:none; }
 
 {
     // version check, clear local storage if older
-    const OS13kVersion = 37;
+    const OS13kVersion = 38;
     if (localStorage.OS13kVersion && localStorage.OS13kVersion != OS13kVersion)
     {
         alert('OS13k version out of date! System reset in 3, 2, 1...');
@@ -959,7 +959,7 @@ class OS13kProgram extends HTMLElement
         name == 'Clock' && (clockProgram = this);
         name == 'Trophy Case' && (trophyProgram = this);
         name == 'Dictionary' && (wordsProgram = this);
-        name == 'Help' && (this.spokeHelp = 1);
+        name == 'Help' && (this.spokeName = 1);
         
         // save first program in list
         firstProgram || src && (firstProgram = this);
