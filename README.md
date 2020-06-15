@@ -66,10 +66,11 @@ Add an icon config to programs.js to register your program, and send me pull req
 - Dweets and Shaders are the smallest way to make games, check out Lava Rush for a shader example
 
 ### Apps
-- We will include some non-game apps that are small and fun to use
+- Interaction between apps is one of the key ways we can make this interesting
 - Keep text short and essential, try using emojis instead
-- Apps where the user creates something are ideal
+- Apps that are creative or fun to use are are ideal
 - Design your app well and let players have fun figuring out how to use it
+- Think of how your app can enhance other apps and vice versa
 - *Apps can play sounds and have trophies too!*
 
 ### Music
