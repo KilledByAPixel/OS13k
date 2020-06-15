@@ -1446,7 +1446,8 @@ onmousedown =e=>
     {
         // set grabbing mode
         document.body.style.cursor = grabWindow.nameWrapper.style.cursor = 'grabbing';
-        grabWindow.frameWrapper.style.pointerEvents = 'none';
+        
+        document.body.style.pointerEvents = 'none';
         
         // save grab offset
         const rect = e.target.getBoundingClientRect();
@@ -1484,11 +1485,11 @@ onmousemove =e=>
 onmouseup =e=>
 {
     // allow pointer events and reset cursor
+    document.body.style.pointerEvents = 
     document.body.style.cursor = '';
     if (grabWindow)
     {
-        grabWindow.nameWrapper.style.cursor =
-        grabWindow.frameWrapper.style.pointerEvents = '';
+        grabWindow.nameWrapper.style.cursor = '';
         
         // release grab window
         grabWindow && grabWindow.SetActive(1,0);
