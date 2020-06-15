@@ -5,9 +5,9 @@ const programs =
 {src:'moreInfo.html?12', icon:'👨‍💻'},
 {name:'System', icon:'⚙️', folder:
 [
-    {src:'system/console.html?56',icon:'<span style=color:#0f0;background:#000;font-family:monospace>JS>'},
-    {src:'system/dictionary.html?3',icon:'📕', sticky:1},
-    {src:'system/trophyCase.html?16', icon:'🏆', width:680, sticky:1, help:'All your trophies are shown here.\nTotal trophy count is displayed in the taskbar.\n\nPlay games and experiment to win more trophies!'},
+    {src:'system/console.html?58',icon:'<span style=color:#0f0;background:#000;font-family:monospace>JS>'},
+    {src:'system/dictionary.html?4',icon:'📕', sticky:1, help:'Collect words from inside OS13k'},
+    {src:'system/trophyCase.html?17', icon:'🏆', width:680, sticky:1, help:'All your trophies are shown here.\nTotal trophy count is displayed in the taskbar.'},
     {src:'system/clock.dweet.js?13', icon:'🕰️', width:200, height:200, reload:0, sleep:0, full:0, sticky:1, resize:0},
     {src:'system/test.html?20', code:1, width:600, height:400, sticky:1},
     {name:'Test Folder', icon:'📁', folder:

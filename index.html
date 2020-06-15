@@ -219,7 +219,7 @@ div svg       { width:28;pointer-events:none; }
 <button id=buttonResetSize>Reset Size</button>
 <button id=buttonReload>Reload</button>
 <button id=buttonClose>Close</button>
-<script src=programs.js?241></script>
+<script src=programs.js?25></script>
 <script>
 
 /////////////////////////////////////////////////////////////////////////////
@@ -251,7 +251,7 @@ div svg       { width:28;pointer-events:none; }
 
 {
     // version check, clear local storage if older
-    const OS13kVersion = 36;
+    const OS13kVersion = 37;
     if (localStorage.OS13kVersion && localStorage.OS13kVersion != OS13kVersion)
     {
         alert('OS13k version out of date! System reset in 3, 2, 1...');
@@ -562,9 +562,12 @@ class _OS13k
 // OS13k Text
 
     // add every word in a string to the word list
-    AddWords =(string, speak=0)=>
+    AddWords =(string, speakWords=0, speak=0)=>
     {
         let addedWord = 0;
+        
+        // speak the words
+        speak && this.Speak(string);
 
         (string+'').split(' ').map(word=>
         {
@@ -579,7 +582,8 @@ class _OS13k
 
                     // add word to list and speak it
                     words.indexOf(word) < 0 &&
-                    (words.unshift(word), speak && this.Speak(word))
+                    (words.unshift(word), 
+                    !speak && speakWords && this.Speak(word))
 
                     // save that word was added
                     addedWord = 1;
@@ -955,6 +959,7 @@ class OS13kProgram extends HTMLElement
         name == 'Clock' && (clockProgram = this);
         name == 'Trophy Case' && (trophyProgram = this);
         name == 'Dictionary' && (wordsProgram = this);
+        name == 'Help' && (this.spokeHelp = 1);
         
         // save first program in list
         firstProgram || src && (firstProgram = this);
@@ -979,6 +984,8 @@ class OS13kProgram extends HTMLElement
     
     Click()
     {
+        this.open=1;
+    
         if (this.window)
         {
             // set window to be active if it exists
@@ -990,20 +997,29 @@ class OS13kProgram extends HTMLElement
         if (this.src)
         {
             // load save info
-            const info = this.GetInfo(windowOpenX, windowOpenY);
+            let info = this.GetInfo();
 
-            // update window open positions
-            if (info.updatePosition)
+            let x = info.x;
+            let y = info.y;
+            
+            if (!this.sticky && this != firstProgram && this != startProgram)
             {
-                (windowOpenX += titlebarHeight) > 400 && (windowOpenX = startWindowOpenX);
-                (windowOpenY += titlebarHeight) > 200 && (windowOpenY = startWindowOpenY);
+                x = windowOpenX;
+                y = windowOpenY;
+            
+                // update window open positions
+                if (info.updatePosition)
+                {
+                    (windowOpenX += titlebarHeight) > 400 && (windowOpenX = startWindowOpenX);
+                    (windowOpenY += titlebarHeight) > 200 && (windowOpenY = startWindowOpenY);
+                }
             }
 
             // open the window
-            this.window || (this.window = new OS13kWindow(this, info.x, info.y));
+            this.window || (this.window = new OS13kWindow(this, x, y));
             
             // save info on open
-            this.SetInfo();
+            this.SaveInfo();
         }
         else if (!this.folder)
         {
@@ -1029,19 +1045,24 @@ class OS13kProgram extends HTMLElement
     Toggle=()=> activeWindow && activeWindow == this.window 
         ? this.window.Close() : this.Click();
     
-    GetInfo(x, y)
+    GetInfo()
     {
         // try to load saved program info from local storage
         const saveProgramJSON = localStorage['OS13kProgram'+this.src];
-        return saveProgramJSON &&
-            (this.sticky || this == firstProgram || this == startProgram)?
-            JSON.parse(saveProgramJSON) : {x, y, updatePosition:1}
+        
+        if (saveProgramJSON)
+            return JSON.parse(saveProgramJSON);
+        
+        return {
+        open:this.open,
+        spokeName:this.spokeName,
+        spokeHelp:this.spokeHelp};
     }
     
-    SetInfo(open=1)
+    SaveInfo()
     {
         // remove active program if closed
-        !open && this == startProgram && 
+        !this.open && this == startProgram && 
             (localStorage.OS13kStartProgram = startProgram = 0);
     
         // save program info to local storage
@@ -1049,7 +1070,10 @@ class OS13kProgram extends HTMLElement
             JSON.stringify({
                 x:this.window.style.left,
                 y:this.window.style.top, 
-                open });
+                open:this.open,
+                spokeName:this.spokeName,
+                spokeHelp:this.spokeHelp
+                });
     }
 } // OS13kProgram
 customElements.define('os13k-program', OS13kProgram);
@@ -1149,8 +1173,9 @@ class OS13kWindow extends HTMLElement
         // track if programs are loading
         ++loading;
         
-        // add program name to words
-        OS13k.AddWords(this.program.name,1);
+        // add program name to words and speak
+        OS13k.AddWords(this.program.name, 0, !this.program.GetInfo().spokeName);
+        this.program.spokeName=1;
                 
         // wait for frame to load
         iframe.onload=e=>
@@ -1352,8 +1377,10 @@ class OS13kWindow extends HTMLElement
         this.helpDisplay.style.display = 
             (this.showHelp = !this.showHelp) ? 'block' : '';
         
-        // add help to words
-        OS13k.AddWords(this.help, 1);
+        // add help to words and speak
+        OS13k.AddWords(this.program.help, 0, !this.program.GetInfo().spokeHelp);
+        this.program.spokeHelp=1;
+        this.program.SaveInfo();
         
         this.program.help?
             OS13k.Trophy('OS13k','Reader Rabbit','🐇','Viewed Help') :
@@ -1373,7 +1400,8 @@ class OS13kWindow extends HTMLElement
     Close()
     {
         // save info
-        this.program.SetInfo(0);
+        this.program.open = 0;
+        this.program.SaveInfo();
         
         // close it up
         this.program.window = 0;
@@ -1562,7 +1590,7 @@ onmousemove =e=>
         grabWindow.style.top = e.y - grabOffsetY;
         
         // save info
-        grabWindow.program.SetInfo();
+        grabWindow.program.SaveInfo();
     }
     
     // unselect active program

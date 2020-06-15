@@ -16,6 +16,7 @@ Glitch
 parent.OS13k = parent.OS13k ||
 {
     GetTrophy:()=>1,
+    Speak:()=>1,
     KillHTML:string=>(string+'').replace(/</g,'&lt;'),
 
     // unicode corruption based on dweet by f8f82804 - https://www.dwitter.net/d/11808
@@ -36,6 +37,11 @@ f.contentWindow.OS13k=OS13k=parent.OS13k
 
 // hide glitch checkbox if not unlocked
 OS13k.GetTrophy('OS13k','Frozen','🧊')||(G.style.display='none')
+
+w.innerHTML='<br>Enter JS code. Try not to freeze the browser! 😅</div>'
+
+localStorage.OS13kCs || OS13k.Speak(w.innerHTML);
+localStorage.OS13kCs = 1;
 
 // error check
 E=E=>(
