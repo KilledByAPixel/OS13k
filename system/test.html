@@ -14,7 +14,7 @@ Test ZzFX</button> <span id=seed></span>
 Test Shader
 <br><canvas id=c style='border:1px solid'>
 </table>
-<br><br>
+<br>
 Trophies
 <br><input id=game value=Game> Game
 <br><input id=trophy value=Trophy> Trophy
@@ -25,6 +25,11 @@ Trophies
 Add Trophy</button>
 <button onClick='delete localStorage.OS13kTrophies'>Reset Popups</button>
 <button onClick=SystemReset()>System Reset</button>
+<br><br>
+Words
+<input id=words>
+<button onClick=OS13k.AddWords(words.value)>Add Words</button>
+
 <script>
 
 'use strict';

@@ -85,7 +85,7 @@ body
 }
 .trayIcon { padding-left:5; padding-right:5;  border-radius:6px; }
 .trayIcon:hover { background:#fff3; }
-.trophyPopup
+.popup
 {
     position:relative;
     z-index:10001;
@@ -209,7 +209,7 @@ div svg       { width:28;pointer-events:none; }
     <div id=trayTime class=trayIcon></div>
 </div>
 </div>
-<div id=trophyPopups style=float:right;position:relative></div>
+<div id=popups style=float:right;position:relative></div>
 <div id=programsFolder style=position:absolute></div>
 <div id=title>OS13k
 <div id=menu>
@@ -219,7 +219,7 @@ div svg       { width:28;pointer-events:none; }
 <button id=buttonResetSize>Reset Size</button>
 <button id=buttonReload>Reload</button>
 <button id=buttonClose>Close</button>
-<script src=programs.js?28></script>
+<script src=programs.js?29></script>
 <script>
 
 /////////////////////////////////////////////////////////////////////////////
@@ -247,29 +247,9 @@ div svg       { width:28;pointer-events:none; }
 } // strict & closure config
 
 /////////////////////////////////////////////////////////////////////////////
-// OS13k Debug Stuff (remove from minified)
-
-{
-    // version check, clear local storage if older
-    const OS13kVersion = 42;
-    if (localStorage.OS13kVersion && localStorage.OS13kVersion != OS13kVersion)
-    {
-        alert('OS13k version out of date! System reset in 3, 2, 1...');
-        localStorage.clear();
-    }
-
-    localStorage.OS13kVersion = OS13kVersion;
-
-    // load default programs if none found
-    if (typeof programs == 'undefined')
-    {
-        alert('No programs found, using defaults!')
-        programs = [{src:'system/test.html'},{src:'system/trophyCase.html', icon:'🏆'},{src:'system/clock.dweet.js', icon:'🕰️', width:200, height:200, sleep:0, full:0, reload:0, sticky:1}];
-    }
-} // debug stuff
-
-/////////////////////////////////////////////////////////////////////////////
 // OS13k System
+
+const OS13kVersion = 43;
 
 class _OS13k
 {
@@ -330,35 +310,25 @@ class _OS13k
         if (!preventTrophySave)
             localStorage.OS13kTrophies = JSON.stringify(trophies);
         
+        // refresh trophy window
+        trophyProgram && trophyProgram.Refresh();
+        
         // use game or icon as name if there is no name
         name || game && (name = game, game = '');
 
-        // build trophy popup element
-        const trophyPopup = document.createElement('div');
-        trophyPopup.className = 'trophyPopup';
-        trophyPopup.innerHTML =
+        // add trophy popup
+        this.Popup(
             '<div class=trophyIcon>' +         // icon
                 (icon||'🏆') +                 // default trophy icon
             '</div>' +
             '<div>' +                          // info
                 '<b>' + name + '</b><br>' +    // name
                 '<i>' + game + '</i>' +        // game
-            '</div>' + message;                // message
-        
-            
-        // add trophy to bottom of screen
-        trophyPopup.style.top = innerHeight;
-        trophyPopup.speak = name || game || message || icon;
-        trophyPopups.appendChild(trophyPopup);
-        
-        // refresh trophy window if it is being displayed
-        trophyProgram && trophyProgram.window && trophyProgram.window.iframeContent &&
-            trophyProgram.window.iframeContent.Refresh();
+            '</div>' + message,                // message
+            name || game || message || icon);  // speak
             
         // add trophy words to list
-        this.AddWords(game);
-        this.AddWords(name);
-        this.AddWords(message);
+        this.AddWords(game + ' ' + name + ' ' + message);
         
         return trophyData;
     }
@@ -378,6 +348,23 @@ class _OS13k
     
     // get the trophy list
     Trophies=()=> [...trophies];
+    
+/////////////////////////////////////////////////////////////////////////////
+// OS13k Popups
+
+    Popup(html, speak)
+    {
+        // create the popup
+        const popup = document.createElement('div');
+        popup.className = 'popup';
+        popup.innerHTML = html;
+        
+        // add to bottom of screen
+        popup.style.top = innerHeight;
+        popup.speak = speak;
+        speak && (popup.speak = speak);
+        popups.appendChild(popup);
+    }
     
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Audio
@@ -564,41 +551,43 @@ class _OS13k
     // add every word in a string to the word list
     AddWords =string=>
     {
-        let addedWord = 0;
-
-        // get rid of everything but letters
-        (string+'').toLowerCase().replace(/[^a-z]/g,' ').split(' ').map(word=>
-        {
-            // remove white space
-            word = word.trim();
+        let newWords = [];
         
-            // dont use it if it has numbers
-            if (!/\d/.test(word))
-            {
+        const matchs = (string?string+'':'').toLowerCase().match(/\b[^\s]+\b/g);
+        matchs && matchs.map(word=>
+        {
+            // dont use it if it has anything but letters
+            if (!/[^a-z]/.test(word)) {
+            
                 // limit word length
                 if (word.length > 1 || word.length > maxWordLength) {
 
                     // add word to list
-                    words.indexOf(word) < 0 && words.unshift(word)
-
-                    // save that word was added
-                    addedWord = 1;
+                    if (words.indexOf(word) < 0)
+                        words.unshift(word), newWords.push(word);
                 }
             }
         });
         
-        if (!addedWord)
+        if (!newWords.length)
             return;
-            
-        // sort words
-        words = words.sort();
         
         // save words
         localStorage.OS13kWords = JSON.stringify(words);
         
-        // refresh word list window if it is being displayed
-        wordsProgram && wordsProgram.window && wordsProgram.window.iframeContent &&
-            wordsProgram.window.iframeContent.Refresh();
+        let newWordsMessage = `<b>New Word${newWords.length>1?'s':''}...</b><br>`
+        let newWordsSpeak = '';
+        for(let i in newWords)
+        {
+            newWordsMessage += (i|0? ', ' : ' ') + newWords[i];
+            newWordsSpeak += newWords[i] + ' ';
+        }
+        
+        // add new words popup
+        this.Popup(newWordsMessage, newWordsSpeak);  // speak
+            
+        // refresh word list window
+        wordsProgram && wordsProgram.Refresh();
     }
 
     // get the word list
@@ -666,11 +655,11 @@ OS13k = new _OS13k;
 
 const taskbarHeight = 42, programHeight = 26, titlebarHeight = 50,
       startWindowOpenX = 9, startWindowOpenY = 51, 
-      trophyPopupTime = 3, defaultVolume = .3, maxWordLength = 32;
+      popupTime = 3, defaultVolume = .3, maxWordLength = 32;
       
 let grabWindow, grabOffsetX, grabOffsetY, finishedStartup, preventTrophySave,
     activeWindow, activeProgram, firstProgram, activeTaskbarIcon,
-    lastActiveElement, loadIcon, topZ = 0, loading = 0, checkTrophies = 1,
+    lastActiveElement, loadIcon, topZ = 0, loading = 0, hadInput = 1,
     windowOpenX = startWindowOpenX, windowOpenY = startWindowOpenY,
     trophyProgram, clockProgram, startProgram, wordsProgram
 
@@ -688,6 +677,12 @@ class _OS13kManager
     // start up OS13k
     Start =()=>
     {
+        OS13k.Trophy('','Welcome to OS13k!','👋');
+        if (localStorage.OS13kFrozen)
+        {
+            OS13k.Trophy('OS13k','Frozen','🧊',`Froze The Browser\n${localStorage.OS13kFrozen}`);
+        }
+        
         // listen for trophies from other windows
         window.onstorage =e=> OS13kManager.GiveTrophy(e.key);
 
@@ -712,6 +707,14 @@ class _OS13kManager
         // close all the folders that were just opened
         OS13kManager.CloseMenus();
 
+        // search local storage for trophies, prevent saving until the end
+        for (let i = localStorage.length; i--;)
+            OS13kManager.GiveTrophy(localStorage.key(i));
+        
+        // save trophies
+        localStorage.OS13kTrophies = JSON.stringify(trophies);
+        preventTrophySave = 0;
+        
         // try to handle startup now in case no programs are loading
         OS13kManager.HandleStartup();
 
@@ -750,38 +753,38 @@ class _OS13kManager
             lastActiveElement = activeElement;
         }
 
-        // update trophy popups if finished startup and not fullscreen
-        if (finishedStartup && !document.fullscreenElement)
+        // update popups if finished startup and not fullscreen
+        if (hadInput && finishedStartup && !document.fullscreenElement)
         {
             let offsetHeight = 0, isTop = 1;
 
-            // use copy of trophies to prevent skipping if removed
-            for(const popup of [...trophyPopups.children])
+            // use copy of popups to prevent skipping if removed
+            for(const popup of [...popups.children])
             {
-                // speak the trophy name
-                popup.speak&&(OS13k.Speak(popup.speak),popup.speak=0)
-
-                // move trophy up
+                // speak popup
+                popup.speak && (OS13k.Speak(popup.speak),popup.speak=0);
+            
+                // move popup up
                 let y = parseFloat(popup.style.top) + offsetHeight - 9;
                 if (y < taskbarHeight)
                 {
-                    // stop trophy below taskbar
+                    // stop popup below taskbar
                     y = taskbarHeight;
 
-                    // fade out trophy if at top
-                    if (isTop && !(popup.style.opacity = (popup.style.opacity || trophyPopupTime) - .01))
+                    // fade out popup if at top
+                    if (isTop && !(popup.style.opacity = (popup.style.opacity || popupTime) - .01))
                     {
                         // remove when invisible and adjust for height
                         const rect = popup.getBoundingClientRect();
                         offsetHeight += rect.height;
-                        trophyPopups.removeChild(popup);
+                        popups.removeChild(popup);
                     }
 
                     // set that we are not at the top
                     isTop = 0;
                 }
 
-                // set trophy position
+                // set popup position
                 popup.style.top = y;
             }
         }
@@ -1030,6 +1033,14 @@ class OS13kProgram extends HTMLElement
         return true;
     }
     
+    Refresh()
+    {
+        // call refresh function in iframe if it exists
+        this.window && this.window.iframeContent &&
+            this.window.iframeContent.OS13kRefresh &&
+            this.window.iframeContent.OS13kRefresh()
+    }
+    
     Toggle=()=> activeWindow && activeWindow == this.window 
         ? this.window.Close() : this.Click();
     
@@ -1159,13 +1170,6 @@ class OS13kWindow extends HTMLElement
         
         // add program name to words and speak
         OS13k.AddWords(this.program.name);
-        
-        // speak program name on open, prevent help speak on open
-        if (finishedStartup && !this.program.spokeName)
-        {
-            OS13k.Speak(this.program.name);
-            this.program.spokeName = 1;
-        }
                 
         // wait for frame to load
         iframe.onload=e=>
@@ -1456,26 +1460,8 @@ customElements.define('os13k-taskbar-icon', OS13kTaskbarIcon);
 
 onmousedown =e=>
 {
-    // wait for first input before checking trophies
-    if (checkTrophies)
-    {
-        // save that there was input
-        checkTrophies = 0;
-    
-        // search local storage for trophies, prevent saving until the end
-        for (let i = localStorage.length; i--;)
-            OS13kManager.GiveTrophy(localStorage.key(i));
-        
-        // save trophies
-        localStorage.OS13kTrophies = JSON.stringify(trophies);
-        preventTrophySave = 0;
-        
-        OS13k.Trophy('','Welcome to OS13k!','👋');
-        if (localStorage.OS13kFrozen)
-        {
-            OS13k.Trophy('OS13k','Frozen','🧊',`Froze The Browser\n${localStorage.OS13kFrozen}`);
-        }
-    }
+    // set there has been user input
+    hadInput = 1;
     
     // check if clicked on load icon while folders were visible
     if (e.target==loadIcon && !loadIcon.windowOrFolder.style.visibility)
@@ -1781,6 +1767,33 @@ if('ontouchstart' in window){
     ontouchstart = ontouchmove = ontouchend = ontouchcancel = ProcessTouch;
     
 } // touch events
+
+/////////////////////////////////////////////////////////////////////////////
+// OS13k Debug (remove from minified)
+
+{
+    // version check, clear local storage if older
+    if (localStorage.OS13kVersion && localStorage.OS13kVersion != OS13kVersion)
+    {
+        alert('OS13k version out of date! System reset in 3, 2, 1...');
+        localStorage.clear();
+    }
+
+    localStorage.OS13kVersion = OS13kVersion;
+
+    // load default programs if none found
+    if (typeof programs == 'undefined')
+    {
+        alert('No programs found, using defaults!')
+        programs = 
+        [
+            {src:'system/test.html'},
+            {src:'system/wordList.html', icon:'📕', sticky:1},
+            {src:'system/trophyCase.html', icon:'🏆', sticky:1},
+            {src:'system/clock.dweet.js', icon:'🕰️', width:200, height:200, sleep:0, full:0, reload:0, sticky:1}
+        ];
+    }
+} // debug stuff
 
 /////////////////////////////////////////////////////////////////////////////
 // Start OS13k!

@@ -44,7 +44,7 @@ const OS13k = parent.OS13k;
 
 //w.onkeydown=(e)=>{e.keyCode==13&&(OS13k.AddWords(w.value,1),Refresh(w.value=''))}
 
-var Refresh=()=>
+var OS13kRefresh=()=>
 {
     const words = OS13k.GetWords();
     d.innerHTML='<span id=T>' + words.length + ' Words Unlocked</span><br>';
@@ -64,6 +64,6 @@ var Refresh=()=>
     }
 }
 
-Refresh();
+OS13kRefresh();
 
 </script>
