@@ -83,7 +83,7 @@ body
     border:1px solid;
     border-radius:6px;
 }
-.trayIcon { padding-left:5; padding-right:5;  border-radius:6px; }
+.trayIcon { padding-left:5; padding-right:5; }
 .trayIcon:hover { background:#fff3; }
 .popup
 {
@@ -164,7 +164,7 @@ body
     background:#fff;
     border:none;
 }
-#helpDisplay
+#codeDisplay
 {
     height:99;
     resize:none;
@@ -721,8 +721,8 @@ class _OS13kManager
 
         // set button functions
         buttonFullScreen.onmousedown =()=> activeWindow.FullScreen();
-        buttonShowHelp.onmousedown   =()=> activeWindow.ShowHelp();
-        buttonShowCode.onmousedown   =()=> activeWindow.ShowHelp();
+        buttonShowCode.onmousedown   =
+        buttonShowHelp.onmousedown   =()=> activeWindow.ShowCode();
         buttonResetSize.onmousedown  =()=> activeWindow.Resize();
         buttonReload.onmousedown     =()=> activeWindow.Reload();
         buttonClose.onmousedown      =()=> activeWindow.Close();
@@ -757,10 +757,10 @@ class _OS13kManager
             return;
 
         // open first program after startup
-        firstProgram.GetInfo().open!=0 && firstProgram.Click();
+        firstProgram.GetInfo().open!=0 && firstProgram.Open();
 
         // open start active program
-        startProgram && startProgram.GetInfo().open!=0 && startProgram.Click();
+        startProgram && startProgram.GetInfo().open!=0 && startProgram.Open();
 
         // finish startup after opening startup programs
         finishedStartup = 1;
@@ -910,7 +910,7 @@ customElements.define('os13k-folder', OS13kFolder);
     
 class OS13kProgram extends HTMLElement
 {
-	constructor({x, y, name, icon, src='', width=720, height=405, author, folder, help, full=1, reload=1, code, sleep=1, sticky, resize=1})
+	constructor({x, y, name, icon, src='', width=720, height=405, author, folder, full=1, reload=1, sleep=1, resize=1, sticky, help, code})
     {
 		super();
         
@@ -993,7 +993,7 @@ class OS13kProgram extends HTMLElement
             startProgram = this :
 
             // check for sticky open
-            sticky && this.GetInfo().open && this.Click();
+            sticky && this.GetInfo().open && this.Open();
     }
     
     Move()
@@ -1004,7 +1004,7 @@ class OS13kProgram extends HTMLElement
         (this.folder ? this.folder : this.offsetParent).SetActive();
     }
     
-    Click()
+    Open()
     {
         this.open=1;
     
@@ -1057,6 +1057,8 @@ class OS13kProgram extends HTMLElement
         return true;
     }
     
+    SetActive =()=> this.Open();
+    
     Refresh()
     {
         // call refresh function in iframe if it exists
@@ -1066,7 +1068,7 @@ class OS13kProgram extends HTMLElement
     }
     
     Toggle=()=> activeWindow && activeWindow == this.window 
-        ? this.window.Close() : this.Click();
+        ? this.window.Close() : this.Open();
     
     GetInfo()
     {
@@ -1171,10 +1173,10 @@ class OS13kWindow extends HTMLElement
         this.shadowRoot.appendChild(frameWrapper);
 
         // create help/code display
-        this.helpDisplay = document.createElement('textarea');
-        this.helpDisplay.id = 'helpDisplay'; 
-        this.helpDisplay.setAttribute('readOnly', 1);
-        this.shadowRoot.appendChild(this.helpDisplay);
+        this.codeDisplay = document.createElement('textarea');
+        this.codeDisplay.id = 'codeDisplay'; 
+        this.codeDisplay.setAttribute('readOnly', 1);
+        this.shadowRoot.appendChild(this.codeDisplay);
         
         // resize window size to fit inner width while preserving aspect
         const width = program.resize ? 
@@ -1213,7 +1215,7 @@ class OS13kWindow extends HTMLElement
                     iframeDocument.body.innerText : iframeDocument.body.innerHTML;
 
                 // set help/code display
-                this.helpDisplay.value = this.program.help || iframeText;
+                this.codeDisplay.value = this.program.help || iframeText;
                 
                 // pass zzfx to iframe
                 iframeContent.OS13k || (iframeContent.OS13k = OS13k);
@@ -1287,7 +1289,7 @@ class OS13kWindow extends HTMLElement
         frameWrapper.appendChild(iframe);
     }
     
-    Click(e, target)
+    Open(e, target)
     {
         this.SetActive(1,0);
         
@@ -1300,10 +1302,10 @@ class OS13kWindow extends HTMLElement
         target.id == 'close'       && this.Close();
         target.id == 'shrink'      && this.Resize(this.scale - .2);
         target.id == 'grow'        && this.Resize(this.scale + .2);
-        (target.id == 'help' || target.id == 'code') && this.ShowHelp();
+        (target.id == 'help' || target.id == 'code') && this.ShowCode();
         
-        // allow main document focus if help or grabbing
-        return target.id == 'helpDisplay' || grabWindow == this;
+        // allow main document focus if code or grabbing
+        return target.id == 'codeDisplay' || grabWindow == this;
     }
     
     Resize(scale=1)
@@ -1323,6 +1325,8 @@ class OS13kWindow extends HTMLElement
     
     SetActive(active=1, clamp=1)
     {
+        OS13kManager.CloseMenus();
+        
         // set style
         this.className = active? 'activeWindow' : '';
         this.titlebar.className = 'titlebar titlebar' 
@@ -1339,7 +1343,6 @@ class OS13kWindow extends HTMLElement
 
         // set focus to iframe
         this.iframeContent && this.iframeContent.focus();
-        OS13kManager.CloseMenus();
 
         if (clamp)
         {
@@ -1389,11 +1392,11 @@ class OS13kWindow extends HTMLElement
         OS13k.Trophy('OS13k','Pro Gamer','🕹️','Went Fullscreen');
     }
     
-    ShowHelp()
+    ShowCode()
     {
         // toggle showing code
-        this.helpDisplay.style.display = 
-            (this.showHelp = !this.showHelp) ? 'block' : '';
+        this.codeDisplay.style.display = 
+            (this.showCode = !this.showCode) ? 'block' : '';
         
         // add help to words
         OS13k.AddWords(this.program.help);
@@ -1444,7 +1447,7 @@ class OS13kTaskbarIcon extends HTMLElement
         traySpace.before(this);
     }
     
-    Click()
+    Open()
     {
         // set active and allow window to be set active
         this.SetActive(1,0);
@@ -1453,10 +1456,10 @@ class OS13kTaskbarIcon extends HTMLElement
         return this == loadIcon;
     }
     
-    SetActive(active=1, noWindowActive=1)
+    SetActive(active=1)
     {
         // set window active if allowed
-        noWindowActive || active && this.windowOrFolder.SetActive();
+        active && this.windowOrFolder.SetActive();
 
         // load icon cant be active
         if (this == loadIcon) return;
@@ -1491,7 +1494,7 @@ onmousedown =e=>
     if (e.target==loadIcon && !loadIcon.windowOrFolder.style.visibility)
     {
         // re-activate active window
-        activeWindow && activeWindow.SetActive(1,0);
+        activeWindow && activeWindow.SetActive();
         
         // close menus
         OS13kManager.CloseMenus();
@@ -1508,44 +1511,48 @@ onmousedown =e=>
     
     // get orignal target
     const originalTarget = e.originalTarget || e.path[0];
-
     // check for non left click
     if (e.button)
     {
         // check for right click
         if (e.button == 2)
         {
-            // don't open menu if help clicked on
-            if (originalTarget.id == 'helpDisplay') return false;
+            let target = (e.target.window || e.target);
+
+            // don't do anything if code or button clicked on
+            if (originalTarget.id == 'codeDisplay' || e.target.localName == 'button')
+                return;
         
-            // open menu
-            let menuElement = programsFolder;
-            
-            if (e.target.Click && e.target != loadIcon)
-                menuElement = menu;
-            else if (e.target.className != 'trayIcon')
-                loadIcon.Click();
+            // check which menu to open
+            let contextMenu = menu;
+            if (e.target == loadIcon || 
+                    e.target.className != 'trayIcon' && 
+                    e.target.localName != 'os13k-program' && 
+                    e.target.localName != 'os13k-window' && 
+                    e.target.localName != 'os13k-taskbar-icon')
+            {
+                contextMenu = programsFolder;
+                target = loadIcon;
+            }
 
             // set target active
-            const target = (e.target.window || e.target);
-            
-            // clamp if window, set window active also if taskbar icon
-            target.SetActive && target.SetActive(1,0);
+            target.SetActive && target.SetActive();
 
-            // show menu
-            menuElement.style.left = e.x;
-            menuElement.style.top = e.y;
-            menuElement.style.visibility = 'visible';
+            // show context menu
+            contextMenu.style.left = e.x;
+            contextMenu.style.top = e.y;
+            e.target.className != 'trayIcon' && 
+                (contextMenu.style.visibility = 'visible');
         }
     
         // allow main document to take focus
-        return true;
+        return;
     }
     
     // handle mouse down
     let allowDefault = true;
-    if (e.target.Click)
-        allowDefault = e.target.Click(e, originalTarget);
+    if (e.target.Open)
+        allowDefault = e.target.Open(e, originalTarget);
     else
     {
         // re-activate active window if desktop clicked
@@ -1559,7 +1566,6 @@ onmousedown =e=>
     {
         // set grabbing mode
         document.body.style.cursor = grabWindow.nameWrapper.style.cursor = 'grabbing';
-        
         document.body.style.pointerEvents = 'none';
         
         // save grab offset
@@ -1620,7 +1626,7 @@ ondblclick =e=>
 }
 
 // prevent default context menu
-oncontextmenu =e=> false;
+oncontextmenu =e=> false
 
 } // mouse input
 
