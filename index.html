@@ -1029,11 +1029,8 @@ class OS13kProgram extends HTMLElement
                 y = windowOpenY;
             
                 // update window open positions
-                if (info.updatePosition)
-                {
-                    (windowOpenX += titlebarHeight) > 400 && (windowOpenX = startWindowOpenX);
-                    (windowOpenY += titlebarHeight) > 200 && (windowOpenY = startWindowOpenY);
-                }
+                (windowOpenX += titlebarHeight) > 400 && (windowOpenX = startWindowOpenX);
+                (windowOpenY += titlebarHeight) > 200 && (windowOpenY = startWindowOpenY);
             }
 
             // open the window
