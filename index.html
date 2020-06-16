@@ -204,7 +204,7 @@ div svg       { width:28;pointer-events:none; }
 <div id=traySpace style=flex:1></div>
 <div id=tray>
     <div id=trayTrophy class=trayIcon title='Trophy Case'></div>
-    <div id=trayWords class=trayIcon title='Dictionary'></div>
+    <div id=trayWords class=trayIcon title='Word List'></div>
     <div id=trayVolume class=trayIcon title='Toggle Mute'>🔊</div>
     <div id=trayTime class=trayIcon></div>
 </div>
@@ -219,7 +219,7 @@ div svg       { width:28;pointer-events:none; }
 <button id=buttonResetSize>Reset Size</button>
 <button id=buttonReload>Reload</button>
 <button id=buttonClose>Close</button>
-<script src=programs.js?26></script>
+<script src=programs.js?27></script>
 <script>
 
 /////////////////////////////////////////////////////////////////////////////
@@ -562,12 +562,9 @@ class _OS13k
 // OS13k Text
 
     // add every word in a string to the word list
-    AddWords =(string, speakWords=0, speak=0)=>
+    AddWords =string=>
     {
         let addedWord = 0;
-        
-        // speak the words
-        speak && this.Speak(string);
 
         // get rid of everything but letters
         (string+'').toLowerCase().replace(/[^a-z]/g,' ').split(' ').map(word=>
@@ -581,10 +578,8 @@ class _OS13k
                 // limit word length
                 if (word.length > 1 || word.length > maxWordLength) {
 
-                    // add word to list and speak it
-                    words.indexOf(word) < 0 &&
-                    (words.unshift(word), 
-                    !speak && speakWords && this.Speak(word))
+                    // add word to list
+                    words.indexOf(word) < 0 && words.unshift(word)
 
                     // save that word was added
                     addedWord = 1;
@@ -601,22 +596,9 @@ class _OS13k
         // save words
         localStorage.OS13kWords = JSON.stringify(words);
         
-        // refresh dictionary window if it is being displayed
+        // refresh word list window if it is being displayed
         wordsProgram && wordsProgram.window && wordsProgram.window.iframeContent &&
             wordsProgram.window.iframeContent.Refresh();
-    }
-    
-    // remove a word from the list
-    RemoveWord =(word, speak=0)=>
-    {
-        // remoe word if it exists
-        words = words.filter(e => e != word);
-        
-        // speak the word
-        speak && this.Speak(word);
-
-        // refresh dictionary window
-        this.AddWord();
     }
 
     // get the word list
@@ -635,6 +617,16 @@ class _OS13k
             
         // get random match
         return matches.length > 0 ? matches[Math.random()*matches.length|0] : '';
+    }
+    
+    // remove a word from the list
+    RemoveWord =(word)=>
+    {
+        // remove word if it exists
+        words = words.filter(e => e != word);
+
+        // trigger refresh of dictionary window
+        this.AddWord();
     }
     
     // replace html tags in a string
@@ -737,11 +729,11 @@ class _OS13kManager
         // open first program after startup
         firstProgram.GetInfo().open!=0 && firstProgram.Click();
 
-        // finish startup after opening first program
-        finishedStartup = 1;
-
         // open start active program
         startProgram && startProgram.GetInfo().open!=0 && startProgram.Click();
+
+        // finish startup after opening startup programs
+        finishedStartup = 1;
     }
 
     // main update loop
@@ -959,7 +951,7 @@ class OS13kProgram extends HTMLElement
         // save special programs
         name == 'Clock' && (clockProgram = this);
         name == 'Trophy Case' && (trophyProgram = this);
-        name == 'Dictionary' && (wordsProgram = this);
+        name == 'Word List' && (wordsProgram = this);
         
         // save first program in list
         firstProgram || src && (firstProgram = this);
@@ -1033,10 +1025,6 @@ class OS13kProgram extends HTMLElement
 
             OS13k.Trophy('OS13k','Coffee Is For Closers','☕','Closed All');
         }
-        
-        //this == wordsProgram && OS13k.Trophy('OS13k','Book Worm','🐛','Read Dictionary');
-        //this == trophyProgram && OS13k.Trophy('OS13k','Show Off','','Viewed Trophys');
-        //this == clockProgram && OS13k.Trophy('OS13k','Clock Watcher','🕰️','Checked Time');
         
         // allow main document focus
         return true;
@@ -1170,8 +1158,14 @@ class OS13kWindow extends HTMLElement
         ++loading;
         
         // add program name to words and speak
-        OS13k.AddWords(this.program.name, 0, 
-            (this.program.name != 'Help' || trophies.length) && finishedStartup);
+        OS13k.AddWords(this.program.name);
+        
+        // speak program name on open, prevent help speak on open
+        if (finishedStartup && !this.program.spokeName)
+        {
+            OS13k.Speak(this.program.name);
+            this.program.spokeName = 1;
+        }
                 
         // wait for frame to load
         iframe.onload=e=>
@@ -1515,13 +1509,12 @@ onmousedown =e=>
             if (originalTarget.id == 'helpDisplay') return false;
         
             // open menu
-            let menuElement = menu;
-            if (!e.target.SetActive || e.target == loadIcon)
-            {
-                // open folder if clicked on desktop or folder icon
-                menuElement = programsFolder;
+            let menuElement = programsFolder;
+            
+            if (e.target.Click && e.target != loadIcon)
+                menuElement = menu;
+            else if (e.target.className != 'trayIcon')
                 loadIcon.Click();
-            }
 
             // set target active
             const target = (e.target.window || e.target);
