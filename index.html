@@ -247,9 +247,35 @@ div svg       { width:28;pointer-events:none; }
 } // strict & closure config
 
 /////////////////////////////////////////////////////////////////////////////
-// OS13k System
+// OS13k Debug (remove from minified)
 
-const OS13kVersion = 43;
+const OS13kVersion = 44;
+{
+    // version check, clear local storage if older
+    if (localStorage.OS13kVersion && localStorage.OS13kVersion != OS13kVersion)
+    {
+        alert('OS13k version out of date! System reset in 3, 2, 1...');
+        localStorage.clear();
+    }
+
+    localStorage.OS13kVersion = OS13kVersion;
+
+    // load default programs if none found
+    if (typeof programs == 'undefined')
+    {
+        alert('No programs found, using defaults!')
+        programs = 
+        [
+            {src:'system/test.html'},
+            {src:'system/wordList.html', icon:'📕', sticky:1},
+            {src:'system/trophyCase.html', icon:'🏆', sticky:1},
+            {src:'system/clock.dweet.js', icon:'🕰️', width:200, height:200, sleep:0, full:0, reload:0, sticky:1}
+        ];
+    }
+} // debug stuff
+
+/////////////////////////////////////////////////////////////////////////////
+// OS13k System
 
 class _OS13k
 {
@@ -1767,33 +1793,6 @@ if('ontouchstart' in window){
     ontouchstart = ontouchmove = ontouchend = ontouchcancel = ProcessTouch;
     
 } // touch events
-
-/////////////////////////////////////////////////////////////////////////////
-// OS13k Debug (remove from minified)
-
-{
-    // version check, clear local storage if older
-    if (localStorage.OS13kVersion && localStorage.OS13kVersion != OS13kVersion)
-    {
-        alert('OS13k version out of date! System reset in 3, 2, 1...');
-        localStorage.clear();
-    }
-
-    localStorage.OS13kVersion = OS13kVersion;
-
-    // load default programs if none found
-    if (typeof programs == 'undefined')
-    {
-        alert('No programs found, using defaults!')
-        programs = 
-        [
-            {src:'system/test.html'},
-            {src:'system/wordList.html', icon:'📕', sticky:1},
-            {src:'system/trophyCase.html', icon:'🏆', sticky:1},
-            {src:'system/clock.dweet.js', icon:'🕰️', width:200, height:200, sleep:0, full:0, reload:0, sticky:1}
-        ];
-    }
-} // debug stuff
 
 /////////////////////////////////////////////////////////////////////////////
 // Start OS13k!
