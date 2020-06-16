@@ -354,7 +354,7 @@ class _OS13k
             name || game || message || icon);  // speak
             
         // add trophy words to list
-        this.AddWords(game + ' ' + name + ' ' + message, 0);
+        this.AddWords(game + ' ' + name + ' ' + message, message);
         
         return trophyData;
     }
@@ -575,7 +575,7 @@ class _OS13k
 // OS13k Text
 
     // add every word in a string to the word list
-    AddWords =(string, speak=1)=>
+    AddWords =(string, speak)=>
     {
         let newWords = [];
         
@@ -610,7 +610,8 @@ class _OS13k
         }
         
         // add new words popup
-        speak && this.Popup(newWordsMessage, newWordsSpeak);  // speak
+        speak && this.Popup(newWordsMessage, 
+            speak==undefined ? newWordsSpeak : speak);  // speak
             
         // refresh word list window
         wordsProgram && wordsProgram.Refresh();
@@ -620,7 +621,7 @@ class _OS13k
     GetWords =()=> [...words];
 
     // get a random matching word
-    GetWord(minLength=2, maxLength, firstCharacters)
+    GetWord(minLength=0, maxLength, firstCharacters)
     {
         // search for matches
         const matches = words.filter( o=>
@@ -641,7 +642,7 @@ class _OS13k
         words = words.filter(e => e != word);
 
         // trigger refresh of dictionary window
-        this.AddWord();
+        wordsProgram && wordsProgram.Refresh();
     }
     
     // replace html tags in a string
