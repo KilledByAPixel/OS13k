@@ -354,7 +354,7 @@ class _OS13k
             name || game || message || icon);  // speak
             
         // add trophy words to list
-        this.AddWords(game + ' ' + name + ' ' + message);
+        this.AddWords(game + ' ' + name + ' ' + message, 0);
         
         return trophyData;
     }
@@ -575,7 +575,7 @@ class _OS13k
 // OS13k Text
 
     // add every word in a string to the word list
-    AddWords =string=>
+    AddWords =(string, speak=1)=>
     {
         let newWords = [];
         
@@ -610,7 +610,7 @@ class _OS13k
         }
         
         // add new words popup
-        this.Popup(newWordsMessage, newWordsSpeak);  // speak
+        speak && this.Popup(newWordsMessage, newWordsSpeak);  // speak
             
         // refresh word list window
         wordsProgram && wordsProgram.Refresh();
