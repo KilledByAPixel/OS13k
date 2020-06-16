@@ -1542,6 +1542,7 @@ onmousedown =e=>
             contextMenu.style.left = e.x;
             contextMenu.style.top = e.y;
             e.target.className != 'trayIcon' && 
+                e.target.localName != 'os13k-program' &&
                 (contextMenu.style.visibility = 'visible');
         }
     
