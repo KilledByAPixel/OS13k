@@ -249,7 +249,7 @@ div svg       { width:28;pointer-events:none; }
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Debug (remove from minified)
 
-const OS13kVersion = 45;
+const OS13kVersion = 46;
 {
     // version check, clear local storage if older
     if (localStorage.OS13kVersion && localStorage.OS13kVersion != OS13kVersion)
@@ -683,7 +683,7 @@ const taskbarHeight = 42, programHeight = 26, titlebarHeight = 50,
       
 let grabWindow, grabOffsetX, grabOffsetY, finishedStartup, preventTrophySave,
     activeWindow, activeProgram, firstProgram, activeTaskbarIcon,
-    lastActiveElement, loadIcon, topZ = 0, loading = 0, hadInput = 1,
+    lastActiveElement, loadIcon, topZ = 0, loading = 0, hadInput = 0,
     windowOpenX = startWindowOpenX, windowOpenY = startWindowOpenY,
     trophyProgram, clockProgram, startProgram, wordsProgram
 
