@@ -351,8 +351,8 @@ class _OS13k
                 '<b>' + name + '</b><br>' +    // name
                 '<i>' + game + '</i>' +        // game
             '</div>' + message,                // message
-            name || game || message || icon);  // speak
-            
+            name || game || message || icon,   // speak
+            'ja');                             // language
         // add trophy words to list
         this.AddWords(game + ' ' + name + ' ' + message, message);
         
@@ -378,17 +378,15 @@ class _OS13k
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Popups
 
-    Popup(html, speak)
+    Popup(html, speak, language)
     {
         // create the popup
         const popup = document.createElement('div');
         popup.className = 'popup';
         popup.innerHTML = html;
-        
-        // add to bottom of screen
         popup.style.top = innerHeight;
         popup.speak = speak;
-        speak && (popup.speak = speak);
+        popup.speakLanguage = language;
         popups.appendChild(popup);
     }
     
@@ -575,7 +573,7 @@ class _OS13k
 // OS13k Text
 
     // add every word in a string to the word list
-    AddWords =(string, speak)=>
+    AddWords =(string, speak, language)=>
     {
         let newWords = [];
         
@@ -610,8 +608,7 @@ class _OS13k
         }
         
         // add new words popup
-        speak && this.Popup(newWordsMessage, 
-            speak==undefined ? newWordsSpeak : speak);  // speak
+        this.Popup(newWordsMessage, speak? speak : newWordsSpeak, language);
             
         // refresh word list window
         wordsProgram && wordsProgram.Refresh();
@@ -789,7 +786,8 @@ class _OS13kManager
             for(const popup of [...popups.children])
             {
                 // speak popup
-                popup.speak && (OS13k.Speak(popup.speak),popup.speak=0);
+                popup.speak && 
+                    OS13k.Speak(popup.speak, 1, 1, 1, popup.speakLanguage, popup.speak=0);
             
                 // move popup up
                 let y = parseFloat(popup.style.top) + offsetHeight - 9;
@@ -1195,7 +1193,7 @@ class OS13kWindow extends HTMLElement
         ++loading;
         
         // add program name to words and speak
-        OS13k.AddWords(this.program.name);
+        OS13k.AddWords(this.program.name, 0, 'ja'); 
                 
         // wait for frame to load
         iframe.onload=e=>
