@@ -151,7 +151,7 @@ Add an icon config to programs.js to register your program, and send me pull req
  - You can even add unnamed trophies with just an icon and message
 
  ### Trophy Functions
- - OS13k.Trophy(game='', name='', icon='', message='') - Unlock a trophy
+ - OS13k.Trophy(game='', name='', icon='', message='', language='ja') - Unlock a trophy
  - OS13k.GetTrophy(game=0, name=0, icon=0) - Get most recent matching trophy, 0 if no trophy
  - OS13k.Trophies() - Get full list of trophy objects
  
@@ -164,7 +164,7 @@ Add an icon config to programs.js to register your program, and send me pull req
  - Words in the list can be from other JS13k game trophies!
 
  ### Word List Functions
- - OS13k.AddWords(string, speak=1) - parses string for new words and adds them
+ - OS13k.AddWords(string, speak, language='en') - adds new words in string, alterante dialogue with speak
  - GetWords() - get the full list of words
  - GetWord(minLength=0, maxLength, firstCharacters) - returns random matching word, '' if none found
  - RemoveWord(word) - removes the word from the list (only for users via word list window)
