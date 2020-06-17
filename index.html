@@ -744,6 +744,9 @@ class _OS13kManager
 
         // kick off update
         OS13kManager.Update();
+        
+        // stop spech if page is unloaded
+        document.body.onunload = OS13k.StopSpeech();
     }
 
     // wait for startup to finish to open first program
