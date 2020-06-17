@@ -62,7 +62,8 @@ for (const trophy of OS13k.Trophies())
             '<br><span style=font-size:14>' + message; // message
 
     // speak the trophy if clicked
-    div.onmousedown=()=>{OS13k.StopSpeech();OS13k.Speak(name||game||message||icon)}
+    div.onmousedown=()=>
+        {OS13k.StopSpeech();OS13k.Speak(name||game||message||icon, 1, 1, 1, 'ja')}
 
     // add to document
     this.document.body.appendChild(div); 

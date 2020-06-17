@@ -204,13 +204,9 @@ div svg       { width:28;pointer-events:none; }
 <div id=taskbar>
 <div id=traySpace style=flex:1></div>
 <div id=tray>
-    <div id=trayTrophy class=trayIcon title='Trophy Case'></div>
-    <div id=trayWords class=trayIcon title='Word List'></div>
-    <div id=trayVolume class=trayIcon title='Toggle Mute'>🔊</div>
-    <div id=trayTime class=trayIcon></div>
 </div>
 </div>
-<div id=programsFolder style=position:absolute></div>
+<div id=programsMenu style=position:absolute></div>
 <div id=title>OS13k</div>
 <div id=menu>
 <button id=buttonFullScreen>Fullscreen</button>
@@ -219,7 +215,7 @@ div svg       { width:28;pointer-events:none; }
 <button id=buttonResetSize>Reset Size</button>
 <button id=buttonReload>Reload</button>
 <button id=buttonClose>Close</button>
-<script src=programs.js?31></script>
+<script src=programs.js?33></script>
 <script>
 
 /////////////////////////////////////////////////////////////////////////////
@@ -249,7 +245,7 @@ div svg       { width:28;pointer-events:none; }
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Debug (remove from minified)
 
-const OS13kVersion = 46;
+const OS13kVersion = 47;
 {
     // version check, clear local storage if older
     if (localStorage.OS13kVersion && localStorage.OS13kVersion != OS13kVersion)
@@ -283,9 +279,9 @@ class _OS13k
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Math
 
-    Clamp   =(a, min=0, max=1)=> (Math.min(Math.max(a, min), max));
-    Percent =(v, a, b)=>         (b-a? this.Clamp((v-a)/(b-a), 0, 1) : 0 );
-    Lerp    =(p, a, b)=>         (a + this.Clamp(p, 0, 1) * (b-a));
+    Clamp   (a, min=0, max=1) { return Math.min(Math.max(a, min), max); }
+    Percent (v, a, b)         { return b-a? this.Clamp((v-a)/(b-a), 0, 1) : 0; }
+    Lerp    (p, a, b)         { return a + this.Clamp(p, 0, 1) * (b-a); }
     Random(max=1, min=0)
     {
         // seeded random numbers - Mersenne Twister
@@ -337,7 +333,7 @@ class _OS13k
             localStorage.OS13kTrophies = JSON.stringify(trophies);
         
         // refresh trophy window
-        trophyProgram && trophyProgram.Refresh();
+        trophyTrayIcon.program && trophyTrayIcon.program.Refresh();
         
         // use game or icon as name if there is no name
         name || game && (name = game, game = '');
@@ -373,13 +369,13 @@ class _OS13k
     }
     
     // get the trophy list
-    Trophies=()=> [...trophies];
+    Trophies() { return [...trophies]; }
     
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Words
     
     // add every word in a string to the word list
-    AddWords =(string, speak, language)=>
+    AddWords(string, speak)
     {
         let newWords = [];
         
@@ -414,14 +410,14 @@ class _OS13k
         }
         
         // add new words popup
-        this.Popup(newWordsMessage, speak == undefined? newWordsSpeak : speak, language);
+        this.Popup(newWordsMessage, speak == undefined? newWordsSpeak : speak);
             
         // refresh word list window
-        wordsProgram && wordsProgram.Refresh();
+        wordsTrayIcon.program && wordsTrayIcon.program.Refresh();
     }
 
     // get the word list
-    GetWords =()=> [...words];
+    GetWords() { return [...words]; }
 
     // get a random matching word
     GetWord(minLength=0, maxLength, firstCharacters)
@@ -439,13 +435,13 @@ class _OS13k
     }
     
     // remove a word from the list
-    RemoveWord =(word)=>
+    RemoveWord(word)
     {
         // remove word if it exists
         words = words.filter(e => e != word);
 
         // trigger refresh of dictionary window
-        wordsProgram && wordsProgram.Refresh();
+        wordsTrayIcon.program && wordsTrayIcon.program.Refresh();
     }
     
 /////////////////////////////////////////////////////////////////////////////
@@ -504,8 +500,8 @@ class _OS13k
     }
     
     // get frequency of a musical note on a diatonic scale
-    GetNote=(rootNoteFrequency=440, semitoneOffset=0)=>
-        rootNoteFrequency * 2**(semitoneOffset/12);
+    GetNote(rootNoteFrequency=440, semitoneOffset=0)
+        { return rootNoteFrequency * 2**(semitoneOffset/12); }
 
     // speak the text
     Speak(text, rate=1, pitch=1, volume=1, language='en')
@@ -528,7 +524,7 @@ class _OS13k
     }
     
     // stop any current or queued speech
-    StopSpeech=()=> speechSynthesis && speechSynthesis.cancel();
+    StopSpeech() { return speechSynthesis && speechSynthesis.cancel(); }
         
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Shaders
@@ -634,7 +630,7 @@ class _OS13k
 // OS13k Text
     
     // replace html tags in a string
-    KillHTML =(string, maxLength)=>
+    KillHTML(string, maxLength)
     {
         // clamp max length if it exists
         maxLength >= 0 && (string = string.substring(0, maxLength));
@@ -683,15 +679,15 @@ OS13k = new _OS13k;
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Variables
 
-const taskbarHeight = 42, programHeight = 26, titlebarHeight = 50,
+const taskbarHeight = 42, programHeight = 26, titlebarHeight = 47,
       startWindowOpenX = 9, startWindowOpenY = 51, 
       popupTime = 3, defaultVolume = .3, maxWordLength = 32;
       
 let grabWindow, grabOffsetX, grabOffsetY, finishedStartup, preventTrophySave,
-    activeWindow, activeProgram, firstProgram, activeTaskbarIcon,
-    lastActiveElement, loadIcon, topZ = 0, loading = 0, hadInput = 0,
+    activeWindow, activeProgram, firstProgram, activeTaskbarIcon, loadIcon,
+    lastActiveElement, topZ = 0, loading = 0, hadInput = 0,
     windowOpenX = startWindowOpenX, windowOpenY = startWindowOpenY,
-    trophyProgram, clockProgram, startProgram, wordsProgram,
+    startProgram, trophyTrayIcon, wordsTrayIcon, volumeTrayIcon, clockTrayIcon
 
 // parse trophy list
 trophies = localStorage.OS13kTrophies ? JSON.parse(localStorage.OS13kTrophies) : [],
@@ -705,23 +701,18 @@ words = localStorage.OS13kWords ? JSON.parse(localStorage.OS13kWords) : [];
 class _OS13kManager
 {
     // start up OS13k
-    Start =()=>
+    Start()
     {
-        OS13k.Trophy('','Welcome to OS13k!','👋');
-        if (localStorage.OS13kFrozen)
-        {
-            OS13k.Trophy('OS13k','Frozen','🧊',`Froze The Browser\n${localStorage.OS13kFrozen}`);
-        }
-        
         // listen for trophies from other windows
         window.onstorage =e=> OS13kManager.GiveTrophy(e.key);
 
-        // set tray functions
-        trayWords.onmousedown     =()=> wordsProgram.Toggle();
-        trayTrophy.onmousedown    =()=> trophyProgram.Toggle();
-        trayTime.onmousedown      =()=> clockProgram.Toggle();
-        trayVolume.onmousedown    = OS13kManager.ToggleMute;
-
+        // create tray icons
+        trophyTrayIcon = new OS13kTrayIcon();
+        wordsTrayIcon  = new OS13kTrayIcon();
+        volumeTrayIcon = new OS13kTrayIcon(
+            OS13kManager.ToggleMute, 'Toggle Mute', '🔊');
+        clockTrayIcon   = new OS13kTrayIcon();
+        
         // set button functions
         buttonFullScreen.onmousedown =()=> activeWindow.FullScreen();
         buttonShowCode.onmousedown   =
@@ -730,16 +721,22 @@ class _OS13kManager
         buttonReload.onmousedown     =()=> activeWindow.Reload();
         buttonClose.onmousedown      =()=> activeWindow.Close();
 
-        // create the folder taskbar icon and add folders/programs
+        // create the load program taskbar icon and add folders/programs
         loadIcon = new OS13kTaskbarIcon( {icon:'💾', name:'Load Program'} );
         loadIcon.windowOrFolder = new OS13kFolder(programs);
 
-        // close all the folders that were just opened
+        // close all the menus that were just opened
         OS13kManager.CloseMenus();
 
         // search local storage for trophies, prevent saving until the end
         for (let i = localStorage.length; i--;)
             OS13kManager.GiveTrophy(localStorage.key(i));
+        
+        OS13k.Trophy('','Welcome to OS13k!','👋');
+        if (localStorage.OS13kFrozen)
+        {
+            OS13k.Trophy('OS13k','Frozen','🧊',`Froze The Browser\n${localStorage.OS13kFrozen}`);
+        }
         
         // save trophies
         localStorage.OS13kTrophies = JSON.stringify(trophies);
@@ -747,7 +744,7 @@ class _OS13kManager
         
         // try to handle startup now in case no programs are loading
         OS13kManager.HandleStartup();
-
+        
         // kick off update
         OS13kManager.Update();
         
@@ -756,18 +753,18 @@ class _OS13kManager
     }
 
     // wait for startup to finish to open first program
-    HandleStartup =()=>
+    HandleStartup()
     {
         // wait for initial frames to finish opening before ending startup
         if (loading || finishedStartup)
             return;
 
         // open first program after startup
-        firstProgram.GetInfo().open!=0 && firstProgram.Open();
+        firstProgram.open != 0 && firstProgram.Open();
 
         // open start active program, set meta
         self == top ?
-            startProgram && startProgram.GetInfo().open!=0 && startProgram.Open() :
+            startProgram && startProgram.Open() :
              (title.innerText = 'Meta ' + title.innerText);
 
         // finish startup after opening startup programs
@@ -775,7 +772,7 @@ class _OS13kManager
     }
 
     // main update loop
-    Update =()=>
+    Update()
     {
         requestAnimationFrame(OS13kManager.Update);
 
@@ -829,25 +826,25 @@ class _OS13kManager
         }
 
         // update trophy count
-        trayTrophy.innerHTML = trophies.length + ' 🏆';
+        trophyTrayIcon.innerHTML = trophies.length + ' 🏆';
 
         // update word count
-        trayWords.innerHTML = words.length + ' 📕';
+        wordsTrayIcon.innerHTML = words.length + ' 📕';
 
         // update time
-        trayTime.title = new Date();
-        const time = trayTime.title.slice(16,24).split(':')
-        trayTime.innerHTML = (time[0]%12?time[0]%12:12) + ':' + time[1];
+        clockTrayIcon.title = new Date();
+        const time = clockTrayIcon.title.slice(16,24).split(':')
+        clockTrayIcon.innerHTML = (time[0]%12?time[0]%12:12) + ':' + time[1];
 
         // fade in desktop, convert opacity to number
         loading || (desktop.style.opacity = Math.min(1,.02 + desktop.style.opacity*1));
     }
 
-    // close all folders and menus
-    CloseMenus =()=>
+    // close all menus
+    CloseMenus()
     {
-        // hide all drop down folders
-        for (const c of programsFolder.children)
+        // hide all drop down menus
+        for (const c of programsMenu.children)
             c.localName == 'os13k-folder' && (c.style.visibility = 'hidden');
 
         // hide menu
@@ -855,7 +852,7 @@ class _OS13kManager
     }
 
     // try to give trophy for local storage key
-    GiveTrophy =key=>
+    GiveTrophy(key)
     {
         const keyParts = (key+'').split(',');
         keyParts.length = 4;
@@ -864,11 +861,11 @@ class _OS13kManager
     }
 
     // toggle audio
-    ToggleMute =()=>
+    ToggleMute()
     {
         OS13k.StopSpeech();
         gain.gain.value = gain.gain.value ? 0 : defaultVolume;
-        trayVolume.innerHTML = gain.gain.value ? '🔊' : '🔇';
+        volumeTrayIcon.innerHTML = gain.gain.value ? '🔊' : '🔇';
 
         OS13k.Trophy('OS13k','Shut Up','🔇','Muted');
     }
@@ -876,7 +873,7 @@ class _OS13kManager
 OS13kManager = new _OS13kManager;
 
 /////////////////////////////////////////////////////////////////////////////
-// OS13kFolder - holds a list of program
+// OS13kFolder - holds a list of programs
 
 class OS13kFolder extends HTMLElement
 {
@@ -889,7 +886,7 @@ class OS13kFolder extends HTMLElement
         this.style.left = x;
         this.style.top = y;
         this.parentFolder = parentFolder;
-        programsFolder.appendChild(this);
+        programsMenu.appendChild(this);
         
         // add programs to folder
         for (const info of infos)
@@ -963,11 +960,13 @@ class OS13kProgram extends HTMLElement
         this.help = help;
         this.resize = resize;
         
-        // set title if not a folder
-        if (!folder)
-            this.title = name +
+        // load saved program data
+        this.LoadInfo();
+        
+        // set title if not folder
+        folder || (this.title = name +
                 ( this.isDweet ? ' - Dweet' :  this.isShader ? ' - Shader' : '') +
-                (author ? '\nBy ' + author : '');
+                (author ? '\nBy ' + author : ''));
             
         // icon
         const iconDisplay = document.createElement('div');
@@ -991,21 +990,17 @@ class OS13kProgram extends HTMLElement
         }
         
         // save special programs
-        name == 'Clock' && (clockProgram = this);
-        name == 'Trophy Case' && (trophyProgram = this);
-        name == 'Word List' && (wordsProgram = this);
+        name == 'Trophy Case' && trophyTrayIcon.SetProgram(this);
+        name == 'Word List'   && wordsTrayIcon.SetProgram(this);
+        name == 'Clock'       && clockTrayIcon.SetProgram(this);
         
         // save first program in list
         firstProgram || src && (firstProgram = this);
 
-        // check if start active program
+        // check if start active program and sticky open
         this.src == localStorage.OS13kStartProgram ?
-            
-            // save start active program
             startProgram = this :
-
-            // check for sticky open
-            sticky && this.GetInfo().open && this.Open();
+            sticky && this.saveInfo.open && this.Open();
     }
     
     Move()
@@ -1018,8 +1013,6 @@ class OS13kProgram extends HTMLElement
     
     Open()
     {
-        this.open=1;
-    
         if (this.window)
         {
             // set window to be active if it exists
@@ -1031,17 +1024,20 @@ class OS13kProgram extends HTMLElement
         if (this.src)
         {
             // load save info
-            let info = this.GetInfo();
+            this.LoadInfo();
 
-            let x = info.x;
-            let y = info.y;
-            
-            if (!this.sticky && this != firstProgram && this != startProgram)
+            // get saved window position
+            let x, y;
+            if (this.saveInfo.x != undefined)
             {
+                x = this.saveInfo.x;
+                y = this.saveInfo.y;
+            }
+            else
+            {
+                // update window open positions
                 x = windowOpenX;
                 y = windowOpenY;
-            
-                // update window open positions
                 (windowOpenX += titlebarHeight) > 400 && (windowOpenX = startWindowOpenX);
                 (windowOpenY += titlebarHeight) > 200 && (windowOpenY = startWindowOpenY);
             }
@@ -1049,7 +1045,7 @@ class OS13kProgram extends HTMLElement
             // open the window
             this.window || (this.window = new OS13kWindow(this, x, y));
             
-            // save info on open
+            // save program info on open
             this.SaveInfo();
         }
         else if (!this.folder)
@@ -1065,11 +1061,15 @@ class OS13kProgram extends HTMLElement
             OS13k.Trophy('OS13k','Coffee Is For Closers','☕','Closed All');
         }
         
+        // update info
+        finishedStartup && (this.wasOpened = 1);
+        this.saveInfo.open = 1;
+        
         // allow main document focus
         return true;
     }
     
-    SetActive =()=> this.Open();
+    SetActive() { this.Open(); }
     
     Refresh()
     {
@@ -1079,34 +1079,35 @@ class OS13kProgram extends HTMLElement
             this.window.iframeContent.OS13kRefresh()
     }
     
-    Toggle=()=> activeWindow && activeWindow == this.window 
-        ? this.window.Close() : this.Open();
+    Toggle()
+    {
+        activeWindow && activeWindow == this.window ?
+            this.window.Close() : this.Open();
+    }
     
-    GetInfo()
+    LoadInfo()
     {
         // try to load saved program info from local storage
         const saveProgramJSON = localStorage['OS13kProgram'+this.src];
-        
-        if (saveProgramJSON)
-            return JSON.parse(saveProgramJSON);
-        
-        return {
-        open:this.open};
+        this.saveInfo = saveProgramJSON ? JSON.parse(saveProgramJSON) : {scale:1};
     }
     
-    SaveInfo()
+    SaveInfo(open=1)
     {
-        // remove active program if closed
-        !this.open && this == startProgram && 
-            (localStorage.OS13kStartProgram = startProgram = 0);
-    
         // save program info to local storage
         localStorage['OS13kProgram'+this.src] = 
-            JSON.stringify({
-                x:this.window.style.left,
-                y:this.window.style.top, 
-                open:this.open
-                });
+            JSON.stringify({ open: open,
+                x: this.window.style.left,
+                y: this.window.style.top,
+                scale: this.window.scale});
+    }
+    
+    Close()
+    {
+        // remove start program if closed
+        this == startProgram && (localStorage.OS13kStartProgram = 0);
+        this.SaveInfo();
+        this.window = 0;
     }
 } // OS13kProgram
 customElements.define('os13k-program', OS13kProgram);
@@ -1127,6 +1128,7 @@ class OS13kWindow extends HTMLElement
         this.program = program;
         this.style.left = x;
         this.style.top = y;
+        this.menu = menu;
         
         // shadow root
 		this.shadow = this.attachShadow({mode: 'open'});
@@ -1192,7 +1194,8 @@ class OS13kWindow extends HTMLElement
         
         // resize window size to fit inner width while preserving aspect
         const width = program.resize ? 
-            Math.min(program.width, innerWidth-6) : program.width;
+            Math.min(program.width * this.program.saveInfo.scale, innerWidth-6) :
+            program.width;
         this.frameWrapper.style.width  = width;
         this.frameWrapper.style.height = width * program.height / program.width;
         this.scale = width / program.width;
@@ -1207,7 +1210,11 @@ class OS13kWindow extends HTMLElement
         ++loading;
         
         // add program name to words and speak
-        OS13k.AddWords(this.program.name, undefined, 'ja'); 
+        OS13k.AddWords(this.program.name, ''); 
+        
+        // announce game when first opened
+        if (!program.wasOpened)
+            OS13k.Speak(this.program.name, 1, 1, 1, 'ja');
                 
         // wait for frame to load
         iframe.onload=e=>
@@ -1283,8 +1290,7 @@ class OS13kWindow extends HTMLElement
             catch (e) {} // could not load frame, possible cross site error
 
             // add taskbar icon
-            if (!this.taskbarIcon)
-                this.taskbarIcon = new OS13kTaskbarIcon(program, this);
+            this.taskbarIcon = new OS13kTaskbarIcon(program, this);
 
             // make visible
             this.style.visibility = this.iframe.style.visibility = '';
@@ -1333,6 +1339,9 @@ class OS13kWindow extends HTMLElement
     
         // adjust window position for offset
         this.style.left = parseFloat(this.style.left) + w - wNew;
+        
+        // update program info
+        this.program.SaveInfo();
     }
     
     SetActive(active=1, clamp=1)
@@ -1351,7 +1360,7 @@ class OS13kWindow extends HTMLElement
             return;
         
         // save active program
-        finishedStartup&&(localStorage.OS13kStartProgram = this.program.src);
+        finishedStartup && (localStorage.OS13kStartProgram = this.program.src);
 
         // set focus to iframe
         this.iframeContent && this.iframeContent.focus();
@@ -1428,13 +1437,9 @@ class OS13kWindow extends HTMLElement
     
     Close()
     {
-        // save info
-        this.program.open = 0;
-        this.program.SaveInfo();
-        
         // close it up
-        this.program.window = 0;
-        this.taskbarIcon && this.taskbarIcon.remove();
+        this.program.Close()
+        this.taskbarIcon.remove();
         this.remove();
     }
 } // OS13kWindow
@@ -1445,7 +1450,7 @@ customElements.define('os13k-window', OS13kWindow);
 
 class OS13kTaskbarIcon extends HTMLElement
 {
-	constructor(program, windowOrFolder = 0)
+	constructor(program, windowOrFolder)
     {
 		super();
         
@@ -1454,6 +1459,7 @@ class OS13kTaskbarIcon extends HTMLElement
         this.innerHTML = '<div style=pointer-events:none>' + program.icon;
         this.windowOrFolder = windowOrFolder;
         this.title = program.title || program.name;
+        this.menu = windowOrFolder? menu : programsMenu;
         
         // add to taskbar
         traySpace.before(this);
@@ -1472,10 +1478,10 @@ class OS13kTaskbarIcon extends HTMLElement
     {
         // set window active if allowed
         active && this.windowOrFolder.SetActive();
-
+    
         // load icon cant be active
         if (this == loadIcon) return;
-    
+        
         // set style
         this.className = 'taskbarIcon' + (active ? ' taskbarIconActive' : '');
         
@@ -1489,21 +1495,52 @@ class OS13kTaskbarIcon extends HTMLElement
         // set this to be active taskbar icon
         activeTaskbarIcon = this;
     }
+    
 } // OS13kTaskbarIcon
 customElements.define('os13k-taskbar-icon', OS13kTaskbarIcon);
+
+/////////////////////////////////////////////////////////////////////////////
+// OS13kTrayIcon - icon on taskbar tray for OS shortcuts
+
+class OS13kTrayIcon extends HTMLElement
+{
+	constructor(functionCall, title, icon)
+    {
+		super();
+        
+        // create icon
+        this.className = 'trayIcon';
+        this.functionCall = functionCall
+        this.title = title;
+        this.innerHTML = icon;
+        this.menu = 0;
+        
+        // add to tray
+        tray.appendChild(this);
+    }
+    
+    SetProgram(program)
+    {
+        this.program = program;
+        this.title = program.title;
+    }
+    
+    SetActive()  { this.program ? this.program.Toggle() : this.functionCall(); }
+    Open()  { this.SetActive(); }
+} // OS13kTrayIcon
+customElements.define('os13k-tray-icon', OS13kTrayIcon);
 
 /////////////////////////////////////////////////////////////////////////////
 // Mouse Input
 
 {
-
 onmousedown =e=>
 {
     // set there has been user input
     hadInput = 1;
     
-    // check if clicked on load icon while folders were visible
-    if (e.target==loadIcon && !loadIcon.windowOrFolder.style.visibility)
+    // check if clicked on load icon while programs menu was visible and moved
+    if ( e.target == loadIcon && !e.target.windowOrFolder.style.visibility)
     {
         // re-activate active window
         activeWindow && activeWindow.SetActive();
@@ -1523,6 +1560,7 @@ onmousedown =e=>
     
     // get orignal target
     const originalTarget = e.originalTarget || e.path[0];
+    
     // check for non left click
     if (e.button)
     {
@@ -1534,29 +1572,19 @@ onmousedown =e=>
             // don't do anything if code or button clicked on
             if (originalTarget.id == 'codeDisplay' || e.target.localName == 'button')
                 return;
-        
-            // check which menu to open
-            let contextMenu = menu;
-            if (e.target == loadIcon || 
-                    e.target           != menu &&
-                    e.target.className != 'trayIcon' && 
-                    e.target.localName != 'os13k-program' && 
-                    e.target.localName != 'os13k-window' && 
-                    e.target.localName != 'os13k-taskbar-icon')
-            {
-                contextMenu = programsFolder;
-                target = loadIcon;
-            }
-
+            
             // set target active
-            target.SetActive && target.SetActive();
+            (target.SetActive ? target : loadIcon).SetActive();
+        
+            // get which menu to open
+            const contextMenu = e.target.menu != undefined ? 
+                e.target.menu : programsMenu;
 
             // show context menu
-            contextMenu.style.left = e.x;
-            contextMenu.style.top = e.y;
-            e.target.className != 'trayIcon' && 
-                e.target.localName != 'os13k-program' &&
-                (contextMenu.style.visibility = 'visible');
+            contextMenu && (
+                contextMenu.style.left = e.x,
+                contextMenu.style.top  = e.y,
+                contextMenu.style.visibility = 'visible');
         }
     
         // allow main document to take focus
@@ -1588,9 +1616,9 @@ onmousedown =e=>
         grabOffsetY = e.y - rect.top;
     }
     
-    // reset program folder position
-    programsFolder.style.left = 0;
-    programsFolder.style.top = taskbarHeight;
+    // reset program menu position
+    programsMenu.style.left = 0;
+    programsMenu.style.top = taskbarHeight;
     
     // allow main document to take focus from iframe
     return allowDefault;
@@ -1793,7 +1821,6 @@ if('ontouchstart' in window){
             if (e.target == trayTime)   { trayTime.onmousedown();   return false; }
             if (e.target == trayVolume) { trayVolume.onmousedown(); return false; }
 
-            // handle mouse down if not clicking on a folder icon
             onmousedown(e);
         }
         else if (!touching && wasTouching)
