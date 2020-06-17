@@ -4,7 +4,7 @@ JS> Options:
 Objects
 <input id=c type=checkbox onclick=localStorage.OS13kCc=c.checked>
 Clear
-<span id=G><input id=z type=checkbox onclick=X=0>
+<span id=G style=display:none><input id=z type=checkbox onclick=X=0>
 Glitch
 </span><br>
 <input id=i style=background:#222;color:#fff;width:100% autocomplete=off>
@@ -17,26 +17,26 @@ parent.OS13k = parent.OS13k ||
 {
     GetTrophy:()=>1,
     Speak:()=>1,
-    KillHTML:string=>(string+'').replace(/</g,'&lt;'),
-
-    // unicode corruption based on dweet by f8f82804 - https://www.dwitter.net/d/11808
-    Glitch:(string,count)=>{for(
-
-        // loop for each glitch
-        count;count--;)
-
-        // apply corruption
-        string=(string+='').slice(0,r=Math.random()*string.length+1)+String.fromCharCode(768+Math.random()*99)+string.slice(r)
-
-        // return glitch result
-        return OS13k.KillHTML(string)}
+    Glitch:(string)=>string,
+    KillHTML:(string)=>(string+'').replace(/</g,'&lt;'),
 }
+
+// focus on input
+i.focus()
 
 // set up OS13k
 f.contentWindow.OS13k=OS13k=parent.OS13k
 
+// set saved config
+c.checked=localStorage.OS13kCc!='false'
+o.checked=localStorage.OS13kCo!='false'
+
+// create memory
+M=[]
+m=0
+
 // hide glitch checkbox if not unlocked
-OS13k.GetTrophy('OS13k','Frozen','🧊')||(G.style.display='none')
+OS13k.GetTrophy('OS13k','Frozen','🧊')||(G.style.display='')
 
 // error check
 E=E=>(
@@ -55,18 +55,18 @@ E=E=>(
 
     ) // end error check
 
-// focus on input
-i.focus()
-
-// set saved config
-c.checked=localStorage.OS13kCc!='false'
-o.checked=localStorage.OS13kCo!='false'
-
 // listen for key down
 i.onkeydown=K=>{
 
-    // check if enter was pressed, set that code is OK
+    // check if up/down was pressed
+    C=K.keyCode==38&&M.length&&(i.value=M[m=Math.min(m+1,M.length-1)])
+    C=K.keyCode==40&&(i.value=m?M[m=Math.max(m-1,0)]:'')
+    
+    // check if enter was pressed and eval code
     if (C=K.keyCode==13){
+
+        // save to memory
+        M[m=0]!=i.value&&M.unshift(i.value);
 
         // try to eval code in parens first, fixes {1:2}
         // save input to check frozen on restart

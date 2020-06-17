@@ -5,7 +5,7 @@ const programs =
 {src:'moreInfo.html?12', icon:'👨‍💻'},
 {name:'System', icon:'⚙️', folder:
 [
-    {src:'system/console.html?58',icon:'<span style=color:#0f0;background:#000;font-family:monospace>JS>'},
+    {src:'system/console.html?59',icon:'<span style=color:#0f0;background:#000;font-family:monospace>JS>'},
     {src:'system/wordList.html?5',icon:'📕', sticky:1},
     {src:'system/trophyCase.html?18', icon:'🏆', width:680, sticky:1},
     {src:'system/clock.dweet.js?13', icon:'🕰️', width:200, height:200, reload:0, sleep:0, full:0, sticky:1, resize:0},

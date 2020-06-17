@@ -219,7 +219,7 @@ div svg       { width:28;pointer-events:none; }
 <button id=buttonResetSize>Reset Size</button>
 <button id=buttonReload>Reload</button>
 <button id=buttonClose>Close</button>
-<script src=programs.js?29></script>
+<script src=programs.js?30></script>
 <script>
 
 /////////////////////////////////////////////////////////////////////////////
@@ -299,7 +299,7 @@ class _OS13k
 // OS13k Trophies
 
     // award player with trophy, returns falsey if already owned
-    Trophy(game='', name='', icon='', message='')
+    Trophy(game='', name='', icon='', message='', language='ja')
     {
         // remove commas
         game = game.replace(',','');
@@ -352,7 +352,7 @@ class _OS13k
                 '<i>' + game + '</i>' +        // game
             '</div>' + message,                // message
             name || game || message || icon,   // speak
-            'ja');                             // language
+            language);                         // language
         // add trophy words to list
         this.AddWords(game + ' ' + name + ' ' + message, message);
         
@@ -376,18 +376,76 @@ class _OS13k
     Trophies=()=> [...trophies];
     
 /////////////////////////////////////////////////////////////////////////////
-// OS13k Popups
-
-    Popup(html, speak, language)
+// OS13k Words
+    
+    // add every word in a string to the word list
+    AddWords =(string, speak, language)=>
     {
-        // create the popup
-        const popup = document.createElement('div');
-        popup.className = 'popup';
-        popup.innerHTML = html;
-        popup.style.top = innerHeight;
-        popup.speak = speak;
-        popup.speakLanguage = language;
-        popups.appendChild(popup);
+        let newWords = [];
+        
+        const matchs = (string?string+'':'').toLowerCase().match(/\b[^\s]+\b/g);
+        matchs && matchs.map(word=>
+        {
+            // dont use it if it has anything but letters
+            if (!/[^a-z]/.test(word)) {
+            
+                // limit word length
+                if (word.length > 1 || word.length > maxWordLength) {
+
+                    // add word to list
+                    if (words.indexOf(word) < 0)
+                        words.unshift(word), newWords.push(word);
+                }
+            }
+        });
+        
+        if (!newWords.length)
+            return;
+        
+        // save words
+        localStorage.OS13kWords = JSON.stringify(words);
+        
+        let newWordsMessage = `<b>New Words!</b><br>`
+        let newWordsSpeak = '';
+        for(let i in newWords)
+        {
+            newWordsMessage += (i|0? ', ' : ' ') + newWords[i];
+            newWordsSpeak += newWords[i] + ' ';
+        }
+        
+        // add new words popup
+        this.Popup(newWordsMessage, speak? speak : newWordsSpeak, language);
+            
+        // refresh word list window
+        wordsProgram && wordsProgram.Refresh();
+    }
+
+    // get the word list
+    GetWords =()=> [...words];
+
+    // get a random matching word
+    GetWord(minLength=0, maxLength, firstCharacters)
+    {
+        // search for matches
+        const matches = words.filter( o=>
+            o.length >= minLength && 
+            (maxLength == undefined || o.length <= maxLength ) && 
+            (firstCharacters == undefined 
+                || o.substring(0, firstCharacters.length) == 
+                    firstCharacters.toLowerCase() ));
+            
+        // get random match
+        return matches.length > 0 ? matches[Math.random()*matches.length|0] : '';
+    }
+    
+    // remove a word from the list
+    RemoveWord =(word)=>
+    {
+        // remove word if it exists
+        words = words.filter(e => e != word);
+
+        // trigger refresh of dictionary window
+        wordsProgram && wordsProgram.Refresh();
     }
     
 /////////////////////////////////////////////////////////////////////////////
@@ -571,76 +629,6 @@ class _OS13k
     
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Text
-
-    // add every word in a string to the word list
-    AddWords =(string, speak, language)=>
-    {
-        let newWords = [];
-        
-        const matchs = (string?string+'':'').toLowerCase().match(/\b[^\s]+\b/g);
-        matchs && matchs.map(word=>
-        {
-            // dont use it if it has anything but letters
-            if (!/[^a-z]/.test(word)) {
-            
-                // limit word length
-                if (word.length > 1 || word.length > maxWordLength) {
-
-                    // add word to list
-                    if (words.indexOf(word) < 0)
-                        words.unshift(word), newWords.push(word);
-                }
-            }
-        });
-        
-        if (!newWords.length)
-            return;
-        
-        // save words
-        localStorage.OS13kWords = JSON.stringify(words);
-        
-        let newWordsMessage = `<b>New Word${newWords.length>1?'s':''}...</b><br>`
-        let newWordsSpeak = '';
-        for(let i in newWords)
-        {
-            newWordsMessage += (i|0? ', ' : ' ') + newWords[i];
-            newWordsSpeak += newWords[i] + ' ';
-        }
-        
-        // add new words popup
-        this.Popup(newWordsMessage, speak? speak : newWordsSpeak, language);
-            
-        // refresh word list window
-        wordsProgram && wordsProgram.Refresh();
-    }
-
-    // get the word list
-    GetWords =()=> [...words];
-
-    // get a random matching word
-    GetWord(minLength=0, maxLength, firstCharacters)
-    {
-        // search for matches
-        const matches = words.filter( o=>
-            o.length >= minLength && 
-            (maxLength == undefined || o.length <= maxLength ) && 
-            (firstCharacters == undefined 
-                || o.substring(0, firstCharacters.length) == 
-                    firstCharacters.toLowerCase() ));
-            
-        // get random match
-        return matches.length > 0 ? matches[Math.random()*matches.length|0] : '';
-    }
-    
-    // remove a word from the list
-    RemoveWord =(word)=>
-    {
-        // remove word if it exists
-        words = words.filter(e => e != word);
-
-        // trigger refresh of dictionary window
-        wordsProgram && wordsProgram.Refresh();
-    }
     
     // replace html tags in a string
     KillHTML =(string, maxLength)=>
@@ -670,6 +658,21 @@ class _OS13k
         
         // return result and remove html
         return this.KillHTML(string);
+    }
+    
+/////////////////////////////////////////////////////////////////////////////
+// OS13k System Calls
+    
+    Popup(html, speak, language)
+    {
+        // create the popup
+        const popup = document.createElement('div');
+        popup.className = 'popup';
+        popup.innerHTML = html;
+        popup.style.top = innerHeight;
+        popup.speak = speak;
+        popup.speakLanguage = language;
+        popups.appendChild(popup);
     }
 }; // _OS13k
 OS13k = new _OS13k;
@@ -759,10 +762,10 @@ class _OS13kManager
         // open first program after startup
         firstProgram.GetInfo().open!=0 && firstProgram.Open();
 
-        // open start active program
+        // open start active program, set meta
         self == top ?
             startProgram && startProgram.GetInfo().open!=0 && startProgram.Open() :
-             (title.innerText = 'Meta OS13k');
+             (title.innerText = 'Meta ' + title.innerText);
 
         // finish startup after opening startup programs
         finishedStartup = 1;
