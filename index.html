@@ -211,7 +211,7 @@ div svg       { width:28;pointer-events:none; }
 </div>
 </div>
 <div id=programsFolder style=position:absolute></div>
-<div id=title>OS13k
+<div id=title>OS13k</div>
 <div id=menu>
 <button id=buttonFullScreen>Fullscreen</button>
 <button id=buttonShowHelp>Help</button>
@@ -685,7 +685,7 @@ let grabWindow, grabOffsetX, grabOffsetY, finishedStartup, preventTrophySave,
     activeWindow, activeProgram, firstProgram, activeTaskbarIcon,
     lastActiveElement, loadIcon, topZ = 0, loading = 0, hadInput = 0,
     windowOpenX = startWindowOpenX, windowOpenY = startWindowOpenY,
-    trophyProgram, clockProgram, startProgram, wordsProgram
+    trophyProgram, clockProgram, startProgram, wordsProgram,
 
 // parse trophy list
 trophies = localStorage.OS13kTrophies ? JSON.parse(localStorage.OS13kTrophies) : [],
@@ -760,7 +760,9 @@ class _OS13kManager
         firstProgram.GetInfo().open!=0 && firstProgram.Open();
 
         // open start active program
-        startProgram && startProgram.GetInfo().open!=0 && startProgram.Open();
+        self == top ?
+            startProgram && startProgram.GetInfo().open!=0 && startProgram.Open() :
+             (title.innerText = 'Meta OS13k');
 
         // finish startup after opening startup programs
         finishedStartup = 1;
