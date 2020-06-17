@@ -461,9 +461,10 @@ class _OS13k
         // randomize sound length
         lengthScale /= 2;
         const attack  = R()**3*lengthScale;
+        const decay   = R()**3*lengthScale;
         const sustain = R()**3*lengthScale;
-        const release = R()**3*lengthScale;
-        const length  = attack + sustain + release;
+        const release = R()**3*lengthScale;;
+        const length  = attack + decay + sustain + release;
         
         // generate random sound
         return zzfx
@@ -485,8 +486,8 @@ class _OS13k
            C() * R()**3*9*S(),   // modulation
            C() * R()**4,         // bitCrush
            C() * R()**3/2,       // delay
-           C() * R(),            // sustain volume
-           C() * R(),            // decay
+           1 - C() * R(),        // sustain volume
+           decay,                // decay
         );
     }
     
@@ -1666,9 +1667,11 @@ const gain = audioContext.createGain();
 /////////////////////////////////////////////////////////////////////////////
 // ZzFXMicro - Zuper Zmall Zound Zynth 
 
-// play zzfx sound
-const zzfx = (
-    volume=1, randomness=.05, frequency=220, attack=0, sustain=0, release=.1, shape=0, shapeCurve=1, slide=0, deltaSlide=0, pitchJump=0, pitchJumpTime=0, repeatTime=0, noise=0, modulation=0, bitCrush=0, delay=0, sustainVolume=1, decay=0)=>
+const zzfx =     // play a sound
+(
+    // parameters
+    volume=1, randomness=.05, frequency=220, attack=0, sustain=0, release=.1, shape=0, shapeCurve=1, slide=0, deltaSlide=0, pitchJump=0, pitchJumpTime=0, repeatTime=0, noise=0, modulation=0, bitCrush=0, delay=0, sustainVolume=1, decay=0
+) =>
 {
     // locals
     let PI2 = Math.PI*2,
@@ -1676,18 +1679,20 @@ const zzfx = (
     random = r => r*2*Math.random()-r,
     sign = v => v>0?1:-1,
     startSlide = slide *= 500 * PI2 / sampleRate**2,
-    startFrequency = frequency *= (1 + random(randomness)) * PI2 / sampleRate,
+    startFrequency = frequency *= 
+        (1 + random(randomness)) * PI2 / sampleRate,
     modPhase = sign(modulation) * PI2/4,
     b=[], t=0, tm=0, i=0, j=1, r=0, c=0, s=0, d=.5,
     length, buffer;
-
+    
     // init parameters
     attack = 99 + attack * sampleRate | 0;
+    decay = decay * sampleRate | 0;
     sustain = sustain * sampleRate | 0;
     release = release * sampleRate | 0;
     delay = delay * sampleRate | 0;
+    length = attack + decay + sustain + release + delay;
     deltaSlide *= 500 * PI2 / sampleRate**3;
-    length = attack + sustain + release + delay;
     modulation *= PI2 / sampleRate;
     pitchJump *= PI2 / sampleRate;
     pitchJumpTime = pitchJumpTime * sampleRate;
@@ -1710,7 +1715,7 @@ const zzfx = (
                 Math.sin(s);                             // 0 sin
             s = sign(s)*(Math.abs(s)**shapeCurve);       // curve 0=square, 2=pointy
 
-            s *= volume         * (                      // envelope
+            s *= volume * (                              // envelope
                 i < attack ? i/attack :                  // attack
                 i < attack + decay ?                     // decay
                 1-((i-attack)/decay)*(1-sustainVolume) : // decay falloff
