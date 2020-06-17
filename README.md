@@ -164,7 +164,7 @@ Add an icon config to programs.js to register your program, and send me pull req
  - Words in the list can be from other JS13k game trophies!
 
  ### Word List Functions
- - OS13k.AddWords(string, speak, language='en') - adds new words in string, alterante dialogue with speak
+ - OS13k.AddWords(string, speak) - adds new words in string, pass optional speak override string
  - GetWords() - get the full list of words
  - GetWord(minLength=0, maxLength, firstCharacters) - returns random matching word, '' if none found
  - RemoveWord(word) - removes the word from the list (only for users via word list window)
