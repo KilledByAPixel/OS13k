@@ -786,8 +786,8 @@ class _OS13kManager
             lastActiveElement = activeElement;
         }
 
-        // update popups if finished startup and not fullscreen
-        if (hadInput && finishedStartup && !document.fullscreenElement)
+        // update popups if finished startup
+        if (hadInput && finishedStartup)
         {
             let offsetHeight = 0, isTop = 1;
 
@@ -798,28 +798,31 @@ class _OS13kManager
                 popup.speak && 
                     OS13k.Speak(popup.speak, 1, 1, 1, popup.speakLanguage, popup.speak=0);
             
-                // move popup up
-                let y = parseFloat(popup.style.top) + offsetHeight - 9;
-                if (y < taskbarHeight)
-                {
-                    // stop popup below taskbar
-                    y = taskbarHeight;
-
-                    // fade out popup if at top
-                    if (isTop && !(popup.style.opacity = (popup.style.opacity || popupTime) - .01))
+                if (!document.fullscreenElement)
+                { 
+                    // move popup up
+                    let y = parseFloat(popup.style.top) + offsetHeight - 9;
+                    if (y < taskbarHeight)
                     {
-                        // remove when invisible and adjust for height
-                        const rect = popup.getBoundingClientRect();
-                        offsetHeight += rect.height;
-                        popups.removeChild(popup);
+                        // stop popup below taskbar
+                        y = taskbarHeight;
+
+                        // fade out popup if at top
+                        if (isTop && !(popup.style.opacity = (popup.style.opacity || popupTime) - .01))
+                        {
+                            // remove when invisible and adjust for height
+                            const rect = popup.getBoundingClientRect();
+                            offsetHeight += rect.height;
+                            popups.removeChild(popup);
+                        }
+
+                        // set that we are not at the top
+                        isTop = 0;
                     }
 
-                    // set that we are not at the top
-                    isTop = 0;
+                    // set popup position
+                    popup.style.top = y;
                 }
-
-                // set popup position
-                popup.style.top = y;
             }
         }
 
