@@ -414,7 +414,7 @@ class _OS13k
         }
         
         // add new words popup
-        this.Popup(newWordsMessage, speak? speak : newWordsSpeak, language);
+        this.Popup(newWordsMessage, speak == undefined? newWordsSpeak : speak, language);
             
         // refresh word list window
         wordsProgram && wordsProgram.Refresh();
@@ -1207,7 +1207,7 @@ class OS13kWindow extends HTMLElement
         ++loading;
         
         // add program name to words and speak
-        OS13k.AddWords(this.program.name, 0, 'ja'); 
+        OS13k.AddWords(this.program.name, undefined, 'ja'); 
                 
         // wait for frame to load
         iframe.onload=e=>
