@@ -125,19 +125,19 @@ i.onkeydown=K=>{
             `<br><pre style=white-space:pre-wrap>${
 
                 // show input
-                OS13k.Glitch('JS> '+I,Math.min(1e3,g=z.checked?C?1+X:9*++X:0))
+                'JS> '+I
 
             // create pre tag for result with red color if error
             }</pre><br><pre ${C?'':'style=color:#f00'}>${
 
                 // show result
-                OS13k.Glitch(R,g)
+                OS13k.Glitch(R,Math.min(1e3,z.checked?C?9+X:9*++X:0))
 
             // create colored pre tag for object info
             }</pre><br><pre style=color:#0cc>${
 
                 // show object info and aply glitch
-                O==''?O:OS13k.Glitch(O,g)
+                O
 
                 // end of object info
                 }</pre><br>`
@@ -153,7 +153,7 @@ i.onkeydown=K=>{
 
 /* Throw Sierpinski dweet by lifthrasiir - https://www.dwitter.net/d/19116
 
-s=' ';z=['▲'];eval("z=z.map(x=>s+x+s).concat(z.map(x=>x+' '+x));s+=s;".repeat(4));throw `\n`+z.join`\n`
+s=' ';z=['▲'];eval("z=z.map(x=>s+x+s).concat(z.map(x=>x+' '+x));s+=s;".repeat(3));throw `\n`+z.join`\n`
 
    ▲   
   ▲ ▲  
