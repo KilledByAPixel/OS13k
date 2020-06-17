@@ -1533,6 +1533,7 @@ onmousedown =e=>
             // check which menu to open
             let contextMenu = menu;
             if (e.target == loadIcon || 
+                    e.target           != menu &&
                     e.target.className != 'trayIcon' && 
                     e.target.localName != 'os13k-program' && 
                     e.target.localName != 'os13k-window' && 
