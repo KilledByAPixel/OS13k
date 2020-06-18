@@ -1,18 +1,21 @@
-<script>pm = n=>{
-	var d = {filter:'', transform:'', transition:'all 0.3s ease-in 0s'};
-	var s =
-	[d,
-	 {filter:'blur(1px)'},
-	 {filter:'sepia(1) hue-rotate(20deg) brightness(0.65) saturate(0.9)'},
-	 {transform:'translateZ(-200px) rotateX(20deg)'},
-	 {transform:'scale(0.4)'},
-	 {filter:'grayscale(1)'},
-	 {filter:'hue-rotate(45deg)'},
-	 ];window.parent.postMessage({t:'f', s:{...d,...s[n]}})}</script>
-<button onclick=pm(0)>none </button>
-<button onclick=pm(1)>blur</button>
-<button onclick=pm(2)>gameboy</button>
-<button onclick=pm(3)>perspective</button>
-<button onclick=pm(4)>small</button>
-<button onclick=pm(5)>b&w</button>
-<button onclick=pm(6)>funky</button>
+<button onclick=pm(0)>Reset</button>
+<button onclick=pm(1)>Blur</button>
+<button onclick=pm(2)>Gameboy</button>
+<button onclick=pm(3)>Perspective</button>
+<button onclick=pm(4)>Small</button>
+<button onclick=pm(5)>B&W</button>
+<button onclick=pm(6)>Funky</button>
+<script>
+pm=n=>{
+s=[
+{filter:'',transform:'',transition:'all 0.3s ease-in 0s'},        // none
+{filter:'blur(1px'},                                              // blur
+{filter:'sepia(1)hue-rotate(20deg)brightness(0.65)saturate(0.9'}, // gameboy
+{transform:'translateZ(-200px)rotateX(20deg'},                    // perspective
+{transform:'scale(0.8'},                                          // small
+{filter:'grayscale(1'},                                           // b&w
+{filter:'hue-rotate(45deg'}                                       // funky
+]
+parent.document.documentElement.style.perspective="800px"
+for(k in s[n])parent.document.body.style[k]=s[n][k]}
+</script>

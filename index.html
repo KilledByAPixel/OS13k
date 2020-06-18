@@ -215,7 +215,7 @@ div svg       { width:28;pointer-events:none; }
 <button id=buttonResetSize>Reset Size</button>
 <button id=buttonReload>Reload</button>
 <button id=buttonClose>Close</button>
-<script src=programs.js?33></script>
+<script src=programs.js?36></script>
 <script>
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1778,21 +1778,6 @@ const zzfx =      // play a sound
 
     return OS13k.PlaySamples(b);
 } // zzfx
-
-/////////////////////////////////////////////////////////////////////////////////////
-// Iframe communication
-window.addEventListener('message', msg=>{
-    console.log(msg);
-    const {t} = msg.data;
-    switch(t){
-        case 'f':
-            document.documentElement.style.perspective="800px";
-            const {s} = msg.data;
-            Object.keys(s).map(k=>document.body.style[k]=s[k]);
-        break;
-    }
-})
-
 
 /////////////////////////////////////////////////////////////////////////////////////
 // Mobile Support (optional)
