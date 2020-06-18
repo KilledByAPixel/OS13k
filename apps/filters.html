@@ -9,17 +9,16 @@
 <script>
 f=n=>{
 a=[
-{filter:''},                                                    // none
-{filter:'grayscale('},                                          // b&w
-{filter:'sepia()hue-rotate(20deg)contrast(0.8)saturate(0.9'},   // gameboy
-{filter:'blur(.5px'},                                           // blur
-{filter:'sepia()invert('},                                      // invert
-{filter:'sepia('},                                              // sepia
-{filter:'contrast(0.8)brightness(0.5'},                         // dim
-{animation:'hue 60s infinite'}                                  // fruity
+{filter:''},                                        // none
+{filter:'grayscale('},                              // b&w
+{filter:'sepia()hue-rotate(20deg)contrast(.8'},     // gameboy
+{filter:'blur(1px'},                               // blur
+{filter:'sepia()invert('},                          // invert
+{filter:'sepia('},                                  // sepia
+{filter:'contrast(.8)brightness(.5'},               // dim
+{animation:'hue 30s infinite'}                      // fruity
 ]
 s=parent.document.body.style
 s.animation='';
-s.transition='all 0.5s ease-in 0s';
 for(i in a[n])s[i]=a[n][i]}
 </script>
