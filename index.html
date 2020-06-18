@@ -210,8 +210,8 @@ div svg       { width:28;pointer-events:none; }
 </div>
 </div>
 <div id=popups style=float:right;height:0></div>
-<div id=programsMenu style=position:absolute></div>
 <div id=title>OS13k</div>
+<div id=programsMenu style=position:absolute></div>
 <div id=menu>
 <button id=buttonFullScreen>Fullscreen</button>
 <button id=buttonShowHelp>Help</button>
@@ -219,7 +219,7 @@ div svg       { width:28;pointer-events:none; }
 <button id=buttonResetSize>Reset Size</button>
 <button id=buttonReload>Reload</button>
 <button id=buttonClose>Close</button>
-<script src=programs.js?38></script>
+<script src=programs.js?41></script>
 <script>
 
 /////////////////////////////////////////////////////////////////////////////
@@ -360,13 +360,10 @@ class _OS13k
     }
     
     // get message, 0 if no trophy
-    GetTrophy(game, name, icon)
+    GetTrophy(game, name)
     {
-        // build key
-        const key = game + ',' + name + ',' + icon;
-        
         // find in trophy list
-        const i = trophies.findIndex( e=>e[4]==key );
+        const i = trophies.findIndex( e=>e[0]==game && e[0]==name );
         
         // return trophy message
         return i < 0 ? 0 : trophies[i][3];

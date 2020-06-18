@@ -4,7 +4,7 @@ JS> Options:
 Objects
 <input id=c type=checkbox onclick=localStorage.OS13kCc=c.checked>
 Clear
-<span id=G style=display:none><input id=z type=checkbox onclick=X=0>
+<span id=G ><input id=z type=checkbox onclick=X=0>
 Glitch
 </span><br>
 <input id=i style=background:#222;color:#fff;width:100% autocomplete=off>
@@ -15,17 +15,18 @@ Glitch
 // allow console to run in standalone mode
 parent.OS13k = parent.OS13k ||
 {
-    GetTrophy:()=>1,
+    GetTrophy:()=>0,
     Speak:()=>1,
     Glitch:(string)=>string,
-    KillHTML:(string)=>(string+'').replace(/</g,'&lt;'),
+    KillHTML:(string)=>(string+'').replace(/</g,'&lt;')
 }
 
 // focus on input
-i.focus()
+onfocus=()=>i.focus()
 
 // set up OS13k
-f.contentWindow.OS13k=OS13k=parent.OS13k
+W=f.contentWindow
+W.OS13k=OS13k=parent.OS13k
 
 // set saved config
 c.checked=localStorage.OS13kCc!='false'
@@ -36,7 +37,7 @@ M=[]
 m=0
 
 // hide glitch checkbox if not unlocked
-OS13k.GetTrophy('OS13k','Frozen','🧊')||(G.style.display='')
+t=OS13k.GetTrophy('OS13k','Frozen')||(G.style.display='none')
 
 // error check
 E=E=>(
@@ -48,7 +49,7 @@ E=E=>(
     C=0,
 
     // check with iframe if it thinks its an error
-    f.contentWindow.eval('parent.e instanceof Error')
+    W.eval('parent.e instanceof Error')
 
     // this way usually works if cross frame communication fails
     //e&&e.stack&&e.message&&typeof e.stack==='string'&&typeof e.message==='string'
@@ -59,18 +60,20 @@ E=E=>(
 i.onkeydown=K=>{
 
     // check if up/down was pressed
-    C=K.keyCode==38&&M.length&&(i.value=M[m=Math.min(m+1,M.length-1)])
-    C=K.keyCode==40&&(i.value=m?M[m=Math.max(m-1,0)]:'')
+    K=K.keyCode
+    C=K==38&&M.length&&(i.value=M[m<M.length-1?m++:m])  // up
+    C=K==40&&(i.value=m?M[--m]:'')                      // down
+    I=i.value
     
     // check if enter was pressed and eval code
-    if (C=K.keyCode==13){
+    if (C=K==13){
 
         // save to memory
-        M[m=0]!=i.value&&M.unshift(i.value);
+        I&&M[m=0]!=I&&M.unshift(I);
 
         // try to eval code in parens first, fixes {1:2}
         // save input to check frozen on restart
-        try{R=f.contentWindow.eval(`(${localStorage.OS13kFrozen=I=i.value})`)}
+        try{R=W.eval(`(${localStorage.OS13kFrozen=I})`)}
 
         // check if code was invalid
         catch(e){
@@ -82,7 +85,7 @@ i.onkeydown=K=>{
                 C=1
 
                 // try to eval code without parens
-                try{R=f.contentWindow.eval(I)}
+                try{R=W.eval(I)}
 
                 // check if code was invalid
                 catch(f){
@@ -122,10 +125,10 @@ i.onkeydown=K=>{
         w.innerHTML=
 
             // create pre tag for output
-            `<br><pre style=white-space:pre-wrap>${
+            `<br><pre style=white-space:pre-wrap>JS> ${
 
                 // show input
-                'JS> '+I
+                I
 
             // create pre tag for result with red color if error
             }</pre><br><pre ${C?'':'style=color:#f00'}>${
