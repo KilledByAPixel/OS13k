@@ -62,7 +62,7 @@ i.onkeydown=K=>{
     // check if up/down was pressed
     K=K.keyCode
     C=K==38&&M.length&&(i.value=M[m<M.length-1?m++:m])  // up
-    C=K==40&&(i.value=m?M[--m]:'')                      // down
+    C=K==40&&m&&(i.value=M[--m])                        // down
     I=i.value
     
     // check if enter was pressed and eval code
@@ -139,11 +139,11 @@ i.onkeydown=K=>{
             // create colored pre tag for object info
             }</pre><br><pre style=color:#0cc>${
 
-                // show object info and aply glitch
+                // show object info
                 O
 
-                // end of object info
-                }</pre><br>`
+            // end of object info
+            }</pre><br>`
 
             // add current html on bottom
             +w.innerHTML
