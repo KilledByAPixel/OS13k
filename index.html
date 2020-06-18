@@ -1294,7 +1294,8 @@ class OS13kWindow extends HTMLElement
             catch (e) {} // could not load frame, possible cross site error
 
             // add taskbar icon
-            this.taskbarIcon = new OS13kTaskbarIcon(program, this);
+            this.taskbarIcon ||
+                (this.taskbarIcon = new OS13kTaskbarIcon(program, this));
 
             // make visible
             this.style.visibility = this.iframe.style.visibility = '';
