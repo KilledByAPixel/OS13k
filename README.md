@@ -98,9 +98,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 - OS13k.CreateShader(canvas, shaderCode) - Create a shadertoy compatible webgl shader
 - OS13k.RenderShader(canvas, shaderProgram, time=0, frame=0) - Render a shader
 - OS13k.KeyDirection(key) - Get {x, y} position from a key code for WASD and arrow keys
-- OS13k.PlaySamples(samples, sampleRate=44100) - Play audio samples
-- OS13k.PlaySeed(seed, lengthScale=1, volume=1, randomness=.05) - Play a zzfx sound from seed
-- OS13k.Speak(text, rate=1, pitch=1, volume=1, language='en') - Play speech of the text
+- OS13k.Speak(text, rate=1, pitch=1, volume=1, language='en', stopSpeech) - Play speech of the text
 - OS13k.KillHTML(string) - Stops HTML in string by setting all '<' to ''
 - OS13k.Glitch(string, count) - Applies corruption to a string
 - OS13k.Popup(html, speak) - shows a popup with given html, and optional speech
@@ -113,13 +111,13 @@ Add an icon config to programs.js to register your program, and send me pull req
 - OS13k.Percent(v, a, b) - Get clamped percent between a and b
 - OS13k.Lerp(p, a, b) - Lerp clamped percent between a and b
 
-### ZzFX
-- ZzFX is a super tiny open source JavaScript sound effect synth, but don't let it's size fool you!
-- Here is the sound designer for ZzFX with a link to the public repo https://zzfx.3d2k.com/
-- ZzFx sounds can played directly by calling zzfx, volume is controlled by the system
+### Audio
+- ZzFx sounds are supported by default and several other audio functions are provided
+- ZzFX is open source sound effect generator with an easy to use sound designer https://zzfx.3d2k.com/
 - A seeded ZzFX sound player is available to save space with much smaller sound calls
-- OS13k.PlaySeed(seed, lengthScale=1, volume=1, randomness=.05)
-- Example OS13k.PlaySeed(1006), or make a function PlaySound=sound=>OS13k.PlaySeed([1006,5023,7][sound])
+- OS13k.PlaySeed(seed, lengthScale=1, volume=1, randomness=.05) - Play a zzfx sound from seed
+- OS13k.PlaySamples(samples, sampleRate=44100) - Play audio samples
+- OS13k.GetNote(semitoneOffset=0, rootNoteFrequency=440)
 - *We will create a tool for browsing sound seeds soon*
 
 ### Program Settings and Defaults
