@@ -204,12 +204,12 @@ div svg       { width:28;pointer-events:none; }
     <path stroke=#000 d='M2 2L8 8M8 2L2 8'/>
 </template>
 <div id=desktop style=opacity:0>
-<div id=popups style=float:right></div>
 <div id=taskbar>
 <div id=traySpace style=flex:1></div>
 <div id=tray>
 </div>
 </div>
+<div id=popups style=float:right;height:0></div>
 <div id=programsMenu style=position:absolute></div>
 <div id=title>OS13k</div>
 <div id=menu>
@@ -764,7 +764,7 @@ class _OS13kManager
             return;
 
         // open first program after startup
-        firstProgram.open != 0 && firstProgram.Open();
+        firstProgram.saveInfo.open != 0 && firstProgram.Open();
 
         // open start active program, set meta
         self == top ?
@@ -1048,9 +1048,6 @@ class OS13kProgram extends HTMLElement
 
             // open the window
             this.window || (this.window = new OS13kWindow(this, x, y));
-            
-            // save program info on open
-            this.SaveInfo();
         }
         else if (!this.folder)
         {
@@ -1067,7 +1064,9 @@ class OS13kProgram extends HTMLElement
         
         // update info
         finishedStartup && (this.wasOpened = 1);
-        this.saveInfo.open = 1;
+
+        // save program info on open
+        this.SaveInfo();
         
         // allow main document focus
         return true;
@@ -1109,8 +1108,9 @@ class OS13kProgram extends HTMLElement
     Close()
     {
         // remove start program if closed
-        this == startProgram && (localStorage.OS13kStartProgram = 0);
-        this.SaveInfo();
+        this.src == localStorage.OS13kStartProgram && 
+            (localStorage.OS13kStartProgram = 0);
+        this.SaveInfo(0);
         this.window = 0;
     }
 } // OS13kProgram
