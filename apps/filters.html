@@ -1,5 +1,5 @@
 <button onclick=f(0)>Default
-<button onclick=f(1)>B&W
+<button onclick=f(1)>Gray
 <button onclick=f(2)>Gameboy
 <button onclick=f(3)>Blur
 <button onclick=f(4)>Jani
@@ -9,14 +9,14 @@
 <script>
 f=n=>{
 a=[
-{filter:''},                                        // none
-{filter:'grayscale('},                              // b&w
-{filter:'sepia()hue-rotate(20deg)contrast(.8'},     // gameboy
-{filter:'blur(1px'},                               // blur
-{filter:'sepia()invert('},                          // invert
-{filter:'sepia('},                                  // sepia
-{filter:'contrast(.8)brightness(.5'},               // dim
-{animation:'hue 30s infinite'}                      // fruity
+{filter:''},                                    // none
+{filter:'grayscale('},                          // b&w
+{filter:'sepia()hue-rotate(20deg)contrast(.8'}, // gameboy
+{filter:'blur(1px'},                            // blur
+{filter:'sepia()invert('},                      // invert
+{filter:'sepia('},                              // sepia
+{filter:'contrast(.8)brightness(.5'},           // dim
+{animation:'hue 30s infinite'}                  // fruity
 ]
 s=parent.document.body.style
 s.animation='';
