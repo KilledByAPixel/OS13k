@@ -67,7 +67,7 @@ body
     box-shadow:0px 1px 9px;
     border-bottom:2px solid;
 }
-.taskbarIcon { width:50; height:40; text-shadow:1px 1px 3px; }
+.taskbarIcon { width:50; height:40; text-shadow:1px 1px 3px #000; }
 .programActive,
 .taskbarIconActive         { background:linear-gradient(#ff8,#fff); }
 .taskbarIcon:hover         { background:linear-gradient(#fff,#44f); }
@@ -82,7 +82,7 @@ body
     border:1px solid;
     border-radius:6px;
 }
-.trayIcon       { padding:6; }
+.trayIcon       { padding:6; text-shadow:1px 1px 3px #000; }
 .trayIcon:hover { background:#fff3; }
 .popup
 {
@@ -154,7 +154,7 @@ body
 .titlebarActive { background:linear-gradient(#eee,#88f); }
 .titlebarSticky { background:linear-gradient(#ccc,#844); }
 #nameWrapper    { width:100%; overflow:hidden; cursor:grab; }
-#icon           { text-shadow:1px 1px 3px; margin-left:9; margin-right:9; }
+#icon           { text-shadow:1px 1px 3px #000; margin-left:9; margin-right:9; }
 #name, #icon    { pointer-events:none; display:inline; }
 #frame
 {
@@ -969,7 +969,7 @@ class OS13kProgram extends HTMLElement
             
         // icon
         const iconDisplay = document.createElement('div');
-        iconDisplay.style = 'pointer-events:none;width:45;text-shadow:1px 1px 3px;text-align:center';
+        iconDisplay.style = 'pointer-events:none;width:45;text-shadow:1px 1px 3px #000;text-align:center';
         iconDisplay.innerHTML = icon;
         this.appendChild(iconDisplay);
         
