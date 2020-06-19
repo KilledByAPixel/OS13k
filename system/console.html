@@ -10,11 +10,14 @@
 // allow console to run in standalone mode
 parent.OS13k = parent.OS13k ||
 {
-    GetTrophy:()=>0,
+    GetTrophy:()=>1,
     Speak:()=>1,
-    Glitch:(string)=>string,
     KillHTML:(string)=>(string+'').replace(/</g,'&lt;')
 }
+
+// add unicode glitches to a string
+// based on dweet by f8f82804 www.dwitter.net/d/11808
+Z=(s,c)=>{for(c;c-->0;)s=s.slice(0,r=Math.random()*(s+='').length+1)+String.fromCharCode(768+99*Math.random())+s.slice(r);return OS13k.KillHTML(s)}
 
 // focus on input
 onfocus=()=>i.focus()
@@ -129,7 +132,7 @@ i.onkeydown=K=>{
             }</pre><br><pre ${C?'':'style=color:#f00'}>${
 
                 // show result
-                OS13k.Glitch(R,Math.min(1e3,z.checked?C?9+X:9*++X:0))
+                Z(R,Math.min(1e3,z.checked?C?9+X:9*++X:0))
 
             // create colored pre tag for object info
             }</pre><br><pre style=color:#0cc>${

@@ -6,7 +6,7 @@ var programs =
 {name:'System', icon:'⚙️', folder:
 [
     {src:'system/test.html?22', code:1, width:600, height:400, sticky:1},
-    {src:'system/console.html?63',icon:'<span style=color:#0f0;background:#000;font-family:monospace>JS>'},
+    {src:'system/console.html?64',icon:'<span style=color:#0f0;background:#000;font-family:monospace>JS>'},
     {src:'system/trophyCase.html?24', icon:'🏆', sticky:1, reload:0},
     {src:'system/wordList.html?10', icon:'📕', sticky:1, reload:0},
     {src:'system/clock.dweet.js?15', icon:'🕰️', width:200, height:200, reload:0, sleep:0, full:0, sticky:1, resize:0},

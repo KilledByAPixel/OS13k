@@ -16,7 +16,7 @@ Please keep this project confidential!
 
 <!-- HTML above is optional -->
 
-<script src=programs.js?53></script>
+<script src=programs.js?54></script>
 <meta charset=utf-8>
 <style>
 body
@@ -256,7 +256,7 @@ const OS13kVersion = 49;
 // @js_externs OS13k.PlaySeed, OS13k.PlaySamples, OS13k.GetNote
 // @js_externs OS13k.Speak, OS13k.StopSpeech
 // @js_externs OS13k.CreateShader, OS13k.RenderShader
-// @js_externs OS13k.KeyDirection, OS13k.KillHTML, OS13k.Glitch, OS13k.Popup
+// @js_externs OS13k.KeyDirection, OS13k.KillHTML, OS13k.Popup
 // @output_file_name OS13k.min.js
 // ==/ClosureCompiler==
 
@@ -637,21 +637,6 @@ class _OS13k
             
             // replace < with &lt;
             .replace(/</g,'&lt;');
-    }
-    
-    // add unicode glitches to a string
-    Glitch(string, count)
-    {
-        // based on dweet by f8f82804 www.dwitter.net/d/11808
-        let r;
-        for(count; count-->0; )
-            string = string
-                .slice(0, r = Math.random()*(string+='').length+1)
-                + String.fromCharCode( 768 + Math.random()*99 )
-                + string.slice(r)
-        
-        // return result and remove html
-        return this.KillHTML(string);
     }
     
 /////////////////////////////////////////////////////////////////////////////
