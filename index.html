@@ -16,7 +16,7 @@ Please keep this project confidential!
 
 <!-- HTML above is optional -->
 
-<script src=programs.js?52></script>
+<script src=programs.js?53></script>
 <meta charset=utf-8>
 <style>
 body
@@ -250,7 +250,7 @@ const OS13kVersion = 49;
 // @language_out ECMASCRIPT_2019
 // @js_externs OS13k, iframeContent.zzfx, iframeContent.OS13kRefresh
 // @js_externs OS13k.Clamp, OS13k.Percent, OS13k.Lerp
-// @js_externs OS13k.Random, OS13k.randomSeed, localStorage.OS13kFrozen
+// @js_externs OS13k.Random, OS13k.randomSeed
 // @js_externs OS13k.Trophies, OS13k.Trophy, OS13k.GetTrophy
 // @js_externs OS13k.Words, OS13k.AddWords, OS13k.GetWord, OS13k.RemoveWord
 // @js_externs OS13k.PlaySeed, OS13k.PlaySamples, OS13k.GetNote
@@ -263,12 +263,13 @@ const OS13kVersion = 49;
 // Minification Steps
 // 1. Remove touch support and optional code
 // 2. Paste programs directly below here, change to const
-// 3. Verify that it works the same
-// 4. Google Closure https://closure-compiler.appspot.com/home
-// 5. Terser no extra compression https://xem.github.io/terser-online/
-// 6. HTML Minifier http://minifycode.com/html-minifier/
-// 7. Zip
-// 8. Advzip "advzip -z -4 -i 1000 OS13kMin.zip"
+// 3. Remove Frozen trophy (console not in js13k build)
+// 4. Verify that it works the same
+// 5. Google Closure https://closure-compiler.appspot.com/home
+// 6. Terser no extra compression https://xem.github.io/terser-online/
+// 7. HTML Minifier http://minifycode.com/html-minifier/
+// 8. Zip
+// 9. Advzip "advzip -z -4 -i 1000 OS13kMin.zip"
 
 } // Minification Stuff
 
