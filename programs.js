@@ -5,9 +5,9 @@ const programs =
 {src:'moreInfo.html?12', icon:'👨‍💻'},
 {name:'System', icon:'⚙️', folder:
 [
-    {src:'system/console.html?62',icon:'<span style=color:#0f0;background:#000;font-family:monospace>JS>'},
+    {src:'system/console.html?63',icon:'<span style=color:#0f0;background:#000;font-family:monospace>JS>'},
     {src:'system/trophyCase.html?21', icon:'🏆', width:680, sticky:1, reload:0},
-    {src:'system/wordList.html?7', icon:'📕', sticky:1, reload:0},
+    {src:'system/wordList.html?8', icon:'📕', sticky:1, reload:0},
     {src:'system/clock.dweet.js?14', icon:'🕰️', width:200, height:200, reload:0, sleep:0, full:0, sticky:1, resize:0},
     {src:'system/test.html?22', code:1, width:600, height:400, sticky:1},
     {name:'Test Folder', icon:'📁', folder:
@@ -23,7 +23,7 @@ const programs =
     {src:'apps/miniShadertoy.html', icon:'𝓢', width:340, height:400, resize:0},
     {src:'apps/textEditor.html', icon:'📝'},
     {src:'apps/sheets.html', icon:'🔠', width:650, height:130, resize:0},
-    {src:'apps/filters.html?4', icon:'✨', width:260, height:60, resize:0},
+    {src:'apps/filters.html?5', icon:'✨', width:260, height:60, resize:0},
     {src:'https://dweetview.3d2k.com', name:'Dweet View', icon:'<span style=color:#f00;background:#000><b>&nbsp;III&nbsp;'},
 ]},
 {name:'Games', icon:'🎮', folder:

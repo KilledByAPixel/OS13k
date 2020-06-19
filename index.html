@@ -209,12 +209,12 @@ div svg       { width:28;pointer-events:none; }
 <div id=programsMenu style=position:absolute></div>
 <div id=menu>
 <button id=buttonFullScreen>Fullscreen
-<button id=buttonShowHelp>Help
-<button id=buttonShowCode>Code
+<button id=buttonCode>Code
+<button id=buttonHelp>Help
 <button id=buttonResetSize>Reset Size
 <button id=buttonReload>Reload
 <button id=buttonClose>Close
-<script src=programs.js?46></script>
+<script src=programs.js?48></script>
 <script>
 
 'use strict';
@@ -254,22 +254,22 @@ const OS13kVersion = 49;
 // ==ClosureCompiler==
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // @language_out ECMASCRIPT_2019
-// @js_externs OS13kFolder, OS13kProgram, OS13kWindow, OS13kTaskbarIcon
 // @js_externs OS13k, zzfx, iframeContent.zzfx
-// @js_externs OS13k.Trophy, OS13k.GetTrophy, OS13k.Trophies
-// @js_externs OS13k.KeyDirection, OS13k.Speak
-// @js_externs OS13k.CreateShader, OS13k.RenderShader, OS13k.CreateCanvas
-// @js_externs OS13k.PlaySamples, OS13k.PlaySeed, OS13k.GetNote
-// @js_externs OS13k.KillHTML, OS13k.Glitch
-// @js_externs OS13k.Random, OS13k.randomSeed 
+// @js_externs OS13kSystem, Folder, Program, Window, TaskbarIcon
 // @js_externs OS13k.Clamp, OS13k.Percent, OS13k.Lerp
-// @js_externs localStorage.OS13kTrophies, localStorage.OS13kVersion
+// @js_externs OS13k.Random, OS13k.randomSeed
+// @js_externs OS13k.Trophies, OS13k.Trophy, OS13k.GetTrophy
+// @js_externs OS13k.Words, OS13k.AddWords, OS13k.GetWord, OS13k.RemoveWord
+// @js_externs OS13k.PlaySeed, OS13k.PlaySamples, OS13k.GetNote
+// @js_externs OS13k.Speak, OS13k.StopSpeech
+// @js_externs OS13k.CreateShader, OS13k.RenderShader
+// @js_externs OS13k.KeyDirection, OS13k.KillHTML, OS13k.Glitch, OS13k.Popup
 // @output_file_name OS13k.min.js
 // ==/ClosureCompiler==
 } // Google Closure Config
 
 ///////////////////////////////////////////////////////////////////////////////
-// OS13k System
+// OS13k Client Interface
 
 class _OS13k
 {
@@ -291,6 +291,9 @@ class _OS13k
 
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Trophies
+    
+    // get the trophy list
+    Trophies() { return [...trophies]; }
 
     // award player with trophy, returns falsey if already owned
     Trophy(game='', name='', icon='', message='', language='ja')
@@ -327,8 +330,8 @@ class _OS13k
         // save trophy
         localStorage[storageKey] = message;
             
-        // save local storage only after trophies were first checked
-        !preventTrophySave && (localStorage.OS13kTrophies = JSON.stringify(trophies));
+        // trophies are automatically saved after startup
+        finishedStartup && (localStorage.OS13kTrophies = JSON.stringify(trophies));
         
         // refresh trophy window
         trophyTrayIcon.program && trophyTrayIcon.program.Refresh();
@@ -365,11 +368,11 @@ class _OS13k
         return i < 0 ? 0 : trophies[i][3];
     }
     
-    // get the trophy list
-    Trophies() { return [...trophies]; }
-    
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Words
+
+    // get the word list
+    Words() { return [...words]; }
     
     // add every word in a string to the word list
     AddWords(string, speak=1)
@@ -406,9 +409,6 @@ class _OS13k
         // save words
         localStorage.OS13kWords = JSON.stringify(words);
     }
-
-    // get the word list
-    GetWords() { return [...words]; }
 
     // get a random matching word
     GetWord(regex = /./, minLength = 0, maxLength = maxWordLength)
@@ -624,7 +624,7 @@ class _OS13k
     KillHTML(string, maxLength)
     {
         // convert to string
-        return (string+'')
+        return (string+='')
         
             // clamp max length
             .substring(0, maxLength? maxLength: string.length)
@@ -673,7 +673,7 @@ const taskbarHeight = 42, programHeight = 26, titlebarHeight = 37,
       startWindowOpenX = 9, startWindowOpenY = 51, 
       popupTime = 3, defaultVolume = .3, maxWordLength = 32;
       
-let grabWindow, grabOffsetX, grabOffsetY, finishedStartup, preventTrophySave,
+let grabWindow, grabOffsetX, grabOffsetY, finishedStartup,
     activeWindow, activeProgram, helpProgram, activeTaskbarIcon, loadIcon,
     lastActiveElement, topZ = 0, loading = 0, hadInput = 0,
     windowOpenX = startWindowOpenX, windowOpenY = startWindowOpenY,
@@ -689,30 +689,31 @@ let grabWindow, grabOffsetX, grabOffsetY, finishedStartup, preventTrophySave,
         JSON.parse(localStorage.OS13kWords) : [];
 
 ///////////////////////////////////////////////////////////////////////////////
-// OS13k Manager - handles non client facing features of OS13k
-    
-class _OS13kManager
+// OS13k System Functions - handles non client facing features of OS13k
+
+class _OS13kSystem
 {
-    // start up OS13k
     Start()
     {
         // listen for trophies from other windows
-        window.onstorage =e=> OS13kManager.GiveTrophy(e.key);
+        window.onstorage =e=> this.CheckForTrophy(e.key);
+
+        // stop spech if page is unloaded
+        document.body.onunload = OS13k.StopSpeech();
 
         // create tray icons
         trophyTrayIcon = new OS13kTrayIcon();
         wordsTrayIcon  = new OS13kTrayIcon();
-        muteTrayIcon = new OS13kTrayIcon(
-            OS13kManager.ToggleMute, 'Toggle Mute', '🔊');
-        clockTrayIcon  = new OS13kTrayIcon();
-        
-        // check settings
-        localStorage.OS13kMute == 'true' && OS13kManager.ToggleMute()
-        
+        muteTrayIcon   = new OS13kTrayIcon(this.ToggleMute, 'Toggle Mute', '🔊');
+        clockTrayIcon  = new OS13kTrayIcon(e=>e); // always show clock
+
+        // check saved settings
+        localStorage.OS13kMute == 0 && this.ToggleMute()
+
         // set button functions
         buttonFullScreen.onmousedown =()=> activeWindow.FullScreen();
-        buttonShowCode.onmousedown   =
-        buttonShowHelp.onmousedown   =()=> activeWindow.ShowCode();
+        buttonHelp.onmousedown       =
+        buttonCode.onmousedown       =()=> activeWindow.ShowCode();
         buttonResetSize.onmousedown  =()=> activeWindow.Resize(1);
         buttonReload.onmousedown     =()=> activeWindow.Reload();
         buttonClose.onmousedown      =()=> activeWindow.Close();
@@ -722,30 +723,23 @@ class _OS13kManager
         loadIcon.windowOrFolder = new OS13kFolder(programs);
 
         // close all the menus that were just opened
-        OS13kManager.CloseMenus();
-        
+        this.CloseMenus();
+
         OS13k.Trophy('','Welcome to OS13k!','👋');
         if (localStorage.OS13kFrozen)
         {
             OS13k.Trophy('OS13k','Frozen','🧊',`Froze The Browser\n${localStorage.OS13kFrozen}`);
         }
 
-        // search local storage for trophies, saving is prevented until the end
+        // search local storage for trophies
         for (let i = localStorage.length; i--;)
-            OS13kManager.GiveTrophy(localStorage.key(i));
-        
-        // save trophies
-        localStorage.OS13kTrophies = JSON.stringify(trophies);
-        preventTrophySave = 0;
-        
+            this.CheckForTrophy(localStorage.key(i));
+
         // try to handle startup now in case no programs are loading
-        OS13kManager.HandleStartup();
-        
+        this.HandleStartup();
+
         // kick off update
-        OS13kManager.Update();
-        
-        // stop spech if page is unloaded
-        document.body.onunload = OS13k.StopSpeech();
+        this.Update();
     }
 
     // wait for startup to finish to open first program
@@ -757,7 +751,10 @@ class _OS13kManager
         // open start active program
         self != top ? title.innerText = 'Meta ' + title.innerText:
             (startProgram = startProgram || helpProgram) && startProgram.Open();
-
+            
+        // save trophies
+        localStorage.OS13kTrophies = JSON.stringify(trophies);
+        
         // finish startup after opening startup programs
         finishedStartup = 1;
     }
@@ -765,7 +762,7 @@ class _OS13kManager
     // main update loop
     Update()
     {
-        requestAnimationFrame(OS13kManager.Update);
+        requestAnimationFrame(OS13kSystem.Update);
 
         // listen for iframe becomming new active element
         const activeElement = document.activeElement;
@@ -774,17 +771,17 @@ class _OS13kManager
             // set focus to new active element
             activeElement.SetActive && activeElement.SetActive(1,0);
             lastActiveElement = activeElement;
-            
+
             // set that we had input if user selected window
             activeWindow == activeElement && (hadInput = 1);
         }
-        
+
         // add queued up new words
         newWordsMessage && OS13k.Popup(
             '<b>New Words!</b><br>' + newWordsMessage, newWordsSpeak,
             wordsTrayIcon.program.Refresh());
         newWordsMessage = newWordsSpeak = '';
-        
+
         // update popups if finished startup
         if (hadInput && finishedStartup)
         {
@@ -796,7 +793,7 @@ class _OS13kManager
                 // speak popup
                 popup.speak && 
                     OS13k.Speak(popup.speak, 1, 1, 1, popup.speakLanguage, popup.speak=0);
-            
+
                 if (!document.fullscreenElement)
                 { 
                     // move popup up
@@ -848,8 +845,8 @@ class _OS13kManager
         menu.style.visibility = '';
     }
 
-    // give trophy for local storage key
-    GiveTrophy(key)
+    // try to give trophy if key is a valid trophy
+    CheckForTrophy(key)
     {
         const keyParts = (key+'').split(',');
         keyParts.length = 4;
@@ -861,14 +858,14 @@ class _OS13kManager
     ToggleMute()
     {
         OS13k.StopSpeech();
-        gain.gain.value = gain.gain.value ? 0 : defaultVolume;
+        localStorage.OS13kMute = gain.gain.value = 
+            gain.gain.value ? 0 : defaultVolume;
         muteTrayIcon.innerHTML = gain.gain.value ? '🔊' : '🔇';
-        localStorage.OS13kMute = !gain.gain.value;
 
         OS13k.Trophy('OS13k','Shut Up','🔇','Muted');
     }
-} // OS13kManager
-let OS13kManager = new _OS13kManager;
+} // OS13kSystem
+const OS13kSystem = new _OS13kSystem;
 
 ///////////////////////////////////////////////////////////////////////////////
 // OS13kFolder - holds a list of programs
@@ -902,7 +899,7 @@ class OS13kFolder extends HTMLElement
     SetActive()
     {
         // close menus so they can reopen with this active
-        OS13kManager.CloseMenus();
+        OS13kSystem.CloseMenus();
         
         // set parent active
         this.parentFolder && this.parentFolder.SetActive();
@@ -954,11 +951,11 @@ class OS13kProgram extends HTMLElement
         this.sleep  = sleep;
         this.full   = full;
         this.reload = reload;
-        this.code   = code || ((this.isDweet || this.isShader) && code == undefined);
         this.sticky = sticky;
-        this.help   = help;
         this.resize = resize;
         this.key    = 'OS13kProgram' + this.src;
+        this.code   = !(this.help = help) && 
+            (code || ((this.isDweet || this.isShader) && code == undefined));
         
         // load saved program data
         this.LoadInfo();
@@ -1168,9 +1165,8 @@ class OS13kWindow extends HTMLElement
         program.resize && 
             AddTitlebarIcon('grow', 'Grow', AddTitlebarIcon('shrink', 'Shrink'));
         program.full && AddTitlebarIcon('full', 'Full Screen');
-        program.help ? 
-            AddTitlebarIcon('help', 'Help') :
-            program.code && AddTitlebarIcon('code', 'Code');
+        program.help && AddTitlebarIcon('help', 'Help');
+        program.code && AddTitlebarIcon('code', 'Code');
         program.reload && AddTitlebarIcon('reload', 'Reload');
         AddTitlebarIcon('close', 'Close');
 
@@ -1292,7 +1288,7 @@ class OS13kWindow extends HTMLElement
             grabWindow || this.reloaded || this.SetActive();
     
             // update startup routine
-            OS13kManager.HandleStartup(loading&&--loading);
+            OS13kSystem.HandleStartup(loading&&--loading);
         }
         
         // load the iframe
@@ -1357,7 +1353,7 @@ class OS13kWindow extends HTMLElement
     
     SetActive(active=1, clamp=1)
     {
-        OS13kManager.CloseMenus();
+        OS13kSystem.CloseMenus();
         
         // set style
         this.className = active? 'activeWindow' : '';
@@ -1396,11 +1392,13 @@ class OS13kWindow extends HTMLElement
             this.style.zIndex = ++topZ;
 
             // show menu buttons
-            buttonFullScreen.style.display = this.program.full?   '' : 'none';
-            buttonShowHelp.style.display   = this.program.help?   '' : 'none';
-            buttonShowCode.style.display   = this.program.code?   '' : 'none';
-            buttonReload.style.display     = this.program.reload? '' : 'none';
-            buttonResetSize.style.display  = this.program.resize? '' : 'none';
+            const SetButtonVisibility=(button, visible)=>
+                button.style.display = visible ? '' : 'none';
+            SetButtonVisibility(buttonFullScreen, this.program.full);
+            SetButtonVisibility(buttonCode,       this.program.code);
+            SetButtonVisibility(buttonHelp,       this.program.help);
+            SetButtonVisibility(buttonReload,     this.program.reload);
+            SetButtonVisibility(buttonResetSize,  this.program.resize);
 
             // set taskbar icon active if it exists
             // it may not exist yet if frame hasn't finished loading
@@ -1531,14 +1529,19 @@ class OS13kTrayIcon extends HTMLElement
         this.innerHTML = icon;
         this.menu = 0;
         
+        // hide tray icons until program is set
+        functionCall || (this.style.display = 'none');
+        
         // add to tray
         tray.appendChild(this);
     }
     
     SetProgram(program)
     {
+        // set program and make visible
         this.program = program;
         this.title = program.title;
+        this.style.display = '';
     }
     
     SetActive()  { this.Open();  }
@@ -1550,7 +1553,7 @@ customElements.define('o-t', OS13kTrayIcon);
 // Mouse Input
 
 {
-onmousedown =e=>
+onmousedown=e=>
 {
     // set there has been user input
     hadInput = 1;
@@ -1559,7 +1562,7 @@ onmousedown =e=>
     if (e.target == loadIcon && e.target.windowOrFolder.style.visibility)
     {
         // close menus
-        OS13kManager.CloseMenus();
+        CloseMenus();
         
         // reactivate active window
         activeWindow && activeWindow.SetActive();
@@ -1569,7 +1572,7 @@ onmousedown =e=>
     }
     
     // close menus on mouse down
-    OS13kManager.CloseMenus();
+    OS13kSystem.CloseMenus();
 
     // prevent stuck grab
     if (grabWindow) return onmouseup(e);
@@ -1614,7 +1617,7 @@ onmousedown =e=>
         activeWindow && activeWindow.SetActive(1,0);
 }
 
-onmousemove =e=>
+onmousemove=e=>
 {
     if (grabWindow)
     {
@@ -1630,7 +1633,7 @@ onmousemove =e=>
     e.target.Move && e.target.Move();
 }
 
-onmouseup =e=>
+onmouseup=e=>
 {       
     // set grab window active no clamp and set cursor to back to 
     grabWindow && grabWindow.SetActive(1, 0,
@@ -1642,7 +1645,7 @@ onmouseup =e=>
 }
 
 // prevent default right click context menu
-oncontextmenu =e=> false
+oncontextmenu=e=> false
 
 } // mouse input
 
@@ -1670,13 +1673,11 @@ const gain = audioContext.createGain();
 ///////////////////////////////////////////////////////////////////////////////
 // ZzFXMicro - Zuper Zmall Zound Zynth 
 
-const zzfx =      // play a sound
-(
-    // parameters
-    volume = 1, randomness = .05, frequency = 220, attackIn = 0, sustainIn = 0, releaseIn = .1, shape = 0, shapeCurve = 1, slide = 0, deltaSlideIn = 0, pitchJumpIn = 0, pitchJumpTimeIn = 0, repeatTimeIn = 0, noise = 0, modulationIn = 0, bitCrush = 0, delayIn = 0, sustainVolume = 1, decayIn = 0,
-    
+const zzfx = ( // play a zzfx sound
+    volume=1, randomness=.05, frequency=220, attackIn=0, sustainIn=0, releaseIn=.1, shape=0, shapeCurve=1, slide=0, deltaSlideIn=0, pitchJumpIn=0, pitchJumpTimeIn=0, repeatTimeIn=0, noise=0, modulationIn=0, bitCrush=0, delayIn=0, sustainVolume=1, decayIn=0)=>
+{
     // init parameters
-    PI2 = Math.PI*2,
+    let PI2 = Math.PI*2,
     sampleRate = 44100,
     random = r => r*2*Math.random()-r,
     sign = v => v>0?1:-1,
@@ -1694,9 +1695,8 @@ const zzfx =      // play a sound
     pitchJumpTime = pitchJumpTimeIn * sampleRate,
     repeatTime = repeatTimeIn * sampleRate,
     length = attack + decay + sustain + release + delay,
-    b=[], t=0, tm=0, i=0, j=1, r=0, c=0, s=0, d=.5
-)=>
-{
+    b=[], t=0, tm=0, i=0, j=1, r=0, c=0, s=0, d=.5;
+
     // generate waveform
     for(; i < length;b[i++] = s)
     {
@@ -1757,22 +1757,20 @@ const zzfx =      // play a sound
 ///////////////////////////////////////////////////////////////////////////////
 // Start OS13k!
 
-OS13kManager.Start();
+OS13kSystem.Start();
 
 ///////////////////////////////////////////////////////////////////////////////
 // Mobile Support (optional)
 
 // save is touching and original mouse functions
-let wasTouching, 
-    onmouseupTouch   = onmouseup,
-    onmousedownTouch = onmousedown,
-    onmousemoveTouch = onmousemove;
+let wasTouching, onmouseupTouch=onmouseup, onmousedownTouch=onmousedown, onmousemoveTouch=onmousemove;
 
 (typeof ontouchstart != 'undefined') && (ontouchstart=()=>
 {
     // prevent touch triggering mouse events
     onmouseup = onmousedown = onmousemove = 0;
     
+    // remove hovers, they get stuck on mobile
     const RemoveHovers=element=>
     {
         // remove all hover effects
@@ -1782,8 +1780,6 @@ let wasTouching,
             styleSheet.rules[i].selectorText.match('hover') &&
             styleSheet.deleteRule(i);
     }
-    
-    // remove hovers from document
     RemoveHovers(document);
                 
     // handle touch event
