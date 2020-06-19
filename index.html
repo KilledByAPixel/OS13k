@@ -213,7 +213,7 @@ div svg       { width:28;pointer-events:none; }
 <button id=buttonResetSize>Reset Size
 <button id=buttonReload>Reload
 <button id=buttonClose>Close
-<script src=programs.js?45></script>
+<script src=programs.js?46></script>
 <script>
 
 'use strict';
@@ -1363,12 +1363,10 @@ class OS13kWindow extends HTMLElement
         this.className = active? 'activeWindow' : '';
         this.titlebar.className = 'titlebar titlebar' 
             + (active && !loading? 'Active' : this.program.sticky ? 'Sticky' : '');
-        (this.program.sleep ? this : this.titlebar).style.filter = 
-            active? '' : 'saturate(.7)brightness(.7';
+        this.frameWrapper.style.filter = active ? '' : 'saturate(.7)brightness(.7';
 
         // check if active
-        if (!active)
-            return;
+        if (!active) return;
         
         // save active program if finished startup and not sticky
         finishedStartup && !this.program.sticky && 
@@ -1415,8 +1413,7 @@ class OS13kWindow extends HTMLElement
     FullScreen()
     {
         // check if full screen allowed
-        if (!this.program.full)
-            return;
+        if (!this.program.full) return;
         
         // set full screen
         if (this.frameWrapper.webkitRequestFullScreen)
