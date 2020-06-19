@@ -23,6 +23,7 @@ Please keep this project confidential!
 
 <!-- HTML above is optional -->
 
+<script src=programs.js?49></script>
 <meta charset=utf-8>
 <style>
 body
@@ -214,7 +215,6 @@ div svg       { width:28;pointer-events:none; }
 <button id=buttonResetSize>Reset Size
 <button id=buttonReload>Reload
 <button id=buttonClose>Close
-<script src=programs.js?48></script>
 <script>
 
 'use strict';
@@ -234,15 +234,16 @@ const OS13kVersion = 49;
     localStorage.OS13kVersion = OS13kVersion;
 
     // load default programs if none found
+    var programsDefault = 0;
     if (typeof programs == 'undefined')
     {
         alert('No programs found, using defaults!')
-        programs = 
+        var programs = 
         [
             {src:'system/test.html'},
             {src:'system/wordList.html', icon:'📕', sticky:1},
             {src:'system/trophyCase.html', icon:'🏆', sticky:1},
-            {src:'system/clock.dweet.js', icon:'🕰️', width:200, height:200, sleep:0, full:0, reload:0, sticky:1}
+            {src:'system/clock.dweet.js', icon:'🕰️', width:200, height:200, sleep:0, full:0, resize:0, reload:0, sticky:1}
         ];
     }
 } // debug stuff

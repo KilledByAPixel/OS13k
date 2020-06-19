@@ -1,4 +1,4 @@
-const programs = 
+var programs = 
 [
 {name:'Close All', icon:'❌',},
 {src:'help.html?19', icon:'<b><span style=color:#0f0>?', width:380, height:400, help:'Check here to see help when available.\nSome programs have a option to show code instead.\n\nHave fun! ✌️😄', reload:0},
