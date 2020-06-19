@@ -40,7 +40,8 @@ Add an icon config to programs.js to register your program, and send me pull req
 - To force a page to refresh you can add ?(version) to the src link... {src:'Help.html?1'}
 - Try to keep your program paused or light on cpu when it does not have focus, !document.hasFocus()
 - Dweets and Shadertoys are automatically paused when not focused (unless sleep:0 is set)
-- Prefix all local storage keys with OS13kYourProgramName to prevent collisions during JS13k
+- Prefix all local storage keys with OS13kYourProgramName to prevent collisions during JS13k (use at least 2 letters)
+- When the reload button is clicked, OS13kReload is called if it exists instead of reloading the iframe
 - OS13k works well on mobile devices, so we could have a separate entry for the JS13k mobile category
 - We recommend [Brackets](http://brackets.io/) for development, but you can use whatever you want
 
