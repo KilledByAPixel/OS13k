@@ -754,9 +754,8 @@ class _OS13kManager
         if (loading || finishedStartup) return;
 
         // open start active program
-        self == top ?
-            (startProgram = startProgram || helpProgram) && startProgram.Open() :
-            (title.innerText += ' Meta');
+        self != top ? title.innerText = 'Meta ' + title.innerText:
+            (startProgram = startProgram || helpProgram) && startProgram.Open();
 
         // finish startup after opening startup programs
         finishedStartup = 1;
