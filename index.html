@@ -1207,7 +1207,7 @@ class OS13kWindow extends HTMLElement
         OS13k.AddWords(this.program.name, 0); 
         
         // track if programs are loading
-        ++loading;
+        finishedStartup || ++loading;
         
         // wait for frame to load and set that it is not loading
         this.iframe.onload =e=> { try {
@@ -1292,7 +1292,7 @@ class OS13kWindow extends HTMLElement
             grabWindow || this.reloaded || this.SetActive();
     
             // update startup routine
-            OS13kManager.HandleStartup(--loading);
+            OS13kManager.HandleStartup(loading&&--loading);
         }
         
         // load the iframe
