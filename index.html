@@ -16,7 +16,7 @@ Please keep this project confidential!
 
 <!-- HTML above is optional -->
 
-<script src=programs.js?54></script>
+<script src=programs.js?55></script>
 <meta charset=utf-8>
 <style>
 body
@@ -659,7 +659,7 @@ let grabWindow, grabOffsetX, grabOffsetY, finishedStartup,
     activeWindow, activeProgram, helpProgram, activeTaskbarIcon, loadIcon,
     lastActiveElement, topZ = 0, loading = 0, hadInput = 0,
     windowOpenX = startWindowOpenX, windowOpenY = startWindowOpenY,
-    trophyTrayIcon, wordsTrayIcon, muteTrayIcon, clockTrayIcon,
+    startProgram, trophyTrayIcon, wordsTrayIcon, muteTrayIcon, clockTrayIcon,
     newWordsMessage = '', newWordsSpeak = '',
 
     // parse or init trophy list
@@ -727,6 +727,10 @@ class _OS13kSystem
     {
         // skip until not loading and finished startup
         if (loading || finishedStartup) return;
+
+        // open start active program
+        self == top && (startProgram = startProgram || helpProgram)
+        startProgram && startProgram.Open();
             
         // save trophies
         localStorage.OS13kTrophies = JSON.stringify(trophies);
@@ -972,8 +976,10 @@ class OS13kProgram extends HTMLElement
         name == 'Help'        && this.saveInfo.open == undefined 
             && (helpProgram = this);
 
-        // check if  sticky open
-        self == top && sticky && this.saveInfo.open && this.Open();
+        // check if start active program or sticky open
+        self == top && (this.src == localStorage.OS13kStartProgram ?
+            startProgram = this :
+            sticky && this.saveInfo.open && this.Open());
     }
     
     Move()
@@ -1079,7 +1085,11 @@ class OS13kProgram extends HTMLElement
     
     Close()
     {
-        // close it up
+        // remove start program if closed
+        this.src == localStorage.OS13kStartProgram && 
+            (localStorage.OS13kStartProgram = 0);
+            
+        // save info and close window
         this.SaveInfo(0);
         this.window = 0;
     }
@@ -1338,6 +1348,10 @@ class OS13kWindow extends HTMLElement
 
         // check if active
         if (!active) return;
+        
+        // save start program if finished startup and not sticky
+        finishedStartup && !this.program.sticky && 
+            (localStorage.OS13kStartProgram = this.program.src);
 
         // set focus to iframe
         !loading && this.iframeContent && this.iframeContent.focus();
