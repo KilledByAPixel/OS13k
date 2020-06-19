@@ -1,27 +1,14 @@
-<body bgcolor=#223>
-<script>
-'use strict';
-
-var OS13k = parent.OS13k,
-OS13kRefresh=(output='')=>
+<body bgcolor=#223><script>
+OS13kRefresh=()=>
 {
-    // get words list
-    const words = OS13k.Words();
-
-    // iterate through words
-    for (const word of words)
-    {
-        // create the word html
-        output += `<div style='font-family:arial;padding:9;overflow:hidden;display:inline-block;font-size:15;text-align:center;background:linear-gradient(#eee,#888);box-shadow:5px 5px 9px;border:2px solid;border-radius:9px;'onmousedown=OS13k.Speak("${
-        word }",1,1,1,"en",1)>${
-        word }</div>`;
-    }
-
-    // set the document html
-    this.document.body.innerHTML = `<span style=color:#fff;font-size:40>${
-        words.length } Words Found</span><br>` + 
-        output;
+    // clear the document html
+    this.document.body.innerHTML = '';
+        
+    // create the word list html
+    for (w of parent.OS13k.Words())
+        this.document.body.innerHTML += `<div style='display:inline-block;font-family:arial;padding:9;overflow:hidden;text-align:center;font-size:18;background:linear-gradient(#eee,#888);box-shadow:5px 5px 9px;border:2px solid;border-radius:9px'onmousedown=parent.OS13k.Speak('${
+        w }',1,1,1,'en',1)>${
+        w }</div>`;
 }
-
 OS13kRefresh();
 </script>

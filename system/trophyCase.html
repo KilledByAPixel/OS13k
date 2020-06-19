@@ -1,36 +1,22 @@
-<body bgcolor=#232>
-<script>
-'use strict';
-
-var OS13k = parent.OS13k,
-OS13kRefresh=(output='')=>
+<body bgcolor=#232><script>
+OS13kRefresh=()=>
 {
-    // iterate through trophy list
-    for (const trophy of OS13k.Trophies())
-    {
-        // get trophy info
-        const game = trophy[0];
-        const name = trophy[1];
-        const icon = trophy[2] || '🏆';
-        const message = trophy[3];
-
-        // set title
-        const title = icon + ` ${name}\n${game}\n` + message;
-
-        // create the trophy html
-        output += `<div style='font-family:arial;width:120;height:120;margin:9;padding:9;display:inline-block;overflow:hidden;font-size:18;text-align:center;background:linear-gradient(#eee,#888);box-shadow:5px 5px 9px;border:2px solid;border-radius:29px'title='${
-            title }'onmousedown='OS13k.Speak(\`${
-            name }\`,1,1,1,"ja",1)'><div style='padding:3;white-space:nowrap;font-size:28;text-shadow:2px 2px 4px'>${
-            icon }</div><div><b>${
-            name }</b><br><i>${
-            game }</i><br><span style=font-size:14>${
-            message }</span></div></div>`;
-
-    }
-
-    // set the document html
-    this.document.body.innerHTML = output;
+    // clear the document html
+    this.document.body.innerHTML = '';
+    
+    // create the trophy list html
+    for (t of parent.OS13k.Trophies())
+        this.document.body.innerHTML += `<div style='display:inline-block;font-family:arial;padding:9;overflow:hidden;text-align:center;background:linear-gradient(#eee,#888);width:120;height:120;margin:9;font-size:18;box-shadow:5px 5px 9px;border:2px solid;border-radius:29px'title='${
+            i = t[2] || '🏆' } ${ // get icon
+            n = t[1] }\n${        // get name
+            g = t[0] }\n${        // get game
+            m = t[3]              // get message
+            }'onmousedown='parent.OS13k.Speak(\`${ // speak name
+            n }\`,1,1,1,"ja",1)'><div style='padding:3;white-space:nowrap;font-size:28;text-shadow:2px 2px 4px'>${
+            i }</div><div><b>${                     // icon
+            n }</b><br><i>${                        // name
+            g }</i><br><div style=font-size:14>${   // game
+            m }</div></div></div>`;                 // message
 }
-
 OS13kRefresh();
 </script>

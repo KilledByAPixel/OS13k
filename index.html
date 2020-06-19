@@ -8,13 +8,6 @@ Please keep this project confidential!
 
 ✌️😄 ❤️ OS13k Team
 
-// Minification Steps
-// 1. Remove touch support
-// 2. Paste programs to top
-// 3. Google Closure
-// 4. Terser
-// 5. HTML Compressor
-
 -->
 
 <title>OS13k - A tiny OS for JS13k</title>
@@ -23,7 +16,7 @@ Please keep this project confidential!
 
 <!-- HTML above is optional -->
 
-<script src=programs.js?50></script>
+<script src=programs.js?52></script>
 <meta charset=utf-8>
 <style>
 body
@@ -249,16 +242,15 @@ const OS13kVersion = 49;
 } // debug stuff
 
 ///////////////////////////////////////////////////////////////////////////////
-// Google Closure Config
+// Minification Stuff
 
 {
 // ==ClosureCompiler==
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // @language_out ECMASCRIPT_2019
-// @js_externs OS13k, zzfx, iframeContent.zzfx
-// @js_externs OS13kSystem, Folder, Program, Window, TaskbarIcon
+// @js_externs OS13k, iframeContent.zzfx, iframeContent.OS13kRefresh
 // @js_externs OS13k.Clamp, OS13k.Percent, OS13k.Lerp
-// @js_externs OS13k.Random, OS13k.randomSeed
+// @js_externs OS13k.Random, OS13k.randomSeed, localStorage.OS13kFrozen
 // @js_externs OS13k.Trophies, OS13k.Trophy, OS13k.GetTrophy
 // @js_externs OS13k.Words, OS13k.AddWords, OS13k.GetWord, OS13k.RemoveWord
 // @js_externs OS13k.PlaySeed, OS13k.PlaySamples, OS13k.GetNote
@@ -267,7 +259,18 @@ const OS13kVersion = 49;
 // @js_externs OS13k.KeyDirection, OS13k.KillHTML, OS13k.Glitch, OS13k.Popup
 // @output_file_name OS13k.min.js
 // ==/ClosureCompiler==
-} // Google Closure Config
+
+// Minification Steps
+// 1. Remove touch support and optional code
+// 2. Paste programs directly below here, change to const
+// 3. Verify that it works the same
+// 4. Google Closure https://closure-compiler.appspot.com/home
+// 5. Terser no extra compression https://xem.github.io/terser-online/
+// 6. HTML Minifier http://minifycode.com/html-minifier/
+// 7. Zip
+// 8. Advzip "advzip -z -4 -i 1000 OS13kMin.zip"
+
+} // Minification Stuff
 
 ///////////////////////////////////////////////////////////////////////////////
 // OS13k Client Interface
@@ -299,13 +302,14 @@ class _OS13k
     // award player with trophy, returns falsey if already owned
     Trophy(game='', name='', icon='', message='', language='ja')
     {
-        // replace commas and quotes in a string
-        const Clean=string=>(string+'').replace(/'/g, '"').replace(/,/g, '');
+        // replace commas and apostrophes in a string
+        const Clean=string=>(string+'').replace(/`/g, "'").replace(/,/g, '');
 
         // remove commas
         game = Clean(game);
         name = Clean(name);
         icon = Clean(icon);
+        message = Clean(message);
         
         // build key
         const key = game + `,${ name },` + icon;
@@ -1772,14 +1776,14 @@ let wasTouching, onmouseupTouch=onmouseup, onmousedownTouch=onmousedown, onmouse
     onmouseup = onmousedown = onmousemove = 0;
     
     // remove hovers, they get stuck on mobile
-    const RemoveHovers=element=>
+    const RemoveHovers=e=>
     {
         // remove all hover effects
-        for (let styleSheet of element.styleSheets)
-        for (let i = styleSheet.rules.length; i--; )
-            styleSheet.rules[i].selectorText &&
-            styleSheet.rules[i].selectorText.match('hover') &&
-            styleSheet.deleteRule(i);
+        for (const sheet of e.styleSheets)
+        for (let i = sheet.rules.length; i--; )
+            sheet.rules[i].selectorText &&
+            sheet.rules[i].selectorText.match('hover') &&
+            sheet.deleteRule(i);
     }
     RemoveHovers(document);
                 
@@ -1801,7 +1805,7 @@ let wasTouching, onmouseupTouch=onmouseup, onmousedownTouch=onmousedown, onmouse
             window.focus();
         }
 
-        // pass even to mouse down
+        // pass event to mouse down
         touching && !wasTouching && !e.target.folder && onmousedownTouch(e);
 
         // pass event to mouse up
@@ -1813,7 +1817,7 @@ let wasTouching, onmouseupTouch=onmouseup, onmousedownTouch=onmousedown, onmouse
         // remove hovers from active window
         activeWindow && RemoveHovers(activeWindow.shadow);
         
-        // prevent default
+        // prevent default if possible
         return !e.cancelable;
     }
     
