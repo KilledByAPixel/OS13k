@@ -5,11 +5,11 @@ const programs =
 {src:'moreInfo.html?12', icon:'👨‍💻'},
 {name:'System', icon:'⚙️', folder:
 [
-    {src:'system/console.html?61',icon:'<span style=color:#0f0;background:#000;font-family:monospace>JS>'},
-    {src:'system/wordList.html?5',icon:'📕', sticky:1},
-    {src:'system/trophyCase.html?19', icon:'🏆', width:680, sticky:1},
-    {src:'system/clock.dweet.js?13', icon:'🕰️', width:200, height:200, reload:0, sleep:0, full:0, sticky:1, resize:0},
-    {src:'system/test.html?21', code:1, width:600, height:400, sticky:1},
+    {src:'system/console.html?62',icon:'<span style=color:#0f0;background:#000;font-family:monospace>JS>'},
+    {src:'system/trophyCase.html?21', icon:'🏆', width:680, sticky:1, reload:0},
+    {src:'system/wordList.html?7',icon:'📕', sticky:1, reload:0},
+    {src:'system/clock.dweet.js?14', icon:'🕰️', width:200, height:200, reload:0, sleep:0, full:0, sticky:1, resize:0},
+    {src:'system/test.html?22', code:1, width:600, height:400, sticky:1},
     {name:'Test Folder', icon:'📁', folder:
     [
         {src:'index.html?1', name:'Meta OS13k', icon:'✌️😄'},

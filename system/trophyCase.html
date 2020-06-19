@@ -1,75 +1,36 @@
-<style>
-.trophy
-{
-    font-family:arial;
-    width:120;
-    height:120;
-    margin:9;
-    padding:8;
-    display:inline-block;
-    overflow:hidden;
-    font-size:18;
-    text-align:center;
-    background:linear-gradient(#eee,#888);
-    box-shadow:5px 5px 9px;
-    border:2px solid;
-    border-radius:19px;
-}
-.icon
-{
-    padding:3;
-    white-space:nowrap;
-    font-size:28;
-    text-shadow:2px 2px 4px #000;
-}
-</style>
 <body bgcolor=#222>
 <script>
-
 'use strict';
 
-// ==ClosureCompiler==
-// @compilation_level ADVANCED_OPTIMIZATIONS
-// @js_externs OS13k, OS13k.GetTrophies
-// @language_out ECMASCRIPT_2019
-// ==/ClosureCompiler==
-
-const OS13k = parent.OS13k;
-
-var OS13kRefresh=()=>
+var OS13k = parent.OS13k,
+OS13kRefresh=(output='')=>
 {
-this.document.body.innerHTML='';
-for (const trophy of OS13k.Trophies())
-{
-    // get trophy info
-    const game = trophy[0];
-    const name = trophy[1];
-    const icon = trophy[2] || '🏆';
-    const message = trophy[3];
+    // iterate through trophy list
+    for (const trophy of OS13k.Trophies())
+    {
+        // get trophy info
+        const game = trophy[0];
+        const name = trophy[1];
+        const icon = trophy[2] || '🏆';
+        const message = trophy[3];
 
-    // set title
-    const title = icon + ' ' + name + '\n' + game + '\n' + message;
+        // set title
+        const title = icon + ` ${name}\n${game}\n` + message;
 
-    // create the trophy html
-    const div = document.createElement('div');
-    div.className = 'trophy';
-    div.title = title;
-    div.innerHTML =
-        '<div class=icon>' + icon +                    // icon
-        '</div><div class=text>' +                     // info
-            '<b>' + name + '</b><br>' +                // name
-            '<i>' + game + '</i>' +                    // game
-            '<br><span style=font-size:14>' + message; // message
+        // create the trophy html
+        output += `<div style='font-family:arial;width:120;height:120;margin:9;padding:9;display:inline-block;overflow:hidden;font-size:18;text-align:center;background:linear-gradient(#eee,#888);box-shadow:5px 5px 9px;border:2px solid;border-radius:29px'title='${
+            title }'onmousedown='OS13k.Speak(\`${
+            name }\`,1,1,1,"ja",1)'><div style='padding:3;white-space:nowrap;font-size:28;text-shadow:2px 2px 4px'>${
+            icon }</div><div><b>${
+            name }</b><br><i>${
+            game }</i><br><span style=font-size:14>${
+            message }</span></div></div>`;
 
-    // speak the trophy if clicked
-    div.onmousedown=()=>
-        {OS13k.StopSpeech();OS13k.Speak(name||game||message||icon, 1, 1, 1, 'ja')}
+    }
 
-    // add to document
-    this.document.body.appendChild(div); 
-}
+    // set the document html
+    this.document.body.innerHTML = output;
 }
 
 OS13kRefresh();
-
 </script>
