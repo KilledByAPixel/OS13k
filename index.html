@@ -87,6 +87,7 @@ body
     padding:8;
     pointer-events:none;
     overflow:hidden;
+    white-space:normal;
     text-align:center;
     background:linear-gradient(#eee,#888);
     box-shadow:9px 9px 19px;
@@ -263,13 +264,19 @@ const OS13kVersion = 49;
 // Minification Steps
 // 1. Remove touch support and optional code
 // 2. Paste programs directly below here, change to const
-// 3. Remove Frozen trophy (console not in js13k build)
+// 3. Remove stuff listed below
 // 4. Verify that it works the same
 // 5. Google Closure https://closure-compiler.appspot.com/home
 // 6. Terser no extra compression https://xem.github.io/terser-online/
 // 7. HTML Minifier http://minifycode.com/html-minifier/
 // 8. Zip
 // 9. Advzip "advzip -z -4 -i 1000 OS13kMin.zip"
+
+// Stuff to remove before minifying
+// - Frozen trophy (console not in js13k build)
+// - check pixel shader for errors
+// - hide tray icons until program is set (rework)
+// 
 
 } // Minification Stuff
 
@@ -303,18 +310,15 @@ class _OS13k
     // award player with trophy, returns falsey if already owned
     Trophy(game='', name='', icon='', message='', language='ja')
     {
-        // replace commas and apostrophes in a string
+        // replace commas and apostrophes
         const Clean=string=>(string+'').replace(/`/g, "'").replace(/,/g, '');
-
-        // remove commas
-        game = Clean(game);
-        name = Clean(name);
-        icon = Clean(icon);
+        game    = Clean(game);
+        name    = Clean(name);
+        icon    = Clean(icon);
         message = Clean(message);
         
         // build key
         const key = game + `,${ name },` + icon;
-        const storageKey = 'OS13kTrophy,' + key;
         
         // remove html tags
         icon    = this.KillHTML(icon,    maxWordLength, 1);
@@ -334,7 +338,7 @@ class _OS13k
             trophies[index] = trophyData;
 
         // save trophy
-        localStorage[storageKey] = message;
+        localStorage['OS13kTrophy,' + key] = message;
             
         // trophies are automatically saved after startup
         finishedStartup && (localStorage.OS13kTrophies = JSON.stringify(trophies));
@@ -393,7 +397,7 @@ class _OS13k
             /[^a-z]/.test(word) ||
 
                 // limit word length
-                word.length > 1 && word.length < maxWordLength &&
+                word.length > 1 && word.length <= maxWordLength &&
 
                 // check if already in list
                 words.indexOf(word) < 0 &&
@@ -405,7 +409,7 @@ class _OS13k
         for(const word of newWords)
         {
             // add it to the word list
-            words.unshift(word);
+            words.push(word);
             
             // update new words message
             newWordsMessage += (newWordsMessage.length? ', ' : ' ') + word;
@@ -426,16 +430,6 @@ class _OS13k
             
         // get random match
         return matches.length > 0 ? matches[Math.random()*matches.length|0] : '';
-    }
-    
-    // remove a word from the list
-    RemoveWord(word)
-    {
-        // remove word if it exists
-        words = words.filter(e => e != word);
-
-        // trigger refresh of dictionary window
-        wordsTrayIcon.program && wordsTrayIcon.program.Refresh();
     }
     
 /////////////////////////////////////////////////////////////////////////////
@@ -495,7 +489,7 @@ class _OS13k
     
     // get frequency of a musical note on a diatonic scale
     GetNote(semitoneOffset=0, rootNoteFrequency=440)
-        { return rootNoteFrequency * 2**(semitoneOffset/12); }
+    { return rootNoteFrequency * 2**(semitoneOffset/12); }
 
     // speak the text
     Speak(text, rate=1, pitch=1, volume=1, language='en', stopSpeech)
@@ -508,7 +502,7 @@ class _OS13k
         if (speechSynthesis && gain.gain.value)
         {
             // stop speech if set
-            stopSpeech && this.StopSpeech();
+            stopSpeech && OS13kSystem.StopSpeech();
         
             // speak with utterance parameters
             const utterance = new SpeechSynthesisUtterance(text);
@@ -519,9 +513,6 @@ class _OS13k
             speechSynthesis.speak(utterance);
         }
     }
-    
-    // stop any current or queued speech
-    StopSpeech() { return speechSynthesis && speechSynthesis.cancel(); }
         
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Shaders
@@ -660,7 +651,7 @@ var OS13k = new _OS13k;
 ///////////////////////////////////////////////////////////////////////////////
 // OS13k Variables
 
-const taskbarHeight = 42, programHeight = 26, titlebarHeight = 37,
+const taskbarHeight = 42, titlebarHeight = 37, programHeight = 26,
       startWindowOpenX = 9, startWindowOpenY = 51, 
       popupTime = 3, defaultVolume = .3, maxWordLength = 32;
       
@@ -668,14 +659,14 @@ let grabWindow, grabOffsetX, grabOffsetY, finishedStartup,
     activeWindow, activeProgram, helpProgram, activeTaskbarIcon, loadIcon,
     lastActiveElement, topZ = 0, loading = 0, hadInput = 0,
     windowOpenX = startWindowOpenX, windowOpenY = startWindowOpenY,
-    startProgram, trophyTrayIcon, wordsTrayIcon, muteTrayIcon, clockTrayIcon,
+    trophyTrayIcon, wordsTrayIcon, muteTrayIcon, clockTrayIcon,
     newWordsMessage = '', newWordsSpeak = '',
 
-    // parse trophy list
+    // parse or init trophy list
     trophies = localStorage.OS13kTrophies ? 
         JSON.parse(localStorage.OS13kTrophies) : [],
 
-    // parse word list
+    // parse or init word list
     words = localStorage.OS13kWords ? 
         JSON.parse(localStorage.OS13kWords) : [];
 
@@ -690,7 +681,7 @@ class _OS13kSystem
         window.onstorage =e=> this.CheckForTrophy(e.key);
 
         // stop spech if page is unloaded
-        document.body.onunload = OS13k.StopSpeech();
+        document.body.onunload = OS13kSystem.StopSpeech();
 
         // create tray icons
         trophyTrayIcon = new OS13kTrayIcon();
@@ -717,10 +708,8 @@ class _OS13kSystem
         this.CloseMenus();
 
         OS13k.Trophy('','Welcome to OS13k!','👋');
-        if (localStorage.OS13kFrozen)
-        {
+        localStorage.OS13kFrozen &&
             OS13k.Trophy('OS13k','Frozen','🧊',`Froze The Browser\n${localStorage.OS13kFrozen}`);
-        }
 
         // search local storage for trophies
         for (let i = localStorage.length; i--;)
@@ -738,10 +727,6 @@ class _OS13kSystem
     {
         // skip until not loading and finished startup
         if (loading || finishedStartup) return;
-
-        // open start active program
-        self != top ? title.innerText = 'Meta ' + title.innerText:
-            (startProgram = startProgram || helpProgram) && startProgram.Open();
             
         // save trophies
         localStorage.OS13kTrophies = JSON.stringify(trophies);
@@ -767,11 +752,10 @@ class _OS13kSystem
             activeWindow == activeElement && (hadInput = 1);
         }
 
-        // add queued up new words
+        // add popup for queued up new words
         newWordsMessage && OS13k.Popup(
             '<b>New Words!</b><br>' + newWordsMessage, newWordsSpeak,
-            wordsTrayIcon.program.Refresh());
-        newWordsMessage = newWordsSpeak = '';
+            wordsTrayIcon.program.Refresh(newWordsMessage = newWordsSpeak = ''));
 
         // update popups if finished startup
         if (hadInput && finishedStartup)
@@ -782,8 +766,8 @@ class _OS13kSystem
             for(const popup of [...popups.children])
             {
                 // speak popup
-                popup.speak && 
-                    OS13k.Speak(popup.speak, 1, 1, 1, popup.speakLanguage, popup.speak=0);
+                popup.speak && OS13k.Speak(popup.speak, 1, 1, 1, popup.speakLanguage);
+                popup.speak=0;
 
                 if (!document.fullscreenElement)
                 { 
@@ -848,13 +832,17 @@ class _OS13kSystem
     // toggle audio
     ToggleMute()
     {
-        OS13k.StopSpeech();
+        OS13kSystem.StopSpeech();
         localStorage.OS13kMute = gain.gain.value = 
             gain.gain.value ? 0 : defaultVolume;
         muteTrayIcon.innerHTML = gain.gain.value ? '🔊' : '🔇';
 
         OS13k.Trophy('OS13k','Shut Up','🔇','Muted');
     }
+    
+    // stop any current or queued speech
+    StopSpeech() { return speechSynthesis && speechSynthesis.cancel(); }
+    
 } // OS13kSystem
 const OS13kSystem = new _OS13kSystem;
 
@@ -984,10 +972,8 @@ class OS13kProgram extends HTMLElement
         name == 'Help'        && this.saveInfo.open == undefined 
             && (helpProgram = this);
 
-        // check if start active program or sticky open
-        self == top && (this.src == localStorage.OS13kStartProgram ?
-            startProgram = this :
-            sticky && this.saveInfo.open && this.Open());
+        // check if  sticky open
+        self == top && sticky && this.saveInfo.open && this.Open();
     }
     
     Move()
@@ -1093,9 +1079,7 @@ class OS13kProgram extends HTMLElement
     
     Close()
     {
-        // remove start program if closed
-        this.src == localStorage.OS13kStartProgram && 
-            (localStorage.OS13kStartProgram = 0);
+        // close it up
         this.SaveInfo(0);
         this.window = 0;
     }
@@ -1354,10 +1338,6 @@ class OS13kWindow extends HTMLElement
 
         // check if active
         if (!active) return;
-        
-        // save active program if finished startup and not sticky
-        finishedStartup && !this.program.sticky && 
-            (localStorage.OS13kStartProgram = this.program.src);
 
         // set focus to iframe
         !loading && this.iframeContent && this.iframeContent.focus();
