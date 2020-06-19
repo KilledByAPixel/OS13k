@@ -16,7 +16,7 @@ Please keep this project confidential!
 
 <!-- HTML above is optional -->
 
-<script src=programs.js?55></script>
+<script src=programs.js?57></script>
 <meta charset=utf-8>
 <style>
 body
@@ -219,13 +219,13 @@ div svg       { width:28;pointer-events:none; }
 const OS13kVersion = 49;
 {
     // version check, clear local storage if older
-    if (localStorage.OS13kVersion && localStorage.OS13kVersion != OS13kVersion)
+    if (localStorage.OS13kV && localStorage.OS13kV != OS13kVersion)
     {
         alert('OS13k version out of date! System reset in 3, 2, 1...');
         localStorage.clear();
     }
 
-    localStorage.OS13kVersion = OS13kVersion;
+    localStorage.OS13kV = OS13kVersion;
 
     // load default programs if none found
     var programsDefault = 0;
@@ -249,7 +249,9 @@ const OS13kVersion = 49;
 // ==ClosureCompiler==
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // @language_out ECMASCRIPT_2019
-// @js_externs OS13k, iframeContent.zzfx, iframeContent.OS13kRefresh
+// @js_externs localStorage.OS13kT, localStorage.OS13kW, localStorage.OS13kM
+// @js_externs localStorage.OS13kS, localStorage.OS13kV
+// @js_externs OS13k, iframeContent.zzfx, iframeContent.OS13kReload
 // @js_externs OS13k.Clamp, OS13k.Percent, OS13k.Lerp
 // @js_externs OS13k.Random, OS13k.randomSeed
 // @js_externs OS13k.Trophies, OS13k.Trophy, OS13k.GetTrophy
@@ -272,11 +274,11 @@ const OS13kVersion = 49;
 // 8. Zip
 // 9. Advzip "advzip -z -4 -i 1000 OS13kMin.zip"
 
-// Stuff to remove before minifying
+// Stuff that can be remove before minifying
 // - Frozen trophy (console not in js13k build)
 // - check pixel shader for errors
 // - hide tray icons until program is set (rework)
-// 
+// - camel case name conversion if programs are packed toether
 
 } // Minification Stuff
 
@@ -341,10 +343,10 @@ class _OS13k
         localStorage['OS13kTrophy,' + key] = message;
             
         // trophies are automatically saved after startup
-        finishedStartup && (localStorage.OS13kTrophies = JSON.stringify(trophies));
+        finishedStartup && (localStorage.OS13kT = JSON.stringify(trophies));
         
-        // refresh trophy window
-        trophyTrayIcon.program && trophyTrayIcon.program.Refresh();
+        // reload trophy window
+        trophyTrayIcon.program && trophyTrayIcon.program.Reload();
         
         // use game or icon as name if there is no name
         name || game && (name = game, game = '');
@@ -417,7 +419,7 @@ class _OS13k
         }
         
         // save words
-        localStorage.OS13kWords = JSON.stringify(words);
+        localStorage.OS13kW = JSON.stringify(words);
     }
 
     // get a random matching word
@@ -636,13 +638,12 @@ class _OS13k
     Popup(html, speak, language)
     {
         // create the popup
-        const popup = document.createElement('div');
+        const popup = popups.appendChild(document.createElement('div'));
         popup.className = 'popup';
         popup.innerHTML = html;
         popup.style.top = innerHeight;
         popup.speak = speak;
         popup.speakLanguage = language;
-        popups.appendChild(popup);
     }
     
 }; // _OS13k
@@ -663,12 +664,12 @@ let grabWindow, grabOffsetX, grabOffsetY, finishedStartup,
     newWordsMessage = '', newWordsSpeak = '',
 
     // parse or init trophy list
-    trophies = localStorage.OS13kTrophies ? 
-        JSON.parse(localStorage.OS13kTrophies) : [],
+    trophies = localStorage.OS13kT ? 
+        JSON.parse(localStorage.OS13kT) : [],
 
     // parse or init word list
-    words = localStorage.OS13kWords ? 
-        JSON.parse(localStorage.OS13kWords) : [];
+    words = localStorage.OS13kW ? 
+        JSON.parse(localStorage.OS13kW) : [];
 
 ///////////////////////////////////////////////////////////////////////////////
 // OS13k System Functions - handles non client facing features of OS13k
@@ -690,7 +691,7 @@ class _OS13kSystem
         clockTrayIcon  = new OS13kTrayIcon(e=>e); // always show clock
 
         // check saved settings
-        localStorage.OS13kMute == 0 && this.ToggleMute()
+        localStorage.OS13kM == 0 && this.ToggleMute()
 
         // set button functions
         buttonFullScreen.onmousedown =()=> activeWindow.FullScreen();
@@ -703,9 +704,6 @@ class _OS13kSystem
         // create the load program taskbar icon and add folders/programs
         loadIcon = new OS13kTaskbarIcon( {icon:'💾', name:'Load Program'} );
         loadIcon.windowOrFolder = new OS13kFolder(programs);
-
-        // close all the menus that were just opened
-        this.CloseMenus();
 
         OS13k.Trophy('','Welcome to OS13k!','👋');
         localStorage.OS13kFrozen &&
@@ -733,7 +731,7 @@ class _OS13kSystem
         startProgram && startProgram.Open();
             
         // save trophies
-        localStorage.OS13kTrophies = JSON.stringify(trophies);
+        localStorage.OS13kT = JSON.stringify(trophies);
         
         // finish startup after opening startup programs
         finishedStartup = 1;
@@ -743,60 +741,6 @@ class _OS13kSystem
     Update()
     {
         requestAnimationFrame(OS13kSystem.Update);
-
-        // listen for iframe becomming new active element
-        const activeElement = document.activeElement;
-        if (lastActiveElement != activeElement)
-        {
-            // set focus to new active element
-            activeElement.SetActive && activeElement.SetActive(1,0);
-            lastActiveElement = activeElement;
-
-            // set that we had input if user selected window
-            activeWindow == activeElement && (hadInput = 1);
-        }
-
-        // add popup for queued up new words
-        newWordsMessage && OS13k.Popup(
-            '<b>New Words!</b><br>' + newWordsMessage, newWordsSpeak,
-            wordsTrayIcon.program.Refresh(newWordsMessage = newWordsSpeak = ''));
-
-        // update popups if finished startup
-        if (hadInput && finishedStartup)
-        {
-            let offsetHeight = 0, i = 0;
-
-            // use copy of popups to prevent skipping if removed
-            for(const popup of [...popups.children])
-            {
-                // speak popup
-                popup.speak && OS13k.Speak(popup.speak, 1, 1, 1, popup.speakLanguage);
-                popup.speak=0;
-
-                if (!document.fullscreenElement)
-                { 
-                    // move popup up
-                    let y = parseFloat(popup.style.top) + offsetHeight - 9;
-                    if (y < taskbarHeight)
-                    {
-                        // stop popup below taskbar
-                        y = taskbarHeight;
-
-                        // fade out popup if at top
-                        if (!i++ && !(popup.style.opacity = (popup.style.opacity || popupTime) - .01))
-                        {
-                            // remove when invisible and adjust for height
-                            const rect = popup.getBoundingClientRect();
-                            offsetHeight += rect.height;
-                            popups.removeChild(popup);
-                        }
-                    }
-
-                    // set popup position
-                    popup.style.top = y;
-                }
-            }
-        }
 
         // update trophy count
         trophyTrayIcon.innerHTML = trophies.length + ' 🏆';
@@ -810,18 +754,71 @@ class _OS13kSystem
         clockTrayIcon.innerHTML = (time[0]%12?time[0]%12:12) + ':' + time[1];
 
         // fade in desktop, convert opacity to number
-        loading || (document.body.style.opacity = Math.min(1,.02 + document.body.style.opacity*1));
+        loading || (document.body.style.opacity 
+            = Math.min(1,.02 + document.body.style.opacity*1));
+            
+        // listen for iframe becomming new active element
+        const activeElement = document.activeElement;
+        if (lastActiveElement != activeElement)
+        {
+            // set focus to new active element
+            activeElement.SetActive && activeElement.SetActive(1,0);
+            lastActiveElement = activeElement;
+
+            // set that we had input if user selected window
+            activeWindow == activeElement && (hadInput = 1);
+        }
+
+        // wait untill all startup programs are loaded
+        if (!finishedStartup) return;
+
+        // add popup for queued up new words and reload words window
+        newWordsMessage && OS13k.Popup(
+            '<b>New Words!</b><br>' + newWordsMessage, newWordsSpeak,
+            wordsTrayIcon.program.Reload(newWordsMessage = newWordsSpeak = ''));
+
+        // update popups after there is input
+        if (!hadInput) return;
+        
+        // iterate through popups, use copy to prevent skipping if removed
+        let offsetHeight = 0, i = 0;
+        for(const popup of [...popups.children])
+        {
+            // speak popup
+            popup.speak && OS13k.Speak(popup.speak, 1, 1, 1, popup.speakLanguage);
+            popup.speak = 0;
+
+            if (!document.fullscreenElement)
+            { 
+                // move popup up
+                let y = parseFloat(popup.style.top) + offsetHeight - 9;
+                if (y < taskbarHeight)
+                {
+                    // stop popup below taskbar
+                    y = taskbarHeight;
+
+                    // fade out popup if at top
+                    if (!i++ && !(popup.style.opacity = (popup.style.opacity || popupTime) - .01))
+                    {
+                        // remove when invisible and adjust for height
+                        const rect = popup.getBoundingClientRect();
+                        offsetHeight += rect.height;
+                        popups.removeChild(popup);
+                    }
+                }
+
+                // set popup position
+                popup.style.top = y;
+            }
+        }
     }
 
     // close all menus
     CloseMenus()
     {
-        // hide all drop down menus
+        // hide all menus
         for (const c of programsMenu.children)
-            c.style.visibility = '';
-
-        // hide menu
-        menu.style.visibility = '';
+            c.style.visibility = menu.style.visibility = '';
     }
 
     // try to give trophy if key is a valid trophy
@@ -837,7 +834,7 @@ class _OS13kSystem
     ToggleMute()
     {
         OS13kSystem.StopSpeech();
-        localStorage.OS13kMute = gain.gain.value = 
+        localStorage.OS13kM = gain.gain.value = 
             gain.gain.value ? 0 : defaultVolume;
         muteTrayIcon.innerHTML = gain.gain.value ? '🔊' : '🔇';
 
@@ -859,7 +856,7 @@ class OS13kFolder extends HTMLElement
     {
 		super();
         
-        // add to desktop
+        // add to programs menu
         this.className    = 'folder';
         this.style.left   = x;
         this.style.top    = y;
@@ -891,7 +888,7 @@ class OS13kFolder extends HTMLElement
         this.style.visibility = 'visible';
     }
 } // OS13kFolder
-customElements.define('o-f', OS13kFolder);
+customElements.define('f-', OS13kFolder);
 
 ///////////////////////////////////////////////////////////////////////////////
 // OS13kProgram - stores program info and handles loading from folders
@@ -905,7 +902,7 @@ class OS13kProgram extends HTMLElement
         // split up source by . to get extension
         const srcParts = src.split('.');
         
-        // infer name from camel case src
+        // get name from camel case src
         if (!name)
         {
             // split up source by / to get filename
@@ -919,7 +916,7 @@ class OS13kProgram extends HTMLElement
         }
         
         // check for special extensions
-        const extension = src? srcParts[1] : '';
+        const extension = src ? srcParts[1] : '';
         this.isDweet = extension == 'dweet';
         this.isShader = extension == 'shader';
 
@@ -947,37 +944,29 @@ class OS13kProgram extends HTMLElement
         folder || (this.title = name +
                 ( this.isDweet ? ' - Dweet' :  this.isShader ? ' - Shader' : '') +
                 (author ? '\nBy ' + author : ''));
-            
+        
         // icon
-        const iconDisplay = document.createElement('div');
+        const iconDisplay = this.appendChild(document.createElement('div'));
         iconDisplay.style = 'pointer-events:none;width:45;text-shadow:1px 1px 3px #000;text-align:center';
         iconDisplay.innerHTML = icon;
-        this.appendChild(iconDisplay);
         
         // name
-        const nameDisplay = document.createElement('div');
-        nameDisplay.style = 'pointer-events:none;flex:1'
+        const nameDisplay = this.appendChild(document.createElement('div'));
+        nameDisplay.style = 'pointer-events:none;flex:1;padding-right:9'
         nameDisplay.innerHTML = name;
-        this.appendChild(nameDisplay);
         
-        if (folder)
-        {
-            // folder arrow
-            const folderDisplay = document.createElement('div');
-            folderDisplay.style = 'pointer-events:none'
-            folderDisplay.innerHTML = '&nbsp;&nbsp;▶';
-            this.appendChild(folderDisplay);
-        }
+        // folder arrow
+        folder && (this.appendChild(document.createElement('div')).innerHTML = '▶');
         
         // save special programs
         name == 'Trophy Case' && trophyTrayIcon.SetProgram(this);
         name == 'Word List'   && wordsTrayIcon.SetProgram(this);
         name == 'Clock'       && clockTrayIcon.SetProgram(this);
         name == 'Help'        && this.saveInfo.open == undefined 
-            && (helpProgram = this);
+                              && (helpProgram = this);
 
-        // check if start active program or sticky open
-        self == top && (this.src == localStorage.OS13kStartProgram ?
+        // check if start program or sticky open
+        self == top && (this.src == localStorage.OS13kS ?
             startProgram = this :
             sticky && this.saveInfo.open && this.Open());
     }
@@ -1051,12 +1040,12 @@ class OS13kProgram extends HTMLElement
     
     SetActive() { this.Open(); }
     
-    Refresh()
+    Reload()
     {
-        // call refresh function in iframe if it exists
-        this.window && this.window.iframeContent &&
-            this.window.iframeContent.OS13kRefresh &&
-            this.window.iframeContent.OS13kRefresh()
+        // call reload function in iframe if it exists
+        return this.window && this.window.iframeContent &&
+            this.window.iframeContent.OS13kReload &&
+            (this.window.iframeContent.OS13kReload(), 1);
     }
     
     Toggle()
@@ -1086,15 +1075,15 @@ class OS13kProgram extends HTMLElement
     Close()
     {
         // remove start program if closed
-        this.src == localStorage.OS13kStartProgram && 
-            (localStorage.OS13kStartProgram = 0);
+        this.src == localStorage.OS13kS && 
+            (localStorage.OS13kS = 0);
             
         // save info and close window
         this.SaveInfo(0);
         this.window = 0;
     }
 } // OS13kProgram
-customElements.define('o-p', OS13kProgram);
+customElements.define('p-', OS13kProgram);
 
 ///////////////////////////////////////////////////////////////////////////////
 // OS13kWindow - window to a running program, handles program loading
@@ -1119,33 +1108,30 @@ class OS13kWindow extends HTMLElement
         this.shadowRoot.innerHTML = templateWindow.innerHTML;
         
         // title bar
-        this.shadowRoot.appendChild(this.titlebar = document.createElement('div'));
+        this.titlebar = this.shadowRoot.appendChild(document.createElement('div'));
         this.titlebar.id = 'titlebar';
         this.titlebar.title = program.title;
         
         // title bar wrapper
-        this.titlebar.appendChild(this.nameWrapper = document.createElement('div'));
+        this.nameWrapper = this.titlebar.appendChild(document.createElement('div'));
         this.nameWrapper.id = 'nameWrapper';
 
         // icon
-        const iconDisplay = document.createElement('div');
-        this.nameWrapper.appendChild(iconDisplay);
-        iconDisplay.id = 'icon';
-        iconDisplay.innerHTML = program.icon;
+        const icon = this.nameWrapper.appendChild(document.createElement('div'));
+        icon.id = 'icon';
+        icon.innerHTML = program.icon;
         
         // name
-        const nameDisplay = document.createElement('div');
-        this.nameWrapper.appendChild(nameDisplay);
-        nameDisplay.id = 'name';
-        nameDisplay.innerHTML = program.name;
+        const name = this.nameWrapper.appendChild(document.createElement('div'));
+        name.id = 'name';
+        name.innerHTML = program.name;
         
         // create title bar icons
         const AddTitlebarIcon=(id, title)=>
         {
-            const icon = document.createElement('div');
+            const icon = this.titlebar.appendChild(document.createElement('div'));
             icon.innerHTML = `<svg><use href=#icon-${icon.id = id}>`;
             icon.title = title;
-            this.titlebar.appendChild(icon);
         }
         program.resize && 
             AddTitlebarIcon('grow', 'Grow', AddTitlebarIcon('shrink', 'Shrink'));
@@ -1156,13 +1142,13 @@ class OS13kWindow extends HTMLElement
         AddTitlebarIcon('close', 'Close');
 
         // create content wrapper
-        const frameWrapper = this.frameWrapper = document.createElement('div');
-        frameWrapper.style.background = '#000';
-        this.shadowRoot.appendChild(frameWrapper);
+        (this.frameWrapper =
+            this.shadowRoot.appendChild(document.createElement('div')))
+            .style.background = '#000';
 
         // create code/help display
-        this.shadowRoot.appendChild( 
-            this.codeDisplay = document.createElement('textarea'));
+        this.codeDisplay =
+            this.shadowRoot.appendChild(document.createElement('textarea'));
         this.codeDisplay.setAttribute('readOnly', 1);
         
         // resize window size to fit inner width while preserving aspect
@@ -1177,7 +1163,7 @@ class OS13kWindow extends HTMLElement
         this.scale = width / program.width;
 
         // create iframe
-        frameWrapper.appendChild(this.iframe = document.createElement('iframe')); 
+        this.iframe = this.frameWrapper.appendChild(document.createElement('iframe')); 
         this.iframe.id = 'frame';
         
         // announce game when first opened
@@ -1270,7 +1256,7 @@ class OS13kWindow extends HTMLElement
             this.style.visibility = this.iframe.style.visibility = 'visible';
             
             // only set active if not grabbing and not reloaded
-            grabWindow || this.reloaded || this.SetActive();
+            grabWindow || this.SetActive();
     
             // update startup routine
             OS13kSystem.HandleStartup(loading&&--loading);
@@ -1351,7 +1337,7 @@ class OS13kWindow extends HTMLElement
         
         // save start program if finished startup and not sticky
         finishedStartup && !this.program.sticky && 
-            (localStorage.OS13kStartProgram = this.program.src);
+            (localStorage.OS13kS = this.program.src);
 
         // set focus to iframe
         !loading && this.iframeContent && this.iframeContent.focus();
@@ -1421,13 +1407,10 @@ class OS13kWindow extends HTMLElement
     
     Reload()
     {
-        // clear if sticky note
-        this.program.icon == '✍️' && (localStorage.OS13kSn = '');
+        // reload program or reload iframe and set invisible
+        this.program.Reload() || 
+            this.iframeContent.location.reload(this.iframe.style.visibility = '')
     
-        // hide iframe and reload it
-        this.iframe.style.visibility = '';
-        this.iframeContent.location.reload();
-        
         // set that it was reloaded
         this.reloaded = 1;
     }
@@ -1440,7 +1423,7 @@ class OS13kWindow extends HTMLElement
         this.remove();
     }
 } // OS13kWindow
-customElements.define('o-w', OS13kWindow);
+customElements.define('w-', OS13kWindow);
 
 ///////////////////////////////////////////////////////////////////////////////
 // OS13kTaskbarIcon - icon on taskbar that can be used as shortcut
@@ -1496,7 +1479,7 @@ class OS13kTaskbarIcon extends HTMLElement
     }
     
 } // OS13kTaskbarIcon
-customElements.define('o-i', OS13kTaskbarIcon);
+customElements.define('i-', OS13kTaskbarIcon);
 
 ///////////////////////////////////////////////////////////////////////////////
 // OS13kTrayIcon - icon on taskbar tray for OS shortcuts
@@ -1532,7 +1515,7 @@ class OS13kTrayIcon extends HTMLElement
     SetActive()  { this.Open();  }
     Open()       { this.program ? this.program.Toggle() : this.functionCall(); }
 } // OS13kTrayIcon
-customElements.define('o-t', OS13kTrayIcon);
+customElements.define('t-', OS13kTrayIcon);
 
 ///////////////////////////////////////////////////////////////////////////////
 // Mouse Input

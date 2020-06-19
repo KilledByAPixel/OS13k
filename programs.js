@@ -7,8 +7,8 @@ var programs =
 [
     {src:'system/test.html?22', code:1, width:600, height:400, sticky:1},
     {src:'system/console.html?64',icon:'<span style=color:#0f0;background:#000;font-family:monospace>JS>'},
-    {src:'system/trophyCase.html?24', icon:'🏆', sticky:1, reload:0},
-    {src:'system/wordList.html?10', icon:'📕', sticky:1, reload:0},
+    {src:'system/trophyCase.html?25', icon:'🏆', sticky:1, reload:0},
+    {src:'system/wordList.html?11', icon:'📕', sticky:1, reload:0},
     {src:'system/clock.dweet.js?15', icon:'🕰️', width:200, height:200, reload:0, sleep:0, full:0, sticky:1, resize:0},
     {name:'Test Folder', icon:'📁', folder:
     [
@@ -17,7 +17,7 @@ var programs =
 ]},
 {name:'Apps', icon:'🛠️', folder:
 [
-    {src:'apps/stickyNote.html?4', icon:'✍️', width:300, height:264, full:0, sticky:1, resize:0, help:'Ctrl+B - Bold\nCtrl+I - Italic\nCtrl+U - Underline\n\Reload to clear'},
+    {src:'apps/stickyNote.html?5', icon:'✍️', width:300, height:264, full:0, sticky:1, resize:0, help:'Ctrl+B - Bold\nCtrl+I - Italic\nCtrl+U - Underline\n\Reload to clear'},
     {src:'apps/photoBooth.html', icon:'📸', width:1400, height:550 },
     {src:'apps/unicodeToys.html', icon:'𝖀', author:'Xem', width:500, height:800},
     {src:'apps/miniShadertoy.html', icon:'𝓢', width:340, height:400, resize:0},
