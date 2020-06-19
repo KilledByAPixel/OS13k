@@ -24,7 +24,7 @@ OS13k is a tiny operating system designed for a JS13k community project. It incl
 
 ## Programming Info
 - OS13k stores it's list of programs in programs.js
-- For fast iteration when developing, the first program in the list opens automatically
+- For fast iteration when developing, most recent active window is opened on startup
 - Though you can use images and other files, for JS13k we will need each program in one html file
 
 Add an icon config to programs.js to register your program, and send me pull request, examples...
