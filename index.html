@@ -216,16 +216,16 @@ div svg       { width:28;pointer-events:none; }
 ///////////////////////////////////////////////////////////////////////////////
 // OS13k Debug (remove from minified)
 
-const OS13kVersion = 50;
+const OS13kVersion = 51;
 {
     // version check, clear local storage if older
-    if (localStorage.OS13kV && localStorage.OS13kV != OS13kVersion)
+    if (localStorage.OS13kVersion && localStorage.OS13kVersion != OS13kVersion)
     {
         alert('OS13k version out of date! System reset in 3, 2, 1...');
         localStorage.clear();
     }
 
-    localStorage.OS13kV = OS13kVersion;
+    localStorage.OS13kVersion = OS13kVersion;
 
     // load default programs if none found
     var programsDefault = 0;
@@ -250,7 +250,7 @@ const OS13kVersion = 50;
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // @language_out ECMASCRIPT_2019
 // @js_externs localStorage.OS13kT, localStorage.OS13kW, localStorage.OS13kM
-// @js_externs localStorage.OS13kS, localStorage.OS13kV, localStorage.OS13kR
+// @js_externs localStorage.OS13kS, localStorage.OS13kR
 // @js_externs OS13k, iframeContent.zzfx, iframeContent.OS13kReload
 // @js_externs OS13k.Clamp, OS13k.Percent, OS13k.Lerp
 // @js_externs OS13k.Random, OS13k.randomSeed
