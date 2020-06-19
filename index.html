@@ -226,29 +226,7 @@ div svg       { width:28;pointer-events:none; }
 <script src=programs.js?43></script>
 <script>
 
-///////////////////////////////////////////////////////////////////////////////
-// Use Strict and Google Closure Config
-
-{
-
 'use strict';
-
-// ==ClosureCompiler==
-// @compilation_level ADVANCED_OPTIMIZATIONS
-// @language_out ECMASCRIPT_2019
-// @js_externs OS13kFolder, OS13kProgram, OS13kWindow, OS13kTaskbarIcon
-// @js_externs OS13k, zzfx, iframeContent.zzfx
-// @js_externs OS13k.Trophy, OS13k.GetTrophy, OS13k.Trophies
-// @js_externs OS13k.KeyDirection, OS13k.Speak
-// @js_externs OS13k.CreateShader, OS13k.RenderShader, OS13k.CreateCanvas
-// @js_externs OS13k.PlaySamples, OS13k.PlaySeed, OS13k.GetNote
-// @js_externs OS13k.KillHTML, OS13k.Glitch
-// @js_externs OS13k.Random, OS13k.randomSeed 
-// @js_externs OS13k.Clamp, OS13k.Percent, OS13k.Lerp
-// @js_externs localStorage.OS13kTrophies, localStorage.OS13kVersion
-// @output_file_name OS13k.min.js
-// ==/ClosureCompiler==
-} // strict & closure config
 
 ///////////////////////////////////////////////////////////////////////////////
 // OS13k Debug (remove from minified)
@@ -277,6 +255,27 @@ const OS13kVersion = 48;
         ];
     }
 } // debug stuff
+
+///////////////////////////////////////////////////////////////////////////////
+// Google Closure Config
+
+{
+// ==ClosureCompiler==
+// @compilation_level ADVANCED_OPTIMIZATIONS
+// @language_out ECMASCRIPT_2019
+// @js_externs OS13kFolder, OS13kProgram, OS13kWindow, OS13kTaskbarIcon
+// @js_externs OS13k, zzfx, iframeContent.zzfx
+// @js_externs OS13k.Trophy, OS13k.GetTrophy, OS13k.Trophies
+// @js_externs OS13k.KeyDirection, OS13k.Speak
+// @js_externs OS13k.CreateShader, OS13k.RenderShader, OS13k.CreateCanvas
+// @js_externs OS13k.PlaySamples, OS13k.PlaySeed, OS13k.GetNote
+// @js_externs OS13k.KillHTML, OS13k.Glitch
+// @js_externs OS13k.Random, OS13k.randomSeed 
+// @js_externs OS13k.Clamp, OS13k.Percent, OS13k.Lerp
+// @js_externs localStorage.OS13kTrophies, localStorage.OS13kVersion
+// @output_file_name OS13k.min.js
+// ==/ClosureCompiler==
+} // Google Closure Config
 
 ///////////////////////////////////////////////////////////////////////////////
 // OS13k System
@@ -873,7 +872,7 @@ class _OS13kManager
         OS13k.Trophy('OS13k','Shut Up','🔇','Muted');
     }
 } // OS13kManager
-OS13kManager = new _OS13kManager;
+let OS13kManager = new _OS13kManager;
 
 ///////////////////////////////////////////////////////////////////////////////
 // OS13kFolder - holds a list of programs
@@ -1769,17 +1768,21 @@ const zzfx =      // play a sound
 } // zzfx
 
 ///////////////////////////////////////////////////////////////////////////////
+// Start OS13k!
+
+OS13kManager.Start();
+
+///////////////////////////////////////////////////////////////////////////////
 // Mobile Support (optional)
 
-let wasTouching;
-
-ontouchstart=()=>
-{
-    // save original functions
+// save is touching and original mouse functions
+let wasTouching, 
     onmouseupTouch   = onmouseup,
     onmousedownTouch = onmousedown,
     onmousemoveTouch = onmousemove;
 
+(typeof ontouchstart != 'undefined') && (ontouchstart=()=>
+{
     // prevent touch triggering mouse events
     onmouseup = onmousedown = onmousemove = 0;
     
@@ -1832,11 +1835,6 @@ ontouchstart=()=>
     
     // set touch events
     ontouchstart = ontouchmove = ontouchend = ontouchcancel = ProcessTouch;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-// Start OS13k!
-
-OS13kManager.Start();
+});
 
 </script>
