@@ -100,7 +100,6 @@ Add an icon config to programs.js to register your program, and send me pull req
 - OS13k.KeyDirection(key) - Get {x, y} position from a key code for WASD and arrow keys
 - OS13k.Speak(text, rate=1, pitch=1, volume=1, language='en', stopSpeech) - Play speech of the text
 - OS13k.KillHTML(string) - Stops HTML in string by setting all '<' to ''
-- OS13k.Glitch(string, count) - Applies corruption to a string
 - OS13k.Popup(html, speak) - shows a popup with given html, and optional speech
 
 ### Math Library
