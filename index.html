@@ -1173,14 +1173,14 @@ class OS13kWindow extends HTMLElement
         this.iframe.id = 'frame';
         
         // announce game when first opened
-        if (!program.wasOpened)
+        program.wasOpened || finishedStartup &&
             OS13k.Speak(this.program.name, 1, 1, 1, 'ja');
         
         // add program name to words and dont speak
         OS13k.AddWords(this.program.name, 0); 
         
-        // track if programs are loading
-        finishedStartup || ++loading;
+        // track if programs are loading during startup
+        loading += !finishedStartup;
         
         // wait for frame to load and set that it is not loading
         this.iframe.onload =e=> { try {
