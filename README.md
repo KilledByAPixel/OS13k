@@ -98,7 +98,6 @@ Add an icon config to programs.js to register your program, and send me pull req
 - OS13k.CreateShader(canvas, shaderCode) - Create a shadertoy compatible webgl shader
 - OS13k.RenderShader(canvas, shaderProgram, time=0, frame=0) - Render a shader
 - OS13k.KeyDirection(key) - Get {x, y} position from a key code for WASD and arrow keys
-- OS13k.Speak(text, rate=1, pitch=1, volume=1, language='en', stopSpeech) - Play speech of the text
 - OS13k.KillHTML(string) - Stops HTML in string by setting all '<' to ''
 - OS13k.Popup(html, speak) - shows a popup with given html, and optional speech
 
@@ -117,6 +116,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 - OS13k.PlaySeed(seed, lengthScale=1, volume=1, randomness=.05) - Play a zzfx sound from seed
 - OS13k.PlaySamples(samples, sampleRate=44100) - Play audio samples
 - OS13k.GetNote(semitoneOffset=0, rootNoteFrequency=440)
+- OS13k.Speak(text, rate=1, pitch=1, volume=1, language='en', stopSpeech) - Play speech of the text
 - *We will create a tool for browsing sound seeds soon*
 
 ### Program Settings and Defaults
@@ -162,9 +162,8 @@ Add an icon config to programs.js to register your program, and send me pull req
 
  ### Word List Functions
  - OS13k.AddWords(string, speak) - adds new words in string, pass optional speak override string
- - GetWords() - get the full list of words
- - GetWord(minLength=0, maxLength, firstCharacters) - returns random matching word, '' if none found
- - RemoveWord(word) - removes the word from the list (only for users via word list window)
+ - GetWord(regex = /./, minLength = 0, maxLength) - returns random matching word, '' if none found
+ - Words() - get the full list of words
  
  ### Any JS13k game can use trophies, even if not part of OS13k!
  - To add a trophies to any JS13k game, just save a special key to localStorage!
