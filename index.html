@@ -170,6 +170,7 @@ body
     overflow:hidden;
     background:#fff;
     border:none;
+    visibility:hidden;
 }
 #codeDisplay
 {
@@ -1295,7 +1296,7 @@ class OS13kWindow extends HTMLElement
                 (this.taskbarIcon = new OS13kTaskbarIcon(program, this));
 
             // make visible
-            this.style.visibility = 'visible';
+            this.style.visibility = this.iframe.style.visibility = 'visible';
             
             // only set active if not grabbing and not reloaded
             grabWindow || this.reloaded || this.SetActive();
