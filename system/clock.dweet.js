@@ -1,5 +1,5 @@
 D=new Date()+''
-if(c.title==D)return
+if(c.title!=D){
 c.title=D
 c.width=c.height=200
 x.fillStyle='#111'
@@ -21,4 +21,4 @@ D=D.slice(16,24).split`:`
 L(D[0]%12/12+D[1]/720,6,59)
 L(D[1]/60,3,85)
 x.fillStyle='#f00'
-L(D[2]/60,2,99)
+L(D[2]/60,2,99)}
