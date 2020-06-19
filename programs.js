@@ -23,7 +23,7 @@ const programs =
     {src:'apps/miniShadertoy.html', icon:'𝓢', width:340, height:400, resize:0},
     {src:'apps/textEditor.html', icon:'📝'},
     {src:'apps/sheets.html', icon:'🔠', width:650, height:130, resize:0},
-    {src:'apps/filters.html?3', icon:'✨', width:260, height:60, resize:0},
+    {src:'apps/filters.html?4', icon:'✨', width:260, height:60, resize:0},
     {src:'https://dweetview.3d2k.com', name:'Dweet View', icon:'<span style=color:#f00;background:#000><b>&nbsp;III&nbsp;'},
 ]},
 {name:'Games', icon:'🎮', folder:

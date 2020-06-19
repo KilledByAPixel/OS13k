@@ -23,7 +23,6 @@ Please keep this project confidential!
 
 <!-- HTML above is optional -->
 
-<script>var OS13k</script>
 <meta charset=utf-8>
 <style>
 body
@@ -31,7 +30,7 @@ body
     opacity:0;
     margin:0;
     overflow:hidden;
-    font-family:sans-serif;
+    font-family:arial;
     font-size:22;
     user-select:none;
     white-space:nowrap;
@@ -64,10 +63,9 @@ body
     position:absolute;
     z-index:10000;
     width:100%;
-    left:-2;
     background:linear-gradient(#888,#333);
     box-shadow:0px 1px 9px;
-    border:2px solid;
+    border-bottom:2px solid;
 }
 .taskbarIcon { width:50; height:40; text-shadow:1px 1px 3px; }
 .programActive,
@@ -84,19 +82,16 @@ body
     border:1px solid;
     border-radius:6px;
 }
-.trayIcon { padding-left:5; padding-right:5; }
+.trayIcon       { padding:6; }
 .trayIcon:hover { background:#fff3; }
 .popup
 {
     position:relative;
-    z-index:10001;
+    z-index:10000;
     width:200;
-    margin:9;
     padding:8;
-    white-space:normal;
     pointer-events:none;
     overflow:hidden;
-    font-size:20;
     text-align:center;
     background:linear-gradient(#eee,#888);
     box-shadow:9px 9px 19px;
@@ -121,7 +116,7 @@ body
     font-weight:900;
     background:linear-gradient(#223,#322);
 }
-.flexCenter, .program, #taskbar, .taskbarIcon, #tray, #title
+.program, #taskbar, .taskbarIcon, #title
 {
     display:flex;
     align-items:center;
@@ -129,8 +124,8 @@ body
 }
 @keyframes hue 
 {
-  0%, 100% { filter: hue-rotate() saturate(9); }
-  50%      { filter: hue-rotate(180deg) saturate(9); }
+  0%, 100% { filter: hue-rotate(); }
+  50%      { filter: hue-rotate(180deg); }
 }
 </style>
 <template id=templateWindow>
@@ -138,10 +133,8 @@ body
 :host
 {
     visibility:hidden;
-    position:absolute;
-    display:flex;
-    flex-direction:column;
     overflow:hidden;
+    position:absolute;
     background:#000;
     box-shadow:5px 5px 9px;
     border:3px solid #222;
@@ -153,34 +146,32 @@ body
     font-size:24;
     display:flex;
     align-items:center;
-    justify-content:center;
     overflow:hidden;
     white-space:nowrap;
     background:linear-gradient(#ccc,#444);
+    border-bottom:3px solid;
 }
 .titlebarActive { background:linear-gradient(#eee,#88f); }
 .titlebarSticky { background:linear-gradient(#ccc,#844); }
-#nameWrapper { width:100%; overflow:hidden; cursor:grab; }
-#icon { text-shadow:1px 1px 3px; margin-left:9; margin-right:9; }
-#name, #icon { pointer-events:none; display:inline; }
+#nameWrapper    { width:100%; overflow:hidden; cursor:grab; }
+#icon           { text-shadow:1px 1px 3px; margin-left:9; margin-right:9; }
+#name, #icon    { pointer-events:none; display:inline; }
 #frame
 {
     width:100%;
     height:100%;
-    overflow:hidden;
     background:#fff;
     border:none;
     visibility:hidden;
 }
-#codeDisplay
+textarea
 {
+    width:100%;
     height:99;
     resize:none;
     display:none;
     background:#000;
-    border:1px solid #fff;
     color:#fff;
-    outline:none;
 }
 #full:hover   { background:#fff; }
 #help:hover   { background:#0ff; }
@@ -208,22 +199,21 @@ div svg       { width:28;pointer-events:none; }
     <path stroke=#000 d='M2 2L8 8M8 2L2 8'/>
 </template>
 <div id=taskbar>
-<div id=traySpace style=flex:1></div>
-<div id=tray>
+<div id=taskbarSpace style=flex:1></div>
+<div id=tray></div>
 </div>
-</div>
-<div id=popups style=float:right;height:0></div>
+<div id=popups style=float:right></div>
 <div id=title>OS13k</div>
 <div id=desktop>
 <div id=programsMenu style=position:absolute></div>
 <div id=menu>
-<button id=buttonFullScreen>Fullscreen</button>
-<button id=buttonShowHelp>Help</button>
-<button id=buttonShowCode>Code</button>
-<button id=buttonResetSize>Reset Size</button>
-<button id=buttonReload>Reload</button>
-<button id=buttonClose>Close</button>
-<script src=programs.js?43></script>
+<button id=buttonFullScreen>Fullscreen
+<button id=buttonShowHelp>Help
+<button id=buttonShowCode>Code
+<button id=buttonResetSize>Reset Size
+<button id=buttonReload>Reload
+<button id=buttonClose>Close
+<script src=programs.js?45></script>
 <script>
 
 'use strict';
@@ -670,7 +660,7 @@ class _OS13k
     }
     
 }; // _OS13k
-OS13k = new _OS13k;
+var OS13k = new _OS13k;
 
 ///////////////////////////////////////////////////////////////////////////////
 // OS13k Variables
@@ -719,7 +709,7 @@ class _OS13kManager
         buttonFullScreen.onmousedown =()=> activeWindow.FullScreen();
         buttonShowCode.onmousedown   =
         buttonShowHelp.onmousedown   =()=> activeWindow.ShowCode();
-        buttonResetSize.onmousedown  =()=> activeWindow.Resize();
+        buttonResetSize.onmousedown  =()=> activeWindow.Resize(1);
         buttonReload.onmousedown     =()=> activeWindow.Reload();
         buttonClose.onmousedown      =()=> activeWindow.Close();
 
@@ -915,7 +905,7 @@ class OS13kFolder extends HTMLElement
         this.style.visibility = 'visible';
     }
 } // OS13kFolder
-customElements.define('os13k-folder', OS13kFolder);
+customElements.define('o-f', OS13kFolder);
 
 ///////////////////////////////////////////////////////////////////////////////
 // OS13kProgram - stores program info and handles loading from folders
@@ -1116,7 +1106,7 @@ class OS13kProgram extends HTMLElement
         this.window = 0;
     }
 } // OS13kProgram
-customElements.define('os13k-program', OS13kProgram);
+customElements.define('o-p', OS13kProgram);
 
 ///////////////////////////////////////////////////////////////////////////////
 // OS13kWindow - window to a running program, handles program loading
@@ -1177,11 +1167,6 @@ class OS13kWindow extends HTMLElement
             program.code && AddTitlebarIcon('code', 'Code');
         program.reload && AddTitlebarIcon('reload', 'Reload');
         AddTitlebarIcon('close', 'Close');
-        
-        // create thin line below title bar
-        const titlebarGap = document.createElement('div');
-        titlebarGap.style='height:3';
-        this.shadowRoot.appendChild(titlebarGap);
 
         // create content wrapper
         const frameWrapper = this.frameWrapper = document.createElement('div');
@@ -1191,7 +1176,6 @@ class OS13kWindow extends HTMLElement
         // create code/help display
         this.shadowRoot.appendChild( 
             this.codeDisplay = document.createElement('textarea'));
-        this.codeDisplay.id = 'codeDisplay'; 
         this.codeDisplay.setAttribute('readOnly', 1);
         
         // resize window size to fit inner width while preserving aspect
@@ -1469,7 +1453,7 @@ class OS13kWindow extends HTMLElement
         this.remove();
     }
 } // OS13kWindow
-customElements.define('os13k-window', OS13kWindow);
+customElements.define('o-w', OS13kWindow);
 
 ///////////////////////////////////////////////////////////////////////////////
 // OS13kTaskbarIcon - icon on taskbar that can be used as shortcut
@@ -1490,7 +1474,7 @@ class OS13kTaskbarIcon extends HTMLElement
         this.windowOrFolder = windowOrFolder;
         
         // add to taskbar
-        traySpace.before(this);
+        taskbarSpace.before(this);
     }
     
     Open()
@@ -1525,7 +1509,7 @@ class OS13kTaskbarIcon extends HTMLElement
     }
     
 } // OS13kTaskbarIcon
-customElements.define('os13k-taskbar-icon', OS13kTaskbarIcon);
+customElements.define('o-i', OS13kTaskbarIcon);
 
 ///////////////////////////////////////////////////////////////////////////////
 // OS13kTrayIcon - icon on taskbar tray for OS shortcuts
@@ -1554,10 +1538,9 @@ class OS13kTrayIcon extends HTMLElement
     }
     
     SetActive()  { this.Open();  }
-    Open()       { this.program ? this.program.Toggle() : this.functionCall();
-    return false; }
+    Open()       { this.program ? this.program.Toggle() : this.functionCall(); }
 } // OS13kTrayIcon
-customElements.define('os13k-tray-icon', OS13kTrayIcon);
+customElements.define('o-t', OS13kTrayIcon);
 
 ///////////////////////////////////////////////////////////////////////////////
 // Mouse Input

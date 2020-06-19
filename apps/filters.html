@@ -9,14 +9,14 @@
 <script>
 f=n=>{
 a=[
-{filter:''},                                    // none
-{filter:'grayscale('},                          // b&w
-{filter:'sepia()hue-rotate(20deg)contrast(.8'}, // gameboy
-{filter:'blur(1px'},                            // blur
-{filter:'sepia()invert('},                      // invert
-{filter:'sepia('},                              // sepia
-{filter:'contrast(.8)brightness(.5'},           // dim
-{animation:'hue 30s infinite'}                  // fruity
+{filter:''},                                        // none
+{filter:'grayscale('},                              // b&w
+{filter:'sepia()hue-rotate(20deg)contrast(.8'},     // gameboy
+{filter:'blur(1px'},                                // blur
+{filter:'sepia()invert('},                          // invert
+{filter:'sepia('},                                  // sepia
+{filter:'contrast(.8)brightness(.5'},               // dim
+{filter:'saturate(9)', animation:'hue 30s infinite'}  // fruity
 ]
 s=parent.document.body.style
 s.animation='';
