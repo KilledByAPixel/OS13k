@@ -382,21 +382,24 @@ class _OS13k
             // dont use it if it has anything but letters
             /[^a-z]/.test(word) ||
 
-            // limit word length
-            word.length > 1 && word.length < maxWordLength &&
+                // limit word length
+                word.length > 1 && word.length < maxWordLength &&
 
-            // check if already in list
-            words.indexOf(word) < 0 &&
+                // check if already in list
+                words.indexOf(word) < 0 &&
 
-            // add it to the list
-            (words.unshift(word), newWords.push(word))
+                // add it to the list of new words
+                newWords.push(word);
         });
         
-        // update new words message
-        for(let i in newWords)
+        for(const word of newWords)
         {
-            newWordsMessage += (newWordsMessage.length? ', ' : ' ') + newWords[i];
-            speak && (newWordsSpeak += newWords[i] + ' ');
+            // add it to the word list
+            words.unshift(word);
+            
+            // update new words message
+            newWordsMessage += (newWordsMessage.length? ', ' : ' ') + word;
+            speak && (newWordsSpeak += word + ' ');
         }
         
         // save words
@@ -771,6 +774,9 @@ class _OS13kManager
             // set focus to new active element
             activeElement.SetActive && activeElement.SetActive(1,0);
             lastActiveElement = activeElement;
+            
+            // set that we had input if user selected window
+            activeWindow == activeElement && (hadInput = 1);
         }
         
         // add queued up new words
@@ -1204,7 +1210,7 @@ class OS13kWindow extends HTMLElement
         ++loading;
         
         // wait for frame to load and set that it is not loading
-        this.iframe.onload =e=> { try { --loading;
+        this.iframe.onload =e=> { try {
 
             // set up iframe          
             const iframeContent = this.iframeContent = e.target.contentWindow;
@@ -1253,7 +1259,7 @@ class OS13kWindow extends HTMLElement
                     'T=Math.tan;' +
                     'R=(r,g,b,a=1)=>`rgba(${0|r},${0|g},${0|b},${a})`;' +
                     'loop=t=>requestAnimationFrame(loop,' +
-                        ( program.sleep? 'document.hasFocus()&&' : '' ) +
+                        ( program.sleep? '(frame<9|document.hasFocus())&&' : '' ) +
                         'u((60*(frame++/60)-frame-1|0?frame-1:frame)/60));' +
                     'loop(frame=0)');
 
@@ -1264,13 +1270,14 @@ class OS13kWindow extends HTMLElement
                     'onmousemove=e=>e.buttons&&(x=e.x,y=c.height-e.y);' +
                     'onmousedown=e=>(x=z=e.x,y=w=c.height-e.y);' +
                     'onmouseup=e=>z=w=0;' +
+                    's=parent.OS13k.CreateShader(c,`' + iframeText + '`);' +
                     'loop=t=>requestAnimationFrame(loop,' +
-                        ( program.sleep? 'document.hasFocus()&&' : '' ) +
+                        ( program.sleep? '(!t|document.hasFocus())&&' : '' ) +
                         '(c.width=innerWidth,' + 
                         'c.height=innerHeight,' + 
                         'g.uniform4f(g.getUniformLocation(s,"iMouse"),x,y,z,w),' +
                         'parent.OS13k.RenderShader(c,s,t/1e3,f++)));' + 
-                    'loop(s=parent.OS13k.CreateShader(c,`' + iframeText + '`))');
+                    'loop(0)');
             }}
             catch (e) {} // could not load frame, possible cross site error
 
@@ -1285,7 +1292,7 @@ class OS13kWindow extends HTMLElement
             grabWindow || this.reloaded || this.SetActive();
     
             // update startup routine
-            OS13kManager.HandleStartup();
+            OS13kManager.HandleStartup(--loading);
         }
         
         // load the iframe
@@ -1355,7 +1362,7 @@ class OS13kWindow extends HTMLElement
         // set style
         this.className = active? 'activeWindow' : '';
         this.titlebar.className = 'titlebar titlebar' 
-            + (active ? 'Active' : this.program.sticky ? 'Sticky' : '');
+            + (active && !loading? 'Active' : this.program.sticky ? 'Sticky' : '');
         (this.program.sleep ? this : this.titlebar).style.filter = 
             active? '' : 'saturate(.7)brightness(.7';
 
@@ -1368,7 +1375,7 @@ class OS13kWindow extends HTMLElement
             (localStorage.OS13kStartProgram = this.program.src);
 
         // set focus to iframe
-        this.iframeContent && this.iframeContent.focus();
+        !loading && this.iframeContent && this.iframeContent.focus();
 
         if (clamp)
         {
