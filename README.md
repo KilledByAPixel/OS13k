@@ -37,7 +37,6 @@ Add an icon config to programs.js to register your program, and send me pull req
 - OS13k can open any html file and it will work the same as if opened directly
 - Chrome is recommended for development, but Firefox is also supported
 - [Some browsers like Firefox may not work locally if it treats local files as cross-origin](https://discourse.mozilla.org/t/firefox-68-local-files-now-treated-as-cross-origin-1558299/42493/9)
-- To force a page to refresh you can add ?(version) to the src link... {src:'Help.html?1'}
 - Try to keep your program paused or light on cpu when it does not have focus, !document.hasFocus()
 - Dweets and Shadertoys are automatically paused when not focused (unless sleep:0 is set)
 - Prefix all local storage keys with OS13kYourProgramName to prevent collisions during JS13k (use at least 2 letters)
