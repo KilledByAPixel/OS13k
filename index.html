@@ -837,7 +837,7 @@ class _OS13kSystem
         OS13kSystem.StopSpeech();
         
         // save gain value and set tray icon
-        muteTrayIcon.innerHTML = 
+        muteTrayIcon.element.innerHTML = 
             (localStorage.OS13kM = gain.gain.value 
                 = gain.gain.value ? 0 : defaultVolume) ? 
             '🔊' : '🔇';
@@ -1490,7 +1490,7 @@ class OS13kTrayIcon
         // create icon
         this.functionCall = functionCall;
         element.title = title;
-        this.innerHTML = icon;
+        element.innerHTML = icon;
     }
     
     SetProgram(program)
