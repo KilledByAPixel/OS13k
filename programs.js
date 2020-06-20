@@ -1,64 +1,79 @@
+// flags
+var sticky  = 2**0; // always save position and if open
+var reload  = 2**1; // show reload button
+var nosleep = 2**2; // prevent dim and pause when not active
+var full    = 2**3; // show full screen button
+var resize  = 2**4; // show resize buttons (apect ratio maintained)
+var code    = 2**5; // show code button (cant show code if help is set)
+
+// defaults
+var defaultFlags = full|reload|resize;
+var defaultWidth = 720, defaultHeight = 405; // 16:9 aspect
+
+// program format
+//[src, icon, width, height, flags, author, name, help, folder]
+
 var programs = 
 [
-{name:'Close All', icon:'❌',},
-{src:'help.html', icon:'<b><span style=color:#0f0>?', width:380, height:400, help:'Check here to see help when available.\nSome programs have a option to show code instead.\n\nHave fun! ✌️😄', reload:0},
-{src:'moreInfo.html', icon:'👨‍💻'},
-{name:'System', icon:'⚙️', folder:
+[,'❌',,,,,'Close All'],
+['help.html','<b><span style=color:#0f0>?',380,400,full|resize,,,'Check here to see help when available.\nSome programs have a option to show code instead.\n\nHave fun! ✌️😄'],
+
+['moreInfo.html','👨‍💻'],
+[,'⚙️',,,,,'System',,
 [
-    {src:'system/test.html', code:1, width:600, height:400, sticky:1},
-    {src:'system/trophyCase.html', icon:'🏆', sticky:1, reload:0},
-    {src:'system/wordList.html', icon:'📕', sticky:1, reload:0},
-    {src:'system/clock.dweet.js', icon:'🕰️', width:200, height:200, reload:0, sleep:0, full:0, sticky:1, resize:0},
-    {name:'Test Folder', icon:'📁', folder:
+    ['system/test.html',,,,resize|code|sticky],
+    ['system/trophyCase.html','🏆',,,sticky],
+    ['system/wordList.html','📕',,,sticky],
+    ['system/clock.dweet.js','🕰️',200,200,sticky|code|nosleep],
+    [,'📁',,,,,'Test Folder',,
     [
-        {src:'index.html', name:'Meta OS13k', icon:'✌️😄'},
-    ]},
-]},
-{name:'Apps', icon:'🛠️', folder:
+        ['index.html','✌️😄',600,400,,,'Meta OS13k'],
+    ]],
+]],
+[,'🛠️',,,,,'Apps',,
 [
-    {src:'apps/console.html',icon:'<span style=color:#0f0;background:#000;font-family:monospace>JS>'},
-    {src:'apps/stickyNote.html', icon:'✍️', width:300, height:264, full:0, sticky:1, resize:0, help:'Ctrl+B - Bold\nCtrl+I - Italic\nCtrl+U - Underline\n\Reload to clear'},
-    {src:'apps/photoBooth.html', icon:'📸', width:1400, height:550 },
-    {src:'apps/unicodeToys.html', icon:'𝖀', author:'Xem', width:500, height:800},
-    {src:'apps/miniShadertoy.html', icon:'𝓢', width:340, height:400, resize:0},
-    {src:'apps/textEditor.html', icon:'📝'},
-    {src:'apps/sheets.html', icon:'🔠', width:650, height:130, resize:0},
-    {src:'apps/filters.html', icon:'✨', width:260, height:60, resize:0},
-    {src:'https://dweetview.3d2k.com', name:'Dweet View', icon:'<span style=color:#f00;background:#000><b>&nbsp;III&nbsp;'},
-]},
-{name:'Games', icon:'🎮', folder:
+    ['apps/console.html','<span style=color:#0f0;background:#000;font-family:monospace>JS>'],
+    ['apps/stickyNote.html','✍️',300,263,sticky|reload],
+    ['apps/filters.html','✨',260,60,reload],
+    ['apps/photoBooth.html','📸',1400,550],
+    ['apps/unicodeToys.html','𝖀',500,800,,'Xem'],
+    ['apps/miniShadertoy.html','𝓢',340,400],
+    ['apps/textEditor.html','📝'],
+    ['https://dweetView.3d2k.com','&nbsp;III&nbsp'],
+]],
+[,'🎮',,,,,'Games',,
 [
-    {src:'https://bounceback.3d2k.com', name:'Bounce Back', icon:'❤️', author:'Frank Force', reload:0},
-    {src:'games/swatch.html', icon:'🌈', author:'Nicholas Ortenzio', width:320, height:340, resize:0},
-    {src:'games/lavaRush.html', icon:'🌋', author:'Jeremy Burns', width:640, height:400},
-    {src:'games/sn1ke.html', icon:'👀', author:'Codegolf Team', width:400, height:280, resize:0},
-    {src:'games/tetris.html', icon:'<span style=font-size:10>▀█▀', author:'Veubeke', width:210, height:380, resize:0},
-    {src:'games/queensGambit.html', icon:'<span style=color:#f0f>♛'},
-    {src:'games/freeCell.html', icon:'♠️', width:800, height:900, resize:0},
-    {src:'games/hueJumper.html', icon:'🌲'},
-    {src:'dweets/bogusRoads.dweet.js', icon:'🛣️'},
-]},
-{name:'Music', icon:'🎶', folder:
+    ['https://bounceBack.3d2k.com','❤️',,,full|resize,'Frank Force'],
+    ['games/swatch.html','🌈',320,340,reload,'Nicholas Ortenzio'],
+    ['games/lavaRush.html','🌋',640,400,,'Jeremy Burns'],
+    ['games/sn1ke.html','👀',400,280,,'Codegolf Team'],
+    ['games/tetris.html','<span style=font-size:10>▀█▀',210,380,reload,'Veubeke'],
+    ['games/queensGambit.html','<span style=color:#f0f>♛'],
+    ['games/freeCell.html','♠️',800,900,full|reload,'Jeremy Burns'],
+    ['games/hueJumper.html','🌲'],
+    ['dweets/bogusRoads.dweet.js','🛣️'],
+]],
+[,'🎶',,,,,'Music',,
 [
-    {src:'music/minBytes.html', icon:'<span style=color:#f00>𝓜', width:450, height:450, resize:0},
-    {src:'music/piano.html', icon:'🎹', width:800, height:300},
-    {src:'music/bach.dweet.js', icon:'♫'},
-]},
-{name:'Toys', icon:'🤖', folder:
+    ['music/minBytes.html','<span style=color:#f00>𝓜',450,450],
+    ['music/piano.html','🎹',800,300],
+    ['music/bach.dweet.js','♫'],
+]],
+[,'🤖',,,,,'Toys',,
 [
-    {src:'toys/zzfxSoundBoard.html', name:'ZzFX Sound Board', icon:'𝐙𝐙', width:700, height:420},
-    {src:'toys/zzartLandscape.shader.txt', name:'ZzArt Landscape', icon:'𝓩'},
-    {src:'toys/infiniteYinYangs.shader.txt', icon:'<span style=color:#f00>☯'},
-    {src:'toys/vogelSpiral.shader.txt', icon:'🌀'},
-]},
-{name:'Dweets', icon:'<b>III', folder:
+    ['toys/zzfxSoundBoard.html','𝐙𝐙',700,420,,,'ZzFX Sound Board'],
+    ['toys/zzartLandscape.shader.txt','𝓩',,,,,'ZzFX Landscape'],
+    ['toys/infiniteYinYangs.shader.txt','<span style=color:#f00>☯'],
+    ['toys/vogelSpiral.shader.txt','🌀'],
+]],
+[,'<b>III',,,,,'Dweets',,
 [
-    {src:'dweets/blackHole.dweet.js', icon:'🌌'},
-    {src:'dweets/underwaterCavern.dweet.js', icon:'🌊', author:'Pavel'},
-    {src:'dweets/cityTraffic.dweet.js', icon:'🚌', author:'Tomxor'},
-    {src:'dweets/trainSet.dweet.js', icon:'🚂', author:'jylikangas'},
-    {src:'dweets/automaticBreakout.dweet.js', icon:'●'},
-    {src:'dweets/colorZoom.dweet.js', icon:'❤', author:'Cantelope'},
-    {src:'dweets/triFractal.dweet.js', icon:'🔺', author:'Cantelope'},
-]},
-]
+    ['dweets/blackHole.dweet.js','🌌'],
+    ['dweets/underwaterCavern.dweet.js','🌊',,,,'Pavel'],
+    ['dweets/cityTraffic.dweet.js','🚌',,,,'Tomxor'],
+    ['dweets/trainSet.dweet.js','🚂',,,,'jylikangas'],
+    ['dweets/automaticBreakout.dweet.js','■',,,,'●'],
+    ['dweets/colorZoom.dweet.js','❤',,,,'Cantelope'],
+    ['dweets/triFractal.dweet.js','🔺',,,,'Cantelope'],
+]],
+]; // programs

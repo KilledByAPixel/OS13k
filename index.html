@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A tiny OS for JS13k</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?63></script>
+<script src=programs.js?64></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -206,7 +206,7 @@ div svg       { width:28;pointer-events:none; }
 </div>
 <div id=popups style=float:right></div>
 <div id=background>OS13k</div>
-<div id=desktop>
+<div id=desktop style=position:absolute>
 <div id=programsMenu style=position:absolute></div>
 <div id=menu>
 <button id=buttonFullScreen>Fullscreen
@@ -238,12 +238,21 @@ const OS13kVersion = 52;
     if (typeof programs == 'undefined')
     {
         alert('No programs found, using defaults!')
+
+        var sticky=2**0, reload=2**1, nosleep=2**2, full=2**3, resize=2**4, code=2**5;
+        var defaultFlags = full|reload|resize, defaultWidth = 720, defaultHeight = 405;
         var programs = 
         [
-            {src:'system/test.html'},
-            {src:'system/wordList.html', icon:'📕', sticky:1},
-            {src:'system/trophyCase.html', icon:'🏆', sticky:1},
-            {src:'system/clock.dweet.js', icon:'🕰️', width:200, height:200, sleep:0, full:0, resize:0, reload:0, sticky:1}
+            [,'❌',,,,,'Close All'],
+            ['help.html','<b><span style=color:#0f0>?',380,400],
+
+            [,'⚙️',,,,,'System',,
+            [
+                ['system/test.html',,,,resize|code|sticky],
+                ['system/trophyCase.html','🏆',,,sticky],
+                ['system/wordList.html','📕',,,sticky],
+                ['system/clock.dweet.js','🕰️',200,200,sticky|code|nosleep],
+            ]]
         ];
     }
 } // debug stuff
@@ -272,7 +281,7 @@ const OS13kVersion = 52;
 // Minification Steps
 // 1. Remove touch support and optional code
 // 2. Paste programs directly below here, change to const
-// 3. Remove stuff listed below
+// 3. Remove optional stuff listed below
 // 4. Verify that it works the same
 // 5. Google Closure https://closure-compiler.appspot.com/home
 // 6. Terser no extra compression https://xem.github.io/terser-online/
@@ -283,9 +292,10 @@ const OS13kVersion = 52;
 // Stuff that can be remove before minifying, search OPTIONAL
 // - Frozen trophy (console not in js13k build)
 // - check pixel shader for errors
-// - camel case src name if programs are packed together
-// - get extension if packed together
-// - force refresh of src
+
+// Stuff to rework if all files are packed together
+// - camel case src name, set name directly
+// - get extension, save as a bool
 
 } // Minification Stuff
 
@@ -728,9 +738,9 @@ class _OS13kSystem
         // skip until not loading and finished startup
         if (loading || finishedStartup) return;
 
-        // open start program
+        // open start program (check top to stop infinite recursion if meta)
         startProgram = startProgram || helpProgram;
-        startProgram && startProgram.Open();
+        startProgram && (self == top || startProgram.sticky) && startProgram.Open();
             
         // save trophies
         localStorage.OS13kT = JSON.stringify(trophies);
@@ -827,7 +837,7 @@ class _OS13kSystem
         // check if key is a trophy
         const keyParts = key.split(',');
         keyParts.shift() == 'OS13kTrophy' &&
-            OS13k.Trophy(...keyParts, localStorage[key])
+            OS13k.Trophy(...keyParts, localStorage[key]);
     }
 
     // toggle audio
@@ -874,8 +884,9 @@ class OS13kProgramMenu
         for (const info of infos)
         {
             // create program and add it to menu
-            const program = new OS13kProgram( info.folder ? 
-                new OS13kProgramMenu(info.folder, y, this) : this, info);
+            const folder = info[8];
+            const program = new OS13kProgram( folder ? 
+                new OS13kProgramMenu(folder, y, this) : this, ...info);
             element.appendChild(program.element);
             
             // add program height as we move down the list
@@ -898,10 +909,10 @@ class OS13kProgramMenu
 
 ///////////////////////////////////////////////////////////////////////////////
 // OS13kProgram - stores program info and shown in programs menu
-    
+
 class OS13kProgram
 {
-	constructor(programMenu, {x, y, name, icon='💠', src='', width=720, height=405, author, folder, full=1, reload=1, sleep=1, resize=1, sticky, help, code})
+	constructor(programMenu, src='', icon='💠', width=defaultWidth, height=defaultHeight, flags, author='', name='', help='', folder)
     {
         // create html element
         const element = this.element = document.createElement('div');
@@ -930,24 +941,27 @@ class OS13kProgram
         this.isShader = extension == 'shader';
 
         // set icon data
-        this.name   = name;
+        this.src    = src;
         this.icon   = icon;
+        this.name   = name;
         this.width  = width;
         this.height = height;
         this.author = author;
         this.folder = folder;
-        this.sleep  = sleep;
-        this.full   = full;
-        this.reload = reload;
-        this.sticky = sticky;
-        this.resize = resize;
-        this.src    = src;
         this.key    = 'OS13kP' + src;
         this.programMenu = programMenu;
         
         // set code only if help not shown or if has extension and not disabled
         this.code = !(this.help = help) && 
-            (code || ((this.isDweet || this.isShader) && code == undefined));
+            (flags & code || ((this.isDweet || this.isShader) && flags == undefined));
+            
+        // set flags
+        flags = flags || defaultFlags;
+        this.sticky   = flags & sticky;
+        this.reload   = flags & reload;
+        this.nosleep  = flags & nosleep;
+        this.full     = flags & full;
+        this.resize   = flags & resize;
         
         // set title if not a folder
         folder || (element.title = name +
@@ -965,7 +979,7 @@ class OS13kProgram
         // name and folder
         element.innerHTML += 
             `<div style=flex:1;padding-right:9;pointer-events:none>${
-            name }</div>` + (folder? '▶' : '')
+            name }</div>` + (folder? '▶' : '');
         
         // save special programs
         name == 'Trophy Case' && trophyTrayIcon.SetProgram(this);
@@ -975,7 +989,7 @@ class OS13kProgram
                               && (helpProgram = this);
 
         // check if start program or sticky open
-        sticky ? this.saveInfo.open && this.Open() :
+        this.sticky ? this.saveInfo.open && this.Open() :
             this.src == localStorage.OS13kS && (startProgram = this); 
     }
     
@@ -1012,7 +1026,7 @@ class OS13kProgram
                 x = windowOpenX,
                 y = windowOpenY,
                 (windowOpenX += titlebarHeight) > 400 && (windowOpenX = startWindowOpenX),
-                (windowOpenY += titlebarHeight) > 200 && (windowOpenY = startWindowOpenY))
+                (windowOpenY += titlebarHeight) > 200 && (windowOpenY = startWindowOpenY));
 
             // open the window
             this.window = new OS13kWindow(this, x, y);
@@ -1084,7 +1098,7 @@ class OS13kWindow
         const element = this.element = 
             desktop.appendChild(document.createElement('div'));
         this.element.id = 'titlebar';
-        this.element.O = this
+        this.element.O = this;
         
         // save settings
         this.program = program;
@@ -1093,7 +1107,7 @@ class OS13kWindow
         this.menu = menu;
         
         // shadow root
-		element.attachShadow({mode: 'open'});
+		this.shadow = element.attachShadow({mode: 'open'});
         element.shadowRoot.innerHTML = T.innerHTML;
         
         // title bar
@@ -1173,7 +1187,7 @@ class OS13kWindow
             const iframeDocument = iframeContent.document;
             
             // check for special extensions
-            const hasExtension = program.isDweet || program.isShader
+            const hasExtension = program.isDweet || program.isShader;
             
             // get the document text
             const iframeText = hasExtension ?
@@ -1213,7 +1227,7 @@ class OS13kWindow
                     'T=Math.tan;' +
                     'R=(r,g,b,a=1)=>`rgba(${0|r},${0|g},${0|b},${a})`;' +
                     'loop=t=>requestAnimationFrame(loop,' +
-                        ( program.sleep? '(t<1e3||document.hasFocus())&&' : '' ) +
+                        ( program.nosleep? '' : '(t<1e3||document.hasFocus())&&' ) +
                         'u((60*(frame++/60)-frame-1|0?frame-1:frame)/60));' +
                     'loop(frame=0)');
 
@@ -1226,7 +1240,7 @@ class OS13kWindow
                     'onmouseup=e=>z=w=0;' +
                     's=parent.OS13k.CreateShader(c,`' + iframeText + '`);' +
                     'loop=t=>requestAnimationFrame(loop,' +
-                        ( program.sleep? '(t<1e3||document.hasFocus())&&' : '' ) +
+                        ( program.nosleep? '' : '(t<1e3||document.hasFocus())&&' ) +
                         '(c.width=innerWidth,' + 
                         'c.height=innerHeight,' + 
                         'g.uniform4f(g.getUniformLocation(s,"iMouse"),x,y,z,w),' +
@@ -1249,7 +1263,7 @@ class OS13kWindow
             OS13kSystem.UpdateStartup(loading&&--loading);
         }
         
-        // load the iframe, force refresh of src OPTIONAL
+        // load the iframe, force refresh of src
         this.iframe.src = program.src + '?' + Date.now();
     }
     
@@ -1262,7 +1276,7 @@ class OS13kWindow
         if (target == this.name)
         {
             // set this to be the grab window
-            grabWindow = this
+            grabWindow = this;
             
             // use grabbing cursor
             background.style.cursor = taskbar.style.cursor = 'grabbing';
@@ -1316,12 +1330,13 @@ class OS13kWindow
         // close menus when window is set active
         OS13kSystem.CloseMenus();
     
-        // set style
+        // set style, dim non active windows
         const element = this.element;
         element.className = active? 'windowActive' : '';
         this.titlebar.className = 'titlebar titlebar' 
             + (active && !loading? 'Active' : this.program.sticky ? 'Sticky' : '');
-        this.iframeWrapper.style.filter = active ? '' : 'saturate(.7)brightness(.7';
+        this.iframeWrapper.style.filter = active || this.program.nosleep ? 
+        '' : 'saturate(.7)brightness(.7';
 
         // check if active
         if (!active) return;
@@ -1398,7 +1413,7 @@ class OS13kWindow
     {
         // reload program or reload iframe and set invisible
         this.program.Reload() || 
-            this.iframeContent.location.reload(this.iframe.style.visibility = '')
+            this.iframeContent.location.reload(this.iframe.style.visibility = '');
     }
     
     Close()
@@ -1608,7 +1623,7 @@ onmouseup=e=>
 }
 
 // prevent default right click context menu
-oncontextmenu=e=> false
+oncontextmenu=e=> false;
 
 } // mouse input
 
@@ -1686,7 +1701,7 @@ const zzfx = ( // play a zzfx sound
                 i < length - delay ?                     // release
                 (length - i - delay)/release *           // release falloff
                 sustainVolume :                          // release volume
-                0)                                       // post release
+                0);                                      // post release
 
             s = delay ?                                  // delay
                 s/2 + (delay > i ? 0 :
