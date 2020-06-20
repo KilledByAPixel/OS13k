@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A tiny OS for JS13k</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?64></script>
+<script src=programs.js?66></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -239,7 +239,7 @@ const OS13kVersion = 52;
     {
         alert('No programs found, using defaults!')
 
-        var sticky=2**0, reload=2**1, nosleep=2**2, full=2**3, resize=2**4, code=2**5;
+        var sticky=2**0, reload=2**1, awake=2**2, full=2**3, resize=2**4, code=2**5;
         var defaultFlags = full|reload|resize, defaultWidth = 720, defaultHeight = 405;
         var programs = 
         [
@@ -251,7 +251,7 @@ const OS13kVersion = 52;
                 ['system/test.html',,,,resize|code|sticky],
                 ['system/trophyCase.html','🏆',,,sticky],
                 ['system/wordList.html','📕',,,sticky],
-                ['system/clock.dweet.js','🕰️',200,200,sticky|code|nosleep],
+                ['system/clock.dweet.js','🕰️',200,200,sticky|code|awake],
             ]]
         ];
     }
@@ -283,9 +283,10 @@ const OS13kVersion = 52;
 // 2. Paste programs directly below here, change to const
 // 3. Remove optional stuff listed below
 // 4. Verify that it works the same
-// 5. Google Closure https://closure-compiler.appspot.com/home
-// 6. Terser no extra compression https://xem.github.io/terser-online/
-// 7. HTML Minifier http://minifycode.com/html-minifier/
+// 5. HTML Minifier http://minifycode.com/html-minifier/
+// 6. Google Closure https://closure-compiler.appspot.com/home
+// 7. Terser with extra compression https://xem.github.io/terser-online/
+// 8. Replace escaped characters \u1234 with actual characters (optional)
 // 8. Zip
 // 9. Advzip "advzip -z -4 -i 1000 OS13kMin.zip"
 
@@ -952,16 +953,16 @@ class OS13kProgram
         this.programMenu = programMenu;
         
         // set code only if help not shown or if has extension and not disabled
-        this.code = !(this.help = help) && 
+        this.Fc = !(this.help = help) && 
             (flags & code || ((this.isDweet || this.isShader) && flags == undefined));
             
         // set flags
         flags = flags || defaultFlags;
-        this.sticky   = flags & sticky;
-        this.reload   = flags & reload;
-        this.nosleep  = flags & nosleep;
-        this.full     = flags & full;
-        this.resize   = flags & resize;
+        this.Fs   = flags & sticky;
+        this.Fr   = flags & reload;
+        this.Fa   = flags & awake;
+        this.Ff   = flags & full;
+        this.Fz   = flags & resize;
         
         // set title if not a folder
         folder || (element.title = name +
@@ -989,7 +990,7 @@ class OS13kProgram
                               && (helpProgram = this);
 
         // check if start program or sticky open
-        this.sticky ? this.saveInfo.open && this.Open() :
+        this.Fs ? this.saveInfo.open && this.Open() :
             this.src == localStorage.OS13kS && (startProgram = this); 
     }
     
@@ -1075,7 +1076,7 @@ class OS13kProgram
     SaveInfo(open = 1)
     {
         // reset settings when a non sticky is closed
-        const allowSave = open || this.sticky;
+        const allowSave = open || this.Fs;
     
         // save program info to local storage
         localStorage[this.key] = JSON.stringify(
@@ -1134,12 +1135,12 @@ class OS13kWindow
             icon.innerHTML = `<svg><use href=#icon-${icon.id = id}>`;
             icon.title = title;
         }
-        program.resize && 
+        program.Fz && 
             AddTitlebarIcon('grow', 'Grow', AddTitlebarIcon('shrink', 'Shrink'));
-        program.full && AddTitlebarIcon('full', 'Full Screen');
+        program.Ff && AddTitlebarIcon('full', 'Full Screen');
         program.help && AddTitlebarIcon('help', 'Help');
-        program.code && AddTitlebarIcon('code', 'Code');
-        program.reload && AddTitlebarIcon('reload', 'Reload');
+        program.Fc && AddTitlebarIcon('code', 'Code');
+        program.Fr && AddTitlebarIcon('reload', 'Reload');
         AddTitlebarIcon('close', 'Close');
 
         // create content wrapper
@@ -1153,7 +1154,7 @@ class OS13kWindow
         this.codeDisplay.setAttribute('readOnly', 1);
         
         // resize window size to fit inner width while preserving aspect
-        const width = program.resize ? 
+        const width = program.Fz ? 
             Math.min(program.width * this.program.saveInfo.scale, innerWidth-6) :
             program.width;
             
@@ -1227,7 +1228,7 @@ class OS13kWindow
                     'T=Math.tan;' +
                     'R=(r,g,b,a=1)=>`rgba(${0|r},${0|g},${0|b},${a})`;' +
                     'loop=t=>requestAnimationFrame(loop,' +
-                        ( program.nosleep? '' : '(t<1e3||document.hasFocus())&&' ) +
+                        ( program.Fa? '' : '(t<1e3||document.hasFocus())&&' ) +
                         'u((60*(frame++/60)-frame-1|0?frame-1:frame)/60));' +
                     'loop(frame=0)');
 
@@ -1240,7 +1241,7 @@ class OS13kWindow
                     'onmouseup=e=>z=w=0;' +
                     's=parent.OS13k.CreateShader(c,`' + iframeText + '`);' +
                     'loop=t=>requestAnimationFrame(loop,' +
-                        ( program.nosleep? '' : '(t<1e3||document.hasFocus())&&' ) +
+                        ( program.Fa? '' : '(t<1e3||document.hasFocus())&&' ) +
                         '(c.width=innerWidth,' + 
                         'c.height=innerHeight,' + 
                         'g.uniform4f(g.getUniformLocation(s,"iMouse"),x,y,z,w),' +
@@ -1334,15 +1335,15 @@ class OS13kWindow
         const element = this.element;
         element.className = active? 'windowActive' : '';
         this.titlebar.className = 'titlebar titlebar' 
-            + (active && !loading? 'Active' : this.program.sticky ? 'Sticky' : '');
-        this.iframeWrapper.style.filter = active || this.program.nosleep ? 
+            + (active && !loading? 'Active' : this.program.Fs ? 'Sticky' : '');
+        this.iframeWrapper.style.filter = active || this.program.Fa ? 
         '' : 'saturate(.7)brightness(.7';
 
         // check if active
         if (!active) return;
         
         // save start program if finished startup and not sticky
-        finishedStartup && !this.program.sticky && 
+        finishedStartup && !this.program.Fs && 
             (localStorage.OS13kS = this.program.src);
 
         // set focus to iframe if not loading
@@ -1369,11 +1370,11 @@ class OS13kWindow
             // show menu buttons
             const SetButtonVisibility=(button, visible)=>
                 button.style.display = visible ? '' : 'none';
-            SetButtonVisibility(buttonFullScreen, this.program.full);
-            SetButtonVisibility(buttonCode,       this.program.code);
+            SetButtonVisibility(buttonFullScreen, this.program.Ff);
+            SetButtonVisibility(buttonCode,       this.program.Fc);
             SetButtonVisibility(buttonHelp,       this.program.help);
-            SetButtonVisibility(buttonReload,     this.program.reload);
-            SetButtonVisibility(buttonResetSize,  this.program.resize);
+            SetButtonVisibility(buttonReload,     this.program.Fr);
+            SetButtonVisibility(buttonResetSize,  this.program.Fz);
 
             // set taskbar icon active if it exists
             // it will not have been created yet if frame is loading
@@ -1386,7 +1387,7 @@ class OS13kWindow
     FullScreen()
     {
         // check if full screen allowed
-        if (!this.program.full) return;
+        if (!this.program.Ff) return;
         
         // set full screen
         this.iframeWrapper.webkitRequestFullScreen &&
@@ -1475,7 +1476,7 @@ class OS13kTaskbarIcon
         if (this == loadIcon) return;
         
         // set active style
-        this.className = 'taskbarIcon' + (active ? ' taskbarIconActive' : '');
+        this.element.className = 'taskbarIcon' + (active ? ' taskbarIconActive' : '');
         
         // check if active
         if (!active) return;
