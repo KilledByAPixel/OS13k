@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A tiny OS for JS13k</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?62></script>
+<script src=programs.js?63></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -873,10 +873,9 @@ class OS13kProgramMenu
         this.parentMenu = parentMenu;
         for (const info of infos)
         {
-            // create program and add it
+            // create program and add it to menu
             const program = new OS13kProgram( info.folder ? 
-                new OS13kProgramMenu(info.folder, y, this) : this,
-                info);
+                new OS13kProgramMenu(info.folder, y, this) : this, info);
             element.appendChild(program.element);
             
             // add program height as we move down the list

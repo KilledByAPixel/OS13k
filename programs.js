@@ -16,7 +16,7 @@ var programs =
 ]},
 {name:'Apps', icon:'🛠️', folder:
 [
-    {src:'system/console.html',icon:'<span style=color:#0f0;background:#000;font-family:monospace>JS>'},
+    {src:'apps/console.html',icon:'<span style=color:#0f0;background:#000;font-family:monospace>JS>'},
     {src:'apps/stickyNote.html', icon:'✍️', width:300, height:264, full:0, sticky:1, resize:0, help:'Ctrl+B - Bold\nCtrl+I - Italic\nCtrl+U - Underline\n\Reload to clear'},
     {src:'apps/photoBooth.html', icon:'📸', width:1400, height:550 },
     {src:'apps/unicodeToys.html', icon:'𝖀', author:'Xem', width:500, height:800},
