@@ -17,13 +17,12 @@ var programs =
 [
 [,'❌',,,,,'Close All'],
 ['help.html','<b><span style=color:#0f0>?',380,400,full|resize,,,'Check here to see help when available.\nSome programs have a option to show code instead.\n\nHave fun! ✌️😄'],
-
 ['moreInfo.html','👨‍💻'],
 [,'⚙️',,,,,'System',,
 [
     ['system/test.html',,,,resize|code|sticky],
-    ['system/trophyCase.html','🏆',,,sticky],
-    ['system/wordList.html','📕',,,sticky],
+    ['system/trophyCase.html','🏆',,,resize|sticky],
+    ['system/wordList.html','📕',,,resize|sticky],
     ['system/clock.dweet.js','🕰️',200,200,sticky|code|awake],
     [,'📁',,,,,'Test Folder',,
     [
