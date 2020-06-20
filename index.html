@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A tiny OS for JS13k</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?68></script>
+<script src=programs.js?69></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -280,7 +280,7 @@ const OS13kVersion = 52;
 
 // Minification Steps
 // 1. Remove touch support and optional code
-// 2. Paste programs directly below here, change to const
+// 2. Paste programs directly below here
 // 3. Remove optional stuff listed below
 // 4. Verify that it works the same
 // 5. HTML Minifier http://minifycode.com/html-minifier/
@@ -1774,7 +1774,7 @@ let wasTouching, onmouseupTouch=onmouseup, onmousedownTouch=onmousedown, onmouse
             window.focus();
         }
 
-        // pass event to mouse down
+        // pass event to mouse down, check folder to prevent touching programs
         touching && !wasTouching && !e.target.folder && onmousedownTouch(e);
 
         // pass event to mouse up

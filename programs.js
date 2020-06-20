@@ -1,3 +1,9 @@
+// ==ClosureCompiler==
+// @output_file_name default.js
+// @compilation_level ADVANCED_OPTIMIZATIONS
+// @language_out ECMASCRIPT_2019
+// ==/ClosureCompiler==
+
 // flags
 var sticky  = 2**0; // always save position and if open
 var reload  = 2**1; // show reload button
@@ -48,7 +54,7 @@ var programs =
     ['games/sn1ke.html','👀',400,280,,'Codegolf Team'],
     ['games/tetris.html','<span style=font-size:10>▀█▀',210,380,reload,'Veubeke'],
     ['games/queensGambit.html','<span style=color:#f0f>♛'],
-    ['games/freeCell.html','♠️',800,900,full|reload,'Jeremy Burns'],
+    ['games/freeCell.html','♠️',800,900,full|reload],
     ['games/hueJumper.html','🌲'],
     ['dweets/bogusRoads.dweet.js','🛣️'],
 ]],
