@@ -16,7 +16,7 @@ Please keep this project confidential!
 
 <!-- HTML above is OPTIONAL -->
 
-<script src=programs.js?58></script>
+<script src=programs.js?59></script>
 <meta charset=utf-8>
 <style>
 body
@@ -255,7 +255,7 @@ const OS13kVersion = 51;
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // @language_out ECMASCRIPT_2019
 // @js_externs localStorage.OS13kT, localStorage.OS13kW, localStorage.OS13kM
-// @js_externs localStorage.OS13kS, localStorage.OS13kR
+// @js_externs localStorage.OS13kS
 // @js_externs OS13k, iframeContent.zzfx, iframeContent.OS13kReload
 // @js_externs OS13k.Clamp, OS13k.Percent, OS13k.Lerp
 // @js_externs OS13k.Random, OS13k.randomSeed
@@ -677,9 +677,6 @@ class _OS13kSystem
 {
     Start()
     {
-        // track how often the system was restarted
-        localStorage.OS13kR = ++localStorage.OS13kR || 0
-    
         // listen for trophies from other windows
         window.onstorage =e=> this.CheckForTrophy(e.key);
 
@@ -1246,7 +1243,7 @@ class OS13kWindow extends HTMLElement
         }
         
         // load the iframe, force refresh of src OPTIONAL
-        this.iframe.src = program.src + '?100' + localStorage.OS13kR;
+        this.iframe.src = program.src + '?' + Date.now();
     }
     
     Open(e, target, clamp)

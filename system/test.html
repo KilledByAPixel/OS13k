@@ -23,40 +23,23 @@ Trophies
 <br>
 <button onClick=OS13k.Trophy(game.value,trophy.value,icon.value,message.value)>
 Add Trophy</button>
-<button onClick='delete localStorage.OS13kTrophies'>Reset Popups</button>
+<button onClick='delete localStorage.OS13kT'>Reset Popups</button>
 <button onClick=SystemReset()>System Reset</button>
 <br><br>
 Words
 <input id=words>
 <button onClick=OS13k.AddWords(words.value)>Add Words</button>
-
 <script>
 
 'use strict';
 
-// ==ClosureCompiler==
-// @compilation_level ADVANCED_OPTIMIZATIONS
-// @language_out ECMASCRIPT_2019
-// @js_externs OS13k, OS13k.CreateShader, OS13k.RenderShader, OS13k.KeyDirection
-// @js_externs T, s, r, a
-// @js_externs localStorage.OS13kTest, localStorage.OS13kTrophies
-// ==/ClosureCompiler==
-
 const OS13k = parent.OS13k;
 
 const SystemReset=()=>
-confirm('Are you sure?')&&(localStorage.clear(),parent.location.reload())
-
-const T=()=>
 {
-    delete localStorage.OS13kTrophies
-    for (let i = localStorage.length; i--;)
-    {
-        const key = localStorage.key(i);
-        const keyParts = key.split(',');
-        if (keyParts.shift() == 'OS13kTrophy')
-            delete localStorage[key];
-    }
+    if (!confirm('Are you sure?')) return;
+    localStorage.clear();
+    parent.location.reload();
 }
 
 // init variables
