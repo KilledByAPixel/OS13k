@@ -36,8 +36,8 @@ body
     flex-direction:column;
     background:#000;
 }
-.folder { background:linear-gradient(#fff,#777); }
-#menu, .folder
+.programMenu { background:linear-gradient(#fff,#777); }
+#menu, .programMenu
 {
     visibility:hidden;
     position:absolute;
@@ -703,7 +703,7 @@ class _OS13kSystem
 
         // create the load program taskbar icon and add folders/programs
         loadIcon = new OS13kTaskbarIcon( {icon:'💾', name:'Load Program'} );
-        loadIcon.windowOrFolder = new OS13kFolder(programs);
+        loadIcon.windowOrMenu = new OS13kProgramMenu(programs);
         
         // welcome message
         OS13k.Trophy('','Welcome to OS13k!','👋');
@@ -764,7 +764,7 @@ class _OS13kSystem
         const activeElement = document.activeElement;
         if (lastActiveElement != activeElement)
         {
-            // set focus to new active element
+            // set active element
             activeElement.O && activeElement.O.SetActive && activeElement.O.SetActive();
             lastActiveElement = activeElement;
 
@@ -852,34 +852,33 @@ class _OS13kSystem
 const OS13kSystem = new _OS13kSystem;
 
 ///////////////////////////////////////////////////////////////////////////////
-// OS13kFolder - holds a list of programs
+// OS13kProgramMenu - holds a list of programs
 
-class OS13kFolder
+class OS13kProgramMenu
 {
-	constructor(infos, y=0, parentFolder)
+	constructor(infos, y=0, parentMenu)
     {
         // create html element
         const element = this.element = document.createElement('div');
         element.O = this;
-        element.className = 'folder';
+        element.className = 'programMenu';
         
         // add to programs menu
-        element.style.left = parentFolder && 
-            parentFolder.element.getBoundingClientRect().right - 2;
+        element.style.left = parentMenu && 
+            parentMenu.element.getBoundingClientRect().right - 2;
         element.style.top = y;
-        this.parentFolder = parentFolder;
         programsMenu.appendChild(element);
 
-        // add programs to folder
+        // add programs to menu
+        this.parentMenu = parentMenu;
         for (const info of infos)
         {
             // create program and add it
-            const program = new OS13kProgram(info)
+            const program = new OS13kProgram( info.folder ? 
+                new OS13kProgramMenu(info.folder, y, this) : this,
+                info);
             element.appendChild(program.element);
             
-            // create the folder
-            info.folder && (program.folder = new OS13kFolder(info.folder, y, this));
-                
             // add program height as we move down the list
             y += programHeight;
         }
@@ -891,19 +890,19 @@ class OS13kFolder
         OS13kSystem.CloseMenus();
         
         // set parent active
-        this.parentFolder && this.parentFolder.SetActive();
+        this.parentMenu && this.parentMenu.SetActive();
         
         // make visible
         this.element.style.visibility = 'visible';
     }
-} // OS13kFolder
+} // OS13kProgramMenu
 
 ///////////////////////////////////////////////////////////////////////////////
-// OS13kProgram - stores program info and handles loading from folders
+// OS13kProgram - stores program info and shown in programs menu
     
 class OS13kProgram
 {
-	constructor({x, y, name, icon='💠', src='', width=720, height=405, author, folder, full=1, reload=1, sleep=1, resize=1, sticky, help, code})
+	constructor(programMenu, {x, y, name, icon='💠', src='', width=720, height=405, author, folder, full=1, reload=1, sleep=1, resize=1, sticky, help, code})
     {
         // create html element
         const element = this.element = document.createElement('div');
@@ -937,6 +936,7 @@ class OS13kProgram
         this.width  = width;
         this.height = height;
         this.author = author;
+        this.folder = folder;
         this.sleep  = sleep;
         this.full   = full;
         this.reload = reload;
@@ -944,6 +944,7 @@ class OS13kProgram
         this.resize = resize;
         this.src    = src;
         this.key    = 'OS13kP' + src;
+        this.programMenu = programMenu;
         
         // set code only if help not shown or if has extension and not disabled
         this.code = !(this.help = help) && 
@@ -988,8 +989,8 @@ class OS13kProgram
         activeProgram = this;
         this.element.className = 'program programActive';
         
-        // set parent active 
-        this.folder && this.folder.SetActive();
+        // set child active 
+        this.programMenu && this.programMenu.SetActive();
     }
     
     Open()
@@ -1099,7 +1100,7 @@ class OS13kWindow
         // title bar
         this.titlebar = this.element.shadowRoot
             .appendChild(document.createElement('div'));
-        this.titlebar.title = program.title;
+        this.titlebar.title = program.element.title;
         
         // title bar name
         this.name = this.titlebar.appendChild(document.createElement('div'));
@@ -1313,6 +1314,9 @@ class OS13kWindow
     
     SetActive(active=1, clamp)
     {
+        // close menus when window is set active
+        OS13kSystem.CloseMenus();
+    
         // set style
         const element = this.element;
         element.className = active? 'windowActive' : '';
@@ -1420,7 +1424,7 @@ class OS13kWindow
 
 class OS13kTaskbarIcon
 {
-	constructor(program, windowOrFolder)
+	constructor(program, windowOrMenu)
     {
         // create html element
         const element = this.element = document.createElement('div');
@@ -1431,10 +1435,12 @@ class OS13kTaskbarIcon
         // create icon
         element.innerHTML = '<div style=pointer-events:none>' + program.icon;
         element.title = program.title || program.name;
-        this.menu = menu;
         
-        // save window, only a folder if its the load icon
-        this.windowOrFolder = windowOrFolder;
+        // only set menu if not the load icon
+        this.menu = windowOrMenu && menu;
+        
+        // save window, only a menu if its the load icon
+        this.windowOrMenu = windowOrMenu;
     }
     
     Open()
@@ -1449,7 +1455,7 @@ class OS13kTaskbarIcon
     SetActive(active=1)
     {
         // set window active and clamp
-        active && this.windowOrFolder.SetActive(1, 1);
+        active && this.windowOrMenu.SetActive(1, 1);
     
         // load icon cant be the active taskbar item
         if (this == loadIcon) return;
@@ -1492,7 +1498,7 @@ class OS13kTrayIcon
     {
         // set program and title
         this.program = program;
-        this.element.title = program.title;
+        this.element.title = program.element.title;
     }
     
     Open() { this.program ? this.program.Toggle() : this.functionCall(); }
@@ -1508,11 +1514,11 @@ onmousedown=e=>
     hadInput = 1;
     
     // get target object
-    const targetObject = e.target.O;
+    let targetObject = e.target.O;
     
     // check if clicked on load icon while programs menu was visible
     if (targetObject == loadIcon && 
-        targetObject.windowOrFolder.element.style.visibility)
+        targetObject.windowOrMenu.element.style.visibility)
     {
         // close menus because they were open
         OS13kSystem.CloseMenus();
@@ -1543,16 +1549,19 @@ onmousedown=e=>
         // check for right click
         if (e.button == 2)
         {
-            const target = targetObject && targetObject.window;
+            // set target to object window if it exists
+            targetObject && targetObject.window &&
+                (targetObject = targetObject.window);
 
             // don't do anything if code or button clicked on
             if (originalTarget.id != 'codeDisplay' && e.target.localName != 'button')
             {
                 // set target active, use load icon if no valid target
-                (target && target.SetActive ? target : loadIcon).SetActive();
+                (targetObject && targetObject.SetActive ? 
+                    targetObject : loadIcon).SetActive();
 
                 // get which menu to open
-                const contextMenu = e.target.menu && targetObject != loadIcon?
+                const contextMenu = targetObject && targetObject.menu ? 
                     menu : programsMenu;
 
                 // show context menu
@@ -1756,7 +1765,7 @@ let wasTouching, onmouseupTouch=onmouseup, onmousedownTouch=onmousedown, onmouse
         }
 
         // pass event to mouse down
-        touching && !wasTouching && !e.target.folder && onmousedownTouch(e);
+        touching && !wasTouching && !e.target.programMenu && onmousedownTouch(e);
 
         // pass event to mouse up
         !touching && wasTouching && onmouseupTouch(e);
