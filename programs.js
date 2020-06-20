@@ -6,7 +6,6 @@ var programs =
 {name:'System', icon:'⚙️', folder:
 [
     {src:'system/test.html', code:1, width:600, height:400, sticky:1},
-    {src:'system/console.html',icon:'<span style=color:#0f0;background:#000;font-family:monospace>JS>'},
     {src:'system/trophyCase.html', icon:'🏆', sticky:1, reload:0},
     {src:'system/wordList.html', icon:'📕', sticky:1, reload:0},
     {src:'system/clock.dweet.js', icon:'🕰️', width:200, height:200, reload:0, sleep:0, full:0, sticky:1, resize:0},
@@ -17,6 +16,7 @@ var programs =
 ]},
 {name:'Apps', icon:'🛠️', folder:
 [
+    {src:'system/console.html',icon:'<span style=color:#0f0;background:#000;font-family:monospace>JS>'},
     {src:'apps/stickyNote.html', icon:'✍️', width:300, height:264, full:0, sticky:1, resize:0, help:'Ctrl+B - Bold\nCtrl+I - Italic\nCtrl+U - Underline\n\Reload to clear'},
     {src:'apps/photoBooth.html', icon:'📸', width:1400, height:550 },
     {src:'apps/unicodeToys.html', icon:'𝖀', author:'Xem', width:500, height:800},
