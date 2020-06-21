@@ -33,7 +33,7 @@ programs =
 [,'🛠️',,,,'Apps',,
 [
     ['apps/console.html','<span style=color:#0f0;background:#000;font-family:monospace>JS>'],
-    ['apps/stickyNote.html','✍️',300,263,sticky|reload],
+    ['apps/stickyNote.html','✍️',300,263,sticky|reload,,'Ctrl+B - Bold\nCtrl+I - Italic\nCtrl+U - Underline\n\Reload to clear'],
     ['apps/filters.html','✨',260,60,reload],
     ['apps/photoBooth.html','📸',1400,550],
     ['apps/unicodeToys.html','𝖀',500,800],
