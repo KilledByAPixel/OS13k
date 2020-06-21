@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A tiny OS for JS13k</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?71></script>
+<script src=programs.js?73></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -245,10 +245,10 @@ const OS13kVersion = 52;
         var defaultFlags = full|reload|resize, defaultWidth = 720, defaultHeight = 405;
         var programs = 
         [
-            [,'❌',,,,,'Close All'],
+            [,'❌',,,,'Close All'],
             ['help.html','<b><span style=color:#0f0>?',380,400],
 
-            [,'⚙️',,,,,'System',,
+            [,'⚙️',,,,'System',,
             [
                 ['system/test.html',,,,resize|code|sticky],
                 ['system/trophyCase.html','🏆',,,resize|sticky],
@@ -288,7 +288,6 @@ const OS13kVersion = 52;
 // 5. HTML Minifier http://minifycode.com/html-minifier/
 // 6. Google Closure https://closure-compiler.appspot.com/home
 // 7. Terser no extra compression https://xem.github.io/terser-online/
-// 8. Replace escaped characters \u1234 with actual characters (optional)
 // 8. Zip
 // 9. Advzip "advzip -z -4 -i 1000 OS13kMin.zip"
 
@@ -311,23 +310,23 @@ class _OS13k
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Math
 
-    Clamp   =(a, min=0, max=1) => Math.min(Math.max(a, min), max);
-    Percent =(v, a, b)         => b-a ? this.Clamp((v-a)/(b-a), 0, 1) : 0;
-    Lerp    =(p, a, b)         => a + this.Clamp(p, 0, 1) * (b-a);
-    Random  =(max=1, min=0)    =>
-    (
+    Clamp   (a, min=0, max=1)  { return Math.min(Math.max(a, min), max); }
+    Percent (v, a, b)          { return b-a ? this.Clamp((v-a)/(b-a), 0, 1) : 0; }
+    Lerp    (p, a, b)          { return a + this.Clamp(p, 0, 1) * (b-a); }
+    Random  (max=1, min=0)    
+    {
         // seeded random numbers - Mersenne Twister
-        this.randomSeed ^= (this.randomSeed||-1) << 13,
-        this.randomSeed ^= this.randomSeed >> 17,
-        this.randomSeed ^= this.randomSeed << 5,
-        this.Percent(Math.abs(this.randomSeed) % 1e9 / 1e9, min, max)
-    )
+        this.randomSeed ^= (this.randomSeed||-1) << 13;
+        this.randomSeed ^= this.randomSeed >> 17;
+        this.randomSeed ^= this.randomSeed << 5;
+        return this.Percent(Math.abs(this.randomSeed) % 1e9 / 1e9, min, max);
+    }
 
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Trophies
     
     // get the trophy list
-    Trophies=_=> [...trophies];
+    Trophies() { return [...trophies]; }
 
     // award player with trophy, returns 0 if already owned
     Trophy(game='', name='', icon='', message='', language='ja')
@@ -349,7 +348,7 @@ class _OS13k
         message = this.KillHTML(message, maxWordLength, 1);
         
         // find in trophy list
-        i = trophies.findIndex(e=>e[4]==key);
+        const i = trophies.findIndex(e=>e[4]==key);
         
         // skip if same message
         if (i >=0 && trophies[i][3] == message) return 0;
@@ -374,7 +373,7 @@ class _OS13k
         // add trophy popup
         this.Popup(
             `<div class=trophyIcon>${ 
-                icon||'🏆' }</div><div><b>${   // icon
+                icon || '🏆' }</div><div><b>${ // icon
                 name }</b><br><i>${            // name
                 game }</i></div>` +            // game
                 message,                       // message
@@ -391,20 +390,20 @@ class _OS13k
     }
     
     // get message, 0 if no trophy
-    GetTrophy=(game, name)=>
-    (
+    GetTrophy(game, name)
+    {
         // find in trophy list
-        i = trophies.findIndex(e=>e[0]==game && e[1]==name),
+        const i = trophies.findIndex(e=>e[0]==game & e[1]==name);
         
         // return trophy message
-        i < 0 ? 0 : trophies[i][3]
-    )
+        return i < 0 ? 0 : trophies[i][3];
+    }
     
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Words
 
     // get the word list
-    Words=()=> [...words];
+    Words() { return [...words]; }
     
     // add every word in a string to the word list
     AddWords(string, speak=1)
@@ -439,16 +438,16 @@ class _OS13k
     }
 
     // get a random matching word
-    GetWord=(regex = /./, minLength = 0, maxLength = maxWordLength)=>
-    (
+    GetWord(regex = /./, minLength = 0, maxLength = maxWordLength)
+    {
         // search for matches
-        i = words.filter( o=>
+        const i = words.filter( o=>
             o.length >= minLength && o.length <= maxLength && 
-            regex.test(o)),
+            regex.test(o));
             
         // get random match
-        i.length > 0 ? i[Math.random()*i.length|0] : ''
-    )
+        return i.length > 0 ? i[Math.random()*i.length|0] : '';
+    }
     
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Audio
@@ -495,21 +494,21 @@ class _OS13k
     }
     
     // play raw audio sample data
-    PlaySamples=(samples, sampleRate=44100)=>
-    (
+    PlaySamples(samples, sampleRate=44100)
+    {
         // create source and buffer
-        i = audioContext.createBufferSource(),
-        (i.buffer = audioContext.createBuffer(1, samples.length, sampleRate))
-            .getChannelData(0).set(samples),
-        i.connect(gain),
-        i.stop = i.stop || i.noteOff,
-        i.start ? i.start() : i.noteOn(),
-        i
-    )
+        const source = audioContext.createBufferSource();
+        (source.buffer = audioContext.createBuffer(1, samples.length, sampleRate))
+            .getChannelData(0).set(samples);
+        source.connect(gain);
+        source.stop = source.stop || source.noteOff;
+        source.start ? source.start() : source.noteOn();
+        return source;
+    }
     
     // get frequency of a musical note on a diatonic scale
-    GetNote=(semitoneOffset=0, rootNoteFrequency=440)=>
-        rootNoteFrequency * 2**(semitoneOffset/12);
+    GetNote(semitoneOffset=0, rootNoteFrequency=440)
+    { return rootNoteFrequency * 2**(semitoneOffset/12); }
 
     // speak the text
     Speak(text, rate=1, pitch=1, volume=1, language='en', stopSpeech)
@@ -639,29 +638,31 @@ class _OS13k
 // OS13k Input
 
     // get direction from wasd or arrow keys
-    KeyDirection=(keyCode)=>
-    (
-        i = {x:0,y:0},
-        (keyCode == 87 | keyCode == 38) && ++i.y, // up
-        (keyCode == 83 | keyCode == 40) && --i.y, // down
-        (keyCode == 68 | keyCode == 39) && ++i.x, // right
-        (keyCode == 65 | keyCode == 37) && --i.x, // left
-        i
-    )
+    KeyDirection(keyCode)
+    {
+        let x=0, y=0;
+        (keyCode == 87 | keyCode == 38) && ++y; // up
+        (keyCode == 83 | keyCode == 40) && --y; // down
+        (keyCode == 68 | keyCode == 39) && ++x; // right
+        (keyCode == 65 | keyCode == 37) && --x; // left
+        return {x, y};
+    }
     
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Text
     
     // replace html tags in a string
-    KillHTML=(string, maxLength)=>
+    KillHTML(string, maxLength)
+    {
         // convert to string
-        (string+='')
+        return (string+='')
         
             // clamp max length
             .substring(0, maxLength? maxLength: string.length)
             
             // replace < with &lt;
             .replace(/</g,'&lt;');
+    }
     
 /////////////////////////////////////////////////////////////////////////////
 // OS13k System Calls
@@ -669,12 +670,12 @@ class _OS13k
     Popup(html, speak, language)
     {
         // create the popup
-        i = popups.appendChild(document.createElement('div'));
-        i.className = 'popup';
-        i.innerHTML = html;
-        i.style.top = innerHeight;
-        i.speak = speak;
-        i.speakLanguage = language;
+        const popup = popups.appendChild(document.createElement('div'));
+        popup.className = 'popup';
+        popup.innerHTML = html;
+        popup.style.top = innerHeight;
+        popup.speak = speak;
+        popup.speakLanguage = language;
     }
     
 }; // _OS13k
@@ -697,7 +698,7 @@ const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26,
     // parse or init word list
     words = localStorage.OS13kW ? JSON.parse(localStorage.OS13kW) : [];
       
-let i, grabWindow, grabOffsetX, grabOffsetY, finishedStartup,
+let grabWindow, grabOffsetX, grabOffsetY, finishedStartup,
     windowActive, activeProgram, helpProgram, activeTaskbarIcon, loadIcon,
     lastActiveElement, topZ = 0, loading = 0, hadInput = 0,
     windowOpenX = startWindowOpenX, windowOpenY = startWindowOpenY,
@@ -712,7 +713,7 @@ class _OS13kSystem
     Start()
     {
         // listen for trophies from other windows
-        window.onstorage=_=> this.CheckForTrophy(_.key);
+        window.onstorage=()=> this.CheckForTrophy(_.key);
 
         // set gain value
         gain.connect(audioContext.destination);
@@ -731,12 +732,12 @@ class _OS13kSystem
         localStorage.OS13kM == 0 && this.ToggleMute();
 
         // set button functions
-        buttonFullScreen.onmousedown =_=> windowActive.FullScreen();
+        buttonFullScreen.onmousedown =()=> windowActive.FullScreen();
         buttonHelp.onmousedown       =
-        buttonCode.onmousedown       =_=> windowActive.ShowCode();
-        buttonResetSize.onmousedown  =_=> windowActive.Resize(1);
-        buttonReload.onmousedown     =_=> windowActive.Reload();
-        buttonClose.onmousedown      =_=> windowActive.Close();
+        buttonCode.onmousedown       =()=> windowActive.ShowCode();
+        buttonResetSize.onmousedown  =()=> windowActive.Resize(1);
+        buttonReload.onmousedown     =()=> windowActive.Reload();
+        buttonClose.onmousedown      =()=> windowActive.Close();
 
         // create the load program taskbar icon and add folders/programs
         loadIcon = new OS13kTaskbarIcon( {icon:'💾', name:'Load Program'} );
@@ -747,10 +748,11 @@ class _OS13kSystem
         
         // frozen trophy OPTIONAL
         localStorage.OS13kFrozen &&
-            OS13k.Trophy('OS13k','Frozen','🧊',`Froze The Browser\n${localStorage.OS13kFrozen}`);
+            OS13k.Trophy('OS13k','Frozen','🧊',`Froze The Browser\n${
+            localStorage.OS13kFrozen }`);
 
         // search local storage for new trophies (from other JS13k games)
-        for (i in localStorage) this.CheckForTrophy(i);
+        for (const key in localStorage) this.CheckForTrophy(key);
 
         // try to handle startup now in case no programs are loading
         this.UpdateStartup();
@@ -794,7 +796,7 @@ class _OS13kSystem
 
         // update time
         clockTrayIcon.title = new Date();
-        const time = clockTrayIcon.title.slice(16,24).split(':')
+        const time = clockTrayIcon.title.slice(16,24).split(':');
         clockTrayIcon.innerHTML = (time[0]%12?time[0]%12:12) + ':' + time[1];
             
         // listen for iframe becomming new active element
@@ -819,7 +821,7 @@ class _OS13kSystem
         newWordsMessage = newWordsSpeak = '';
         
         // iterate through popups, use copy to prevent skipping if removed
-        let offsetHeight = i = 0;
+        let offsetHeight = 0, i = 0;
         for(const popup of [...popups.children])
         {
             // speak popup
@@ -855,14 +857,17 @@ class _OS13kSystem
     CloseMenus()
     {
         // hide all menus
-        for (i of programsMenu.children)
-            i.style.visibility = menu.style.visibility = '';
+        for (const child of programsMenu.children)
+            child.style.visibility = menu.style.visibility = '';
     }
 
     // try to give trophy if key is valid
-    CheckForTrophy=(key)=>
-        (i = key.split(',')).shift() == 'OS13kTrophy' &&
-            OS13k.Trophy(...i, localStorage[key]);
+    CheckForTrophy(key)
+    {
+        const keyParts = key.split(',');
+        return keyParts.shift() == 'OS13kTrophy' &&
+            OS13k.Trophy(...keyParts, localStorage[key]);
+    }
 
     // toggle audio
     ToggleMute()
@@ -880,7 +885,7 @@ class _OS13kSystem
     }
     
     // stop any current or queued speech
-    StopSpeech=_=> speechSynthesis && speechSynthesis.cancel();
+    StopSpeech() { speechSynthesis && speechSynthesis.cancel(); }
     
 } // OS13kSystem
 const OS13kSystem = new _OS13kSystem;
@@ -898,7 +903,7 @@ class OS13kProgramMenu extends HTMLElement
         this.className    = 'programMenu';
         this.style.left   = parentMenu && parentMenu.getBoundingClientRect().right - 2;
         this.style.top    = y;
-        this.parentMenu = parentMenu;
+        this.parentMenu   = parentMenu;
         programsMenu.appendChild(this);
 
         // add programs to menu
@@ -1067,31 +1072,40 @@ class OS13kProgram extends HTMLElement
         }
     }
     
-    SetActive=_=> this.Open();
+    SetActive() { this.Open(); }
     
     // call reload function in iframe if it exists
-    Reload=_=>
+    Reload()
+    {
         this.window && this.window.iframeContent &&
             this.window.iframeContent.OS13kReload &&
             this.window.iframeContent.OS13kReload();
+    }
     
     // toggle the program open or closed
-    Toggle=_=>
+    Toggle()
+    {
         windowActive && windowActive == this.window ?
             this.window.Close() : this.Open();
+    }
     
     // load saved program info from local storage
-    LoadInfo=_=>
-        this.saveInfo = (i = localStorage[this.key]) ?  JSON.parse(i) : {scale:1};
+    LoadInfo() 
+    { 
+        const data = localStorage[this.key];
+        this.saveInfo = localStorage[this.key] ?  JSON.parse(data) : {scale:1}; 
+    }
    
     // save program info to local storage and reset settings if non sticky closed
-    SaveInfo=(open = 1)=>
+    SaveInfo(open = 1)
+    {
         localStorage[this.key] = JSON.stringify(
             this.saveInfo = {
             open,
             x: open | this.sticky ? this.window.style.left : 0,
             y: this.window.style.top,
             scale: open | this.sticky ? this.window.scale : 1});
+    }
     
 } // OS13kProgram
 customElements.define('p-', OS13kProgram);
@@ -1419,13 +1433,16 @@ class OS13kWindow extends HTMLElement
     }
     
     // reload program or reload iframe and set invisible
-    Reload=_=> this.program.Reload() || 
+    Reload()
+    {
+        this.program.Reload() || 
             this.iframeContent.location.reload(this.iframe.style.visibility = '');
+    }
     
     Close()
     {
         // remove start program if closed
-        this.program.src == localStorage.OS13kS ? localStorage.OS13kS = 0 : 0;
+        this.program.src == localStorage.OS13kS && (localStorage.OS13kS = 0);
             
         // save info and set closed
         this.program.SaveInfo(0);
@@ -1464,14 +1481,14 @@ class OS13kTaskbarIcon extends HTMLElement
         taskbarSpace.before(this);
     }
     
-    Open=_=>
-    (
+    Open()
+    {
         // set active
-        this.SetActive(),
+        this.SetActive();
         
         // allow main document focus only if its the load icon
-        this == loadIcon
-    )
+        this == loadIcon;
+    }
     
     SetActive(active=1)
     {
@@ -1524,7 +1541,7 @@ class OS13kTrayIcon extends HTMLElement
         this.title = program.title;
     }
     
-    Open=_=> this.program ? this.program.Toggle() : this.functionCall();
+    Open() { this.program ? this.program.Toggle() : this.functionCall(); }
 } // OS13kTrayIcon
 customElements.define('t-', OS13kTrayIcon);
 
