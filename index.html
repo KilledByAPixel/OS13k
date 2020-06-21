@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A tiny OS for JS13k</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?76></script>
+<script src=programs.js?77></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -407,6 +407,9 @@ class _OS13k
     // add every word in a string to the word list
     AddWords(string, speak=1)
     {
+        // get inner html from target if event was passed in
+        string.currentTarget && (string = string.currentTarget.innerHTML)
+    
         // convert to lowercase and split into words
         const matchs = (string?string+'':'').toLowerCase().match(/\b[^\s]+\b/g);
         
@@ -540,8 +543,7 @@ class _OS13k
         const x = canvas.getContext('webgl2');
         
         // make shorter webgl names
-        for(const i in x)
-            x[i[0]+i.slice(7,10)]=x[i];
+        for(const i in x) x[i[0] + i.slice(7,10)] = x[i];
 
         // use hardcoded values to save space
         const xVERTEX_SHADER       = 35633;
@@ -736,12 +738,12 @@ class _OS13kSystem
         localStorage.OS13kM == 0 && this.ToggleMute();
 
         // set button functions
-        buttonFullScreen.onmousedown =()=> windowActive.FullScreen();
+        buttonFullScreen.onmousedown =e=> windowActive.FullScreen(OS13k.AddWords(e));
         buttonHelp.onmousedown       =
-        buttonCode.onmousedown       =()=> windowActive.ShowCode();
-        buttonResetSize.onmousedown  =()=> windowActive.Resize(1);
-        buttonReload.onmousedown     =()=> windowActive.Reload();
-        buttonClose.onmousedown      =()=> windowActive.Close();
+        buttonCode.onmousedown       =e=> windowActive.ShowCode(OS13k.AddWords(e));
+        buttonResetSize.onmousedown  =e=> windowActive.Resize(1);
+        buttonReload.onmousedown     =e=> windowActive.Reload(OS13k.AddWords(e));
+        buttonClose.onmousedown      =e=> windowActive.Close(OS13k.AddWords(e));
 
         // create the load program taskbar icon and add folders/programs
         loadIcon = new OS13kTaskbarIcon( {icon:'💾', name:'Load Program'} );
@@ -1038,7 +1040,7 @@ class OS13kProgram extends HTMLElement
     Open()
     {
         if (this.window)
-        {
+        {        
             // set window to be active and clamp
             this.window.SetActive(1, 1);
             
@@ -1598,12 +1600,12 @@ onmousedown=e=>
                 (target.SetActive ? target : loadIcon).SetActive();
 
                 // get which menu to open
-                i = e.target.menu ? menu : programsMenu;
+                const targetMenu = e.target.menu ? menu : programsMenu;
 
                 // show context menu
-                i.style.left = e.x;
-                i.style.top  = e.y;
-                i.style.visibility = 'visible';
+                targetMenu.style.left = e.x;
+                targetMenu.style.top  = e.y;
+                targetMenu.style.visibility = 'visible';
             }
         }
     
