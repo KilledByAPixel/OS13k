@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A tiny OS for JS13k</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?75></script>
+<script src=programs.js?76></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -293,7 +293,6 @@ const OS13kVersion = 52;
 
 // Stuff that can be remove before minifying, search OPTIONAL
 // - Frozen trophy (console not in js13k build)
-// - check pixel shader for errors
 
 // Stuff to rework if all files are packed together
 // - camel case src name, set name directly
@@ -540,6 +539,10 @@ class _OS13k
         // get webgl context
         const x = canvas.getContext('webgl2');
         
+        // make shorter webgl names
+        for(const i in x)
+            x[i[0]+i.slice(7,10)]=x[i];
+
         // use hardcoded values to save space
         const xVERTEX_SHADER       = 35633;
         const xARRAY_BUFFER        = 34962;
@@ -553,27 +556,27 @@ class _OS13k
         const xLINEAR              = 9729;
 
         // create a simple pass through vertex shader
-        const vertexShader = x.createShader(xVERTEX_SHADER);
-        x.shaderSource(vertexShader,
+        const vertexShader = x.chad(xVERTEX_SHADER);
+        x.sour(vertexShader,
             '#version 300 es\n' +
             'in vec4 c;' +
             'void main()' +
             '{gl_Position=c;}');
-        x.compileShader(vertexShader);
+        x.cSha(vertexShader);
         
         // create vertex buffer that is a big triangle that covers the screen
         const vertexBuffer = xARRAY_BUFFER;
-        x.bindBuffer(vertexBuffer, x.createBuffer());
-        x.bufferData(vertexBuffer, new Int8Array([-3,1,1,-3,1,1]), xSTATIC_DRAW);
-        x.enableVertexAttribArray(0);
-        x.vertexAttribPointer(0, 2, xBYTE, 0, 0, 0); // 2D vertex
+        x.bfer(vertexBuffer, x.cuff());
+        x.bata(vertexBuffer, new Int8Array([-3,1,1,-3,1,1]), xSTATIC_DRAW);
+        x.eert(0);
+        x.vttr(0, 2, xBYTE, 0, 0, 0); // 2D vertex
         
         // check vertex shader for errors
         //if (!x.getShaderParameter(vertexShader, x.COMPILE_STATUS))
-        //    throw x.getShaderInfoLog(vertexShader);
+        //    throw x.gerI(vertexShader);
         
         // create shadertoy compatible pixel shader
-        const pixelShader = x.createShader(xFRAGMENT_SHADER);
+        const pixelShader = x.chad(xFRAGMENT_SHADER);
         const shaderProgramCode = 
             '#version 300 es\n' +
             'precision mediump float;' +
@@ -582,38 +585,38 @@ class _OS13k
             'uniform vec4 iMouse;' +
             'uniform vec3 iResolution;' +
             'uniform sampler2D iChannel0;' +
-            'out vec4 c;\n' +
+            'out vec4 OS13k;\n' +
             code +
             '\nvoid main()' +
-            '{mainImage(c,gl_FragCoord.xy);' +
-            'c.a=1.;}';
-        x.shaderSource(pixelShader, shaderProgramCode);
-        x.compileShader(pixelShader);
+            '{mainImage(OS13k,gl_FragCoord.xy);' +
+            'OS13k.a=1.;}';
+        x.sour(pixelShader, shaderProgramCode);
+        x.cSha(pixelShader);
 
-        // check pixel shader for errors OPTIONAL
-        if (!x.getShaderParameter(pixelShader, xCOMPILE_STATUS))
-            throw x.getShaderInfoLog(pixelShader);
+        // check pixel shader for errors
+        //if (!x.getShaderParameter(pixelShader, xCOMPILE_STATUS))
+        //    throw x.gerI(pixelShader);
 
         // create texture
-        x.bindTexture(xTEXTURE_2D, x.createTexture());
-        x.texParameteri(xTEXTURE_2D, xTEXTURE_MIN_FILTER, xLINEAR);
-        x.pixelStorei(xUNPACK_FLIP_Y_WEBGL, 1); 
+        x.btur(xTEXTURE_2D, x.cext());
+        x.tmet(xTEXTURE_2D, xTEXTURE_MIN_FILTER, xLINEAR);
+        x.pore(xUNPACK_FLIP_Y_WEBGL, 1); 
         
         // create shader program
-        const shaderProgram = x.createProgram();
-        x.attachShader(shaderProgram, vertexShader);
-        x.attachShader(shaderProgram, pixelShader);
-        x.linkProgram(shaderProgram);
-        x.useProgram(shaderProgram);
+        const shaderProgram = x.crog();
+        x.ahad(shaderProgram, vertexShader);
+        x.ahad(shaderProgram, pixelShader);
+        x.lgra(shaderProgram);
+        x.uram(shaderProgram);
         return shaderProgram;
     }
     
     // render a pixel shader
-    RenderShader(canvas, shaderProgram, time=0, frame=0)
+    RenderShader(canvas, shaderProgram, time=0, frame=0, X, Y, Z, W)
     {
         // get webgl context
         const x = canvas.getContext('webgl2');
-        
+            
         // use hardcoded values to save space
         const xRGBA          = 6408;
         const xUNSIGNED_BYTE = 5121;
@@ -621,17 +624,18 @@ class _OS13k
         const xTEXTURE_2D    = 3553;
         
         // set uniforms
-        x.uniform3f(x.getUniformLocation(shaderProgram,'iResolution'), 
+        x.u3f(x.gorm(shaderProgram,'iResolution'), 
             canvas.width, canvas.height, 1);
-        x.uniform1f(x.getUniformLocation(shaderProgram,'iTime'), time);
-        x.uniform1f(x.getUniformLocation(shaderProgram,'iFrame'), frame);
-        x.uniform1i(x.getUniformLocation(shaderProgram,'iChannel0'), 0);
-        
+        x.u1f(x.gorm(shaderProgram,'iTime'), time);
+        x.u1f(x.gorm(shaderProgram,'iFrame'), frame);
+        x.u1i(x.gorm(shaderProgram,'iChannel0'), 0);
+        x.u4f(x.gorm(shaderProgram,'iMouse'), X, Y, Z, W);
+                        
         // render shader
-        x.drawArrays(xTRIANGLE_FAN, 0, 3);
+        x.days(xTRIANGLE_FAN, 0, 3);
         
         // set texture to the newly rendered image
-        x.texImage2D(xTEXTURE_2D, 0, xRGBA, xRGBA, xUNSIGNED_BYTE, canvas);
+        x.te2D(xTEXTURE_2D, 0, xRGBA, xRGBA, xUNSIGNED_BYTE, canvas);
     }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -859,6 +863,10 @@ class _OS13kSystem
         // hide all menus
         for (const child of programsMenu.children)
             child.style.visibility = menu.style.visibility = '';
+            
+            
+        // unselect active program
+        activeProgram && (activeProgram.className = 'program');
     }
 
     // try to give trophy if key is valid
@@ -1019,15 +1027,12 @@ class OS13kProgram extends HTMLElement
     
     Move()
     {
-        // unselect active program
-        activeProgram && (activeProgram.className = 'program');
-
+        // set container program menu active 
+        this.programMenu && this.programMenu.SetActive();
+        
         // set active
         activeProgram = this;
         this.className = 'program programActive';
-        
-        // set container program menu active 
-        this.programMenu && this.programMenu.SetActive();
     }
     
     Open()
@@ -1201,7 +1206,7 @@ class OS13kWindow extends HTMLElement
         loading += !finishedStartup;
         
         // wait for frame to load and set that it is not loading
-        this.iframe.onload =e=> { try {
+        this.iframe.onload =e=> {
 
             // set up iframe          
             const iframeContent = this.iframeContent = e.target.contentWindow;
@@ -1258,20 +1263,18 @@ class OS13kWindow extends HTMLElement
 
                 // create shader
                 program.isShader && iframeContent.eval(
-                    'g=c.getContext`webgl2`;' +
-                    'onmousemove=e=>e.buttons&&(x=e.x,y=c.height-e.y);' +
-                    'onmousedown=e=>(x=z=e.x,y=w=c.height-e.y);' +
-                    'onmouseup=e=>z=w=0;' +
+                    'x=c.getContext`webgl2`;' +
+                    'onmousemove=e=>e.buttons&&(X=e.x,Y=c.height-e.y);' +
+                    'onmousedown=e=>(X=Z=e.x,Y=W=c.height-e.y);' +
+                    'onmouseup=e=>Z=W=0;' +
                     's=parent.OS13k.CreateShader(c,`' + iframeText + '`);' + 
                     'loop=t=>requestAnimationFrame(loop,' +
                     (program.awake? '' : 't<1e3|document.hasFocus()&&') +
                         '(c.width=innerWidth,' + 
                         'c.height=innerHeight,' + 
-                        'g.uniform4f(g.getUniformLocation(s,"iMouse"),x,y,z,w),' +
-                        'parent.OS13k.RenderShader(c,s,f/60,f++)));' + 
-                    'loop(x=y=z=w=f=0)');
-            }}
-            catch (e) {} // could not load frame, possible cross site error
+                        'parent.OS13k.RenderShader(c,s,f/60,f++,X,Y,Z,W)));' + 
+                    'loop(X=Y=Z=W=f=0)');
+            }
 
             // add taskbar icon if it doesnt exist (from being reloaded)
             this.taskbarIcon ||
@@ -1643,42 +1646,38 @@ oncontextmenu=e=>false;
 ///////////////////////////////////////////////////////////////////////////////
 // ZzFXMicro - Zuper Zmall Zound Zynth 
 
-const zzfx = ( // play a zzfx sound
-    volume=1, randomness=.05, frequency=220, attackIn=0, sustainIn=0, releaseIn=.1, shape=0, shapeCurve=1, slide=0, deltaSlideIn=0, pitchJumpIn=0, pitchJumpTimeIn=0, repeatTimeIn=0, noise=0, modulationIn=0, bitCrush=0, delayIn=0, sustainVolume=1, decayIn=0)=>
+const zzfx = // play a sound
+(volume = 1, randomness = .05, frequency = 220, attack = 0, sustain = 0, release = .1, shape = 0, shapeCurve = 1, slide = 0, deltaSlide = 0, pitchJump = 0, pitchJumpTime = 0, repeatTime = 0, noise = 0, modulation = 0, bitCrush = 0, delay = 0, sustainVolume = 1, decay = 0, sampleRate = 44100, b = [])=>
 {
-    // init parameters
-    let PI2 = Math.PI*2,
-    sampleRate = 44100,
-    random = r => r*2*Math.random()-r,
-    sign = v => v>0?1:-1,
-    startSlide = slide *= 500 * PI2 / sampleRate**2,
-    modPhase = sign(modulationIn) * PI2/4,
-    startFrequency = frequency *= (1 + random(randomness)) * PI2 / sampleRate,
-    attack = 99 + attackIn * sampleRate | 0,
-    decay = decayIn * sampleRate | 0,
-    sustain = sustainIn * sampleRate | 0,
-    release = releaseIn * sampleRate | 0,
-    delay = delayIn * sampleRate | 0,
-    deltaSlide = deltaSlideIn * 500 * PI2 / sampleRate**3,
-    modulation = modulationIn * PI2 / sampleRate,
-    pitchJump = pitchJumpIn * PI2 / sampleRate,
-    pitchJumpTime = pitchJumpTimeIn * sampleRate,
-    repeatTime = repeatTimeIn * sampleRate,
-    length = attack + decay + sustain + release + delay,
-    b=[], t=0, tm=0, i=0, j=1, r=0, c=0, s=0, d=.5;
-
-    // generate waveform
-    for(; i < length;b[i++] = s)
+    attack = 99 + attack * sampleRate;
+    sustain *= sampleRate;
+    release *= sampleRate;
+    decay *= sampleRate;
+    delay *= sampleRate;
+    
+    for(
+        // init parameters and helper functions
+        let PI2 = Math.PI*2,
+        random =r=> 1 + r*2*Math.random() - r,
+        sign =v=> v>0? 1 : -1,
+        length = attack + decay + sustain + release + delay,
+        startSlide = slide *= 500 * PI2 / sampleRate**2,
+        startFrequency = frequency *= random(randomness) * PI2 / sampleRate,
+        modPhase = sign(modulation) * PI2/4,
+        t=0, tm=0, i=0, j=1, r=0, c=0, s=0;
+    
+        // loop and generate waveform
+        i < length; b[i++] = s)
     {
         if (++c>bitCrush*100)                            // bit crush
         {
             c = 0;                                       // reset bit crush
             s = t * frequency *                          // frequency
-                Math.sin(tm * modulation - modPhase);    // modulation
+                Math.sin(tm * modulation * PI2 / sampleRate - modPhase); // modulation
 
             s = shape? shape>1? shape>2? shape>3?        // wave shape
                 Math.sin((s%PI2)**3) :                   // 4 noise
-                Math.max(Math.min(Math.tan(s),1),-1):    // 3 tan
+                Math.max(Math.min(Math.tan(s), 1), -1):  // 3 tan
                 1-(2*s/PI2%2+2)%2:                       // 2 saw
                 1-4*Math.abs(Math.round(s/PI2)-s/PI2):   // 1 triangle
                 Math.sin(s);                             // 0 sin
@@ -1688,31 +1687,34 @@ const zzfx = ( // play a zzfx sound
                 i < attack ? i/attack :                  // attack
                 i < attack + decay ?                     // decay
                 1-((i-attack)/decay)*(1-sustainVolume) : // decay falloff
-                i < attack  + decay + sustain ?          // sustain
+                i < attack + decay + sustain ?           // sustain
                 sustainVolume :                          // sustain volume
                 i < length - delay ?                     // release
                 (length - i - delay)/release *           // release falloff
                 sustainVolume :                          // release volume
-                0)                                       // post release
+                0);                                      // post release
 
             s = delay ?                                  // delay
                 s/2 + (delay > i ? 0 :
                 (i<length-delay? 1 : (i-length)/delay) * // release delay 
-                b[i-delay]/2) : s;
+                b[i - delay|0]/2) : s;                   // sample delay
         }
 
-        t += 1 + random(noise);                      // noise
-        tm += 1 + random(noise);                     // modulation noise
-        frequency += slide += deltaSlide;            // frequency slide
+        t += random(noise);                          // noise
+        tm += random(noise);                         // modulation noise
+        frequency += slide += deltaSlide             // frequency slide
+            * 500 * PI2 / sampleRate**3;             // apply sample rate
 
-        if (j && ++j > pitchJumpTime)                // pitch jump
+        if (j && ++j > pitchJumpTime * sampleRate)   // pitch jump
         {
-            frequency += pitchJump;                  // apply pitch jump
-            startFrequency += pitchJump;             // also apply to start
+            frequency += pitchJump                   // apply pitch jump
+                * PI2 / sampleRate;                  // apply sample rate
+            startFrequency += pitchJump              // also apply to start
+                * PI2 / sampleRate;                  // apply sample rate
             j = 0;                                   // reset pitch jump time
         }
 
-        if (repeatTime && ++r > repeatTime)           // repeat
+        if (repeatTime && ++r > repeatTime* sampleRate) // repeat
         {
             frequency = startFrequency;               // reset frequency
             slide = startSlide;                       // reset slide
@@ -1722,7 +1724,8 @@ const zzfx = ( // play a zzfx sound
     }
 
     return OS13k.PlaySamples(b);
-} // zzfx
+}
+const zzfxX = new AudioContext;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Start OS13k!
@@ -1732,14 +1735,11 @@ OS13kSystem.Start();
 ///////////////////////////////////////////////////////////////////////////////
 // Mobile Support OPTIONAL
 
-// save is touching and original mouse functions
-let wasTouching, onmouseupTouch=onmouseup, onmousedownTouch=onmousedown, onmousemoveTouch=onmousemove;
-
-(typeof ontouchstart != 'undefined') && (ontouchstart=()=>
-{
-    // prevent touch triggering mouse events
-    onmouseup = onmousedown = onmousemove = 0;
+// save if user was touching
+let wasTouching;
     
+if (typeof ontouchstart != 'undefined')
+{
     // remove hovers, they get stuck on mobile
     const RemoveHovers=e=>
     {
@@ -1764,17 +1764,17 @@ let wasTouching, onmouseupTouch=onmouseup, onmousedownTouch=onmousedown, onmouse
             e.y = e.touches[0].clientY;
 
             // pass event to mousemove
-            onmousemoveTouch(e);
+            onmousemove(e);
             
             // give focus to main window
             window.focus();
         }
 
-        // pass event to mouse down, check folder to prevent touching programs
-        touching & !wasTouching & !e.target.folder && onmousedownTouch(e);
+        // pass event to mouse down, prevent closing folders when clicked
+        touching & !wasTouching & !e.target.folder && onmousedown(e);
 
         // pass event to mouse up
-        !touching & wasTouching && onmouseupTouch(e);
+        !touching & wasTouching && onmouseup(e);
 
         // set was touching
         wasTouching = touching;
@@ -1788,6 +1788,6 @@ let wasTouching, onmouseupTouch=onmouseup, onmousedownTouch=onmousedown, onmouse
     
     // set touch events
     ontouchstart = ontouchmove = ontouchend = ontouchcancel = ProcessTouch;
-});
+};
 
 </script>
