@@ -28,10 +28,11 @@ OS13k is a tiny operating system designed for a JS13k community project. It incl
 - Though you can use images and other files, for JS13k we will need each program in one html file
 
 Add an icon config to programs.js to register your program, and send me pull request, examples...
-- {src:'system/test.html', name:'Hello!', icon:'✌️😄', reload:1, code:1, sticky:1}
-- {src:'dweets/underwaterCavern.dweet.js', icon:'🌊', author:'Pavel'}
-- {src:'toys/infiniteYinYangs.shader.txt', icon:'☯', help:'Put instructions here.'}
-- {src:'help.html'}
+- [src, icon, width, height, flags, name, help, folder]
+- ['help.html','<b><span style=color:#0f0>?']
+- ['system/systemTest.html','✌️😄',,,full|resize|code|sticky]
+- ['dweets/underwaterCavern.dweet.js','🌊']
+- ['toys/infiniteYinYangs.shader.txt','☯',500,500,full,'Put instructions here.']
 
 ### Programs
 - OS13k can open any html file and it will work the same as if opened directly
