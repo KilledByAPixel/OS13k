@@ -1,7 +1,7 @@
 <style>body{background:#111;color:#fff}</style>
 Volume <input type=range id=v onchange=S()>
 <br><br>Speech <input type=checkbox id=s onchange=S()> &nbsp;&nbsp;Popups <input type=checkbox id=p onchange=S()>
-<br><br>Background Colors <input id=c type=color onchange=S()> &nbsp;&nbsp;<input id=d type=color onchange=S()>
+<br><br>Background <input id=c type=color onchange=S()> &nbsp;&nbsp;<input id=d type=color onchange=S()> Text <input id=t oninput=S()>
 <br><br>Filters
 <script>
 
@@ -21,8 +21,7 @@ L=
 // add buttons for filters
 for(i in L) 
     document.body.innerHTML += 
-    `<button onclick="S(OS13k.AddWords('${L[i][0]}'),f=L[${i}])">`+L[i][0];
-        
+    `<button onclick="S(OS13k.AddWords('${L[i][0]}'),f=L[${i}])">`+L[i][0];  
 
 // load settings
 S = OS13k.Settings();
@@ -30,7 +29,8 @@ v.value   = S[0] * 100;         // volume
 s.checked = S[1];               // speech
 c.value   = S[2];               // color 1
 d.value   = S[3];               // color 2
-p.checked = S[4];               // popups
+t.value   = S[4];               // background text
+p.checked = S[5];               // popups
 i = L.findIndex(e=>e[0]==S[5][0]); // filter
 f = L[ i < 0 ? 0 : i ];
 
@@ -41,6 +41,7 @@ S=()=>OS13k.SaveSettings
     s.checked,   // speech
     c.value,     // color 1
     d.value,     // color 2
+    t.value,     // background text
     p.checked,   // popups
     f            // filter
 );

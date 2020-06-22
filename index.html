@@ -206,7 +206,7 @@ div svg       { width:28;pointer-events:none; }
 <div id=tray></div>
 </div>
 <div id=popups style=float:right></div>
-<div id=background>OS13k</div>
+<div id=background></div>
 <div id=desktop style=position:absolute>
 <div id=programsMenu style=position:absolute></div>
 <div id=menu>
@@ -223,7 +223,7 @@ div svg       { width:28;pointer-events:none; }
 ///////////////////////////////////////////////////////////////////////////////
 // OS13k Debug (remove from minified)
 
-const OS13kVersion = 54;
+const OS13kVersion = 55;
 {
     // version check, clear local storage if older
     if (localStorage.OS13kVersion && localStorage.OS13kVersion != OS13kVersion)
@@ -696,8 +696,9 @@ class _OS13k
         const speech     = settings[1];
         const color1     = settings[2];
         const color2     = settings[3];
-        const showPopups = settings[4];
-        const filter     = settings[5];
+        const text       = settings[4];
+        const showPopups = settings[5];
+        const filter     = settings[6];
         
         // volume
         OS13kSystem.SetVolume(volume);
@@ -707,6 +708,7 @@ class _OS13k
         
         // background
         background.style.background = `linear-gradient(${color2},${color1})`;
+        background.innerText = text;
         
         // popups
         showPopups || (popups.innerHTML = '');
@@ -732,7 +734,7 @@ class _OS13k
     
     Settings() { return settings; }
     
-    SaveSettings(volume, speech, color1, color2, showPopups, filter)
+    SaveSettings(volume, speech, color1, color2, text, showPopups, filter)
     {
         // set settings and save
         settings = 
@@ -741,6 +743,7 @@ class _OS13k
             speech,
             color1,
             color2,
+            text,
             showPopups,
             filter
         ];
@@ -754,7 +757,7 @@ var OS13k = new _OS13k;
 // OS13k Variables
 
 const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26,
-      startWindowOpenX = 9, startWindowOpenY = 51, forceRefresh = '?101',
+      startWindowOpenX = 9, startWindowOpenY = 51, forceRefresh = '?102',
       popupTime = 3, defaultVolume = .3, maxWordLength = 32,
 
     // init web audio
@@ -770,7 +773,7 @@ let grabWindow, grabOffsetX, grabOffsetY, finishedStartup,
     programInfos = [], trophies = [], words = [],
     
     // default settings (volume, speech, filter, bgcolor)
-    settings = [.3, 1, '#332222', '#222233', 1, 0];
+    settings = [.3, 1, '#332222', '#222233', 'OS13k', 1, 0];
 
 // connect gain
 gain.connect(audioContext.destination);
