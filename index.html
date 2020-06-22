@@ -184,9 +184,9 @@ body
 <div id=taskbarSpace style=flex:1></div>
 <div id=tray></div>
 </div>
-<div id=popups style=float:right></div>
 <div id=background></div>
-<div id=desktop style=position:absolute>
+<div id=desktop>
+<div id=popups style=float:right></div>
 <div id=programsMenu style=position:absolute></div>
 <div id=menu>
 <button id=buttonFullScreen>Fullscreen
@@ -607,10 +607,6 @@ class _OS13k
             p:startProgramName = startProgram ? startProgram.name : ''
         }));
         
-        const text       = settings[4];
-        const showPopups = settings[5];
-        const filter     = settings[6];
-        
         // volume
         OS13kSystem.SetVolume(settings[0]);
         
@@ -620,13 +616,14 @@ class _OS13k
         // background
         background.style.background = 
             `linear-gradient(${settings[2]},${settings[3]})`;
-        background.innerText = text;
+        background.innerText = settings[4];
         
         // popups
-        showPopups || (popups.innerHTML = '');
+        settings[5] || (popups.innerHTML = '');
         
         // filter
-        document.body.style.filter    = filter[1];
+        desktop.style.filter = settings[6][1];
+        background.style.filter = settings[6][1];
     }
     
     Load()
@@ -671,7 +668,7 @@ const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26,
       popupTime = 3, defaultVolume = .3, maxWordLength = 32,
 
     // increment to force pages to be refreshed OPTIONAL
-    forceRefresh = '?1005',
+    forceRefresh = '?1006',
 
     // init web audio
     audioContext = new (AudioContext || webkitAudioContext),
