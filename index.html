@@ -117,11 +117,6 @@ body
     align-items:center;
     justify-content:center;
 }
-@keyframes hue 
-{
-  0%, 100% { filter: hue-rotate(); }
-  50%      { filter: hue-rotate(180deg); }
-}
 </style>
 <template id=T>
 <style>
@@ -632,7 +627,6 @@ class _OS13k
         
         // filter
         document.body.style.filter    = filter[1];
-        document.body.style.animation = filter[2];
     }
     
     Load()
@@ -677,7 +671,7 @@ const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26,
       popupTime = 3, defaultVolume = .3, maxWordLength = 32,
 
     // increment to force pages to be refreshed OPTIONAL
-    forceRefresh = '?1004',
+    forceRefresh = '?1005',
 
     // init web audio
     audioContext = new (AudioContext || webkitAudioContext),

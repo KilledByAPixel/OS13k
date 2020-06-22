@@ -19,13 +19,13 @@ L=
     ['Game Boy', 'sepia()hue-rotate(40deg)contrast(.8'],
     ['Ocean',   'invert()sepia()invert('],
     ['Sepia',   'sepia('],
-    ['Fruity',  'saturate(9', 'hue 20s infinite'],
+    ['Fruity',  'saturate(19',],
 ];
 
 // add buttons for filters
 for(i in L) 
     document.body.innerHTML += 
-    `<button onclick="S(OS13k.Speak('${L[i][0]}'),f=L[${i}])">`+L[i][0];  
+    `<button id="${j=L[i][0]}" onclick="S(OS13k.Speak('${j}'),U(f=L[${i}]))">`+j;  
 
 // load settings
 S = parent.OS13k.Settings();
@@ -35,8 +35,16 @@ c.value   = S[2];               // color 1
 d.value   = S[3];               // color 2
 t.value   = S[4];               // background text
 p.checked = S[5];               // popups
-i = L.findIndex(e=>e[0]==S[5][0]); // filter
+i = L.findIndex(e=>e[0]==S[6][0]); // filter
 f = L[ i < 0 ? 0 : i ];
+
+// update if necessary
+U=()=>
+{
+    for(i of L)
+        document.getElementById(i[0]).style.border = '5px solid ' + (i[0] == f[0] ? '#999' : '#111');
+}
+U();
 
 // save settings
 S=()=>parent.OS13k.SaveSettings
