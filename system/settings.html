@@ -29,32 +29,33 @@ for(i in L)
 
 // load settings
 S = parent.OS13k.Settings();
-v.value   = S[0] * 100;         // volume
-s.checked = S[1];               // speech
-c.value   = S[2];               // color 1
-d.value   = S[3];               // color 2
-t.value   = S[4];               // background text
-p.checked = S[5];               // popups
-i = L.findIndex(e=>e[0]==S[6][0]); // filter
-f = L[ i < 0 ? 0 : i ];
+v.value   = S[0] * 100;            // volume
+s.checked = S[1];                  // speech
+p.checked = S[2];                  // popups
+c.value   = S[3];                  // color 1
+d.value   = S[4];                  // color 2
+t.value   = S[5];                  // background text
+i = L.findIndex(e=>e[0]==S[6][0]); // find filter
+f = L[ i < 0 ? 0 : i ];            // filter
 
 // update if necessary
 U=()=>
 {
     for(i of L)
-        document.getElementById(i[0]).style.border = '5px solid ' + (i[0] == f[0] ? '#999' : '#111');
+        document.getElementById(i[0]).style.border 
+            = '5px solid ' + (i[0] == f[0] ? '#999' : '#111');
 }
 U();
 
 // save settings
 S=()=>parent.OS13k.SaveSettings
 (
-    v.value/100, // volume
-    s.checked,   // speech
-    c.value,     // color 1
-    d.value,     // color 2
-    t.value,     // background text
-    p.checked,   // popups
-    f            // filter
+    v.value / 100, // volume
+    s.checked,     // speech
+    p.checked,     // popups
+    c.value,       // color 1
+    d.value,       // color 2
+    t.value,       // background text
+    f              // filter
 );
 </script>

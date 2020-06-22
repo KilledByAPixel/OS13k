@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A tiny OS for JS13k</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?91></script>
+<script src=programs.js?92></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -202,7 +202,7 @@ body
 ///////////////////////////////////////////////////////////////////////////////
 // OS13k Debug (remove from minified)
 
-const OS13kVersion = 57;
+const OS13kVersion = 58;
 {
     // version check, clear local storage if older
     if (localStorage.OS13kVersion && localStorage.OS13kVersion != OS13kVersion)
@@ -618,11 +618,11 @@ class _OS13k
         
         // background
         background.style.background = 
-            `linear-gradient(${settings[2]},${settings[3]})`;
-        background.innerText = settings[4];
+            `linear-gradient(${settings[3]},${settings[4]})`;
+        background.innerText = settings[5];
         
         // popups
-        settings[5] || (popups.innerHTML = '');
+        settings[2] || (popups.innerHTML = '');
         
         // filter
         desktop.style.filter = settings[6][1];
@@ -644,17 +644,17 @@ class _OS13k
     
     Settings() { return settings; }
     
-    SaveSettings(volume, speech, color1, color2, text, showPopups, filter)
+    SaveSettings(volume, speech, showPopups, color1, color2, text, filter)
     {
         // set settings and save
         settings = 
         [
             gain.gain.value = volume,
             speech,
+            showPopups,
             color1,
             color2,
             text,
-            showPopups,
             filter
         ];
         this.Save();
@@ -671,7 +671,7 @@ const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26,
       popupTime = 3, defaultVolume = .3, maxWordLength = 32,
 
     // increment to force pages to be refreshed OPTIONAL
-    forceRefresh = '?1009',
+    forceRefresh = '?1010',
 
     // init web audio
     audioContext = new (AudioContext || webkitAudioContext),
@@ -685,7 +685,7 @@ let grabWindow, grabOffsetX, grabOffsetY, finishedStartup,
     clockTrayIcon, programInfos = [], trophies = [],
     
     // default settings (volume, speech, filter, bgcolor)
-    settings = [.3, 1, '#222233', '#332222', 'OS13k', 1, 0];
+    settings = [.3, 1, 1, '#222233', '#332222', 'OS13k', 0];
 
 // connect gain
 gain.connect(audioContext.destination);
