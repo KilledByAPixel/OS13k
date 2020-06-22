@@ -162,7 +162,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 
  ### Word List Functions
  - OS13k.AddWords(string, speak) - adds new words in string, pass optional speak override string
- - GetWord(regex = /./, minLength = 0, maxLength) - returns random matching word, '' if none found
+ - GetWord(minLength = 0, maxLength, regex = /./) - returns random matching word, '' if none found
  - Words() - get the full list of words
  
  ### Any JS13k game can use trophies, even if not part of OS13k!
