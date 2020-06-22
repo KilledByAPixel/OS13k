@@ -140,7 +140,7 @@ Add an icon config to programs.js to register your program, and send me pull req
  - To unlock trophies use OS13k.Trophy(gameName, trophyName, icon, message)
  - You can pass in a value for message like a high score for example
  - "OS13kTrophy,gameName,trophyName,icon" is the unique local storage key for each trophy
- - *HTML tags and ',' can not used in trophy data, it will apper garbled*
+ - *HTML tags and commas can not used in trophy data, it will apper garbled*
  - When a new trophy is unlocked or the message is changed a popup will automatically appear
  - Total trophy count is shown in the taskbar and the trophy case shows all unlocked trophies
  - *You can use tophies to unlock stuff!* Use OS13k.GetTrophy to check if player has a trophy
