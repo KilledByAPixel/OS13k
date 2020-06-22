@@ -25,7 +25,7 @@ programs =
     ['system/trophyCase.html','🏆',,,full|resize|sticky],
     ['system/wordList.html','📕',,,full|resize|sticky],
     ['system/clock.dweet.js','🕰️',200,200,sticky|code|awake],
-    ['system/systemTest.html',,,,full|resize|code|sticky],
+    ['system/systemTest.html',,,,full|resize|code],
     [,'📁',,,,'Test',,
     [
         ['index.html','✌️😄',,,,'Meta OS13k'],
