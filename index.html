@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A tiny OS for JS13k</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?92></script>
+<script src=programs.js?93></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -374,8 +374,20 @@ class _OS13k
     // play zzfx sound from seed
     PlaySeed(seed, lengthScale=1, volume=1, randomness=.05)
     {
+        if (typeof seed == 'string')
+        {
+            const splitSeed = seed.split(',');
+            seed = splitSeed[0];
+            splitSeed.length > 1 && (lengthScale = splitSeed[1]);
+            splitSeed.length > 2 && (volume = splitSeed[2]);
+            splitSeed.length > 3 && (randomness = splitSeed[3]);
+        }
+    
         // set random seed
         this.randomSeed = seed;
+        
+        // clamp max length
+        lengthScale = OS13k.Clamp(lengthScale, .1, 5);
         
         // helper functions
         const R=()=>this.Random(), C=()=>R()<.5?R():0, S=()=>C()?1:-1,
@@ -671,7 +683,7 @@ const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26,
       popupTime = 3, defaultVolume = .3, maxWordLength = 32,
 
     // increment to force pages to be refreshed OPTIONAL
-    forceRefresh = '?1010',
+    forceRefresh = '?1011',
 
     // init web audio
     audioContext = new (AudioContext || webkitAudioContext),
@@ -1305,7 +1317,7 @@ class OS13kWindow extends HTMLElement
     Resize(scale)
     {
         // change size of window while preserving aspect
-        const wNew = OS13k.Clamp(this.program.width * scale, 250, 1920);
+        const wNew = OS13k.Clamp(this.program.width * scale, 300, 1920);
         const hNew = this.program.height * (this.scale = wNew / this.program.width);
         
         // get old width
