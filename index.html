@@ -372,7 +372,7 @@ class _OS13k
 // OS13k Audio
 
     // play zzfx sound from seed
-    PlaySeed(seed, lengthScale=1, volume=1, randomness=.05)
+    PlaySeed(seed, lengthScale=1, volume=1, randomness=.05, frequency)
     {
         if (typeof seed == 'string')
         {
@@ -397,14 +397,15 @@ class _OS13k
         decay   = R()**3/2*lengthScale,
         sustain = R()**3/2*lengthScale,
         release = R()**3/2*lengthScale,
-        length  = attack + decay + sustain + release;
+        length  = attack + decay + sustain + release,
+        f = R()**2*2e3;
         
         // generate random sound
         return zzfx
         (
            volume,           // volume
            randomness,       // randomness
-           R()**2*2e3,       // frequency
+           frequency || f,   // frequency
            attack,           // attack
            sustain,          // sustain
            release,          // release
