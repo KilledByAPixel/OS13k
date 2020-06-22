@@ -1,0 +1,24 @@
+<button onclick=f(0)>Default
+<button onclick=f(1)>Gray
+<button onclick=f(2)>Gameboy
+<button onclick=f(3)>Blur
+<button onclick=f(4)>Ocean
+<button onclick=f(5)>Sepia
+<button onclick=f(6)>Dim
+<button onclick=f(8)>Fruity
+<script>
+f=n=>{
+a=[
+{filter:''},                                          // none
+{filter:'grayscale('},                                // b&w
+{filter:'sepia()hue-rotate(20deg)contrast(.8'},       // gameboy
+{filter:'blur(1px'},                                  // blur
+{filter:'invert()sepia()invert('},                    // ocean
+{filter:'sepia('},                                    // sepia
+{filter:'contrast(.8)brightness(.5'},                 // dim
+{filter:'saturate(9)', animation:'hue 30s infinite'}  // fruity
+]
+s=parent.document.body.style
+s.animation='';
+for(i in a[n])s[i]=a[n][i]}
+</script>

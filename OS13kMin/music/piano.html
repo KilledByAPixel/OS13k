@@ -1,0 +1,19 @@
+<button id=organ onClick=inst=[1,2,4,8,16,32]>organ</button>
+<button onClick=inst=[4,4*3,4*5,4*7]>picollo</button>
+<button onClick=inst=[4]>∿ sin</button>
+<span id=fr></span><p><div id=p></div><script>organ.click()
+d=''
+n=0
+P=(n)=>{inst.map(H=>zzfx(1/(1+Math.log2(H)),0,(F=16.3516*2**(n/12))*H,.01,.2,.06,0,2)),fr.innerHTML=(4*F).toFixed(2)+" Hz"};
+for(i=0;i<=53;i++){
+if([1,2,4,5,6].includes(i%7)){d+=`<div style="background-color:#000;width:16px;height:60px;position:absolute;margin-left:-8px;display:inline-block;"
+onmouseover="this.style.backgroundColor='#f70'"
+onmouseout="this.style.backgroundColor='#000'"
+onmousedown=P(${n})></div>`
+n++}
+d+=`<div style="border:1px solid;width:20px;height:99px;display:inline-block;"
+onmouseover="this.style.backgroundColor='#f70'"
+onmouseout="this.style.backgroundColor='#fff'"
+onmousedown=P(${n})></div>`
+n++}
+p.innerHTML=d</script>
