@@ -153,19 +153,6 @@ Add an icon config to programs.js to register your program, and send me pull req
  - OS13k.GetTrophy(game=0, name=0, icon=0) - Get most recent matching trophy, 0 if no trophy
  - OS13k.Trophies() - Get full list of trophy objects
  
- ### Word List
- - Every that OS13k comes across like from programs or trophies is added to the word list
- - This word list can be used to generate poems, song lyrics, or even games!
- - Collecting words is also a minigame and new words are read aloud when found
- - You can pass any string into AddWords and it will be stripped of punction, etc
- - The reason for this feature is because words zip poorly, so lets make the most of them
- - Words in the list can be from other JS13k game trophies!
-
- ### Word List Functions
- - OS13k.AddWords(string, speak) - adds new words in string, pass optional speak override string
- - GetWord(minLength = 0, maxLength, regex = /./) - returns random matching word, '' if none found
- - Words() - get the full list of words
- 
  ### Any JS13k game can use trophies, even if not part of OS13k!
  - To add a trophies to any JS13k game, just save a special key to localStorage!
  - The simplest way to add a single trophy is localStorage['OS13kTrophy,GameName']=''
