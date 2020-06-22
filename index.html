@@ -405,7 +405,7 @@ class _OS13k
         (
            volume,           // volume
            randomness,       // randomness
-           frequency || f,   // frequency
+           frequency || f, // frequency
            attack,           // attack
            sustain,          // sustain
            release,          // release
@@ -434,7 +434,7 @@ class _OS13k
             .getChannelData(0).set(samples);
         source.connect(gain);
         source.stop = source.stop || source.noteOff;
-        source.start ? source.start() : source.noteOn();
+        source.start = source.start || source.noteOn;
         return source;
     }
     
@@ -684,7 +684,7 @@ const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26,
       popupTime = 3, defaultVolume = .3, maxWordLength = 32,
 
     // increment to force pages to be refreshed OPTIONAL
-    forceRefresh = '?1011',
+    forceRefresh = '?1013',
 
     // init web audio
     audioContext = new (AudioContext || webkitAudioContext),

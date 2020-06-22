@@ -26,14 +26,9 @@ u=()=>
 {
     // get values
     i = parseInt(S.value);    // seed
-    l = L.value / 100 + '';   // length
+    l = L.value / 20 +   '';   // length
     v = V.value / 100 + '';   // volume
     r = R.value / 2000 + '';  // randomness
-    
-    // remove leading 0
-    l = l.slice(l[0]|0? 0 : 1);
-    v = v.slice(v[0]|0? 0 : 1);
-    r = r.slice(r[0]|0? 0 : 1);
     
     // set seed
     l!=1 | v!=1 | r!=.05 && (i += ',' + l);
