@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A tiny OS for JS13k</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?93></script>
+<script src=programs.js?94></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -249,7 +249,7 @@ const OS13kVersion = 58;
 // @js_externs OS13k.Clamp, OS13k.Percent, OS13k.Lerp
 // @js_externs OS13k.Random, OS13k.randomSeed, iframeContent.OS13kReload
 // @js_externs OS13k.Trophies, OS13k.Trophy, OS13k.GetTrophy
-// @js_externs OS13k.PlaySeed, OS13k.PlaySamples, OS13k.GetNote
+// @js_externs OS13k.PlaySeed, OS13k.PlaySamples, OS13k.Note
 // @js_externs OS13k.Speak, OS13k.StopSpeech
 // @js_externs OS13k.Settings(), OS13k.SaveSettings()
 // @js_externs OS13k.CreateShader, OS13k.RenderShader
@@ -377,10 +377,9 @@ class _OS13k
         if (typeof seed == 'string')
         {
             const splitSeed = seed.split(',');
-            seed = splitSeed[0];
-            splitSeed.length > 1 && (lengthScale = splitSeed[1]);
-            splitSeed.length > 2 && (volume = splitSeed[2]);
-            splitSeed.length > 3 && (randomness = splitSeed[3]);
+            seed = parseFloat(splitSeed[0]);
+            splitSeed.length > 1 && parseFloat(lengthScale = splitSeed[1]);
+            splitSeed.length > 2 && parseFloat(volume = splitSeed[2]);
         }
     
         // set random seed
@@ -393,10 +392,10 @@ class _OS13k
         const R=()=>this.Random(), C=()=>R()<.5?R():0, S=()=>C()?1:-1,
         
         // randomize sound length
-        attack  = R()**3/2*lengthScale,
-        decay   = R()**3/2*lengthScale,
-        sustain = R()**3/2*lengthScale,
-        release = R()**3/2*lengthScale,
+        attack  = R()**3/4*lengthScale,
+        decay   = R()**3/4*lengthScale,
+        sustain = R()**3/4*lengthScale,
+        release = R()**3/4*lengthScale,
         length  = attack + decay + sustain + release,
         f = R()**2*2e3;
         
@@ -440,7 +439,7 @@ class _OS13k
     }
     
     // get frequency of a musical note on a diatonic scale
-    GetNote(semitoneOffset=0, rootNoteFrequency=440)
+    Note(semitoneOffset=0, rootNoteFrequency=440)
     { return rootNoteFrequency * 2**(semitoneOffset/12); }
 
     // speak the text
@@ -685,7 +684,7 @@ const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26,
       popupTime = 3, defaultVolume = .3, maxWordLength = 32,
 
     // increment to force pages to be refreshed OPTIONAL
-    forceRefresh = '?1013',
+    forceRefresh = '?1016',
 
     // init web audio
     audioContext = new AudioContext, gain = audioContext.createGain();

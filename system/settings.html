@@ -1,18 +1,18 @@
-<style>body{background:#111;color:#fff}</style>
-Volume <input type=range id=v onchange=S()>&nbsp;&nbsp;
+<style>body{background:#111;color:#fff;user-select:none;text-align:center}</style>
+Volume <input type=range id=V onchange=s()>&nbsp;&nbsp;
 Speech
-<input type=checkbox id=s onchange=S()>
-&nbsp;&nbsp;Popups
-<input type=checkbox id=p onchange=S()>
+<input type=checkbox id=S onchange=s()>&nbsp;&nbsp;
+Popups
+<input type=checkbox id=P onchange=s()>
 <br><br>Background
-<input id=d type=color oninput=S()>&nbsp;&nbsp;
-<input id=c type=color oninput=S()>&nbsp;&nbsp;
-<input id=t oninput=S()>
+<input id=C type=color oninput=s()>&nbsp;&nbsp;
+<input id=D type=color oninput=s()>&nbsp;&nbsp;
+<input id=T oninput=s()>
 <br><br>Filters
 <script>
 
 // filters
-L=
+f=
 [
     ['Default', ''],
     ['Gray',    'grayscale('],
@@ -23,39 +23,39 @@ L=
 ];
 
 // add buttons for filters
-for(i in L) 
+for(i in f) 
     document.body.innerHTML += 
-    `<button id="${j=L[i][0]}" onclick="S(OS13k.Speak('${j}'),U(f=L[${i}]))">`+j;  
+    `<button id="${j=f[i][0]}" onclick="s(parent.OS13k.Speak('${j}'),u(F=f[${i}]))">`+j;  
 
 // load settings
-S = parent.OS13k.Settings();
-v.value   = S[0] * 100;            // volume
-s.checked = S[1];                  // speech
-p.checked = S[2];                  // popups
-c.value   = S[3];                  // color 1
-d.value   = S[4];                  // color 2
-t.value   = S[5];                  // background text
-i = L.findIndex(e=>e[0]==S[6][0]); // find filter
-f = L[ i < 0 ? 0 : i ];            // filter
+i = parent.OS13k.Settings();
+V.value   = i[0] * 100;            // volume
+S.checked = i[1];                  // speech
+P.checked = i[2];                  // popups
+C.value   = i[3];                  // color 1
+D.value   = i[4];                  // color 2
+T.value   = i[5];                  // background text
+j = i.findIndex(e=>e[0]==i[6][0]); // find filter
+F = i[ j < 0 ? 0 : j ];            // filter
 
 // update if necessary
-U=()=>
+u=()=>
 {
-    for(i of L)
+    for(i of f)
         document.getElementById(i[0]).style.border 
-            = '5px solid ' + (i[0] == f[0] ? '#999' : '#111');
+            = '5px solid #' + (i[0] == F[0] ? '999' : '111');
 }
-U();
+u();
 
 // save settings
-S=()=>parent.OS13k.SaveSettings
+s=()=>parent.OS13k.SaveSettings
 (
-    v.value / 100, // volume
-    s.checked,     // speech
-    p.checked,     // popups
-    c.value,       // color 1
-    d.value,       // color 2
-    t.value,       // background text
-    f              // filter
+    V.value / 100, // volume
+    S.checked,     // speech
+    P.checked,     // popups
+    D.value,       // color 1
+    C.value,       // color 2
+    T.value,       // background text
+    F              // filter
 );
 </script>
