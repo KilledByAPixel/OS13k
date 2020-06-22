@@ -57,7 +57,7 @@ const Loop=t=>
     requestAnimationFrame(Loop);
     
     // render shader if focused
-    document.hasFocus() && OS13k.RenderShader(c, shader, t/1e3);
+    OS13k.RenderShader(c, shader, t/1e3);
 }
 
 // create a simple shader
