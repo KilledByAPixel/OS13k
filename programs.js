@@ -21,7 +21,7 @@ programs =
 ['moreInfo.html','👨‍💻'],
 [,'⚙️',,,,'System',,
 [
-    ['system/settings.html','🎚️',470,180,sticky],
+    ['system/settings.html','🎚️',470,160,sticky],
     ['system/trophyCase.html','🏆',,,full|resize|sticky],
     ['system/wordList.html','📕',,,full|resize|sticky],
     ['system/clock.dweet.js','🕰️',200,200,sticky|code|awake],
