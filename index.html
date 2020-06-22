@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A tiny OS for JS13k</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?77></script>
+<script src=programs.js?81></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -110,7 +110,6 @@ body
     font-family:impact;
     font-size:20vw;
     font-weight:900;
-    background:linear-gradient(#223,#322);
 }
 .program, #taskbar, .taskbarIcon, #background, #tray
 {
@@ -224,7 +223,7 @@ div svg       { width:28;pointer-events:none; }
 ///////////////////////////////////////////////////////////////////////////////
 // OS13k Debug (remove from minified)
 
-const OS13kVersion = 52;
+const OS13kVersion = 54;
 {
     // version check, clear local storage if older
     if (localStorage.OS13kVersion && localStorage.OS13kVersion != OS13kVersion)
@@ -266,11 +265,9 @@ const OS13kVersion = 52;
 // ==ClosureCompiler==
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // @language_out ECMASCRIPT_2019
-// @js_externs localStorage.OS13kT, localStorage.OS13kW
-// @js_externs localStorage.OS13kS, localStorage.OS13kM
-// @js_externs OS13k, iframeContent.zzfx, iframeContent.OS13kReload
+// @js_externs localStorage.OS13k, OS13k, iframeContent.zzfx
 // @js_externs OS13k.Clamp, OS13k.Percent, OS13k.Lerp
-// @js_externs OS13k.Random, OS13k.randomSeed
+// @js_externs OS13k.Random, OS13k.randomSeed, iframeContent.OS13kReload
 // @js_externs OS13k.Trophies, OS13k.Trophy, OS13k.GetTrophy
 // @js_externs OS13k.Words, OS13k.AddWords, OS13k.GetWord, OS13k.RemoveWord
 // @js_externs OS13k.PlaySeed, OS13k.PlaySamples, OS13k.GetNote
@@ -359,9 +356,6 @@ class _OS13k
 
         // save trophy
         localStorage['OS13kTrophy,' + key] = message;
-            
-        // trophies are saved after startup
-        finishedStartup && (localStorage.OS13kT = JSON.stringify(trophies));
         
         // reload trophy window
         trophyTrayIcon.program && trophyTrayIcon.program.Reload();
@@ -383,6 +377,9 @@ class _OS13k
         this.AddWords(name, 0);
         this.AddWords(game, name);
         this.AddWords(message);
+            
+        // save trophies
+        OS13k.Save();
         
         // return trophy data
         return trophyData;
@@ -407,9 +404,6 @@ class _OS13k
     // add every word in a string to the word list
     AddWords(string, speak=1)
     {
-        // get inner html from target if event was passed in
-        string.currentTarget && (string = string.currentTarget.innerHTML)
-    
         // convert to lowercase and split into words
         const matchs = (string?string+'':'').toLowerCase().match(/\b[^\s]+\b/g);
         
@@ -436,7 +430,7 @@ class _OS13k
         });
         
         // save words
-        localStorage.OS13kW = JSON.stringify(words);
+        OS13k.Save();
     }
 
     // get a random matching word
@@ -521,7 +515,7 @@ class _OS13k
     
         // set utterance parameters
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.volume = volume;
+        utterance.volume = volume * gain.gain.value * 3;
         utterance.pitch = pitch;
         utterance.rate = rate;
         utterance.lang = language;
@@ -530,7 +524,8 @@ class _OS13k
         stopSpeech && OS13kSystem.StopSpeech();
 
         // play speech
-        gain.gain.value && speechSynthesis && speechSynthesis.speak(utterance);
+        settings[1] && speechSynthesis 
+            && speechSynthesis.speak(utterance);
     }
         
 /////////////////////////////////////////////////////////////////////////////
@@ -670,9 +665,6 @@ class _OS13k
             .replace(/</g,'&lt;');
     }
     
-/////////////////////////////////////////////////////////////////////////////
-// OS13k System Calls
-    
     Popup(html, speak, language)
     {
         // create the popup
@@ -684,6 +676,80 @@ class _OS13k
         popup.speakLanguage = language;
     }
     
+/////////////////////////////////////////////////////////////////////////////
+// OS13k Seralization
+    
+    Save()
+    {   
+        // save data if finished startup
+        finishedStartup && (
+        localStorage.OS13k = JSON.stringify(
+        {
+            t:trophies,
+            w:words,
+            s:settings,
+            i:programInfos,
+            p:startProgramName = startProgram ? startProgram.name : ''
+        }));
+        
+        const volume     = settings[0];
+        const speech     = settings[1];
+        const color1     = settings[2];
+        const color2     = settings[3];
+        const showPopups = settings[4];
+        const filter     = settings[5];
+        
+        // volume
+        OS13kSystem.SetVolume(volume);
+        
+        // speech
+        speech || OS13kSystem.StopSpeech();
+        
+        // background
+        background.style.background = `linear-gradient(${color2},${color1})`;
+        
+        // popups
+        showPopups || (popups.innerHTML = '');
+        
+        // filter
+        document.body.style.filter    = filter[1];
+        document.body.style.animation = filter[2];
+        
+        // reload settings window
+        settingsTrayIcon.program && settingsTrayIcon.program.Reload();
+    }
+    
+    Load()
+    {
+        // use defaults if no settings found
+        if (!localStorage.OS13k) return;
+    
+        // load data
+        const saveData   = JSON.parse(localStorage.OS13k);
+        trophies         = saveData.t;
+        words            = saveData.w;
+        settings         = saveData.s;
+        programInfos     = saveData.i;
+        startProgramName = saveData.p;
+    }
+    
+    Settings() { return settings; }
+    
+    SaveSettings(volume, speech, color1, color2, showPopups, filter)
+    {
+        // set settings and save
+        settings = 
+        [
+            gain.gain.value = volume,
+            speech,
+            color1,
+            color2,
+            showPopups,
+            filter
+        ];
+        this.Save();
+    }
+    
 }; // _OS13k
 var OS13k = new _OS13k;
 
@@ -691,25 +757,26 @@ var OS13k = new _OS13k;
 // OS13k Variables
 
 const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26,
-      startWindowOpenX = 9, startWindowOpenY = 51, 
+      startWindowOpenX = 9, startWindowOpenY = 51, forceRefresh = '?100',
       popupTime = 3, defaultVolume = .3, maxWordLength = 32,
 
     // init web audio
     audioContext = new (AudioContext || webkitAudioContext),
-    gain = audioContext.createGain(),
-
-    // parse or init trophy list
-    trophies = localStorage.OS13kT ? JSON.parse(localStorage.OS13kT) : [],
-
-    // parse or init word list
-    words = localStorage.OS13kW ? JSON.parse(localStorage.OS13kW) : [];
+    gain = audioContext.createGain();
       
 let grabWindow, grabOffsetX, grabOffsetY, finishedStartup,
     windowActive, activeProgram, helpProgram, activeTaskbarIcon, loadIcon,
     lastActiveElement, topZ = 0, loading = 0, hadInput = 0,
     windowOpenX = startWindowOpenX, windowOpenY = startWindowOpenY,
-    startProgram, trophyTrayIcon, wordsTrayIcon, muteTrayIcon, clockTrayIcon,
-    newWordsMessage = '', newWordsSpeak = '';
+    startProgram, startProgramName, trophyTrayIcon, wordsTrayIcon, settingsTrayIcon,  
+    muteTrayIcon, clockTrayIcon, newWordsMessage = '', newWordsSpeak = '', 
+    programInfos = [], trophies = [], words = [],
+    
+    // default settings (volume, speech, filter, bgcolor)
+    settings = [.3, 1, '#332222', '#222233', 1, 0];
+
+// connect gain
+gain.connect(audioContext.destination);
 
 ///////////////////////////////////////////////////////////////////////////////
 // OS13k System Functions - handles non client facing features of OS13k
@@ -718,32 +785,29 @@ class _OS13kSystem
 {
     Start()
     {
+        // create tray icons
+        trophyTrayIcon    = new OS13kTrayIcon();
+        wordsTrayIcon     = new OS13kTrayIcon();
+        muteTrayIcon      = new OS13kTrayIcon(this.ToggleMute, 'Toggle Mute');
+        settingsTrayIcon  = new OS13kTrayIcon();
+        clockTrayIcon     = new OS13kTrayIcon();
+        
+        // load os13k data
+        OS13k.Save(OS13k.Load());
+    
         // listen for trophies from other windows
-        window.onstorage=()=> this.CheckForTrophy(_.key);
-
-        // set gain value
-        gain.connect(audioContext.destination);
-        gain.gain.value = defaultVolume;
+        window.onstorage=e=> this.CheckForTrophy(e.key);
 
         // stop spech if page is unloaded
         document.body.onunload = OS13kSystem.StopSpeech();
 
-        // create tray icons
-        trophyTrayIcon = new OS13kTrayIcon();
-        wordsTrayIcon  = new OS13kTrayIcon();
-        muteTrayIcon   = new OS13kTrayIcon(this.ToggleMute, 'Toggle Mute', '🔊');
-        clockTrayIcon  = new OS13kTrayIcon();
-
-        // check saved settings
-        localStorage.OS13kM == 0 && this.ToggleMute();
-
         // set button functions
-        buttonFullScreen.onmousedown =e=> windowActive.FullScreen(OS13k.AddWords(e));
+        buttonFullScreen.onmousedown =()=> windowActive.FullScreen();
         buttonHelp.onmousedown       =
-        buttonCode.onmousedown       =e=> windowActive.ShowCode(OS13k.AddWords(e));
-        buttonResetSize.onmousedown  =e=> windowActive.Resize(1);
-        buttonReload.onmousedown     =e=> windowActive.Reload(OS13k.AddWords(e));
-        buttonClose.onmousedown      =e=> windowActive.Close(OS13k.AddWords(e));
+        buttonCode.onmousedown       =()=> windowActive.ShowCode();
+        buttonResetSize.onmousedown  =()=> windowActive.Resize(1);
+        buttonReload.onmousedown     =()=> windowActive.Reload();
+        buttonClose.onmousedown      =()=> windowActive.Close();
 
         // create the load program taskbar icon and add folders/programs
         loadIcon = new OS13kTaskbarIcon( {icon:'💾', name:'Load Program'} );
@@ -777,11 +841,11 @@ class _OS13kSystem
         startProgram = startProgram || helpProgram;
         startProgram && self == top | startProgram.sticky && startProgram.Open();
             
-        // save trophies
-        localStorage.OS13kT = JSON.stringify(trophies);
-        
         // finish startup after opening startup programs
         finishedStartup = 1;
+        
+        // save os13k data
+        OS13k.Save();
     }
 
     // main update loop
@@ -833,9 +897,11 @@ class _OS13kSystem
             // speak popup
             popup.speak && OS13k.Speak(popup.speak, 1, 1, 1, popup.speakLanguage);
             popup.speak = 0;
-
-            if (!document.fullscreenElement)
-            { 
+            
+            if (!settings[4])
+                popups.removeChild(popup);
+            else if (!document.fullscreenElement)
+            {
                 // move popup up
                 let y = parseFloat(popup.style.top) + offsetHeight - 9;
                 if (y < taskbarHeight)
@@ -879,19 +945,18 @@ class _OS13kSystem
             OS13k.Trophy(...keyParts, localStorage[key]);
     }
 
-    // toggle audio
-    ToggleMute()
+    // toggle muting
+    ToggleMute() 
+    { OS13k.Save(settings[0] = settings[0] ? 0 :  defaultVolume ); }
+
+    // set audio volume
+    SetVolume(volume)
     {
-        // stop all speech
-        OS13kSystem.StopSpeech();
+        // stop all speech if muted
+        volume || OS13kSystem.StopSpeech(OS13k.Trophy('OS13k','Shut Up!','🔇','Muted'));
         
         // save gain value and set tray icon
-        muteTrayIcon.innerHTML = 
-            (localStorage.OS13kM = gain.gain.value 
-                = gain.gain.value ? 0 : defaultVolume) ? 
-            '🔊' : '🔇';
-
-        OS13k.Trophy('OS13k','Shut Up!','🔇','Muted');
+        muteTrayIcon.innerHTML = (gain.gain.value = volume) ? '🔊' : '🔇'
     }
     
     // stop any current or queued speech
@@ -1016,6 +1081,7 @@ class OS13kProgram extends HTMLElement
             name }</div>` + (folder? '▶' : '');
         
         // save special programs
+        name == 'Settings'    && settingsTrayIcon.SetProgram(this);
         name == 'Trophy Case' && trophyTrayIcon.SetProgram(this);
         name == 'Word List'   && wordsTrayIcon.SetProgram(this);
         name == 'Clock'       && clockTrayIcon.SetProgram(this);
@@ -1024,7 +1090,7 @@ class OS13kProgram extends HTMLElement
 
         // check if start program or sticky open
         this.sticky ? this.saveInfo.open && this.Open() :
-            this.src == localStorage.OS13kS && (startProgram = this); 
+            this.name == startProgramName && (startProgram = this); 
     }
     
     Move()
@@ -1098,20 +1164,29 @@ class OS13kProgram extends HTMLElement
     
     // load saved program info from local storage
     LoadInfo() 
-    { 
-        const data = localStorage[this.key];
-        this.saveInfo = localStorage[this.key] ?  JSON.parse(data) : {scale:1}; 
+    {
+        // find in program info list
+        const i = programInfos.findIndex(e=>e.name==this.name);
+        this.saveInfo = i < 0 ? {} : programInfos[i];
     }
    
     // save program info to local storage and reset settings if non sticky closed
     SaveInfo(open = 1)
     {
-        localStorage[this.key] = JSON.stringify(
-            this.saveInfo = {
+        // build the save info
+        this.saveInfo = 
+        {
+            name: this.name,
             open,
             x: open | this.sticky ? this.window.style.left : 0,
             y: this.window.style.top,
-            scale: open | this.sticky ? this.window.scale : 1});
+            scale: open | this.sticky ? this.window.scale : 1
+        }
+        
+        // add to programs info and save
+        const i = programInfos.findIndex(e=>e.name==this.name);
+        OS13k.Save(i < 0 ? programInfos.push(this.saveInfo) 
+            : programInfos[i] = this.saveInfo);
     }
     
 } // OS13kProgram
@@ -1184,7 +1259,7 @@ class OS13kWindow extends HTMLElement
         
         // resize window size to fit inner width while preserving aspect
         const width = program.resize ? 
-            Math.min(program.width * this.program.saveInfo.scale, innerWidth-6) :
+            Math.min(program.width*(this.program.saveInfo.scale||1), innerWidth-6) :
             program.width;
             
         // set width and height and titlebar width
@@ -1293,7 +1368,7 @@ class OS13kWindow extends HTMLElement
         }
         
         // load the iframe, force refresh of src OPTIONAL
-        this.iframe.src = program.src + '?' + Date.now();
+        this.iframe.src = program.src + forceRefresh;
     }
     
     Open(target, x, y, clamp)
@@ -1371,7 +1446,7 @@ class OS13kWindow extends HTMLElement
         
         // save start program if finished startup and not sticky
         finishedStartup && !this.program.sticky && 
-            (localStorage.OS13kS = this.program.src);
+            OS13k.Save(startProgram = this.program);
 
         // set focus to iframe if not loading
         loading || this.iframeContent && this.iframeContent.focus();
@@ -1422,7 +1497,7 @@ class OS13kWindow extends HTMLElement
         this.iframeWrapper.mozRequestFullScreen &&
             this.iframeWrapper.mozRequestFullScreen();
             
-        OS13k.Trophy('OS13k','Pro Gamer','🕹️','Went Fullscreen');
+        OS13k.Trophy('OS13k','Pro Gamer','🕹️','Went Full Screen');
     }
     
     ShowCode()
@@ -1447,7 +1522,8 @@ class OS13kWindow extends HTMLElement
     Close()
     {
         // remove start program if closed
-        this.program.src == localStorage.OS13kS && (localStorage.OS13kS = 0);
+        this.program.name == startProgramName 
+            && OS13k.Save(startProgram = 0);
             
         // save info and set closed
         this.program.SaveInfo(0);
@@ -1544,6 +1620,7 @@ class OS13kTrayIcon extends HTMLElement
         // set program and title
         this.program = program;
         this.title = program.title;
+        this.innerHTML = program.icon;
     }
     
     Open() { this.program ? this.program.Toggle() : this.functionCall(); }
@@ -1727,7 +1804,6 @@ const zzfx = // play a sound
 
     return OS13k.PlaySamples(b);
 }
-const zzfxX = new AudioContext;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Start OS13k!

@@ -1,0 +1,50 @@
+<style>body{background:#111;color:#fff}</style>
+Volume <input type=range id=v onchange=S()>
+<br><br>Speech <input type=checkbox id=s onchange=S()> &nbsp;&nbsp;Popups <input type=checkbox id=p onchange=S()>
+<br><br>Background Colors <input id=c type=color onchange=S()> &nbsp;&nbsp;<input id=d type=color onchange=S()>
+<br><br>Filters
+<script>
+
+OS13k = parent.OS13k;
+
+// filters
+L=
+[
+    ['Default', ''],
+    ['Gray',    'grayscale('],
+    ['Game Boy', 'sepia()hue-rotate(20deg)contrast(.8'],
+    ['Ocean',   'invert()sepia()invert('],
+    ['Sepia',   'sepia('],
+    ['Fruity',  'saturate(9', 'hue 20s infinite'],
+];
+
+// add buttons for filters
+for(i in L) 
+    document.body.innerHTML += 
+    `<button onclick="S(OS13k.AddWords('${L[i][0]}'),f=L[${i}])">`+L[i][0];
+        
+OS13kReload=()=>
+{
+    // load settings
+    O = OS13k.Settings();
+    v.value   = O[0] * 100;         // volume
+    s.checked = O[1];               // speech
+    c.value   = O[2];               // color 1
+    d.value   = O[3];               // color 2
+    p.checked = O[4];               // popups
+    i = L.findIndex(e=>e[0]==O[5][0]); // filter
+    f = L[ i < 0 ? 0 : i ];
+}
+OS13kReload();
+
+// save settings
+S=()=>OS13k.SaveSettings
+(
+    v.value/100, // volume
+    s.checked,   // speech
+    c.value,     // color 1
+    d.value,     // color 2
+    p.checked,   // popups
+    f            // filter
+);
+</script>

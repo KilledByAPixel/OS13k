@@ -17,24 +17,24 @@ defaultWidth = 720, defaultHeight = 405, // 16:9 aspect
 programs = 
 [
 [,'❌',,,,'Close All'],
-['help.html','<b><span style=color:#0f0>?',380,400,full|resize,,'Check here to see help when available.\nSome programs have a option to show code instead.\n\nHave fun! ✌️😄'],
+['help.html','<b><span style=color:#0f0>?',380,400,sticky|full|resize,,'Check here to see help when available.\nSome programs have a option to show code instead.\n\nHave fun! ✌️😄'],
 ['moreInfo.html','👨‍💻'],
 [,'⚙️',,,,'System',,
 [
-    ['system/test.html',,,,resize|code|sticky],
-    ['system/trophyCase.html','🏆',,,resize|sticky],
-    ['system/wordList.html','📕',,,resize|sticky],
+    ['system/settings.html','🎚️',420,180,sticky],
+    ['system/trophyCase.html','🏆',,,full|resize|sticky],
+    ['system/wordList.html','📕',,,full|resize|sticky],
     ['system/clock.dweet.js','🕰️',200,200,sticky|code|awake],
+    ['system/systemTest.html',,,,full|resize|code|sticky],
     [,'📁',,,,'Test',,
     [
-        ['index.html','✌️😄',,,,,'Meta OS13k'],
+        ['index.html','✌️😄',,,,'Meta OS13k'],
     ]],
 ]],
 [,'🛠️',,,,'Apps',,
 [
     ['apps/console.html','<span style=color:#0f0;background:#000;font-family:monospace>JS>'],
     ['apps/stickyNote.html','✍️',300,263,sticky|reload,,'Ctrl+B - Bold\nCtrl+I - Italic\nCtrl+U - Underline\n\Reload to clear'],
-    ['apps/filters.html','✨',260,60,reload],
     ['apps/photoBooth.html','📸',1400,550],
     ['apps/unicodeToys.html','𝖀',500,800],
     ['apps/miniShadertoy.html','𝓢',340,400],
