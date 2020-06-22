@@ -38,7 +38,6 @@ Add an icon config to programs.js to register your program, and send me pull req
 - OS13k can open any html file and it will work the same as if opened directly
 - Chrome is recommended for development, but Firefox is also supported
 - [Some browsers like Firefox may not work locally if it treats local files as cross-origin](https://discourse.mozilla.org/t/firefox-68-local-files-now-treated-as-cross-origin-1558299/42493/9)
-- Try to keep your program paused or light on cpu when it does not have focus, !document.hasFocus()
 - Dweets and Shadertoys are automatically paused when not focused (unless sleep:0 is set)
 - Prefix all local storage keys with OS13kYourProgramName to prevent collisions during JS13k (use at least 2 letters)
 - When the reload button is clicked, OS13kReload is called if it exists instead of reloading the iframe
@@ -49,8 +48,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 - The goal is to fit as much as possible into 13 kilobytes so everything must be small and clean
 - For inclusion in the JS13k build, programs need be around 100-500 bytes when minified
 - *Always remember, this will be zipped! Don't over golf your code.*
-- There is very little overhead for common functions calls and strings
-- Don't worry to much about html tags, they will appear often and compress well
+- There is less overhead for common functions calls and html tags
 - Try to limit your use of non repeated text strings, those compresses the worst, use emojis where possible
 - Don't compress your code in any way, let zip do the work for you
 - Dweets and Shadertoys are great for making programs with reduced setup cost
@@ -92,8 +90,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 - iChannel0 is an image of the previous frame, this can be used to make effects or even store game logic
 
 ### System Calls
-- use the OS13k object to access the OS13k system
-- OS13k is set after load, so if you need it on load use parent.OS13k
+- use parent.OS13k object to access the OS13k system
 - zzfx also becomes available after your program loads and can be called directly
 - Use the OS13k object to access OS13k features
 - OS13k.CreateShader(canvas, shaderCode) - Create a shadertoy compatible webgl shader
