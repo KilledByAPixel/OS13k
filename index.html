@@ -714,9 +714,6 @@ class _OS13k
         // filter
         document.body.style.filter    = filter[1];
         document.body.style.animation = filter[2];
-        
-        // reload settings window
-        settingsTrayIcon.program && settingsTrayIcon.program.Reload();
     }
     
     Load()
@@ -769,7 +766,7 @@ let grabWindow, grabOffsetX, grabOffsetY, finishedStartup,
     lastActiveElement, topZ = 0, loading = 0, hadInput = 0,
     windowOpenX = startWindowOpenX, windowOpenY = startWindowOpenY,
     startProgram, startProgramName, trophyTrayIcon, wordsTrayIcon, settingsTrayIcon,  
-    muteTrayIcon, clockTrayIcon, newWordsMessage = '', newWordsSpeak = '', 
+    clockTrayIcon, newWordsMessage = '', newWordsSpeak = '', 
     programInfos = [], trophies = [], words = [],
     
     // default settings (volume, speech, filter, bgcolor)
@@ -788,7 +785,6 @@ class _OS13kSystem
         // create tray icons
         trophyTrayIcon    = new OS13kTrayIcon();
         wordsTrayIcon     = new OS13kTrayIcon();
-        muteTrayIcon      = new OS13kTrayIcon(this.ToggleMute, 'Toggle Mute');
         settingsTrayIcon  = new OS13kTrayIcon();
         clockTrayIcon     = new OS13kTrayIcon();
         
@@ -945,18 +941,12 @@ class _OS13kSystem
             OS13k.Trophy(...keyParts, localStorage[key]);
     }
 
-    // toggle muting
-    ToggleMute() 
-    { OS13k.Save(settings[0] = settings[0] ? 0 :  defaultVolume ); }
-
     // set audio volume
     SetVolume(volume)
     {
-        // stop all speech if muted
-        volume || OS13kSystem.StopSpeech(OS13k.Trophy('OS13k','Shut Up!','🔇','Muted'));
-        
-        // save gain value and set tray icon
-        muteTrayIcon.innerHTML = (gain.gain.value = volume) ? '🔊' : '🔇'
+        // set gain and stop all speech if muted
+        (gain.gain.value = volume) || 
+            OS13kSystem.StopSpeech(OS13k.Trophy('OS13k','Shut Up!','🔇','Muted'));
     }
     
     // stop any current or queued speech
@@ -1601,23 +1591,18 @@ customElements.define('i-', OS13kTaskbarIcon);
 
 class OS13kTrayIcon extends HTMLElement
 {
-	constructor(functionCall, title, icon)
+	constructor()
     {
 		super();
         
-        // create icon
+        // create tray icon and add it
         this.className = 'trayIcon';
-        this.functionCall = functionCall;
-        this.title = title;
-        this.innerHTML = icon;
-        
-        // add to tray
         tray.appendChild(this);
     }
     
     SetProgram(program)
     {
-        // set program and title
+        // set program, title, and icon
         this.program = program;
         this.title = program.title;
         this.innerHTML = program.icon;
