@@ -429,13 +429,12 @@ class _OS13k
     PlaySamples(samples, sampleRate=44100)
     {
         // create source and buffer
-        const source = audioContext.createBufferSource();
-        source.start = source.start || source.noteOn;
-        source.stop  = source.stop  || source.noteOff;
+        const buffer = audioContext.createBuffer(1, samples.length, sampleRate)
+        buffer.getChannelData(0).set(samples);
 
+        const source = audioContext.createBufferSource();
+        source.buffer = buffer;
         source.connect(gain);
-        (source.buffer = audioContext.createBuffer(1, samples.length, sampleRate))
-            .getChannelData(0).set(samples);
         source.start();
         return source;
     }
@@ -689,8 +688,7 @@ const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26,
     forceRefresh = '?1013',
 
     // init web audio
-    audioContext = new (AudioContext || webkitAudioContext),
-    gain = audioContext.createGain();
+    audioContext = new AudioContext, gain = audioContext.createGain();
       
 let grabWindow, grabOffsetX, grabOffsetY, finishedStartup,
     windowActive, activeProgram, helpProgram, activeTaskbarIcon, loadIcon,
@@ -711,7 +709,7 @@ class _OS13kSystem
     {
         // connect gain
         gain.connect(audioContext.destination);
-
+        
         // create tray icons
         trophyTrayIcon    = new OS13kTrayIcon();
         settingsTrayIcon  = new OS13kTrayIcon();
