@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A tiny OS for JS13k</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?90></script>
+<script src=programs.js?91></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -180,12 +180,12 @@ body
 #close:hover  { background:#f00; }
 </style>
 </template>
+<div id=background></div>
+<div id=desktop>
 <div id=taskbar>
 <div id=taskbarSpace style=flex:1></div>
 <div id=tray></div>
 </div>
-<div id=background></div>
-<div id=desktop>
 <div id=popups style=float:right></div>
 <div id=programsMenu style=position:absolute></div>
 <div id=menu>
@@ -671,7 +671,7 @@ const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26,
       popupTime = 3, defaultVolume = .3, maxWordLength = 32,
 
     // increment to force pages to be refreshed OPTIONAL
-    forceRefresh = '?1008',
+    forceRefresh = '?1009',
 
     // init web audio
     audioContext = new (AudioContext || webkitAudioContext),
