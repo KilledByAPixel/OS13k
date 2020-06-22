@@ -70,7 +70,7 @@ programs =
     ['dweets/cityTraffic.dweet.js','🚌'],
     ['dweets/trainSet.dweet.js','🚂'],
     ['dweets/automaticBreakout.dweet.js','■'],
-    ['dweets/colorZoom.dweet.js','❤'],
+    ['dweets/colorZoom.dweet.js','❤️'],
     ['dweets/triFractal.dweet.js','🔺'],
 ]],
 ]; // programs
