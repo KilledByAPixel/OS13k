@@ -29,7 +29,7 @@ OS13k is a tiny operating system designed for a JS13k community project. It incl
 
 Add an icon config to programs.js to register your program, and send me pull request, examples...
 - [src, icon, width, height, flags, name, help, folder]
-- ['help.html','<b><span style=color:#0f0>?']
+- ['help.html','?']
 - ['system/systemTest.html','✌️😄',,,full|resize|code|sticky]
 - ['dweets/underwaterCavern.dweet.js','🌊']
 - ['toys/infiniteYinYangs.shader.txt','☯',500,500,full,'Put instructions here.']
