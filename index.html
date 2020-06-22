@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A tiny OS for JS13k</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?95></script>
+<script src=programs.js?96></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -202,7 +202,7 @@ body
 ///////////////////////////////////////////////////////////////////////////////
 // OS13k Debug (remove from minified)
 
-const OS13kVersion = 58;
+const OS13kVersion = 59;
 {
     // version check, clear local storage if older
     if (localStorage.OS13kVersion && localStorage.OS13kVersion != OS13kVersion)
@@ -374,14 +374,6 @@ class _OS13k
     // play zzfx sound from seed
     PlaySeed(seed, lengthScale=1, volume=1, randomness=.05, frequency)
     {
-        if (typeof seed == 'string')
-        {
-            const splitSeed = seed.split(',');
-            seed = parseFloat(splitSeed[0]);
-            splitSeed.length > 1 && parseFloat(lengthScale = splitSeed[1]);
-            splitSeed.length > 2 && parseFloat(volume = splitSeed[2]);
-        }
-    
         // set random seed
         this.randomSeed = seed;
         
@@ -684,7 +676,7 @@ const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26,
       popupTime = 3, defaultVolume = .3, maxWordLength = 32,
 
     // increment to force pages to be refreshed OPTIONAL
-    forceRefresh = '?1018',
+    forceRefresh = '?1019',
 
     // init web audio
     audioContext = new AudioContext, gain = audioContext.createGain();

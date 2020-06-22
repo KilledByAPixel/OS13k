@@ -1,31 +1,11 @@
 <style>body{background:#111;color:#fff;user-select:none;text-align:center}</style>
-Seed <input id=S value=0>
+Seed <input id=S value=0 onclick=p(S.value)><br><br>
 <button onclick=p(S.value)>Play</button>
+<button onclick=(p(S.value=Math.random()*1e5|0),E.checked&&s())>Random</button>
 <button onclick=p(S.value,s())>Save</button>
-<button onclick=(u(S.value=Math.random()*1e5),E.checked&&s())>Randomize</button>
-<button onclick='confirm`Clear All?`&&u(b(d(S.value=0),a=[]))'>Clear</button>
-<br><br>Length <input type=range style=width:99 onchange=u() id=L value=20>&nbsp;&nbsp;
-Volume <input type=range style=width:99 onchange=u() id=V value=100>&nbsp;&nbsp;
-Auto Save <input id=E type=checkbox>
-<hr>Saved Seeds
-<div id=A>
+<button onclick='confirm`Clear All?`&&u(b(d(S.value=0),a=[]))'>Clear</button>&nbsp;
+Auto Save <input id=E type=checkbox><hr><div id=A>
 <script>
-
-// update values
-u=()=>
-{
-    // get values
-    i = parseInt(S.value);    // seed
-    l = L.value / 20 +   '';  // length
-    v = V.value / 100 + '';   // volume
-    
-    // set seed
-    l!=1 | v!=1  && (i += ',' + l);
-    v!=1 && (i += ',' + v);
-    
-    // play and set seed
-    p(S.value = i);
-}
 
 // play a seed sound and save
 p=s=>{x && x.stop(); x = parent.OS13k.PlaySeed(s)}
@@ -43,7 +23,7 @@ b=()=>
     A.innerHTML = '';
     for(i in a)
         A.prepend(v = document.createElement('div')),
-        v.innerHTML = `<button onclick=m(${i})>❌</button> &nbsp;<input style=display:inline-block onclick=p("${a[i]}") value=${a[i]} readonly>`;
+        v.innerHTML = `<button onclick=m(${i})>❌</button> <input style=display:inline-block onclick=p("${a[i]}") value=${a[i]} readonly>`;
 }
 
 // load saved sounds

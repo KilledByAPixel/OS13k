@@ -24,7 +24,7 @@ b=e=>
    
     B.innerHTML += `Seed <input id=S oninput=t=3 value=${localStorage.OS13kP ? localStorage.OS13kP : 0} onchange=b(t=3,localStorage.OS13kP=event.target.value)>`
 
-    L.disabled = H.disabled = N.disabled = V.disabled = t==3;
+    H.disabled = N.disabled = t==3;
 }
 b();
 
@@ -40,21 +40,24 @@ p=i=>
         [0,O.Note(4,1)]         // fifth
     ][t];                       // get instrument
     
+    l = .1+L.value/50           // length
+    v = V.value/100             // volume
+    
     t-3 ?                       // instrument type
         f.map(f=>zzfx
         (
-            V.value/(1+Math.log2(f))/100, // scale volume
-            0,                      // no randomness
-            f*n,                    // frequency
-            0,                      // attack
-            .1+L.value/50,          // sustain
-            .05,                    // release
-            0,                      // shape
-            H.value/50,             // shape curve
-            0,0,0,0,0,N.value/100   // noise
+            v/(1+Math.log2(f)),   // scale volume
+            0,                    // no randomness
+            f*n,                  // frequency
+            0,                    // attack
+            l,                    // sustain
+            .05,                  // release
+            0,                    // shape
+            H.value/50,           // shape curve
+            0,0,0,0,0,N.value/100 // noise
             
         )) :
-        [O.PlaySeed(S.value, 1, 1, 0, n)];
+        [O.PlaySeed(S.value, l, v, 0, n)]; // seed
 }
 
 // create the keys
