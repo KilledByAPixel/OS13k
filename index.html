@@ -430,11 +430,13 @@ class _OS13k
     {
         // create source and buffer
         const source = audioContext.createBufferSource();
+        source.start = source.start || source.noteOn;
+        source.stop  = source.stop  || source.noteOff;
+
+        source.connect(gain);
         (source.buffer = audioContext.createBuffer(1, samples.length, sampleRate))
             .getChannelData(0).set(samples);
-        source.connect(gain);
-        source.stop = source.noteOff || source.stop;
-        source.noteOn ? source.noteOn() : source.start();
+        source.start();
         return source;
     }
     
