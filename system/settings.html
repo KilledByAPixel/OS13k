@@ -23,19 +23,16 @@ for(i in L)
     document.body.innerHTML += 
     `<button onclick="S(OS13k.AddWords('${L[i][0]}'),f=L[${i}])">`+L[i][0];
         
-OS13kReload=()=>
-{
-    // load settings
-    O = OS13k.Settings();
-    v.value   = O[0] * 100;         // volume
-    s.checked = O[1];               // speech
-    c.value   = O[2];               // color 1
-    d.value   = O[3];               // color 2
-    p.checked = O[4];               // popups
-    i = L.findIndex(e=>e[0]==O[5][0]); // filter
-    f = L[ i < 0 ? 0 : i ];
-}
-OS13kReload();
+
+// load settings
+S = OS13k.Settings();
+v.value   = S[0] * 100;         // volume
+s.checked = S[1];               // speech
+c.value   = S[2];               // color 1
+d.value   = S[3];               // color 2
+p.checked = S[4];               // popups
+i = L.findIndex(e=>e[0]==S[5][0]); // filter
+f = L[ i < 0 ? 0 : i ];
 
 // save settings
 S=()=>OS13k.SaveSettings
