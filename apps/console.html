@@ -15,6 +15,11 @@ parent.OS13k = parent.OS13k ||
     KillHTML:(string)=>(string+'').replace(/</g,'&lt;')
 }
 
+// frozen trophy
+localStorage.OS13kFrozen &&
+    OS13k.Trophy('OS13k','Frozen','🧊',`Froze The Browser\n${
+    localStorage.OS13kFrozen }`);
+
 // add unicode glitches to a string
 // based on dweet by f8f82804 www.dwitter.net/d/11808
 Z=(s,c)=>{for(c;c-->0;)s=s.slice(0,r=Math.random()*(s+='').length+1)+String.fromCharCode(768+99*Math.random())+s.slice(r);return OS13k.KillHTML(s)}
