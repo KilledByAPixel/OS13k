@@ -2,29 +2,21 @@
 Seed <input id=S value=0>
 <button onclick=p(S.value)>Play</button>
 <button onclick=p(S.value,s())>Save</button>
-<button onclick=u(S.value=Math.random()*1e5)>Randomize</button>
-<button onclick=u(d())>Default</button>
+<button onclick=(u(S.value=Math.random()*1e5),E.checked&&s())>Randomize</button>
 <button onclick='confirm`Clear All?`&&u(b(d(S.value=0),a=[]))'>Clear</button>
-<br><br>Length <input id=L type=range onchange=u()>
-Volume <input id=V type=range onchange=u() value=100>
+<br><br>Length <input type=range style=width:99 onchange=u() id=L value=20>&nbsp;&nbsp;
+Volume <input type=range style=width:99 onchange=u() id=V value=100>&nbsp;&nbsp;
+Auto Save <input id=E type=checkbox>
 <hr>Saved Seeds
 <div id=A>
 <script>
-
-// set defaults
-d=()=>
-{
-L.value=20;
-V.value=100;
-}
-d()
 
 // update values
 u=()=>
 {
     // get values
     i = parseInt(S.value);    // seed
-    l = L.value / 20 +   '';   // length
+    l = L.value / 20 +   '';  // length
     v = V.value / 100 + '';   // volume
     
     // set seed

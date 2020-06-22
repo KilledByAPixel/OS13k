@@ -54,7 +54,7 @@ programs =
 [
     ['music/soundSeeds.html','🔊',550,480,full],
     ['music/minBytes.html','<span style=color:#f00>𝓜',450,450],
-    ['music/piano.html','🎹',520,480,full],
+    ['music/piano.html','🎹',550,480,full],
     ['music/bach.dweet.js','♫'],
 ]],
 [,'🤖',,,,'Toys',,
