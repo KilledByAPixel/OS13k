@@ -269,6 +269,9 @@ const OS13kVersion = 57;
 // 9. Advzip "advzip -z -4 -i 1000 OS13kMin.zip"
 
 // Rework stuff marked OPTIONAL for final build
+// - all files must be packed together to save space
+// - smaller webgl names r10215
+// - move css into code, get rid of names
 
 } // Minification Stuff
 
@@ -668,7 +671,7 @@ const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26,
       popupTime = 3, defaultVolume = .3, maxWordLength = 32,
 
     // increment to force pages to be refreshed OPTIONAL
-    forceRefresh = '?1006',
+    forceRefresh = '?1007',
 
     // init web audio
     audioContext = new (AudioContext || webkitAudioContext),
