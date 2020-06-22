@@ -433,8 +433,8 @@ class _OS13k
         (source.buffer = audioContext.createBuffer(1, samples.length, sampleRate))
             .getChannelData(0).set(samples);
         source.connect(gain);
-        source.stop = source.stop || source.noteOff;
-        source.start ? source.start() : source.noteOn();
+        source.stop = source.noteOff || source.stop;
+        source.noteOn ? source.noteOn() : source.start();
         return source;
     }
     
@@ -707,8 +707,7 @@ class _OS13kSystem
 {
     Start()
     {
-
-        // connect gain and set sound function
+        // connect gain
         gain.connect(audioContext.destination);
 
         // create tray icons
