@@ -1136,7 +1136,7 @@ class OS13kWindow extends HTMLElement
             icon.id = id;
             icon.title = title;
             icon.innerHTML = 
-            `<svg style=width:28;pointer-events:none viewBox='0 0 10 10'><${svgShape} stroke=#000 fill=none ${svg} />`;
+            `<svg style=height:100%;width:28;pointer-events:none viewBox='0 0 10 10'><${svgShape} stroke=#000 fill=none ${svg} />`;
         }
         program.resize && 
             AddTitlebarIcon('grow', 'Grow', 'd="M2 5L8 5M5 8L5 2"',
