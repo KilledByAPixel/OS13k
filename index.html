@@ -434,7 +434,7 @@ class _OS13k
             .getChannelData(0).set(samples);
         source.connect(gain);
         source.stop = source.stop || source.noteOff;
-        source.start = source.start || source.noteOn;
+        source.start ? source.start() : source.noteOn();
         return source;
     }
     
@@ -700,9 +700,6 @@ let grabWindow, grabOffsetX, grabOffsetY, finishedStartup,
     // default settings (volume, speech, filter, bgcolor)
     settings = [.3, 1, 1, '#222233', '#332222', 'OS13k', 0];
 
-// connect gain
-gain.connect(audioContext.destination);
-
 ///////////////////////////////////////////////////////////////////////////////
 // OS13k System Functions - handles non client facing features of OS13k
 
@@ -710,6 +707,10 @@ class _OS13kSystem
 {
     Start()
     {
+
+        // connect gain and set sound function
+        gain.connect(audioContext.destination);
+
         // create tray icons
         trophyTrayIcon    = new OS13kTrayIcon();
         settingsTrayIcon  = new OS13kTrayIcon();
