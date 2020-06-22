@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A tiny OS for JS13k</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?87></script>
+<script src=programs.js?88></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -183,23 +183,7 @@ body
 #grow:hover   { background:#0f0; }
 #reload:hover { background:#ff0; }
 #close:hover  { background:#f00; }
-div svg       { width:28;pointer-events:none; }
 </style>
-<svg height=0 width=0>
-<symbol id=icon-full viewBox='0 0 10 10'>
-    <rect stroke=#000 fill=none x=1 y=2 width=8 height=6 />
-<symbol id=icon-help viewBox='0 0 10 10'>
-    <path stroke=#000 fill=none d='M5 8L8 2L2 2L5 8L8 2'/>
-<symbol id=icon-code viewBox='0 0 10 10'>
-    <path stroke=#000 fill=none d='M5 2L8 8L2 8L5 2L8 8'/>
-<symbol id=icon-shrink viewBox='0 0 10 10'>
-    <path stroke=#000 d='M2 5L8 5'/>
-<symbol id=icon-grow viewBox='0 0 10 10'>
-    <path stroke=#000 d='M2 5L8 5M5 8L5 2'/>
-<symbol id=icon-reload viewBox='0 0 10 10'>
-    <circle stroke=#000 fill=none cx=5 cy=5 r=3 />
-<symbol id=icon-close viewBox='0 0 10 10'>
-    <path stroke=#000 d='M2 2L8 8M8 2L2 8'/>
 </template>
 <div id=taskbar>
 <div id=taskbarSpace style=flex:1></div>
@@ -223,7 +207,7 @@ div svg       { width:28;pointer-events:none; }
 ///////////////////////////////////////////////////////////////////////////////
 // OS13k Debug (remove from minified)
 
-const OS13kVersion = 56;
+const OS13kVersion = 57;
 {
     // version check, clear local storage if older
     if (localStorage.OS13kVersion && localStorage.OS13kVersion != OS13kVersion)
@@ -270,9 +254,9 @@ const OS13kVersion = 56;
 // @js_externs OS13k.Clamp, OS13k.Percent, OS13k.Lerp
 // @js_externs OS13k.Random, OS13k.randomSeed, iframeContent.OS13kReload
 // @js_externs OS13k.Trophies, OS13k.Trophy, OS13k.GetTrophy
-// @js_externs OS13k.Words, OS13k.AddWords, OS13k.GetWord, OS13k.RemoveWord
 // @js_externs OS13k.PlaySeed, OS13k.PlaySamples, OS13k.GetNote
 // @js_externs OS13k.Speak, OS13k.StopSpeech
+// @js_externs OS13k.Settings(), OS13k.SaveSettings()
 // @js_externs OS13k.CreateShader, OS13k.RenderShader
 // @js_externs OS13k.KeyDirection, OS13k.KillHTML, OS13k.Popup
 // @output_file_name OS13k.min.js
@@ -369,11 +353,6 @@ class _OS13k
             name || game,                      // speak
             language);                         // language
             
-        // add trophy words to list
-        this.AddWords(name, 0);
-        this.AddWords(game, name);
-        this.AddWords(message);
-            
         // save trophies
         OS13k.Save();
         
@@ -389,56 +368,6 @@ class _OS13k
         
         // return trophy message
         return i < 0 ? 0 : trophies[i][3];
-    }
-    
-/////////////////////////////////////////////////////////////////////////////
-// OS13k Words
-
-    // get the word list
-    Words() { return [...words]; }
-    
-    // add every word in a string to the word list
-    AddWords(string, speak=1)
-    {
-        // convert to lowercase and split into words
-        const matchs = (string?string+'':'').toLowerCase().match(/\b[^\s]+\b/g);
-        
-        let newWords = [];
-        matchs && matchs.map(word=>
-        {
-            // dont use it if it has anything but letters
-            /[^a-z]/.test(word) ||
-
-                // limit word length
-                word.length > 1 && word.length <= maxWordLength &&
-
-                // check if already in list
-                words.indexOf(word) < 0 &&
-
-                // add it to the word list
-                (words.unshift(word),
-                
-                // update new words message
-                newWordsMessage += (newWordsMessage.length? ', ' : ' ') + word,
-                
-                // speak the word
-                speak && (newWordsSpeak += word + ' '));
-        });
-        
-        // save words
-        OS13k.Save();
-    }
-
-    // get a random matching word
-    GetWord(minLength = 0, maxLength = maxWordLength, regex = /./)
-    {
-        // search for matches
-        const i = words.filter( o=>
-            o.length >= minLength && o.length <= maxLength && 
-            regex.test(o));
-            
-        // get random match
-        return i.length > 0 ? i[Math.random()*i.length|0] : '';
     }
     
 /////////////////////////////////////////////////////////////////////////////
@@ -520,8 +449,7 @@ class _OS13k
         stopSpeech && OS13kSystem.StopSpeech();
 
         // play speech
-        settings[1] && speechSynthesis 
-            && speechSynthesis.speak(utterance);
+        settings[1] && speechSynthesis && speechSynthesis.speak(utterance);
     }
         
 /////////////////////////////////////////////////////////////////////////////
@@ -533,9 +461,6 @@ class _OS13k
         // get webgl context
         const x = canvas.getContext('webgl2');
         
-        // make shorter webgl names
-        for(const i in x) x[i[0] + i.slice(7,10)] = x[i];
-
         // use hardcoded values to save space
         const xVERTEX_SHADER       = 35633;
         const xARRAY_BUFFER        = 34962;
@@ -549,27 +474,27 @@ class _OS13k
         const xLINEAR              = 9729;
 
         // create a simple pass through vertex shader
-        const vertexShader = x.chad(xVERTEX_SHADER);
-        x.sour(vertexShader,
+        const vertexShader = x.createShader(xVERTEX_SHADER);
+        x.shaderSource(vertexShader,
             '#version 300 es\n' +
             'in vec4 c;' +
             'void main()' +
             '{gl_Position=c;}');
-        x.cSha(vertexShader);
+        x.compileShader(vertexShader);
         
         // create vertex buffer that is a big triangle that covers the screen
         const vertexBuffer = xARRAY_BUFFER;
-        x.bfer(vertexBuffer, x.cuff());
-        x.bata(vertexBuffer, new Int8Array([-3,1,1,-3,1,1]), xSTATIC_DRAW);
-        x.eert(0);
-        x.vttr(0, 2, xBYTE, 0, 0, 0); // 2D vertex
+        x.bindBuffer(vertexBuffer, x.createBuffer());
+        x.bufferData(vertexBuffer, new Int8Array([-3,1,1,-3,1,1]), xSTATIC_DRAW);
+        x.enableVertexAttribArray(0);
+        x.vertexAttribPointer(0, 2, xBYTE, 0, 0, 0); // 2D vertex
         
         // check vertex shader for errors
         //if (!x.getShaderParameter(vertexShader, x.COMPILE_STATUS))
-        //    throw x.gerI(vertexShader);
+        //    throw x.getShaderInfoLog(vertexShader);
         
         // create shadertoy compatible pixel shader
-        const pixelShader = x.chad(xFRAGMENT_SHADER);
+        const pixelShader = x.createShader(xFRAGMENT_SHADER);
         const shaderProgramCode = 
             '#version 300 es\n' +
             'precision mediump float;' +
@@ -578,29 +503,29 @@ class _OS13k
             'uniform vec4 iMouse;' +
             'uniform vec3 iResolution;' +
             'uniform sampler2D iChannel0;' +
-            'out vec4 OS13k;\n' +
+            'out vec4 c;\n' +
             code +
             '\nvoid main()' +
-            '{mainImage(OS13k,gl_FragCoord.xy);' +
-            'OS13k.a=1.;}';
-        x.sour(pixelShader, shaderProgramCode);
-        x.cSha(pixelShader);
+            '{mainImage(c,gl_FragCoord.xy);' +
+            'c.a=1.;}';
+        x.shaderSource(pixelShader, shaderProgramCode);
+        x.compileShader(pixelShader);
 
-        // check pixel shader for errors
+        // check pixel shader for errors OPTIONAL
         //if (!x.getShaderParameter(pixelShader, xCOMPILE_STATUS))
-        //    throw x.gerI(pixelShader);
+        //    throw x.getShaderInfoLog(pixelShader);
 
         // create texture
-        x.btur(xTEXTURE_2D, x.cext());
-        x.tmet(xTEXTURE_2D, xTEXTURE_MIN_FILTER, xLINEAR);
-        x.pore(xUNPACK_FLIP_Y_WEBGL, 1); 
+        x.bindTexture(xTEXTURE_2D, x.createTexture());
+        x.texParameteri(xTEXTURE_2D, xTEXTURE_MIN_FILTER, xLINEAR);
+        x.pixelStorei(xUNPACK_FLIP_Y_WEBGL, 1); 
         
         // create shader program
-        const shaderProgram = x.crog();
-        x.ahad(shaderProgram, vertexShader);
-        x.ahad(shaderProgram, pixelShader);
-        x.lgra(shaderProgram);
-        x.uram(shaderProgram);
+        const shaderProgram = x.createProgram();
+        x.attachShader(shaderProgram, vertexShader);
+        x.attachShader(shaderProgram, pixelShader);
+        x.linkProgram(shaderProgram);
+        x.useProgram(shaderProgram);
         return shaderProgram;
     }
     
@@ -609,7 +534,7 @@ class _OS13k
     {
         // get webgl context
         const x = canvas.getContext('webgl2');
-            
+        
         // use hardcoded values to save space
         const xRGBA          = 6408;
         const xUNSIGNED_BYTE = 5121;
@@ -617,18 +542,18 @@ class _OS13k
         const xTEXTURE_2D    = 3553;
         
         // set uniforms
-        x.u3f(x.gorm(shaderProgram,'iResolution'), 
+        x.uniform3f(x.getUniformLocation(shaderProgram,'iResolution'), 
             canvas.width, canvas.height, 1);
-        x.u1f(x.gorm(shaderProgram,'iTime'), time);
-        x.u1f(x.gorm(shaderProgram,'iFrame'), frame);
-        x.u1i(x.gorm(shaderProgram,'iChannel0'), 0);
-        x.u4f(x.gorm(shaderProgram,'iMouse'), X, Y, Z, W);
-                        
+        x.uniform1f(x.getUniformLocation(shaderProgram,'iTime'), time);
+        x.uniform1f(x.getUniformLocation(shaderProgram,'iFrame'), frame);
+        x.uniform1i(x.getUniformLocation(shaderProgram,'iChannel0'), 0);
+        x.uniform4f(x.getUniformLocation(shaderProgram,'iMouse'), X, Y, Z, W);
+        
         // render shader
-        x.days(xTRIANGLE_FAN, 0, 3);
+        x.drawArrays(xTRIANGLE_FAN, 0, 3);
         
         // set texture to the newly rendered image
-        x.te2D(xTEXTURE_2D, 0, xRGBA, xRGBA, xUNSIGNED_BYTE, canvas);
+        x.texImage2D(xTEXTURE_2D, 0, xRGBA, xRGBA, xUNSIGNED_BYTE, canvas);
     }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -682,7 +607,6 @@ class _OS13k
         localStorage.OS13k = JSON.stringify(
         {
             t:trophies,
-            w:words,
             s:settings,
             i:programInfos,
             p:startProgramName = startProgram ? startProgram.name : ''
@@ -719,7 +643,6 @@ class _OS13k
         // load data
         const saveData   = JSON.parse(localStorage.OS13k);
         trophies         = saveData.t;
-        words            = saveData.w;
         settings         = saveData.s;
         programInfos     = saveData.i;
         startProgramName = saveData.p;
@@ -754,7 +677,7 @@ const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26,
       popupTime = 3, defaultVolume = .3, maxWordLength = 32,
 
     // increment to force pages to be refreshed OPTIONAL
-    forceRefresh = '?refresh3',
+    forceRefresh = '?1000',
 
     // init web audio
     audioContext = new (AudioContext || webkitAudioContext),
@@ -764,9 +687,8 @@ let grabWindow, grabOffsetX, grabOffsetY, finishedStartup,
     windowActive, activeProgram, helpProgram, activeTaskbarIcon, loadIcon,
     lastActiveElement, topZ = 0, loading = 0, hadInput = 0,
     windowOpenX = startWindowOpenX, windowOpenY = startWindowOpenY,
-    startProgram, startProgramName, trophyTrayIcon, wordsTrayIcon, settingsTrayIcon,  
-    clockTrayIcon, newWordsMessage = '', newWordsSpeak = '', 
-    programInfos = [], trophies = [], words = [],
+    startProgram, startProgramName, trophyTrayIcon, settingsTrayIcon,  
+    clockTrayIcon, programInfos = [], trophies = [],
     
     // default settings (volume, speech, filter, bgcolor)
     settings = [.3, 1, '#222233', '#332222', 'OS13k', 1, 0];
@@ -783,7 +705,6 @@ class _OS13kSystem
     {
         // create tray icons
         trophyTrayIcon    = new OS13kTrayIcon();
-        wordsTrayIcon     = new OS13kTrayIcon();
         settingsTrayIcon  = new OS13kTrayIcon();
         clockTrayIcon     = new OS13kTrayIcon();
         
@@ -851,9 +772,6 @@ class _OS13kSystem
         // update trophy count
         trophyTrayIcon.innerHTML = trophies.length + ' 🏆';
 
-        // update word count
-        wordsTrayIcon.innerHTML = words.length + ' 📕';
-
         // update time
         clockTrayIcon.title = new Date();
         const time = clockTrayIcon.title.slice(16,24).split(':');
@@ -873,12 +791,6 @@ class _OS13kSystem
 
         // show popups after startup is finished and there was input
         if (!finishedStartup || !hadInput) return;
-
-        // add popup for queued new words and reload words window
-        newWordsMessage && OS13k.Popup(
-            '<b>New Words!</b><br>' + newWordsMessage, newWordsSpeak,
-            wordsTrayIcon.program.Reload());
-        newWordsMessage = newWordsSpeak = '';
         
         // update popups, use copy to prevent skipping if removed
         let offsetHeight = 0, i = 0;
@@ -1070,7 +982,6 @@ class OS13kProgram extends HTMLElement
         // save special programs
         name == 'Settings'    && settingsTrayIcon.SetProgram(this);
         name == 'Trophy Case' && trophyTrayIcon.SetProgram(this);
-        name == 'Word List'   && wordsTrayIcon.SetProgram(this);
         name == 'Clock'       && clockTrayIcon.SetProgram(this);
         name == 'Help'        && this.saveInfo.open == undefined 
                               && (helpProgram = this);
@@ -1116,7 +1027,7 @@ class OS13kProgram extends HTMLElement
             this.window = new OS13kWindow(this, x, y);
 
             // update info and save
-            this.SaveInfo(finishedStartup && (this.wasOpened = 1));
+            this.SaveInfo();
         }
         else if (!this.folder)
         {
@@ -1217,21 +1128,26 @@ class OS13kWindow extends HTMLElement
 
         // name
         this.name.innerHTML += program.name;
-        
+       
         // create title bar icons
-        const AddTitlebarIcon=(id, title)=>
+        const AddTitlebarIcon=(id, title, svg, svgShape='path')=>
         {
             const icon = this.titlebar.appendChild(document.createElement('div'));
-            icon.innerHTML = `<svg><use href=#icon-${icon.id = id}>`;
+            icon.id = id;
             icon.title = title;
+            icon.innerHTML = 
+            `<svg style=width:28;pointer-events:none viewBox='0 0 10 10'><${svgShape} stroke=#000 fill=none ${svg} />`;
         }
         program.resize && 
-            AddTitlebarIcon('grow', 'Grow', AddTitlebarIcon('shrink', 'Shrink'));
-        program.full && AddTitlebarIcon('full', 'Full Screen');
-        program.help && AddTitlebarIcon('help', 'Help');
-        program.Fc && AddTitlebarIcon('code', 'Code');
-        program.reload && AddTitlebarIcon('reload', 'Reload');
-        AddTitlebarIcon('close', 'Close');
+            AddTitlebarIcon('grow', 'Grow', 'd="M2 5L8 5M5 8L5 2"',
+            AddTitlebarIcon('shrink', 'Shrink', 'd="M2 5L8 5"'));
+        program.full && AddTitlebarIcon(
+            'full', 'Full Screen', 'x=1 y=2 width=8 height=6', 'rect');
+        program.help && AddTitlebarIcon('help', 'Help', 'd="M5 8L8 2L2 2L5 8L8 2"');
+        program.Fc && AddTitlebarIcon('code', 'Code', 'd="M5 2L8 8L2 8L5 2L8 8"');
+        program.reload && AddTitlebarIcon(
+            'reload', 'Reload', 'cx=5 cy=5 r=3', 'circle');
+        AddTitlebarIcon('close', 'Close', 'd="M2 2L8 8M8 2L2 8"');
 
         // create content wrapper
         (this.iframeWrapper =
@@ -1260,11 +1176,7 @@ class OS13kWindow extends HTMLElement
         this.iframe.id = 'frame';
         
         // announce game when first opened
-        program.wasOpened || finishedStartup &&
-            OS13k.Speak(this.program.name, 1, 1, 1, 'ja');
-        
-        // add program name to words and dont speak
-        OS13k.AddWords(this.program.name, 0); 
+        finishedStartup && OS13k.Speak(this.program.name);
         
         // track if programs are loading during startup
         loading += !finishedStartup;
@@ -1492,9 +1404,6 @@ class OS13kWindow extends HTMLElement
         // toggle showing code
         this.codeDisplay.style.display = 
             (this.showCode = !this.showCode) ? 'inline' : '';
-        
-        // add help to words
-        OS13k.AddWords(this.program.help);
         
         this.program.help || OS13k.Trophy('OS13k','Hacker','👨‍💻','Viewed Code');
     }
