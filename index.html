@@ -667,9 +667,9 @@ class _OS13k
         const popup = popups.appendChild(document.createElement('div'));
         popup.className = 'popup';
         popup.innerHTML = html;
-        popup.style.top = innerHeight;
         popup.speak = speak;
         popup.speakLanguage = language;
+        popup.style.visibility = 'hidden';
     }
     
 /////////////////////////////////////////////////////////////////////////////
@@ -880,7 +880,7 @@ class _OS13kSystem
             wordsTrayIcon.program.Reload());
         newWordsMessage = newWordsSpeak = '';
         
-        // iterate through popups, use copy to prevent skipping if removed
+        // update popups, use copy to prevent skipping if removed
         let offsetHeight = 0, i = 0;
         for(const popup of [...popups.children])
         {
@@ -892,8 +892,11 @@ class _OS13kSystem
                 popups.removeChild(popup);
             else if (!document.fullscreenElement)
             {
-                // move popup up
-                let y = parseFloat(popup.style.top) + offsetHeight - 9;
+                // move popup up, set to bottom if it was invisible
+                let y = popup.style.visibility ? 
+                     innerHeight : parseFloat(popup.style.top) + offsetHeight - 9;
+                popup.style.visibility = '';
+                
                 if (y < taskbarHeight)
                 {
                     // stop popup below taskbar
