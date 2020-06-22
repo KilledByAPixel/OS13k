@@ -111,7 +111,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 - ZzFx sounds are supported by default and several other audio functions are provided
 - ZzFX is open source sound effect generator with an easy to use sound designer https://zzfx.3d2k.com/
 - A seeded ZzFX sound player is available to save space with much smaller sound calls
-- OS13k.PlaySeed(seed, lengthScale=1, volume=1, randomness=.05) - Play a zzfx sound from seed
+- OS13k.PlaySeed(seed, lengthScale=1, volume=1, randomness=.05, frequency) - Play a zzfx sound from seed
 - OS13k.PlaySamples(samples, sampleRate=44100) - Play audio samples
 - OS13k.GetNote(semitoneOffset=0, rootNoteFrequency=440)
 - OS13k.Speak(text, rate=1, pitch=1, volume=1, language='en', stopSpeech) - Play speech of the text
