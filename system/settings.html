@@ -5,12 +5,10 @@ Volume <input type=range id=v onchange=S()>
 &nbsp;&nbsp;Popups
 <input type=checkbox id=p onchange=S()>
 <br><br>Background
-<input id=c type=color onchange=S()>
+<input id=c type=color oninput=S()>
 &nbsp;&nbsp;<input id=d type=color onchange=S()> Text <input id=t oninput=S()>
 <br><br>Filters
 <script>
-
-OS13k = parent.OS13k;
 
 // filters
 L=
@@ -29,7 +27,7 @@ for(i in L)
     `<button onclick="S(OS13k.AddWords('${L[i][0]}'),f=L[${i}])">`+L[i][0];  
 
 // load settings
-S = OS13k.Settings();
+S = parent.OS13k.Settings();
 v.value   = S[0] * 100;         // volume
 s.checked = S[1];               // speech
 c.value   = S[2];               // color 1
@@ -40,7 +38,7 @@ i = L.findIndex(e=>e[0]==S[5][0]); // filter
 f = L[ i < 0 ? 0 : i ];
 
 // save settings
-S=()=>OS13k.SaveSettings
+S=()=>parent.OS13k.SaveSettings
 (
     v.value/100, // volume
     s.checked,   // speech
