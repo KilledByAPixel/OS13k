@@ -17,14 +17,14 @@ defaultWidth = 720, defaultHeight = 405, // 16:9 aspect
 programs = 
 [
 [,'❌',,,,'Close All'],
-['help.html','<b><span style=color:#0f0>?',380,400,sticky|full|resize,,'Check here to see help when available.\nSome programs have a option to show code instead.\n\nHave fun! ✌️😄'],
+['help.html','<b><span style=color:#0f0>?',380,400,sticky,,'Check here to see help when available.\nSome programs have a option to show code instead.\n\nHave fun! ✌️😄'],
 ['moreInfo.html','👨‍💻'],
 [,'⚙️',,,,'System',,
 [
     ['system/settings.html','🎚️',470,160,sticky],
     ['system/trophyCase.html','🏆',,,full|resize|sticky],
     ['system/clock.dweet.js','🕰️',200,200,sticky|code|awake],
-    ['system/systemTest.html',,,,full|resize|code],
+    ['system/systemTest.html',,600,370,defaultFlags|code],
     [,'📁',,,,'Test',,
     [
         ['index.html','✌️😄',,,,'Meta OS13k'],
@@ -52,7 +52,7 @@ programs =
 ]],
 [,'🎶',,,,'Music',,
 [
-    ['music/soundSeeds.html','🔊',350,480,full],
+    ['music/soundSeeds.html','🔊',350,480],
     ['music/piano.html','🎹',550,490,full|reload,,'Keyboard = Play Notes\nUp/Down = Change Octave'],
     ['music/bach.dweet.js','♫'],
     ['music/minBytes.html','<span style=color:#f00>𝓜',450,450],
