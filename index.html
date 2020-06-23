@@ -860,7 +860,7 @@ class _OS13kSystem
     StopSpeech() { speechSynthesis && speechSynthesis.cancel(); }
     
     // play system sound if enabled
-    Sound(seed) { settings[3] && OS13k.PlaySeed(seed); }
+    Sound(seed, length) { settings[3] && OS13k.PlaySeed(seed, length); }
     
 } // OS13kSystem
 const OS13kSystem = new _OS13kSystem;
