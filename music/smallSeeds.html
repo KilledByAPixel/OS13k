@@ -1,12 +1,30 @@
 <style>body{background:#111;color:#fff;user-select:none;text-align:center}</style>
-Length Scale <input type=number id=L value=1 style=width:50>
+Length <input type=number id=L value=1 style=width:50>
 Randomness <input type=number id=R value=.05 style=width:50>
-Frequency <input type=number id=F style=width:50><hr>
+Frequency <input type=number id=F style=width:50>&nbsp;&nbsp;
+<button onmousedown=o(y-=109) >◀</button>
+<button onmousedown=o(y+=109)>▶</button>
+<hr><div id=S>
 <script>
 
-for(i=99;i>-10;--i)
-document.body.innerHTML += `<input value=${i} style=width:50 readonly onmousedown=(x&&x.stop(),x=parent.OS13k.PlaySeed(${i},L.value,1,R.value,F.value?F.value:undefined))>`;
+
+p=p=>
+{
+    x&&x.stop();
+    x=parent.OS13k.PlaySeed(p,L.value,1,R.value,F.value?F.value:undefined);
+}
+
+o=e=>
+{
+    S.innerHTML = '';
+    for(i=y;i<y+109;)
+    S.innerHTML += 
+    `<input value=${i} style=width:50 readonly onfocus=p(${i}) onmousedown=p(${i++})>`;
+}
 
 x = 0;
+o(y = -9);
+
+
 
 </script>
