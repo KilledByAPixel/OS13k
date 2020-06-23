@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A tiny OS for JS13k</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?98></script>
+<script src=programs.js?99></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -676,7 +676,7 @@ const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26,
       popupTime = 3, defaultVolume = .3, maxWordLength = 32,
 
     // increment to force pages to be refreshed OPTIONAL
-    forceRefresh = '?1021',
+    forceRefresh = '?1022',
 
     // init web audio
     audioContext = new AudioContext, gain = audioContext.createGain();
@@ -1611,9 +1611,10 @@ oncontextmenu=e=>false;
 } // mouse input
 
 ///////////////////////////////////////////////////////////////////////////////
-// ZzFXMicro - Zuper Zmall Zound Zynth 
+// ZzFXMicro - Zuper Zmall Zound Zynth
+var zzfx=(...t)=>OS13k.PlaySamples(zzfxG(...t)),
 
-const zzfx = // play a sound
+zzfxG = // generate zzfx samples
 (volume = 1, randomness = .05, frequency = 220, attack = 0, sustain = 0, release = .1, shape = 0, shapeCurve = 1, slide = 0, deltaSlide = 0, pitchJump = 0, pitchJumpTime = 0, repeatTime = 0, noise = 0, modulation = 0, bitCrush = 0, delay = 0, sustainVolume = 1, decay = 0, sampleRate = 44100, b = [])=>
 {
     attack = 99 + attack * sampleRate;
@@ -1689,8 +1690,8 @@ const zzfx = // play a sound
             j = j || 1;                               // reset pitch jump time
         }
     }
-
-    return OS13k.PlaySamples(b);
+    
+    return b;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
