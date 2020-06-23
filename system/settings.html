@@ -30,8 +30,8 @@ P.checked = i[2];                  // popups
 C.value   = i[3];                  // color 1
 D.value   = i[4];                  // color 2
 T.value   = i[5];                  // background text
-j = i.findIndex(e=>e[0]==i[6][0]); // find filter name
-t = i[ j < 0 ? 0 : j ];            // filter
+t = f.findIndex(e=>e[1]==i[6]);    // find filter
+t = t < 0 ? 0 : t;                 // filter
 
 // save settings and rebuild
 s=e=>
@@ -42,11 +42,11 @@ s=e=>
     {
         F.innerHTML +=                       // add to html
         `<button style='border:5px solid #${ // create button
-            i[0] == t[0] ? 'f00' : '111'     // selected color
+            j == t ? 'f00' : '111'           // selected color
             }' onmousedown="s(O.Speak('${    // mouse down
             i[0]                             // speak name
-            }'),t=f[${ j                     // save filter
-            }])">` + i[0];                   // set button name
+            }'),t=${ j                       // save filter
+            })">` + i[0];                    // set button name
     });
 
     // save settings
@@ -58,7 +58,7 @@ s=e=>
         D.value,       // color 1
         C.value,       // color 2
         T.value,       // background text
-        t              // filter
+        f[t][1]        // filter
     );
 }
 
