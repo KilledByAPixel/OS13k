@@ -348,11 +348,12 @@ class _OS13k
                 game }</i></div>` +            // game
                 message,                       // message
             name || game,                      // speak
-            language,                          // sound
-            soundTrophy);                      // language
+            language);                      // language
             
         // save trophies
         OS13k.Save();
+
+        OS13kSystem.Sound(soundTrophy, 5);
     }
     
     // get message, 0 if no trophy
@@ -587,14 +588,13 @@ class _OS13k
             .replace(/<.*>/g,'');
     }
     
-    Popup(html, speak, language, soundSeed)
+    Popup(html, speak, language)
     {
         // create popup
         const popup = popups.appendChild(document.createElement('div'));
         popup.className = 'popup';
         popup.innerHTML = html;
         popup.speak = speak;
-        popup.soundSeed = soundSeed;
         popup.speakLanguage = language;
         popup.style.visibility = 'hidden';
     }
@@ -682,7 +682,7 @@ const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26,
     soundGrabStart  = 45,
     soundGrabEnd    = 42,
     soundMenu       = 22,
-    soundTrophy     = 81,
+    soundTrophy     = 96,
     soundActive     = 87,
     soundShrink     = 75,
     soundGrow       = 61,
@@ -805,8 +805,7 @@ class _OS13kSystem
         {
             // popup sounds
             popup.speak && OS13k.Speak(popup.speak, 1, 1, 1, popup.speakLanguage);
-            popup.soundSeed && OS13kSystem.Sound(popup.soundSeed);
-            popup.soundSeed = popup.speak = 0;
+            popup.speak = 0;
             
             if (!settings[5])
                 popups.removeChild(popup);
@@ -1258,7 +1257,7 @@ class OS13kWindow extends HTMLElement
         }
         
         // load src, force pages to be refreshed OPTIONAL
-        this.iframe.src = program.src + '?2044';
+        this.iframe.src = program.src + '?2045';
     }
     
     Open(target, x, y)
