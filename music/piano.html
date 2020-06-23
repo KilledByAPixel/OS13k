@@ -56,7 +56,7 @@ p=e=>
     // play sound
     t-3 ?                         // seed or instrument
         f.map(f=>zzfx(...[        // play zzfx sound
-            v/(1+Math.log2(f))/2, // scale volume
+            v/(1+Math.log2(f))/3, // scale volume
             0,                    // no randomness
             f*n,,                 // frequency
             l,                    // sustain
