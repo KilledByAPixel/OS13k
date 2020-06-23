@@ -35,6 +35,7 @@ programs =
     ['apps/console.html','<span style=color:#0f0;background:#000;font-family:monospace>JS>'],
     ['apps/stickyNote.html','✍️',300,263,sticky|reload,,'Ctrl+B - Bold\nCtrl+I - Italic\nCtrl+U - Underline\n\Reload to clear'],
     ['apps/photoBooth.html','📸',1400,550],
+    ['apps/alarm.html','⏰',400,116],
     ['apps/unicodeToys.html','𝖀',500,800],
     ['apps/miniShadertoy.html','𝓢',340,400],
     ['apps/textEditor.html','📝'],
