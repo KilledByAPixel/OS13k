@@ -10,7 +10,7 @@ Shape <input type=range style=width:70 id=H value=50>
 <div><script>
 
 // instruments
-u = ['Organ', 'Piccolo', 'Sin'];
+u = ['Organ', 'Flute', 'Sin'];
 
 // create settings
 b=e=>
@@ -28,6 +28,7 @@ b=e=>
     // disable noise & shape if seed
     H.disabled = N.disabled = t==3;
     
+    // set seed border if selected
     S.style.border = `5px solid #${ t==3? "f00" : "111"}`
 }
 
@@ -47,11 +48,11 @@ p=e=>
     f.style.transition = l + 's'; // transition time
     f.style.background = q;       // old background color
     
-    f = [           // instruments
-        [1, 2, 4],  // organ
-        [1, 3, 5],  // piccolo
-        [1]         // sin
-    ][ t ];         // get instrument
+    f = [             // instruments
+        [1, 2, 4, 8], // organ
+        [1, 3, 5],    // flute
+        [1]           // sin
+    ][ t ];           // get instrument
     
     // play sound
     t-3 ?                         // seed or instrument
@@ -62,7 +63,7 @@ p=e=>
             l,                    // sustain
             .05,,                 // release
             (H.value/50)**4,      // shape curve
-            ,,,,,N.value/100      // noise
+            ,,,,,N.value/99       // noise
         ])) :
         [O.PlaySeed(S.value, l, v, 0, n)]; // play seed
 }
@@ -75,10 +76,10 @@ document.body.innerHTML +=                                     // add to html
 `<div id=b${ z = 48 - (i/24|0)*24 + i%24                       // reorder keys
 } onmouseover=event.buttons&&p(${                              // mouse over
 z}) onmousedown=p(${                                           // mouse down
-z}) style="display:inline-block;border:1px solid #000;background:#${  // style
-    [1, 3, 6, 8, 10].includes( i%12 ) ?                        // b or w
-    '000;position:absolute;margin-left:-9;width:17;height:70' :// black
-    'fff;width:34;height:129'}"></div>${                       // white
+z}) style="display:inline-block;border:1px solid #000;background:#${     // style
+    '02579'.indexOf( i%12 - 1 ) < 0 ?                          // b or w
+    'fff;width:34;height:129' :                                // black
+    '000;position:absolute;margin-left:-9;width:17;height:70'}"></div>${ // white
     ++i%24 ? '' : '<br>'}`;                                    // next row
 
 // keyboard control
@@ -91,7 +92,7 @@ document.activeElement == S ||        // prevent input when editing seed
 e.repeat ? 0 :                        // prevent key repeats
 Math.abs(i = e.keyCode - 39) == 1 ?   // check for up down arrows
 D.value = O.Clamp(D.value-i, -3, 3) : // octave control
-k >= 0 &&                             // did it find the key           
+k >= 0 &&                             // key was found
     p(k);                             // play the note
 }
 
