@@ -1,61 +1,68 @@
 <style>body{background:#111;color:#fff;user-select:none;text-align:center}</style>
 Volume <input type=range id=V onchange=s()>&nbsp;&nbsp;
-Speech
-<input type=checkbox id=S onchange=s()>&nbsp;&nbsp;
-Popups
-<input type=checkbox id=P onchange=s()>
+Speech <input type=checkbox id=S onchange=s()>&nbsp;&nbsp;
+Popups <input type=checkbox id=P onchange=s()>
 <br><br>Background
 <input id=C type=color oninput=s()>&nbsp;&nbsp;
 <input id=D type=color oninput=s()>&nbsp;&nbsp;
 <input id=T oninput=s()>
 <br><br>Filters
+<span id=F>
 <script>
 
 // filters
 f=
 [
-    ['Default', ''],
-    ['Gray',    'grayscale('],
+    ['Default',  ''],
+    ['Gray',     'grayscale('],
     ['Game Boy', 'sepia()hue-rotate(40deg)contrast(.8'],
-    ['Ocean',   'invert()sepia()invert('],
-    ['Sepia',   'sepia('],
-    ['Fruity',  'saturate(9',],
+    ['Ocean',    'invert()sepia()invert('],
+    ['Sepia',    'sepia('],
+    ['Fruity',   'saturate(9',]
 ];
 
-// add buttons for filters
-for(i in f) 
-    document.body.innerHTML += 
-    `<button id="${j=f[i][0]}" onclick="s(parent.OS13k.Speak('${j}'),u(F=f[${i}]))">`+j;  
-
 // load settings
-i = parent.OS13k.Settings();
+O = parent.OS13k;                  // get OS13k
+i = O.Settings();                  // get settings
 V.value   = i[0] * 100;            // volume
 S.checked = i[1];                  // speech
 P.checked = i[2];                  // popups
 C.value   = i[3];                  // color 1
 D.value   = i[4];                  // color 2
 T.value   = i[5];                  // background text
-j = i.findIndex(e=>e[0]==i[6][0]); // find filter
-F = i[ j < 0 ? 0 : j ];            // filter
+j = i.findIndex(e=>e[0]==i[6][0]); // find filter name
+t = i[ j < 0 ? 0 : j ];            // filter
 
-// update if necessary
-u=e=>
+// save settings and rebuild
+s=e=>
 {
-    for(i of f)
-        document.getElementById(i[0]).style.border 
-            = '5px solid #' + (i[0] == F[0] ? 'f00' : '111');
-}
-u();
+    // add buttons for filters
+    F.innerHTML = '';                        // clear old buttons
+    f.map((i,j)=>                            // iterate through filters
+    {
+        F.innerHTML +=                       // add to html
+        `<button style='border:5px solid #${ // create button
+            i[0] == t[0] ? 'f00' : '111'     // selected color
+            }' onclick="s(O.Speak('${        // on click
+            i[0]                             // speak name
+            }'),t=f[${ j                     // save filter
+            }])">` + i[0];                   // set button name
+    });
 
-// save settings
-s=e=>parent.OS13k.SaveSettings
-(
-    V.value / 100, // volume
-    S.checked,     // speech
-    P.checked,     // popups
-    D.value,       // color 1
-    C.value,       // color 2
-    T.value,       // background text
-    F              // filter
-);
+    // save settings
+    O.SaveSettings
+    (
+        V.value / 100, // volume
+        S.checked,     // speech
+        P.checked,     // popups
+        D.value,       // color 1
+        C.value,       // color 2
+        T.value,       // background text
+        t              // filter
+    );
+}
+
+// build settings
+s();
+
 </script>

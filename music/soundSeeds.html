@@ -1,28 +1,30 @@
 <style>body{background:#111;color:#fff;user-select:none;text-align:center}</style>
-Seed &nbsp;<input type=number id=S value=0 onclick=p(S.value)><br><br>
-<button onclick=(p(S.value=Math.random()*1e5|0),E.checked&&s())>Random</button>
-<button onclick=p(S.value,s())>Save</button>
-<button onclick='confirm`Clear All?`&&b(a=[])'>Clear</button>&nbsp;
+Seed &nbsp;<input type=number id=S value=0 onmousedown=p(S.value)><br><br>
+<button onmousedown=p(S.value=Math.random()*10**L.value|0,E.checked&&s())>Random</button>
+<button onmousedown=p(s())>Save</button>
+<button onmousedown='confirm`Clear All?`&&b(a=[])'>Clear</button><br>
+Length <input type=number id=L value=6 style=width:50>
 Auto Save <input id=E type=checkbox><hr><div id=A>
 <script>
 
-// play a seed sound and save
+// stop last sound and play sound
 p=e=>{x && x.stop(); x = parent.OS13k.PlaySeed(e)}
 
 // save the seed
 s=e=> b(S.value, a.push(S.value));
 
-// remove from list
-m=e=> b(p(a[e]), a.splice(e, 1));
-
 // refresh list
 b=e=>
 {
-    localStorage.OS13kS = JSON.stringify(a);
-    A.innerHTML = '';
-    for(i in a)
-        A.prepend(v = document.createElement('div')),
-        v.innerHTML = `<button onclick=m(${i})>❌</button> <input style=display:inline-block onclick=p("${a[i]}") value=${a[i]} readonly>`;
+    localStorage.OS13kS = JSON.stringify(a);        // save seed list
+    A.innerHTML = '';                               // reset html
+    a.map((i,j)=>{                                  // go through list
+        A.prepend(d = document.createElement`div`); // create div
+        d.innerHTML = `<button onmousedown=b(p(${   // remove button
+        i }),a.splice(${                            // play removed sound
+        j },1))>❌</button> <input onmousedown=p(${ // remove and refresh
+        i }) value=${                               // input mouse down
+        i } readonly>`});                           // inputext
 }
 
 // load saved sounds

@@ -6,31 +6,7 @@ Volume <input type=range style=width:70 id=V value=50>
 Length <input type=range style=width:70 id=L value=25>
 Noise <input type=range style=width:70 id=N value=0>
 Shape <input type=range style=width:70 id=H value=50>
-<hr>
-<div><script>
-
-// instruments
-u = ['Organ', 'Flute', 'Wave'];
-
-// create settings
-b=e=>
-{
-    // clear old settings
-    B.innerHTML = '';
-    
-    // create buttons
-    for(j in u)
-        B.innerHTML += `<button style='border:5px solid #${ // button
-            t-j? "111" : "f00" }' onclick=b(t=${            // color
-            j })>${                                         // click
-            u[j] }</button> `;                              // text
-   
-    // disable noise & shape if seed
-    H.disabled = N.disabled = t==3;
-    
-    // set seed border if selected
-    S.style.border = `5px solid #${ t==3? "f00" : "111"}`
-}
+<hr><div><script>
 
 // play a note
 p=e=>
@@ -40,7 +16,7 @@ p=e=>
     v = V.value / 50;                // volume
     
     // animate color when played
-    f = eval('b' + e);            // get the button
+    f = eval('B' + e);            // get the button
     q = f.style.background;       // save old background color
     f.style.background = '#f00';  // set background to red
     f.style.transition = '';      // cancel transition
@@ -48,54 +24,67 @@ p=e=>
     f.style.transition = l + 's'; // transition time
     f.style.background = q;       // old background color
     
-    f = [             // instruments
-        [1, 2, 4, 8], // organ
-        [1, 3, 5, 7], // flute
-        [1]           // sin
-    ][ t ];           // get instrument
-    
     // play sound
-    t-3 ?                         // seed or instrument
-        f.map(f=>zzfx(...[        // play zzfx sound
+    t-3 ? [                       // instruments
+        [1, 2, 4, 8],             // organ
+        [1, 3, 5, 7],             // flute
+        [1]                       // sin
+    ][ t ].map(                   // get instrument
+        f=>zzfx(...[              // play zzfx sound
             v/(1+Math.log2(f))/3, // scale volume
-            0,                    // no randomness
+            ,                     // no randomness
             f*n,,                 // frequency
-            l,                    // sustain
-            .05,,                 // release
+            l,,,                  // sustain
             (H.value/50)**4,      // shape curve
-            ,,,,,N.value/99       // noise
+            ,,,,,N.value/100      // noise
         ])) :
-        [O.PlaySeed(S.value, l, v, 0, n)]; // play seed
+        O.PlaySeed(S.value, l, v, 0, n); // play seed
 }
 
 // create piano keys
-for(b(t=i=0);         // selected sound, iterator
-    i<72;             // 72 keys
-    O=parent.OS13k)   // get OS13k
-document.body.innerHTML +=                                     // add to html
-`<div id=b${ z = 48 - (i/24|0)*24 + i%24                       // reorder keys
-} onmouseover=event.buttons&&p(${                              // mouse over
-z}) onmousedown=p(${                                           // mouse down
-z}) style="display:inline-block;border:1px solid #000;background:#${     // style
+for( t = i = 0;            // init selected sound & iterator
+        i < 72;            // 72 keys
+        O = parent.OS13k)  // get OS13k
+    document.body.innerHTML +=                                 // add to html
+    `<div id=B${ z = 48 - (i/24|0)*24 + i%24                   // reorder keys
+    } onmouseover=event.buttons&&p(${ z                        // mouse over
+    }) onmousedown=p(${ z                                      // mouse down
+    }) style="display:inline-block;border:1px solid #000;background:#${ // style
     '02579'.indexOf( i%12 - 1 ) < 0 ?                          // b or w
-    'fff;width:34;height:129' :                                // black
-    '000;position:absolute;margin-left:-9;width:17;height:70'}"></div>${ // white
+    'fff;width:34;height:129' :                                // white
+    '000;position:absolute;margin-left:-9;width:17;height:70'}"></div>${ // black
     ++i%24 ? '' : '<br>'}`;                                    // next row
 
-// keyboard control
-K='zsxdcvgbhnjm,l.;/q2w3er5t6y7ui9o0p[=]';
-onkeydown=e=>
+// create settings
+b=e=>
 {
-k = K.indexOf(e.key.toLowerCase());   // find the key
-k += k > 16 ? 7 : 0;                  // adjust for octave
-document.activeElement == S ||        // prevent input when editing seed
-e.repeat ? 0 :                        // prevent key repeats
-Math.abs(i = e.keyCode - 39) - 1 ?    // check for up down arrows
-k < 0 || p(k) :                       // play the note if key was found
-D.value = O.Clamp(D.value-i, -3, 3);  // octave control
+    // clear old settings
+    B.innerHTML = '';
+
+    // create buttons
+    ['Organ', 'Flute', 'Wave'].map((i,j)=>                  // instruments
+        B.innerHTML += `<button style='border:5px solid #${ // button
+            t-j? "111" : "f00" }' onclick=b(t=${            // color
+            j })>${                                         // click
+            i }</button> `);                                // text
+          
+    // set seed border if selected
+    S.style.border = `5px solid #${ t==3? "f00" : "111"}`
 }
 
-// load saved seed
-S.value = localStorage.OS13kP|0 || 0;
+// load saved seed and init
+b(S.value = localStorage.OS13kP|0 || 0);
+
+// keyboard control
+onkeydown=e=>
+{
+    k = 'zsxdcvgbhnjm,l.;/q2w3er5t6y7ui9o0p[=]'  // map key to note
+        .indexOf(e.key.toLowerCase());           // find the key
+    document.activeElement == S ||               // prevent input when editing seed
+        e.repeat ? 0 :                           // prevent key repeats
+        Math.abs(i = e.keyCode - 39) - 1 ?       // check for up & down arrows
+        k < 0 || p(k > 16 ? k + 7 : k) :         // set octave and play note
+        D.value = O.Clamp(D.value - i, -3, 3);   // octave control
+}
 
 </script>
