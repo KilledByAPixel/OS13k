@@ -189,7 +189,7 @@ body
 <div id=popups style=float:right></div>
 <div id=programsMenu style=position:absolute></div>
 <div id=menu>
-<button id=buttonFullScreen>Fullscreen
+<button id=buttonFullScreen>Full Screen
 <button id=buttonCode>Code
 <button id=buttonHelp>Help
 <button id=buttonResetSize>Reset Size
@@ -671,6 +671,19 @@ var OS13k = new _OS13k;
 const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26,
       startOpenOffset = 9, popupTime = 3, defaultVolume = .3, maxWordLength = 32,
 
+    // system sounds
+    soundOpen = 8,
+    soundClose = 8,
+    soundMove = 8,
+    soundMenu = 8,
+    soundCancelMenu = 8,
+    soundTrophy = 8,
+    
+    soundGrow = 75,
+    soundShrink = -1,
+    soundResetSize = 62,
+    soundFullScreen = 8,
+
     // init web audio
     audioContext = new AudioContext, gain = audioContext.createGain();
 
@@ -709,7 +722,7 @@ class _OS13kSystem
         buttonFullScreen.onmousedown =()=> activeWindow.FullScreen();
         buttonHelp.onmousedown       =
         buttonCode.onmousedown       =()=> activeWindow.ShowCode();
-        buttonResetSize.onmousedown  =()=> activeWindow.Resize(1);
+        buttonResetSize.onmousedown  =()=> activeWindow.Resize(1, soundResetSize);
         buttonReload.onmousedown     =()=> activeWindow.Reload();
         buttonClose.onmousedown      =()=> activeWindow.Close();
 
@@ -1229,7 +1242,7 @@ class OS13kWindow extends HTMLElement
         }
         
         // load src, force pages to be refreshed OPTIONAL
-        this.iframe.src = program.src + '?2038';
+        this.iframe.src = program.src + '?2039';
     }
     
     Open(target, x, y)
@@ -1262,16 +1275,18 @@ class OS13kWindow extends HTMLElement
         target.id == 'full'        && this.FullScreen();
         target.id == 'reload'      && this.Reload();
         target.id == 'close'       && this.Close();
-        target.id == 'shrink'      && this.Resize(this.scale - .2);
-        target.id == 'grow'        && this.Resize(this.scale + .2);
+        target.id == 'shrink'      && this.Resize(this.scale - .2, soundGrow );
+        target.id == 'grow'        && this.Resize(this.scale + .2, soundShrink );
         (target.id == 'help' | target.id == 'code') && this.ShowCode();
         
         // allow main document focus if code display or grabbing
         return target == this.codeDisplay || grabWindow == this;
     }
     
-    Resize(scale)
+    Resize(scale, sound)
     {
+        sound && OS13k.PlaySeed(sound);
+    
         // change size of window while preserving aspect
         const wNew = OS13k.Clamp(this.program.width * scale, 300, 1920);
         const hNew = this.program.height * (this.scale = wNew / this.program.width);
@@ -1351,6 +1366,8 @@ class OS13kWindow extends HTMLElement
     {
         // check if full screen allowed
         if (!this.program.full) return;
+        
+        OS13k.PlaySeed(soundFullScreen);
         
         // set full screen
         this.iframeWrapper.webkitRequestFullScreen &&
