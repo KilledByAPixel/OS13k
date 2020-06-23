@@ -1,7 +1,7 @@
-<style>body{background:#222;color:#fff;user-select:none;text-align:center}</style>
+<style>body{background:#111;color:#fff;user-select:none;text-align:center}</style>
 <span id=B></span>
-&nbsp;Seed &nbsp;<input type=number id=S oninput=b(t=3,localStorage.OS13kP=S.value) onfocus=b(t=3)>
-&nbsp;Octave <span id=D style=display:inline-block;width:0>0</span><br>
+&nbsp;Seed &nbsp;<input type=number id=S style=width:99 oninput=b(t=3,localStorage.OS13kP=S.value) onfocus=b(t=3)>
+&nbsp;Octave <input type=number id=D style=width:40 value=0 min=-3 max=3 onchange=D.value=O.Clamp(D.value,-3,3)><br>
 Volume <input type=range style=width:70 id=V value=50>
 Length <input type=range style=width:70 id=L value=25>
 Noise <input type=range style=width:70 id=N value=0>
@@ -21,22 +21,22 @@ b=e=>
     // create buttons
     for(j in u)
         B.innerHTML += `<button style='border:5px solid #${ // button
-            t-j? "222" : "f00" }' onclick=b(t=${            // color
+            t-j? "111" : "f00" }' onclick=b(t=${            // color
             j })>${                                         // click
             u[j] }</button> `;                              // text
    
     // disable noise & shape if seed
     H.disabled = N.disabled = t==3;
     
-    S.style.border = `5px solid #${ t==3? "f00" : "222"}`
+    S.style.border = `5px solid #${ t==3? "f00" : "111"}`
 }
 
 // play a note
 p=e=>
 {
-    n = O.Note(e - 33 + o*12); // root note = A 440
-    l = .1 + L.value / 50;     // length
-    v = V.value / 50;          // volume
+    n = O.Note(e - 33 + D.value*12); // root note = A 440
+    l = .1 + L.value / 50;           // length
+    v = V.value / 50;                // volume
     
     // animate color when played
     f = eval('b' + e);            // get the button
@@ -68,7 +68,7 @@ p=e=>
 }
 
 // create piano keys
-for(b(t=o=i=0);       // selected sound, octave, iterator
+for(b(t=i=0);         // selected sound, iterator
     i<72;             // 72 keys
     O=parent.OS13k)   // get OS13k
 document.body.innerHTML +=                                     // add to html
@@ -85,14 +85,14 @@ z}) style="display:inline-block;border:1px solid #000;background:#${  // style
 K='zsxdcvgbhnjm,l.;/q2w3er5t6y7ui9o0p[=]';
 onkeydown=e=>
 {
-k = K.indexOf(e.key.toLowerCase()); // find the key
-k += k>16 ? 7 : 0;                  // adjust for octave
-document.activeElement == S ||      // prevent input when editing seed
-e.repeat ? 0 :                      // prevent key repeats
-Math.abs(i = e.keyCode - 39) == 1 ? // check for up down arrows
-D.innerText = o = O.Clamp(o-i, -2, 2) :           // octave control
-k >= 0 &&                           // did it find the key           
-    p(k);                           // play the note
+k = K.indexOf(e.key.toLowerCase());   // find the key
+k += k>16 ? 7 : 0;                    // adjust for octave
+document.activeElement == S ||        // prevent input when editing seed
+e.repeat ? 0 :                        // prevent key repeats
+Math.abs(i = e.keyCode - 39) == 1 ?   // check for up down arrows
+D.value = O.Clamp(D.value-i, -3, 3) : // octave control
+k >= 0 &&                             // did it find the key           
+    p(k);                             // play the note
 }
 
 // load saved seed
