@@ -672,16 +672,15 @@ const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26,
       startOpenOffset = 9, popupTime = 3, defaultVolume = .3, maxWordLength = 32,
 
     // system sounds
-    soundOpen = 8,
-    soundClose = 8,
-    soundMove = 8,
-    soundMenu = 8,
+    soundOpen       = 8,
+    soundClose      = 8,
+    soundMove       = 8,
+    soundMenu       = 8,
     soundCancelMenu = 8,
-    soundTrophy = 8,
-    
-    soundGrow = 75,
-    soundShrink = -1,
-    soundResetSize = 62,
+    soundTrophy     = 8,
+    soundGrow       = 75,
+    soundShrink     = -1,
+    soundResetSize  = 62,
     soundFullScreen = 8,
 
     // init web audio
@@ -1242,7 +1241,7 @@ class OS13kWindow extends HTMLElement
         }
         
         // load src, force pages to be refreshed OPTIONAL
-        this.iframe.src = program.src + '?2040';
+        this.iframe.src = program.src + '?2041';
     }
     
     Open(target, x, y)
