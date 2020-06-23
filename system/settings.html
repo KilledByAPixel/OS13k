@@ -39,7 +39,7 @@ j = i.findIndex(e=>e[0]==i[6][0]); // find filter
 F = i[ j < 0 ? 0 : j ];            // filter
 
 // update if necessary
-u=()=>
+u=e=>
 {
     for(i of f)
         document.getElementById(i[0]).style.border 
@@ -48,7 +48,7 @@ u=()=>
 u();
 
 // save settings
-s=()=>parent.OS13k.SaveSettings
+s=e=>parent.OS13k.SaveSettings
 (
     V.value / 100, // volume
     S.checked,     // speech

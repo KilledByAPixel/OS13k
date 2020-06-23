@@ -52,7 +52,7 @@ programs =
 ]],
 [,'🎶',,,,'Music',,
 [
-    ['music/soundSeeds.html','🔊',400,480,full],
+    ['music/soundSeeds.html','🔊',350,480,full],
     ['music/piano.html','🎹',550,480,full],
     ['music/bach.dweet.js','♫'],
     ['music/minBytes.html','<span style=color:#f00>𝓜',450,450],
