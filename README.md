@@ -79,7 +79,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 
 ### Dweets and Shadertoys
 - Programs with the extension .dweet.js or .shader.txt or will automatically load as Dweets or Shadertoys!
-- Dweets and Shadertoys are automatically paused when they don't have focus
+- Dweets and Shadertoys are automatically paused when they don't have focus (after a 1 second warmup)
 - They also automatically have the show code option by default unless explictly disabled
 - Dweets can do anything that other programs can do including calling OS13k functions and ZzFX
 - Dweets and Shadertoys are automatically paused when not focused (unless awake is set)
