@@ -19,7 +19,7 @@ b=e=>
     localStorage.OS13kS = JSON.stringify(a);        // save seed list
     A.innerHTML = '';                               // reset html
     a.map((i,j)=>{                                  // go through list
-        A.prepend(d = document.createElement`div`); // create div
+        A.prepend(d = document.createElement('div')); // create div
         d.innerHTML = `<button onmousedown=b(p(${   // remove button
         i }),a.splice(${                            // play removed sound
         j },1))>❌</button> <input onmousedown=p(${ // remove and refresh
