@@ -43,7 +43,7 @@ s=e=>
         F.innerHTML +=                       // add to html
         `<button style='border:5px solid #${ // create button
             i[0] == t[0] ? 'f00' : '111'     // selected color
-            }' onclick="s(O.Speak('${        // on click
+            }' onmousedown="s(O.Speak('${    // mouse down
             i[0]                             // speak name
             }'),t=f[${ j                     // save filter
             }])">` + i[0];                   // set button name
