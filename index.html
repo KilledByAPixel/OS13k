@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?102></script>
+<script src=programs.js?104></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -821,8 +821,8 @@ class _OS13kSystem
     CloseMenus()
     {
         // hide all menus
-        for(const child of programsMenu.children)
-            child.style.visibility = menu.style.visibility = '';
+        [...programsMenu.children].map(child=>
+            child.style.visibility = menu.style.visibility = '');
             
         // unselect active program
         activeProgram && (activeProgram.className = 'program');
@@ -935,10 +935,6 @@ class OS13kProgram extends HTMLElement
         this.full     = flags & full;
         this.resize   = flags & resize;
         
-        // set code only if help not shown or if has extension and not disabled
-        this.code = !(this.help = help) && 
-            (code || ((this.isDweet || this.isShader) && code == undefined));
-        
         // load saved program data and set title if not a folder
         this.LoadInfo(folder || (this.title = name));
         
@@ -1003,8 +999,7 @@ class OS13kProgram extends HTMLElement
         else if (!this.folder)
         {
             // close all windows if no src or folder
-            for(const c of [...desktop.children])
-                c.Close && c.Close();
+            [...desktop.children].map(child=> child.Close && child.Close());
 
             // reset window open position
             windowOpenX = startOpenOffset;
@@ -1234,7 +1229,7 @@ class OS13kWindow extends HTMLElement
         }
         
         // load src, force pages to be refreshed OPTIONAL
-        this.iframe.src = program.src + '?2035';
+        this.iframe.src = program.src + '?2036';
     }
     
     Open(target, x, y)
@@ -1676,11 +1671,11 @@ if (typeof ontouchstart != 'undefined')
     // remove hovers, they get stuck on mobile
     const RemoveHovers=e=>
     {
-        for(const sheet of e.styleSheets)
+        [...e.styleSheets].map(sheet=>{
         for(let i = sheet.rules.length; i--; )
             sheet.rules[i].selectorText &&
             sheet.rules[i].selectorText.match('hover') &&
-            sheet.deleteRule(i);
+            sheet.deleteRule(i)});
     }
     RemoveHovers(document);
                 

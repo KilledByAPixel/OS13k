@@ -1,0 +1,11 @@
+<style>body{background:#111;color:#fff;user-select:none;text-align:center}</style>
+All 2 Digit Seeds...<br><br>
+<script>
+
+for(i=99;i>-10;--i)
+{
+document.body.innerHTML += i+1? `<input value=${i} style=width:49 readonly onmousedown=parent.OS13k.PlaySeed(${i})>${i<0 || (i+8)%9? '' : '<br>'}` : ''
+
+}
+
+</script>
