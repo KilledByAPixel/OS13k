@@ -1,5 +1,5 @@
 <style>body{background:#111;color:#fff;user-select:none;text-align:center}</style>
-Seed <input id=S value=0 onclick=p(S.value)><br><br>
+Seed &nbsp;<input type=number id=S value=0 onclick=p(S.value)><br><br>
 <button onclick=(p(S.value=Math.random()*1e5|0),E.checked&&s())>Random</button>
 <button onclick=p(S.value,s())>Save</button>
 <button onclick='confirm`Clear All?`&&b(a=[])'>Clear</button>&nbsp;
