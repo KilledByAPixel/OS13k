@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?105></script>
+<script src=programs.js?106></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -289,7 +289,7 @@ class _OS13k
     Random  (max=1, min=0)    
     {
         // seeded random numbers - Mersenne Twister
-        this.randomSeed ^= (this.randomSeed||-1) << 13;
+        this.randomSeed ^= (this.randomSeed||1) << 13;
         this.randomSeed ^= this.randomSeed >> 17;
         this.randomSeed ^= this.randomSeed << 5;
         return this.Percent(Math.abs(this.randomSeed) % 1e9 / 1e9, min, max);
@@ -1229,7 +1229,7 @@ class OS13kWindow extends HTMLElement
         }
         
         // load src, force pages to be refreshed OPTIONAL
-        this.iframe.src = program.src + '?2036';
+        this.iframe.src = program.src + '?2037';
     }
     
     Open(target, x, y)
