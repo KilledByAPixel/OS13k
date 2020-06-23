@@ -1,6 +1,7 @@
 <style>body{background:#111;color:#fff;user-select:none;text-align:center}</style>
-Volume <input type=range id=V onchange=s()>&nbsp;&nbsp;
+Volume <input type=range id=V onchange=s()>&nbsp;&nbsp;<br><br>
 Speech <input type=checkbox id=S onchange=s()>&nbsp;&nbsp;
+Sounds <input type=checkbox id=N onchange=s()>&nbsp;&nbsp;
 Popups <input type=checkbox id=P onchange=s()>
 <br><br>Background
 <input id=C type=color oninput=s()>&nbsp;&nbsp;
@@ -27,10 +28,11 @@ i = O.Settings();                  // get settings
 V.value   = i[0] * 100;            // volume
 S.checked = i[1];                  // speech
 P.checked = i[2];                  // popups
-C.value   = i[3];                  // color 1
-D.value   = i[4];                  // color 2
-T.value   = i[5];                  // background text
-t = f.findIndex(e=>e[1]==i[6]);    // find filter
+N.checked = i[3];                  // system sounds
+C.value   = i[4];                  // color 1
+D.value   = i[5];                  // color 2
+T.value   = i[6];                  // background text
+t = f.findIndex(e=>e[1]==i[7]);    // find filter
 t = t < 0 ? 0 : t;                 // filter
 
 // rebuild and save settings
@@ -55,6 +57,7 @@ s=e=>
         V.value / 100, // volume
         S.checked,     // speech
         P.checked,     // popups
+        N.checked,     // popups
         D.value,       // color 1
         C.value,       // color 2
         T.value,       // background text

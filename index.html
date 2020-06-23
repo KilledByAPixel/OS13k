@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?109></script>
+<script src=programs.js?110></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -202,7 +202,7 @@ body
 ///////////////////////////////////////////////////////////////////////////////
 // OS13k Debug (remove from minified)
 
-const OS13kVersion = 61;
+const OS13kVersion = 62;
 {
     // version check, clear local storage if older
     if (localStorage.OS13kVersion && localStorage.OS13kVersion != OS13kVersion)
@@ -248,7 +248,7 @@ const OS13kVersion = 61;
 // @js_externs OS13k.Clamp, OS13k.Percent, OS13k.Lerp
 // @js_externs OS13k.Random, OS13k.randomSeed, iframeContent.OS13kReload
 // @js_externs OS13k.Trophies, OS13k.Trophy, OS13k.GetTrophy
-// @js_externs OS13k.PlaySeed, OS13k.PlaySamples, OS13k.Note
+// @js_externs OS13kSystem.Sound, OS13k.PlaySamples, OS13k.Note
 // @js_externs OS13k.Speak, OS13k.StopSpeech
 // @js_externs OS13k.Settings(), OS13k.SaveSettings()
 // @js_externs OS13k.CreateShader, OS13k.RenderShader
@@ -623,15 +623,15 @@ class _OS13k
         
         // background
         background.style.background = 
-            `linear-gradient(${settings[3]},${settings[4]})`;
-        background.innerText = settings[5];
+            `linear-gradient(${settings[4]},${settings[5]})`;
+        background.innerText = settings[6];
         
         // popups
         settings[2] || (popups.innerHTML = '');
         
         // filter
         background.style.filter = 
-        desktop.style.filter = settings[6];
+        desktop.style.filter = settings[7];
     }
     
     Load()
@@ -649,7 +649,8 @@ class _OS13k
     
     Settings() { return settings; }
     
-    SaveSettings(volume, speech, showPopups, color1, color2, text, filter)
+    SaveSettings(volume, speech, showPopups, systemSounds, 
+        color1, color2, text, filter)
     {
         // set settings and save
         this.Save(
@@ -658,6 +659,7 @@ class _OS13k
                 gain.gain.value = volume,
                 speech,
                 showPopups,
+                systemSounds,
                 color1,
                 color2,
                 text,
@@ -702,7 +704,7 @@ let grabWindow, grabOffsetX, grabOffsetY, finishedStartup,
     trophyTrayIcon, settingsTrayIcon, clockTrayIcon,
 
     // default settings (volume, speech, popups, color1, color2, text, filter)
-    settings = [.3, 1, 1, '#222233', '#332222', 'OS13k', ''];
+    settings = [.3, 1, 1, 1, '#222233', '#332222', 'OS13k', ''];
 
 ///////////////////////////////////////////////////////////////////////////////
 // OS13k System Functions - handles non client facing features of OS13k
@@ -803,7 +805,7 @@ class _OS13kSystem
         {
             // popup sounds
             popup.speak && OS13k.Speak(popup.speak, 1, 1, 1, popup.speakLanguage);
-            popup.soundSeed && OS13k.PlaySeed(popup.soundSeed);
+            popup.soundSeed && OS13kSystem.Sound(popup.soundSeed);
             popup.soundSeed = popup.speak = 0;
             
             if (!settings[5])
@@ -856,6 +858,9 @@ class _OS13kSystem
     
     // stop any current or queued speech
     StopSpeech() { speechSynthesis && speechSynthesis.cancel(); }
+    
+    // play system sound if enabled
+    Sound(seed) { settings[3] && OS13k.PlaySeed(seed); }
     
 } // OS13kSystem
 const OS13kSystem = new _OS13kSystem;
@@ -981,7 +986,7 @@ class OS13kProgram extends HTMLElement
         // set container program menu active 
         this.programMenu.SetActive();
         
-        activeProgram !=this && OS13k.PlaySeed(soundProgram, 0);
+        activeProgram !=this && OS13kSystem.Sound(soundProgram, 0);
         
         // set active
         activeProgram = this;
@@ -1278,7 +1283,7 @@ class OS13kWindow extends HTMLElement
             grabOffsetX = x - rect.left;
             grabOffsetY = y - rect.top;
             
-            OS13k.PlaySeed(soundGrabStart)
+            OS13kSystem.Sound(soundGrabStart)
             
             // allow main document focus
             return;
@@ -1298,7 +1303,7 @@ class OS13kWindow extends HTMLElement
     
     Resize(scale, sound)
     {
-        sound && OS13k.PlaySeed(sound);
+        sound && OS13kSystem.Sound(sound);
     
         // change size of window while preserving aspect
         const wNew = OS13k.Clamp(this.program.width * scale, 300, 1920);
@@ -1371,7 +1376,7 @@ class OS13kWindow extends HTMLElement
             // it will not have been created yet if frame is loading
             this.taskbarIcon && this.taskbarIcon.SetActive();
             
-            hadInput && OS13k.PlaySeed(this.activeCount ? soundActive : soundOpen);
+            hadInput && OS13kSystem.Sound(this.activeCount ? soundActive : soundOpen);
             this.activeCount++;
         }
         
@@ -1389,7 +1394,7 @@ class OS13kWindow extends HTMLElement
         this.iframeWrapper.mozRequestFullScreen &&
             this.iframeWrapper.mozRequestFullScreen();
             
-        OS13k.PlaySeed(soundFullScreen);
+        OS13kSystem.Sound(soundFullScreen);
         OS13k.Trophy('OS13k','🕹️','Pro Gamer','Went Full Screen');
     }
     
@@ -1399,7 +1404,7 @@ class OS13kWindow extends HTMLElement
         this.codeDisplay.style.display = 
             (this.showCode = !this.showCode) ? 'inline' : '';
         
-        OS13k.PlaySeed(this.program.help ? soundHelp : soundCode);
+        OS13kSystem.Sound(this.program.help ? soundHelp : soundCode);
         this.program.help || OS13k.Trophy('OS13k','👨‍💻','Hacker','Viewed Code');
     }
     
@@ -1409,7 +1414,7 @@ class OS13kWindow extends HTMLElement
         this.program.Reload() || 
             this.iframeContent.location.reload(this.iframe.style.visibility = '');
         
-        OS13k.PlaySeed(soundReload);
+        OS13kSystem.Sound(soundReload);
     }
     
     Close()
@@ -1427,7 +1432,7 @@ class OS13kWindow extends HTMLElement
         this.taskbarIcon.remove();
         this.remove();
         
-        OS13k.PlaySeed(soundClose);
+        OS13kSystem.Sound(soundClose);
     }
 } // OS13kWindow
 customElements.define('w-', OS13kWindow);
@@ -1469,7 +1474,7 @@ class OS13kTaskbarIcon extends HTMLElement
     
         // load icon cant be active taskbar item
         if (this == loadIcon) 
-        { OS13k.PlaySeed(soundMenu); return;}
+        { OS13kSystem.Sound(soundMenu); return;}
         
         // set active style
         this.className = 'taskbarIcon ' + (active ? 'taskbarIconActive' : '');
@@ -1565,7 +1570,7 @@ onmousedown=e=>
 
                 // get which menu to open
                 const targetMenu = e.target.menu 
-                    ? (OS13k.PlaySeed(soundMenu), menu) : programsMenu;
+                    ? (OS13kSystem.Sound(soundMenu), menu) : programsMenu;
 
                 // show context menu
                 targetMenu.style.left = e.x;
@@ -1601,7 +1606,7 @@ onmousemove=e=>
 
 onmouseup=e=>
     // set grab window active, no clamp, and set cursor to default, unset grab
-    grabWindow && (OS13k.PlaySeed(soundGrabEnd),
+    grabWindow && (OS13kSystem.Sound(soundGrabEnd),
     grabWindow.SetActive(1, 0),
         background.style.cursor = taskbar.style.cursor
             = desktop.style.pointerEvents = grabWindow = '');
