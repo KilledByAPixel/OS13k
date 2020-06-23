@@ -18,7 +18,6 @@ OS13k is a tiny operating system designed for a JS13k community project. It incl
 - You can start with an old project but polish it up a lot, minify it and make it work with OS13k
 - We will need to curate the best and perhaps smallest content for what actually lands in the JS13k build
 - Anything left out of the JS13k build will still be available in the full GitHub version
-- We make this repo public on day 1 of JS13k and open source everything, haven't decided on license yet
 
 ### [You can learn more about JS13k here](https://js13kgames.com/)
 
