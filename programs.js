@@ -52,11 +52,11 @@ programs =
 ]],
 [,'🎶',,,,'Music',,
 [
-    ['music/soundSeeds.html','🔊',350,480],
+    ['music/soundSeeds.html','🌱',350,480],
     ['music/piano.html','🎹',550,490,full|reload,,'Keyboard = Play Notes\nUp/Down = Change Octave'],
     ['music/bach.dweet.js','♫'],
     ['music/minBytes.html','<span style=color:#f00>𝓜',450,450],
-    ['music/smallSeeds.html','🔉',580,380],
+    ['music/smallSeeds.html','🦗',580,380],
 ]],
 [,'🤖',,,,'Toys',,
 [
