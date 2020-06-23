@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?106></script>
+<script src=programs.js?108></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -374,7 +374,7 @@ class _OS13k
         this.randomSeed = seed;
            
         // clamp max length
-        lengthScale = Math.min(lengthScale, 5);
+        lengthScale = this.Clamp(lengthScale, 0, 5);
      
         // helper functions
         const R=()=>this.Random(), C=()=>R()<.5?R():0, S=e=>C()?e:-e,
