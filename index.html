@@ -690,7 +690,6 @@ const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26,
     soundHelp       = 48,
     soundCode       = 16,
     soundReload     = 85,
-    soundResetSize  = 62,
     soundProgram    = 90,
 
     // init web audio
@@ -731,7 +730,7 @@ class _OS13kSystem
         buttonFullScreen.onmousedown =()=> activeWindow.FullScreen();
         buttonHelp.onmousedown       =
         buttonCode.onmousedown       =()=> activeWindow.ShowCode();
-        buttonResetSize.onmousedown  =()=> activeWindow.Resize(1, soundResetSize);
+        buttonResetSize.onmousedown  =()=> activeWindow.Resize(1, soundGrow);
         buttonReload.onmousedown     =()=> activeWindow.Reload();
         buttonClose.onmousedown      =()=> activeWindow.Close();
 
