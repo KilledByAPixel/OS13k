@@ -38,7 +38,6 @@ Add an icon config to programs.js to register your program, and send me pull req
 - OS13k can open any html file and it will work the same as if opened directly
 - Chrome is recommended for development, but Firefox is also supported
 - [Viewing OS13k locally may not work if it treats local files as cross-origin](https://discourse.mozilla.org/t/firefox-68-local-files-now-treated-as-cross-origin-1558299/42493/9)
-- Dweets and Shadertoys are automatically paused when not focused (unless sleep:0 is set)
 - Prefix all local storage keys with OS13kYourProgramName to prevent collisions during JS13k (use at least 2 letters)
 - When the reload button is clicked, OS13kReload is called if it exists instead of reloading the iframe
 - OS13k works well on mobile devices, so we could have a separate entry for the JS13k mobile category
@@ -53,7 +52,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 - Don't compress your code in any way, let zip do the work for you
 - Dweets and Shadertoys are great for making programs with reduced setup cost
 - You do not need charset=utf-8, it will be applied automatically
-- For the OS13k core system we am using [Google Closer](https://closure-compiler.appspot.com/home) and [Terser](https://xem.github.io/terser-online)
+- For the OS13k core system we are using [Google Closer](https://closure-compiler.appspot.com/home) and [Terser](https://xem.github.io/terser-online)
 - We will pack everything together into one giant html file before zipping to save space
 
 ### Games
@@ -86,6 +85,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 - They also automatically have the show code option by default unless explictly disabled
 - Dweets do not need to be 140 characters, there is no size limit
 - Dweets can do anything that other programs can do including calling OS13k functions and ZzFX
+- Dweets and Shadertoys are automatically paused when not focused (unless awake is set)
 - Shaders support iTime, iFrame, iMouse, iResolution, and iChannel0
 - iChannel0 is an image of the previous frame, this can be used to make effects or even store game logic
 
