@@ -115,7 +115,6 @@ Add an icon config to programs.js to register your program, and send me pull req
 - OS13k.PlaySamples(samples, sampleRate=44100) - Play audio samples
 - OS13k.Note(semitoneOffset=0, rootNoteFrequency=440) - Get frequency of a note on a musical scale
 - OS13k.Speak(text, rate=1, pitch=1, volume=1, language='en', stopSpeech) - Play speech of the text
-- *We will create a tool for browsing sound seeds soon*
 
 ### Program Settings and Defaults
 - name - Display name (if absent will build nice name from camel case src filename)
