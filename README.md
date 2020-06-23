@@ -46,24 +46,24 @@ Add an icon config to programs.js to register your program, and send me pull req
 - The goal is to fit as much as possible into 13 kilobytes so everything must be small and clean
 - For inclusion in the JS13k build, programs need be around 100-500 bytes when minified
 - *Always remember, this will be zipped! Don't over golf your code.*
-- There is less overhead for common functions calls and html tags
+- There is less overhead for common functions calls and html tags then program logic
 - Try to limit your use of non repeated text strings, those compresses the worst, use emojis where possible
-- Don't compress your code in any way, let zip do the work for you
-- Dweets and Shadertoys are great for making programs with reduced setup cost
+- Don't compress your code in any way, let zip do the work for us
+- Dweets and Shadertoys are great for making programs with smaller setup
 - You do not need charset=utf-8, it will be applied automatically
 - For the OS13k core system we are using [Google Closer](https://closure-compiler.appspot.com/home) and [Terser](https://xem.github.io/terser-online)
-- We will pack everything together into one giant html file before zipping to save space
+- For JS13k we will pack everything together into one giant html file before zipping to save space
 
 ### Games
 - *JS13k is a game development competition, so we need to focus on games and fun apps*
 - Don't put music in your games, music will be handled by music specific programs
-- Use local storage to save your game's data (prefix keys with OS13kYourProgramName)
+- Use local storage to save your game's data (prefix keys with OS13kProgramName)
 - Use JS13k features like trophies, seeded sound effects, and speech to enrich your games
 - To add sounds with little space, use seeded sounds with a tiny function call OS13k.PlaySeed(seed)
 - Dweets and Shaders are the smallest way to make games, check out Lava Rush for a shader example
 
 ### Apps
-- Interaction between apps is one of the key ways we can make this interesting
+- Apps that complement each other is one of the key ways we can make this interesting
 - Keep text short and essential, try using emojis instead
 - Apps that are creative or fun to use are are ideal
 - Design your app well and let players have fun figuring out how to use it
@@ -73,30 +73,27 @@ Add an icon config to programs.js to register your program, and send me pull req
 ### Music
 - [Keith Clark created a system to play tracker songs with ZzFX sound effects](https://github.com/keithclark/ZzFXM)
 - We will include this in the OS as a core feature soon, something like OS13k.PlayMusic(musicData)
-- We need music generators, synth instruments, and maybe even mini albums
-- The idea is that players can listen to music while messing with games and apps
-- The music tools can even work in conjunction with each other (step sequencer drum kit + piano)
-- Music programs should continue playing if the frame loses focus, but maybe with reduced graphics to lower the load
+- We can have music generators, synth instruments, and maybe even mini albums
+- The idea is that players can listen to music while playing with other games and apps
+- Music programs should continue playing if the frame loses focus, but reduced graphics if necessary to lower the load
 
 ### Dweets and Shadertoys
 - Programs with the extension .dweet.js or .shader.txt or will automatically load as Dweets or Shadertoys!
 - Dweets and Shadertoys are automatically paused when they don't have focus
 - They also automatically have the show code option by default unless explictly disabled
-- Dweets do not need to be 140 characters, there is no size limit
 - Dweets can do anything that other programs can do including calling OS13k functions and ZzFX
 - Dweets and Shadertoys are automatically paused when not focused (unless awake is set)
 - Shaders support iTime, iFrame, iMouse, iResolution, and iChannel0
-- iChannel0 is an image of the previous frame, this can be used to make effects or even store game logic
+- iChannel0 is an image of the previous frame, this can be used to make effects or store game logic
 
 ### System Calls
-- use parent.OS13k object to access the OS13k system
-- zzfx also becomes available after your program loads and can be called directly
-- Use the OS13k object to access OS13k features
+- Use parent.OS13k object to access the OS13k system
+- zzfx also available after your program loads and can be called directly
 - OS13k.CreateShader(canvas, shaderCode) - Create a shadertoy compatible webgl shader
 - OS13k.RenderShader(canvas, shaderProgram, time=0, frame=0) - Render a shader
 - OS13k.KeyDirection(key) - Get {x, y} position from a key code for WASD and arrow keys
-- OS13k.KillHTML(string) - Stops HTML in string by setting all '<' to ''
-- OS13k.Popup(html, speak) - shows a popup with given html, and optional speech
+- OS13k.RemoveHTML(string) - Removes all HTML tags in a string
+- OS13k.Popup(html, speak) - Shows a popup with html body and optional speech
 
 ### Math Library
 - Some basic math functions are provided to help reduce code duplication
@@ -123,44 +120,43 @@ Add an icon config to programs.js to register your program, and send me pull req
 - width (720) and height (405) - Size of window (default is 16:9 aspect)
 - help (optional) - Help message, shows an icon on the window's titlebar (try to keep it short)
 - author (optional) - Name of creator
-- reload (1) - Shows the reload option
-- code (0) - Shows code option, defaults to true for dweets/shaders, help is shown instead if it exists
-- full (1) - Enables full screen option
-- sleep (1) - Dims window and pauses dweets/shaders when not focused
 - sticky (0) - Will automatically open of program on restart if it was open
+- reload (1) - Shows the reload option
+- awake (1) - Prevents window dim and and pausing dweets/shaders when not focused
+- full (1) - Enables full screen option
+- code (0) - Shows code option, defaults to true for dweets/shaders, help is shown instead if it exists
+- rezize (1) - Allows resizing the window
  
  # Trophies
  - Trophies are perhaps the most important part of OS13k and have many uses
  - Apps can register trophies for their games, the OS tracks which are unlocked
  - To unlock trophies use OS13k.Trophy(gameName, trophyName, icon, message)
- - You can pass in a value for message like a high score for example
+ - You can pass in a value as the message, like a high score for example
  - "OS13kTrophy,gameName,trophyName,icon" is the unique local storage key for each trophy
- - *HTML tags and commas can not used in trophy data, it will apper garbled*
+ - *HTML tags and commas can not used in trophy data*
  - When a new trophy is unlocked or the message is changed a popup will automatically appear
  - Total trophy count is shown in the taskbar and the trophy case shows all unlocked trophies
  - *You can use tophies to unlock stuff!* Use OS13k.GetTrophy to check if player has a trophy
- - *Keep your trophy names and messages short! Experiment with fun ideas and icons*
- - Trophies can be tested and cleared with the System/Test tool
- - You can even add unnamed trophies with just an icon and message
+ - *Keep your trophy names and messages short, experiment with fun ideas and icons!*
 
  ### Trophy Functions
- - OS13k.Trophy(game='', name='', icon='', message='', language='ja') - Unlock a trophy
- - OS13k.GetTrophy(game=0, name=0, icon=0) - Get most recent matching trophy, 0 if no trophy
+ - OS13k.Trophy(game='', icon='', name='', message='', language='ja') - Unlock a trophy
+ - OS13k.GetTrophy(game, name) - Get most recent matching trophy, 0 if no trophy
  - OS13k.Trophies() - Get full list of trophy objects
  
  ### Any JS13k game can use trophies, even if not part of OS13k!
- - To add a trophies to any JS13k game, just save a special key to localStorage!
- - The simplest way to add a single trophy is localStorage['OS13kTrophy,GameName']=''
- - For more control use localStorage['OS13kTrophy,GameName,TrophyName,Icon'] = Message
+ - *To add a trophies to any JS13k game, just save a special key to localStorage!*
+ - The smallest way to add a single trophy (like for winning) is localStorage['OS13kTrophy,GameName,Icon']=''
+ - For more control use localStorage['OS13kTrophy,GameName,Icon,TrophyName'] = Message
  - You can change the message to update the trophy, like a highscore for example
- - OS13k automatically checks localStorage and display popups for new trophies
+ - OS13k automatically checks localStorage and display popups for new trophies from other games
  - This is possible because all JS13k games share the same local storage! Pretty cool right?
- - *Don't abuse the trophy system, lets agree to around 5 trophies per game*
+ - *Don't spam the trophy system, lets agree to around 5 trophies per game*
 
  ### Resources
  - [Dwitter](https://www.dwitter.net/) - Many ideas for tiny programs we can repurpose
  - [The Dweetabase](http://dweetabase.3d2k.com/) - An offline searable database of every dweet
- - [Shadertoy](https://www.shadertoy.com/) - There are many amazing tiny sized shaders [(check out the 2TC tag)](https://www.shadertoy.com/results?query=2TC)
- - [JS1k](https://js1k.com/) - Another great resource though these programs may be a bit to large
+ - [Shadertoy](https://www.shadertoy.com/) - There are many amazing tiny shaders [(check out the 2TC tag)](https://www.shadertoy.com/results?query=2TC)
+ - [JS1k](https://js1k.com/) - A resource for tiny programs
  - [JS13k](https://js13kgames.com/) - This is the contest we are entering
--  [Emojipedia](https://emojipedia.org/) - Good reference for emojis
+-  [Emojipedia](https://emojipedia.org/) - Emoji reference
