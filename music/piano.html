@@ -32,7 +32,7 @@ p=e=>
     ][ t ].map(                   // get instrument
         f=>zzfx(...[              // play zzfx sound
             v/(1+Math.log2(f))/3, // scale volume
-            ,                     // no randomness
+            0,                    // no randomness
             f*n,,                 // frequency
             l,,,                  // sustain
             (H.value/50)**4,      // shape curve
