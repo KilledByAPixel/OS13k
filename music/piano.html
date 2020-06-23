@@ -87,13 +87,12 @@ K='zsxdcvgbhnjm,l.;/q2w3er5t6y7ui9o0p[=]';
 onkeydown=e=>
 {
 k = K.indexOf(e.key.toLowerCase());   // find the key
-k += k>16 ? 7 : 0;                    // adjust for octave
+k += k > 16 ? 7 : 0;                  // adjust for octave
 document.activeElement == S ||        // prevent input when editing seed
 e.repeat ? 0 :                        // prevent key repeats
-Math.abs(i = e.keyCode - 39) == 1 ?   // check for up down arrows
-D.value = O.Clamp(D.value-i, -3, 3) : // octave control
-k >= 0 &&                             // key was found
-    p(k);                             // play the note
+Math.abs(i = e.keyCode - 39) - 1 ?    // check for up down arrows
+k < 0 || p(k) :                       // play the note if key was found
+D.value = O.Clamp(D.value-i, -3, 3);  // octave control
 }
 
 // load saved seed
