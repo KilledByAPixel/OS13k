@@ -1,4 +1,5 @@
 <style>*{font-family:monospace;font-size:20;background:#000;color:#ccc}pre{display:inline}</style>
+<body onLoad=i.focus()>
 <iframe id=f style=display:none></iframe>JS> Options:
 <input id=o type=checkbox onclick=localStorage.OS13kCo=o.checked> Objects
 <input id=c type=checkbox onclick=localStorage.OS13kCc=c.checked> Clear
@@ -23,9 +24,6 @@ localStorage.OS13kFrozen &&
 // add unicode glitches to a string
 // based on dweet by f8f82804 www.dwitter.net/d/11808
 Z=(s,c)=>{for(c;c-->0;)s=s.slice(0,r=Math.random()*(s+='').length+1)+String.fromCharCode(768+99*Math.random())+s.slice(r);return OS13k.KillHTML(s)}
-
-// focus on input
-onfocus=()=>i.focus()
 
 // set up OS13k
 W=f.contentWindow
