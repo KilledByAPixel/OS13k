@@ -311,14 +311,14 @@ class _OS13k
         icon    = Clean(icon);
         message = Clean(message);
         
-        // build key
-        const key = game + `,${ icon },` + name;
-        
         // remove html tags
         icon    = this.RemoveHTML(icon,    maxWordLength, 1);
         name    = this.RemoveHTML(name,    maxWordLength, 1);
         game    = this.RemoveHTML(game,    maxWordLength, 1);
         message = this.RemoveHTML(message, maxWordLength, 1);
+        
+        // build key
+        const key = game + `,${ icon },` + name;
         
         // find in trophy list
         const i = trophies.findIndex(e=>e[4]==key);
@@ -348,7 +348,7 @@ class _OS13k
                 game }</i></div>` +            // game
                 message,                       // message
             name || game,                      // speak
-            language);                      // language
+            language);                         // language
             
         // save trophies
         OS13k.Save();
@@ -680,6 +680,7 @@ const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26,
     soundGrabStart  = 45,
     soundGrabEnd    = 42,
     soundMenu       = 22,
+    soundTrophy     = 96,
     soundActive     = 87,
     soundShrink     = 75,
     soundGrow       = 61,
@@ -1254,7 +1255,7 @@ class OS13kWindow extends HTMLElement
         }
         
         // load src, force pages to be refreshed OPTIONAL
-        this.iframe.src = program.src + '?2047';
+        this.iframe.src = program.src + '?2049';
     }
     
     Open(target, x, y)
