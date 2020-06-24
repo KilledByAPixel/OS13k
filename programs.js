@@ -48,6 +48,7 @@ programs =
     ['games/queensGambit.html','<span style=color:#f0f>♛'],
     ['games/freeCell.html','♠️',800,900,full|reload],
     ['games/hueJumper.html','🌲'],
+    ['games/aquapop.html','🧜🏽‍♂️',640,480],
     ['dweets/bogusRoads.dweet.js','🛣️'],
 ]],
 [,'🎶',,,,'Music',,
