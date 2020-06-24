@@ -7,11 +7,10 @@ Frequency <input type=number id=F style=width:50>&nbsp;&nbsp;
 <hr><div id=S>
 <script>
 
-
 p=p=>
 {
     x&&x.stop();
-    x=parent.OS13k.PlaySeed(p,L.value,1,R.value,F.value?F.value:undefined);
+    x=OS13k.PlaySeed(p,L.value,1,R.value,F.value?F.value:undefined);
 }
 
 o=e=>
