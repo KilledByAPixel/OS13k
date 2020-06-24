@@ -1,7 +1,7 @@
 <style>body{background:#111;color:#fff;user-select:none;text-align:center}</style>
 <span id=B></span>
 &nbsp;Seed &nbsp;<input type=number id=S style=width:99 oninput=b(t=3,localStorage.OS13kP=S.value) onfocus=b(t=3)>
-&nbsp;Octave <input type=number id=D style=width:40 value=0 min=-3 max=3 onchange=D.value=O.Clamp(D.value,-3,3)><br>
+&nbsp;Octave <input type=number id=D style=width:40 value=0 min=-3 max=3 onchange=D.value=OS13k.Clamp(D.value,-3,3)><br>
 Volume <input type=range style=width:70 id=V value=50>
 Length <input type=range style=width:70 id=L value=25>
 Noise <input type=range style=width:70 id=N value=0>
@@ -67,6 +67,9 @@ b=e=>
             j })>${                                         // click
             i }</button> `);                                // text
           
+    // disable noise & shape if seed
+    H.disabled = N.disabled = t==3;
+    
     // set seed border if selected
     S.style.border = `5px solid #${ t==3? "f00" : "111"}`
 }
