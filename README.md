@@ -92,7 +92,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 - OS13k.CreateShader(canvas, shaderCode) - Create a shadertoy compatible webgl shader
 - OS13k.RenderShader(canvas, shaderProgram, time=0, frame=0) - Render a shader
 - OS13k.KeyDirection(key) - Get {x, y} position from a key code for WASD and arrow keys
-- OS13k.RemoveHTML(string) - Removes all HTML tags in a string
+- OS13k.StripHTML(string) - Removes all HTML tags in a string
 - OS13k.Popup(html, speak) - Shows a popup with html body and optional speech and sound
 
 ### Math Library
