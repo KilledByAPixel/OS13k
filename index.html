@@ -695,7 +695,7 @@ const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26,
     audioContext = new AudioContext, gain = audioContext.createGain();
 
 let grabWindow, grabOffsetX, grabOffsetY, finishedStartup,
-    activeWindow, activeProgram, activeTaskbarIcon, helpProgram, loadIcon,
+    activeWindow, activeProgram, activeTaskbarIcon, loadIcon,
     lastActiveElement, topZ = 0, loading = 0, hadInput = 0,
     windowOpenX = startOpenOffset, windowOpenY = startOpenOffset + taskbarHeight,
     startProgram, startProgramName, programInfos = [], trophies = [],
@@ -752,10 +752,6 @@ class _OS13kSystem
     {
         // skip until not loading and finished startup
         if ((loading&&--loading) | finishedStartup) return;
-
-        // get start program, use help 
-        startProgram 
-            = helpProgram.saveInfo.open == undefined ? helpProgram : startProgram;
             
         // open start program (check top to stop infinite recursion if meta)
         startProgram && self == top | startProgram.sticky && startProgram.Open();
@@ -857,7 +853,7 @@ class _OS13kSystem
     StopSpeech() { speechSynthesis && speechSynthesis.cancel(); }
     
     // play system sound if enabled
-    PlaySeed(seed, length) 
+    Sound(seed, length) 
     { hadInput && settings[3] && OS13k.PlaySeed(seed, length); }
     
 } // OS13kSystem
@@ -972,10 +968,13 @@ class OS13kProgram extends HTMLElement
         name == 'Settings'    && settingsTrayIcon.SetProgram(this);
         name == 'Trophy Case' && trophyTrayIcon.SetProgram(this);
         name == 'Clock'       && clockTrayIcon.SetProgram(this);
-        name == 'Help'        && (helpProgram = this);
-
+        
+        // open help if it has not been opened yet
+        name == 'Help'        && 
+            this.info.open == undefined && (startProgram = this);
+        
         // check if start program or sticky open
-        this.sticky ? this.saveInfo.open && this.Open() :
+        this.sticky ? this.info.open && this.Open() :
             this.name == startProgramName && (startProgram = this); 
     }
     
@@ -984,7 +983,7 @@ class OS13kProgram extends HTMLElement
         // set container program menu active 
         this.programMenu.SetActive();
         
-        activeProgram !=this && OS13kSystem.PlaySeed(soundProgram, 0);
+        activeProgram !=this && OS13kSystem.Sound(soundProgram, 0);
         
         // set active
         activeProgram = this;
@@ -1004,7 +1003,7 @@ class OS13kProgram extends HTMLElement
         if (this.src)
         {
             // get saved window position
-            let x = this.saveInfo.x, y = this.saveInfo.y;
+            let x = this.info.x, y = this.info.y;
             
             // update window open positions if no position was set
             x || (
@@ -1054,14 +1053,14 @@ class OS13kProgram extends HTMLElement
     {
         // find in program info list
         const i = programInfos.findIndex(e=>e.name==this.name);
-        this.saveInfo = i < 0 ? {} : programInfos[i];
+        this.info = i < 0 ? {} : programInfos[i];
     }
    
     // save program info and reset settings when closed if non sticky
     SaveInfo(open = 1)
     {
         // build save info
-        this.saveInfo = 
+        this.info = 
         {
             name: this.name,
             open,
@@ -1072,8 +1071,8 @@ class OS13kProgram extends HTMLElement
         
         // add to programs info and save
         const i = programInfos.findIndex(e=>e.name==this.name);
-        OS13k.Save(i < 0 ? programInfos.push(this.saveInfo) 
-            : programInfos[i] = this.saveInfo);
+        OS13k.Save(i < 0 ? programInfos.push(this.info) 
+            : programInfos[i] = this.info);
     }
     
 } // OS13kProgram
@@ -1152,7 +1151,7 @@ class OS13kWindow extends HTMLElement
         
         // resize window size to fit inner width while preserving aspect
         const width = program.resize ? 
-            Math.min(program.width*(this.program.saveInfo.scale||1), innerWidth-6) :
+            Math.min(program.width*(this.program.info.scale||1), innerWidth-6) :
             program.width;
             
         // set window width, height, and scale
@@ -1261,14 +1260,11 @@ class OS13kWindow extends HTMLElement
     
     Open(target, x, y)
     {
-        // set active
-        this.SetActive();
-        
         // set grab window if name is target
         if (target == this.name)
         {
-            // set this to be grab window
-            grabWindow = this;
+            // set this to be grab window and set active
+            this.SetActive(grabWindow = this);
             
             // use grabbing cursor
             background.style.cursor = taskbar.style.cursor = 'grabbing';
@@ -1281,11 +1277,14 @@ class OS13kWindow extends HTMLElement
             grabOffsetX = x - rect.left;
             grabOffsetY = y - rect.top;
             
-            OS13kSystem.PlaySeed(soundGrabStart)
+            OS13kSystem.Sound(soundGrabStart)
             
             // allow main document focus
             return;
         }
+        
+        // set active
+        this.SetActive();
         
         // check for title bar buttons
         target.id == 'full'        && this.FullScreen();
@@ -1301,7 +1300,7 @@ class OS13kWindow extends HTMLElement
     
     Resize(scale, sound)
     {
-        sound && OS13kSystem.PlaySeed(sound);
+        sound && OS13kSystem.Sound(sound);
     
         // change size of window while preserving aspect
         const wNew = OS13k.Clamp(this.program.width * scale, 300, 1920);
@@ -1374,7 +1373,8 @@ class OS13kWindow extends HTMLElement
             // it will not have been created yet if frame is loading
             this.taskbarIcon && this.taskbarIcon.SetActive();
             
-            hadInput && OS13kSystem.PlaySeed(this.activeCount ? soundActive : soundOpen);
+            !grabWindow &&hadInput && 
+                OS13kSystem.Sound(this.activeCount ? soundActive : soundOpen);
             this.activeCount++;
         }
         
@@ -1392,7 +1392,7 @@ class OS13kWindow extends HTMLElement
         this.iframeWrapper.mozRequestFullScreen &&
             this.iframeWrapper.mozRequestFullScreen();
             
-        OS13kSystem.PlaySeed(soundFullScreen);
+        OS13kSystem.Sound(soundFullScreen);
         OS13k.Trophy('OS13k','🕹️','Pro Gamer','Went Full Screen');
     }
     
@@ -1402,7 +1402,7 @@ class OS13kWindow extends HTMLElement
         this.codeDisplay.style.display = 
             (this.showCode = !this.showCode) ? 'inline' : '';
         
-        OS13kSystem.PlaySeed(this.program.help ? soundHelp : soundCode);
+        OS13kSystem.Sound(this.program.help ? soundHelp : soundCode);
         this.program.help || OS13k.Trophy('OS13k','👨‍💻','Hacker','Viewed Code');
     }
     
@@ -1412,7 +1412,7 @@ class OS13kWindow extends HTMLElement
         this.program.Reload() || 
             this.iframeContent.location.reload(this.iframe.style.visibility = '');
         
-        OS13kSystem.PlaySeed(soundReload);
+        OS13kSystem.Sound(soundReload);
     }
     
     Close()
@@ -1430,7 +1430,7 @@ class OS13kWindow extends HTMLElement
         this.taskbarIcon.remove();
         this.remove();
         
-        OS13kSystem.PlaySeed(soundClose);
+        OS13kSystem.Sound(soundClose);
     }
 } // OS13kWindow
 customElements.define('w-', OS13kWindow);
@@ -1472,7 +1472,7 @@ class OS13kTaskbarIcon extends HTMLElement
     
         // load icon cant be active taskbar item
         if (this == loadIcon) 
-        { OS13kSystem.PlaySeed(soundMenu, .5); return;}
+        { OS13kSystem.Sound(soundMenu, .5); return;}
         
         // set active style
         this.className = 'taskbarIcon ' + (active ? 'taskbarIconActive' : '');
@@ -1568,7 +1568,7 @@ onmousedown=e=>
 
                 // get which menu to open
                 const targetMenu = e.target.menu 
-                    ? (OS13kSystem.PlaySeed(soundMenu, .5), menu) : programsMenu;
+                    ? (OS13kSystem.Sound(soundMenu, .5), menu) : programsMenu;
 
                 // show context menu
                 targetMenu.style.left = e.x;
@@ -1604,7 +1604,7 @@ onmousemove=e=>
 
 onmouseup=e=>
     // set grab window active, no clamp, and set cursor to default, unset grab
-    grabWindow && (OS13kSystem.PlaySeed(soundGrabEnd),
+    grabWindow && (OS13kSystem.Sound(soundGrabEnd),
     grabWindow.SetActive(1, 0),
         background.style.cursor = taskbar.style.cursor
             = desktop.style.pointerEvents = grabWindow = '');
