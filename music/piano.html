@@ -83,7 +83,7 @@ onkeydown=e=>
         e.repeat ? 0 :                           // prevent key repeats
         Math.abs(i = e.keyCode - 39) - 1 ?       // check for up & down arrows
         k < 0 || p(k > 16 ? k-5 : k) :           // set octave and play note
-        D.value = O.Clamp(D.value - i, -3, 3);   // octave control
+        D.value = OS13k.Clamp(D.value - i, -3, 3);   // octave control
 }
 
 </script>
