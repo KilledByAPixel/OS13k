@@ -27,7 +27,7 @@ p=e=>
     // play sound
     t-3 ? [                       // instruments
         [1, 2, 4, 8],             // organ
-        [1, 3, 5, 7],             // flute
+        [3, 5, 7, 9],             // oboe
         [1]                       // sin
     ][ t ].map(                   // get instrument
         f=>zzfx(...[              // play zzfx sound
@@ -62,7 +62,7 @@ b=e=>
     B.innerHTML = '';
 
     // create buttons
-    ['Organ', 'Flute', 'Wave'].map((i,j)=>                  // instruments
+    ['Piano', 'Oboe', 'Wave'].map((i,j)=>                  // instruments
         B.innerHTML += `<button style='border:5px solid #${ // button
             t-j? "111" : "f00" }' onclick=b(t=${            // color
             j })>${                                         // click
