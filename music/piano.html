@@ -11,9 +11,9 @@ Shape <input type=range style=width:70 id=H value=50>
 // play a note
 p=e=>
 {
-    n = O.Note(e - 33 + D.value*12); // root note = A 440
-    l = .1 + L.value / 50;           // length
-    v = V.value / 50;                // volume
+    n = OS13k.Note(e - 33 + D.value*12); // root note = A 440
+    l = .1 + L.value / 50;               // length
+    v = V.value / 50;                    // volume
     
     // animate color when played
     f = eval('B' + e);            // get the button
