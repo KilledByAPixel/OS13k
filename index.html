@@ -870,11 +870,10 @@ class OS13kProgramMenu extends HTMLElement
         
         // add to programs menu
         this.className    = 'programMenu';
-        this.style.left   = parentMenu && parentMenu.getBoundingClientRect().right - 2;
         this.style.top    = y;
         this.parentMenu   = parentMenu;
         programsMenu.appendChild(this);
-
+        
         // add programs to menu
         infos.map(info=>
         {
@@ -890,6 +889,10 @@ class OS13kProgramMenu extends HTMLElement
 
     SetActive()
     {
+        // set x position
+        this.style.left = this.parentMenu && 
+            this.parentMenu.getBoundingClientRect().right - 2;
+        
         // close menus so they can reopen with this active
         OS13kSystem.CloseMenus();
         
