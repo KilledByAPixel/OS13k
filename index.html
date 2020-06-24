@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?115></script>
+<script src=programs.js?116></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -435,7 +435,7 @@ class _OS13k
     }
     
     PlayMusic(...song)
-    { this.PlaySamplesArray(zzfxM(...song)); }
+    { return this.PlaySamplesArray(zzfxM(...song)); }
     
     // get frequency of a musical note on a diatonic scale
     Note(semitoneOffset=0, rootNoteFrequency=440)
@@ -710,7 +710,7 @@ let grabWindow, grabOffsetX, grabOffsetY, finishedStartup,
     lastActiveElement, topZ = 0, loading = 0, hadInput = 0,
     windowOpenX = startOpenOffset, windowOpenY = startOpenOffset + taskbarHeight,
     startProgram, startProgramName, programInfos = [], trophies = [],
-    trophyTrayIcon, settingsTrayIcon, clockTrayIcon,
+    trophyTrayIcon, settingsTrayIcon, clockTrayIcon, musicTrayIcon,
 
     // default settings (volume, speech, popups, color1, color2, text, filter)
     settings = [.3, 1, 1, 1, '#222233', '#332222', 'OS13k', ''];
@@ -724,6 +724,7 @@ class _OS13kSystem
     {
         // create tray icons
         trophyTrayIcon    = new OS13kTrayIcon();
+        musicTrayIcon     = new OS13kTrayIcon();
         settingsTrayIcon  = new OS13kTrayIcon();
         clockTrayIcon     = new OS13kTrayIcon();
         
@@ -795,7 +796,7 @@ class _OS13kSystem
 
         // update trophy count
         trophyTrayIcon.innerHTML = trophies.length + ' 🏆';
-
+        
         // update time
         clockTrayIcon.title = new Date();
         const time = clockTrayIcon.title.slice(16,24).split(':');
@@ -984,9 +985,10 @@ class OS13kProgram extends HTMLElement
             name }</div>` + (folder? '▶' : '');
         
         // save special programs
-        name == 'Settings'    && settingsTrayIcon.SetProgram(this);
-        name == 'Trophy Case' && trophyTrayIcon.SetProgram(this);
-        name == 'Clock'       && clockTrayIcon.SetProgram(this);
+        name == 'Settings'     && settingsTrayIcon.SetProgram(this);
+        name == 'Trophy Case'  && trophyTrayIcon.SetProgram(this);
+        name == 'Clock'        && clockTrayIcon.SetProgram(this);
+        name == 'Music Player' && musicTrayIcon.SetProgram(this);
         
         // open help if it has not been opened yet
         name == 'Help'        && 
@@ -1275,7 +1277,7 @@ class OS13kWindow extends HTMLElement
         }
         
         // load src, force pages to be refreshed OPTIONAL
-        this.iframe.src = program.src + '?2050';
+        this.iframe.src = program.src + '?2051';
     }
     
     Open(target, x, y)
@@ -1418,39 +1420,6 @@ class OS13kWindow extends HTMLElement
     
     ShowCode()
     {
-    
-   /*  // music test
-   OS13k.PlayMusic(
-   [                                         // Instruments
-     [,0,219,,,,,1.1,,-.1,-50,-.05,-.01,1],    // #1 - Snare
-     [2,0,84,,,.1,,.7,,,,.5,,6.7,1,.05]        // #2 - Kick drum
-   ],
-   [                                         // Patterns
-     [               // Pattern 0
-       [               // Channel 0
-         1, 1, 0,        // Using instrument 1, play C-1
-         0, 0, 0,
-         1, 5, 32,       // Using instrument 1, play E-1 with 50% attenuation
-         0, 0, 0
-       ],
-       [               // Channel 1
-         2, 8, 0,        // Using instrument 2, play G-1
-         2, 8, 16,       // Using instrument 2, play G-1 with 25% attenuation
-         1, 3, 0,        // Using instrument 3, play D-1
-         0, 0, 0
-       ]
-     ]
-   ],
-   [                                         // Sequence
-     0, 0, 0, 0                                // Play pattern 0 four times
-   ],
-   4,                                        // Playback speed 4
-   [
-     -1, 1                                   // Panning info. ch1=left ch2=right
-   ]
- );*/
-        
-        
         // toggle showing code
         this.codeDisplay.style.display = 
             (this.showCode = !this.showCode) ? 'inline' : '';
