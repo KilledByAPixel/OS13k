@@ -29,4 +29,13 @@ programs =
         ['index.html','✌️😄',,,,'Meta OS13k'],
     ]],
 ]],
+[,'🛠️',,,,'Apps',,
+[
+    ['apps/stickyNote.html','✍️',300,263,sticky|reload,,'Ctrl+B - Bold\nCtrl+I - Italic\nCtrl+U - Underline\n\Reload to clear'],
+]],
+[,'🎶',,,,'Music',,
+[
+    ['music/soundSeeds.html','🌱',350,480],
+    ['music/piano.html','🎹',550,490,full|reload,,'Keyboard = Play Notes\nUp/Down = Change Octave'],
+]],
 ]; // programs
