@@ -881,18 +881,28 @@ class OS13kProgramMenu extends HTMLElement
         
         // add to programs menu
         this.className    = 'programMenu';
-        this.style.top    = y;
         this.parentMenu   = parentMenu;
         programsMenu.appendChild(this);
         
+        // set position
+        this.style.top  = y;
+        this.style.left = parentMenu && parentMenu.getBoundingClientRect().right - 2;
+           
         // add programs to menu
         infos.map(info=>
         {
             // create program and add it to menu
             const folder = info[7];
-            this.appendChild(new OS13kProgram(folder ? 
-                new OS13kProgramMenu(folder, y, this) : this, ...info));
-                
+            this.appendChild(new OS13kProgram(...info));     
+        });
+
+        // create program folders after adding programs so width is correct
+        [...this.children].map(child=> 
+        {
+            // set the child meny and create a new menu if folder
+            child.programMenu = 
+                child.folder ? new OS13kProgramMenu(child.folder, y, this) : this;
+            
             // add program height as we move down list
             y += programHeight;
         });
@@ -900,10 +910,6 @@ class OS13kProgramMenu extends HTMLElement
 
     SetActive()
     {
-        // set x position
-        this.style.left = this.parentMenu && 
-            this.parentMenu.getBoundingClientRect().width - 2;
-        
         // close menus so they can reopen with this active
         OS13kSystem.CloseMenus();
         
@@ -921,7 +927,7 @@ customElements.define('m-', OS13kProgramMenu);
     
 class OS13kProgram extends HTMLElement
 {
-	constructor(programMenu, src='', icon='💠', width=defaultWidth, height=defaultHeight, flags, name='', help='', folder)
+	constructor(src='', icon='💠', width=defaultWidth, height=defaultHeight, flags, name='', help='', folder)
     {
 		super();
         
@@ -952,7 +958,6 @@ class OS13kProgram extends HTMLElement
         this.name   = name;
         this.folder = folder;   
         this.key    = 'OS13kP' + src;
-        this.programMenu = programMenu;
         
         // set code only if help not shown or if has extension and not disabled
         this.code = !(this.help = help) && 
