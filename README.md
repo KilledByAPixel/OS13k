@@ -71,8 +71,8 @@ Add an icon config to programs.js to register your program, and send me pull req
 - *Apps can play sounds and have trophies too!*
 
 ### Music
-- [Keith Clark created a system to play tracker songs with ZzFX sound effects](https://github.com/keithclark/ZzFXM)
-- We will include this in the OS as a core feature soon, something like OS13k.PlayMusic(musicData)
+- [ZzFXM by Keith Clark](https://github.com/keithclark/ZzFXM) is the music player
+- ZzFXM music shoud only be played by the Music Player, you can add a new song to the library
 - We can have music generators, synth instruments, and maybe even mini albums
 - The idea is that players can listen to music while playing with other games and apps
 - Music programs should continue playing if the frame loses focus, but reduced graphics if necessary to lower the load
@@ -103,7 +103,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 - OS13k.Percent(v, a, b) - Get clamped percent between a and b
 - OS13k.Lerp(p, a, b) - Lerp clamped percent between a and b
 
-### Audio
+### Sound
 - ZzFx sounds are supported by default and several other audio functions are provided
 - ZzFX is open source sound effect generator with an easy to use sound designer https://zzfx.3d2k.com/
 - A seeded ZzFX sound player is available to save space with much smaller sound calls
@@ -144,12 +144,13 @@ Add an icon config to programs.js to register your program, and send me pull req
  - OS13k.GetTrophy(game, name) - Get most recent matching trophy, 0 if no trophy
  - OS13k.Trophies() - Get full list of trophy objects
  
- ### Any JS13k game can use trophies, even if not part of OS13k!
- - *To add a trophies to any JS13k game, just save a special key to localStorage!*
+ ### Any JS13k game can add trophies and music, even if not part of OS13k!
+ - *To add a trophy or music track, just save a special key to localStorage!*
  - The smallest way to add a single trophy (like for winning) is localStorage['OS13kTrophy,GameName,Icon']=''
  - For more control use localStorage['OS13kTrophy,GameName,Icon,TrophyName'] = Message
  - You can change the message to update the trophy, like a highscore for example
- - OS13k automatically checks localStorage and display popups for new trophies from other games
+ - Music works the same way, use localStorage['OS13kMusic,SongName] = JSON.stringify(song)
+ - OS13k automatically checks localStorage and display popups for new trophies and songs from other games
  - This is possible because all JS13k games share the same local storage! Pretty cool right?
  - *Don't spam the trophy system, lets agree to around 5 trophies per game*
 
