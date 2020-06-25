@@ -273,7 +273,8 @@ const OS13kVersion = 65;
 // - all files must be packed together to save space
 // - smaller webgl names r10215
 // - move css into code, get rid of names
-// - remoe system trophies
+// - remove system trophies
+// - remove console messages
 
 } // Minification Stuff
 
@@ -440,7 +441,7 @@ class _OS13k
     { 
         // handle errors when playing music
         try { return this.PlaySamplesArray(gainMusic, zzfxM(...song)); }
-        catch(e) {}
+        catch(e) {console.log(e)}
     }
     
     GetAnalyzer() { return analyzerCanvas; }
@@ -820,7 +821,7 @@ class _OS13kSystem
         // update time
         clockTrayIcon.title = new Date();
         clockTrayIcon.innerHTML 
-            = clockTrayIcon.title.replace(/.*(\d+:\d+):\d+.*/, '$1');
+            = clockTrayIcon.title.replace(/.*(\d+:\d+):.*/, '$1');
         
         // get analyzer data
         const frequencyData = new Uint8Array(musicAnalyser.fftSize = 64),
@@ -836,6 +837,7 @@ class _OS13kSystem
             const volume = (frequencyData[i] * -3/255) 
                 * (1 + Math.log2((i+1) * defaultSampleRate / 64 / 4));
 
+            // draw the loudness bar
             context.fillStyle = `hsl(${290 + 11*volume} 100%50%)`;
             context.fillRect(i++, 32, 1, volume);
             total += volume;
@@ -1319,7 +1321,7 @@ class OS13kWindow extends HTMLElement
         }
         
         // load src, force pages to be refreshed OPTIONAL
-        this.iframe.src = program.src + '?2060';
+        this.iframe.src = program.src + '?2061';
     }
     
     Open(target, x, y)

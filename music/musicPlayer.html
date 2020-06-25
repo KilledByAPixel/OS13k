@@ -29,7 +29,7 @@ U=k=>
         T = 0,                        // reset time
         Q = -1,                       // reset song to play
         (X = OS13k.PlayMusic(l.d)) || // play the music
-            alert`⚠️ Error!`);         // song failed to load
+            alert`⚠️ Error!`);         // song failed to play
 
     // copy analyzer canvas
     C.getContext`2d`.drawImage(OS13k.GetAnalyzer(), 0, 0, C.width = 32, C.height = 32);
@@ -76,10 +76,10 @@ I=k=> // key
         (Z = Math.max(Z, f.substring(11)));          // update highest user song
       
     try {                                            // try to load the data
-        (d = JSON.parse(localStorage[k])) && (       // get song data
+        (d = J(localStorage[k])) && (                // get song data
             L.push({d, k,                            // add to song list
                 n : p.length ? p[0] : 'Untitled'})); // get song name                  
-    } catch(e) {}                                    // load failed
+    } catch(e) {console.log(e)}                      // load failed
 }
 
 // play song
@@ -97,11 +97,10 @@ A=k=>
     // test song [[[,0,219,,,,,1.1,,-.1,-50,-.05,-.01,1],[2,0,84,,,.1,,.7,,,,.5,,6.7,1,.05]],[[[1,1,0,0,0,0,1,5,32,0,0,0],[2,8,0,2,8,16,1,3,0,0,0,0]]],[0,0,0,0],4,[-1,1]]
 
     try {                                              // try to add song
-        j = JSON.parse( d = prompt `ZzFXM Data`        // convert song to json
+        j = J( d = prompt `ZzFXM Data`                 // convert to json and back
             .replace(/(?![\[,])([^,\[\]]+)(?=[\],])/g, // look for numbers
                 (e,i)=>i*1)                            // convert to float
-      	     .replace(/([\[,])(?=[\],])/g,             // look for empty spaces
-                (e,i)=>i+'null'));                     // insert null
+      	     .replace(/([\[,])(?=[\],])/g, '$1null')); // insert nulls
              
         parent.zzfxM(...j);                            // try to generate song
         
@@ -111,7 +110,7 @@ A=k=>
                 prompt`Name`.replace(/,/g, '')         // get song name
             ] = d);                                    // set data
     }
-    catch (e) { alert`⚠️ Error!`; }                     // load failed
+    catch (e) { alert`⚠️ Error!`; console.log(e);}       // load failed
 }
 
 // remove song
@@ -120,6 +119,9 @@ R=k=>(l = L[S.selectedIndex])          // get selected song
     alert`⚠️ Error!` :                  // error message
     confirm`Remove?` &&                // confirm to remove
         B(localStorage[l.k] = 0);      // remove and rebuild
+
+// parse json and replace null with undefined
+J=k=>JSON.parse(k, (k,v)=> v == null ? undefined : v)
 
 // convert seconds to time string
 V=k=> (k/60|0) + ((k = k%60|0) <=9 ? ':0' : ':') + k;
