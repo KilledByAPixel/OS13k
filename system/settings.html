@@ -1,7 +1,8 @@
 <style>body{background:#111;color:#fff;user-select:none;text-align:center}</style>
-Volume <input type=range id=V onchange=s()>&nbsp;&nbsp;<br><br>
+Volume <input type=range id=V onchange=s()>&nbsp;&nbsp;
+Music Volume <input type=range id=M onchange=s()><br><br>
 Speech <input type=checkbox id=S onchange=s()>&nbsp;&nbsp;
-System Sounds <input type=checkbox id=N onchange=s()>&nbsp;&nbsp;
+System Sounds <input type=checkbox id=Y onchange=s()>&nbsp;&nbsp;
 Popups <input type=checkbox id=P onchange=s()>
 <br><br>Background
 <input id=C type=color oninput=s()>&nbsp;&nbsp;
@@ -25,14 +26,15 @@ f=
 // load settings
 O = parent.OS13k;                  // get OS13k
 i = O.Settings();                  // get settings
-V.value   = i[0] * 100;            // volume
-S.checked = i[1];                  // speech
-P.checked = i[2];                  // popups
-N.checked = i[3];                  // system sounds
-C.value   = i[4];                  // color 1
-D.value   = i[5];                  // color 2
-T.value   = i[6];                  // background text
-t = f.findIndex(e=>e[1]==i[7]);    // find filter
+V.value   = i.v * 100;            // volume
+M.value   = i.m * 100;            // music volume
+S.checked = i.s;                  // speech
+P.checked = i.p;                  // popups
+Y.checked = i.o;                  // system sounds
+C.value   = i.c;                  // color 1
+D.value   = i.d;                  // color 2
+T.value   = i.t;                  // background text
+t = f.findIndex(e=>e[1]==i.f);    // find filter
 t = t < 0 ? 0 : t;                 // filter
 
 // rebuild and save settings
@@ -55,9 +57,10 @@ s=e=>
     O.SaveSettings
     (
         V.value / 100, // volume
+        M.value / 100, // music volume
         S.checked,     // speech
-        P.checked,     // popups
-        N.checked,     // popups
+        P.checked,     // system sounds
+        Y.checked,     // popups
         D.value,       // color 1
         C.value,       // color 2
         T.value,       // background text
