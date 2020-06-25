@@ -58,6 +58,7 @@ programs =
     ['music/bach.dweet.js','🎼'],
     ['music/minBytes.html','<span style=color:#f00>𝓜',450,450],
     ['music/smallSeeds.html','🦗',480,360],
+    ['music/musicVisualizer.dweet.js','👁️',,,awake|full|resize],
 ]],
 [,'🤖',,,,'Toys',,
 [

@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?121></script>
+<script src=programs.js?122></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -838,7 +838,7 @@ class _OS13kSystem
                 * (1 + Math.log2((i+1) * defaultSampleRate / 64 / 4));
 
             // draw the loudness bar
-            context.fillStyle = `hsl(${290 + 11*volume} 100%50%)`;
+            context.fillStyle = `hsl(${11*volume - 70} 99%50%)`;
             context.fillRect(i, 30, 1, volume);
             
             // bottom row of pixels is loudness
@@ -1296,6 +1296,7 @@ class OS13kWindow extends HTMLElement
                     'S=Math.sin;' +
                     'C=Math.cos;' +
                     'T=Math.tan;' +
+                    'OS13k=parent.OS13k;' +
                     'R=(r,g,b,a=1)=>`rgba(${0|r},${0|g},${0|b},${a})`;' + 
                     'loop=t=>requestAnimationFrame(loop,' +
                     (program.awake? '' : 't<1e3|document.hasFocus()&&') +
@@ -1329,7 +1330,7 @@ class OS13kWindow extends HTMLElement
         }
         
         // load src, force pages to be refreshed OPTIONAL
-        this.iframe.src = program.src + '?2066';
+        this.iframe.src = program.src + '?2067';
     }
     
     Open(target, x, y)
