@@ -423,15 +423,14 @@ class _OS13k
     // play and array of audio sample data
     PlaySamplesArray(gain, samplesArray, sampleRate=defaultSampleRate)
     {
-        // create source and buffer
-        const source = audioContext.createBufferSource();
-        source.buffer = audioContext.createBuffer
-            (samplesArray.length, samplesArray[0].length, sampleRate);
+        // create buffer and source
+        const buffer = audioContext.createBuffer
+            (samplesArray.length, samplesArray[0].length, sampleRate),
+            source = audioContext.createBufferSource();
         
-        // copy samples to buffer
-        samplesArray.map((d,i)=>source.buffer.getChannelData(i).set(d));
-        
-        // play source
+        // copy samples to buffer and play
+        samplesArray.map((d,i)=>buffer.getChannelData(i).set(d));
+        source.buffer = buffer;
         source.connect(gain);
         source.start();
         return source;
@@ -839,7 +838,11 @@ class _OS13kSystem
 
             // draw the loudness bar
             context.fillStyle = `hsl(${290 + 11*volume} 100%50%)`;
-            context.fillRect(i++, 32, 1, volume);
+            context.fillRect(i, 30, 1, volume);
+            
+            // bottom row of pixels is loudness
+            context.fillStyle = `hsl(0 0%${-3*volume}%)`;
+            context.fillRect(i++, 31, 1, 1);
             total += volume;
         }
         
@@ -1321,7 +1324,7 @@ class OS13kWindow extends HTMLElement
         }
         
         // load src, force pages to be refreshed OPTIONAL
-        this.iframe.src = program.src + '?2062';
+        this.iframe.src = program.src + '?2063';
     }
     
     Open(target, x, y)
