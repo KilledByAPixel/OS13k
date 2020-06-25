@@ -11,7 +11,7 @@ Loop <input type=checkbox id=O><br>
 <script src=songs/cuddly.js></script>
 <script src=songs/iamback.js></script>
 <script src=songs/sanxion.js?1></script>
-<script src=songs/error.js?1></script>
+<script src=songs/error.js></script>
 <script>
 
 OS13k = parent.OS13k; // get OS13k
@@ -63,29 +63,24 @@ B=k=>
         OS13k.Clamp(                               // clamp to select length
             E ? L.findIndex(e=>e.k == E) : i,      // look for added song key 
             E = 0, S.length - 1);                  // clamp to select length
-            
-    localStorage.OS13kK = JSON.stringify(K);       // save known song list
 }
 
 // insert song into list
 I=k=> // key
 {
-    p = k.split`,`;                          // get key parts
-    f = p.shift();                           // get first part of key
-    if (f.substring(0,10) != 'OS13kMusic')   // check if music key
-        return;                              // must have name
-            
-    n = p[0] ? p[0] : 'Untitled';            // get song name
-    f.substring(10,11) == 'U' ?              // check if user song
-        Z = Math.max(Z, f.substring(11)) :   // update highest user song
-        K.indexOf(k) < 0 && (OS13k.Popup(    // check if new song
-            '🎵 New Music<br><b>' + n),      // new music popup
-            K.push(k));                      // add song to known list
-              
-    try {                                    // try to load the data
-        (d = J(localStorage[k])) && (        // get song data
-            L.push({d, k, n}));              // add to song list
-    } catch(e) {console.log(e)}              // load failed
+    p = k.split`,`;                                // get key parts
+    f = p.shift();                                 // get first part of key
+    if (f.substring(0,10) != 'OS13kMusic') return; // check if music key
+      
+    f.substring(10,11) == 'U' ?                    // check if user song
+        Z = Math.max(Z, f.substring(11)) :         // update highest user song
+        K.push(); // new song popup
+        
+    try {                                          // try to load the data
+        (d = J(localStorage[k])) && (              // get song data
+            L.push({d, k,                          // add to song list
+                n : p.length ? p[0] : ''}));       // get song name                  
+    } catch(e) {console.log(e)}                    // load failed
 }
 
 // play song
@@ -110,13 +105,16 @@ A=k=>
              
         parent.zzfxM(...j);                            // try to generate song
         
+        n = prompt`Name`.trim().replace(/,/g, '');     // get song name
+        if (!n.length) throw 0;                        // song must have name
+        
         B(                                             // rebuild song list
             localStorage[                              // add song to storage
                 E = `OS13kMusicU${ Z+1 },` +           // create user song key
                 prompt`Name`.replace(/,/g, '')         // get song name
             ] = d);                                    // set data
     }
-    catch (e) { alert`⚠️ Error!`; console.log(e);}      // load failed
+    catch (e) { alert`⚠️ Error!`; console.log(e);}       // load failed
 }
 
 // remove song
@@ -162,7 +160,7 @@ localStorage['OS13kMusic,OS13k Test Song'] = JSON.stringify(
 ); // test song
 
 // load know songs
-K = localStorage.OS13kK ? JSON.parse(localStorage.OS13kK) : []
+K = localStorage.OS13kMusicK ? JSON.parse(localStorage.OS13kMusicK) : []
 
 // build music list and stop music when unloaded
 B(onunload=_=> X && X.stop());
