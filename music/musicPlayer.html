@@ -120,11 +120,11 @@ A=k=>
 }
 
 // remove song
-R=k=>(l = L[S.selectedIndex])          // get selected song
-        .n.substring(0,5) == 'OS13k' ? // check if system song
-    alert`⚠️ Error!` :                  // error message
-    confirm`Remove?` &&                // confirm to remove
-        B(localStorage[l.k] = 0);      // remove and rebuild
+R=k=>(l = L[S.selectedIndex])                       // get selected song
+        .n.substring(0,5) == 'OS13k' ?              // check if system song
+    alert`⚠️ OS13k system songs can't be removed!` : // error message
+    confirm`Remove?` &&                             // confirm to remove
+        B(localStorage[l.k] = 0);                   // remove and rebuild
 
 // parse json and replace null with undefined
 J=k=>JSON.parse(k, (i,j)=> j == null ? undefined : j)
