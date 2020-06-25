@@ -692,7 +692,7 @@ var OS13k = new _OS13k;
 
 const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26, 
       startOpenOffset = 9, popupTime = 3, defaultVolume = .3, 
-      maxWordLength = 32, defaultSampleRate = 44100, 
+      maxWordLength = 32, defaultSampleRate = 44100, analyzerWaitTime = 3e3,
 
     // system sounds
     soundOpen       = -8,
@@ -716,8 +716,9 @@ const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26,
     gainMusic = audioContext.createGain(), 
     musicAnalyser = audioContext.createAnalyser();
 
-let grabWindow, grabOffsetX, grabOffsetY, finishedStartup, analyzerCanvas,
-    activeWindow, activeProgram, activeTaskbarIcon, loadIcon,
+let grabWindow, grabOffsetX, grabOffsetY, finishedStartup,
+    activeWindow, activeProgram, activeTaskbarIcon, loadIcon, 
+    analyzerCanvas, lastMusicTime = -analyzerWaitTime,
     lastActiveElement, topZ = 0, loading = 0, hadInput = 0,
     windowOpenX = startOpenOffset, windowOpenY = startOpenOffset + taskbarHeight,
     startProgram, startProgramName, programInfos = [], trophies = [],
@@ -796,7 +797,7 @@ class _OS13kSystem
     }
 
     // main update loop
-    Update()
+    Update(time)
     {
         // request new animation frame
         requestAnimationFrame(OS13kSystem.Update);
@@ -846,8 +847,12 @@ class _OS13kSystem
             total += volume;
         }
         
+        // save how long there has been no music
+        total && (lastMusicTime = time);
+        
         // set analyzer visibility
-        analyzerCanvas.style.display = total ? '' : 'none';
+        analyzerCanvas.style.display = 
+            time - lastMusicTime < analyzerWaitTime ? '' : 'none';
         
         // show popups after startup is finished and there was input
         if (!finishedStartup || !hadInput) return;
