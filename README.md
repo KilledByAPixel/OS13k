@@ -72,10 +72,11 @@ Add an icon config to programs.js to register your program, and send me pull req
 
 ### Music
 - [ZzFXM by Keith Clark](https://github.com/keithclark/ZzFXM) is the music player
-- ZzFXM music shoud only be played by the Music Player, you can add a new song to the library
+- ZzFXM music shoud only be played by the Music Player, you can add a new songs to the library
 - We can have music generators, synth instruments, and maybe even mini albums
 - The idea is that players can listen to music while playing with other games and apps
 - Music programs should continue playing if the frame loses focus, but reduced graphics if necessary to lower the load
+- OS13k.GetAnalyzer() - returns a 32x32 music analyzer canvas, the bottom row of pixels is the frequency data
 
 ### Dweets and Shadertoys
 - Programs with the extension .dweet.js or .shader.txt or will automatically load as Dweets or Shadertoys!
