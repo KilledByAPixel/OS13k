@@ -99,7 +99,7 @@ A=k=>
     try {                                              // try to add song
         j = J( d = prompt `ZzFXM Data`                 // convert to json and back
             .replace(/(?![\[,])([^,\[\]]+)(?=[\],])/g, // look for numbers
-                (e,i)=>i*1)                            // convert to float
+                (i,j)=>j*1)                            // convert to float
       	     .replace(/([\[,])(?=[\],])/g, '$1null')); // insert nulls
              
         parent.zzfxM(...j);                            // try to generate song
@@ -121,7 +121,7 @@ R=k=>(l = L[S.selectedIndex])          // get selected song
         B(localStorage[l.k] = 0);      // remove and rebuild
 
 // parse json and replace null with undefined
-J=k=>JSON.parse(k, (k,v)=> v == null ? undefined : v)
+J=k=>JSON.parse(k, (i,j)=> j == null ? undefined : j)
 
 // convert seconds to time string
 V=k=> (k/60|0) + ((k = k%60|0) <=9 ? ':0' : ':') + k;
