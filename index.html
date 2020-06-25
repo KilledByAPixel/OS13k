@@ -783,7 +783,7 @@ class _OS13kSystem
     UpdateStartup()
     {
         // skip until not loading and finished startup
-        if ((loading&&--loading) | finishedStartup) return;
+        if (loading | finishedStartup) return;
             
         // open start program (check top to stop infinite recursion if meta)
         startProgram && self == top | startProgram.sticky && startProgram.Open();
@@ -1323,6 +1323,9 @@ class OS13kWindow extends HTMLElement
 
             // make visible
             this.style.visibility = this.iframe.style.visibility = 'visible';
+            
+            // update loading
+            loading = loading && --loading
             
             //set active if not grabbing and update startup routine
             OS13kSystem.UpdateStartup(grabWindow || this.SetActive());
