@@ -820,8 +820,8 @@ class _OS13kSystem
         // update time
         clockTrayIcon.title = new Date();
         clockTrayIcon.innerHTML 
-            = clockTrayIcon.title.replace(/.*(\d{2}:\d{2}).*/, '$1');
-
+            = clockTrayIcon.title.replace(/.*(\d+:\d+):\d+.*/, '$1');
+        
         // get analyzer data
         const frequencyData = new Uint8Array(musicAnalyser.fftSize = 64),
             context = analyzerCanvas.getContext('2d');
