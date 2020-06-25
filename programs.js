@@ -55,10 +55,10 @@ programs =
     ['music/musicPlayer.html','🎵',400,290,sticky],
     ['music/piano.html','🎹',550,490,full|reload,,'Keyboard = Play Notes\nUp/Down = Change Octave'],
     ['music/soundSeeds.html','🌱',350,480],
+    ['music/musicVisualizer.dweet.js','👁️',,,awake|full|resize],
     ['music/bach.dweet.js','🎼'],
     ['music/minBytes.html','<span style=color:#f00>𝓜',450,450],
-    ['music/smallSeeds.html','🦗',480,360],
-    ['music/musicVisualizer.dweet.js','👁️',,,awake|full|resize],
+    ['music/smallSeeds.html','🦗',480,330,full,,'This is a special tool for devs.\nUse small seeds to save space.\nYou can also tab through the list.'],
 ]],
 [,'🤖',,,,'Toys',,
 [

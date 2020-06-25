@@ -2,8 +2,8 @@
 Length <input type=number id=L value=1 style=width:50>
 Randomness <input type=number id=R value=.05 style=width:50>
 Frequency <input type=number id=F style=width:50>&nbsp;&nbsp;
-<button onmousedown=o(y-=109) >◀</button>
-<button onmousedown=o(y+=109)>▶</button>
+<button onmousedown=o(y-=108)>◀</button>
+<button onmousedown=o(y+=108)>▶</button>
 <hr><div id=S>
 <script>
 
@@ -16,7 +16,7 @@ p=p=>
 o=e=>
 {
     S.innerHTML = '';
-    for(i=y;i<y+109;)
+    for(i=y;i<y+108;)
     S.innerHTML += 
     `<input value=${i} style=width:50 readonly onfocus=p(${i}) onmousedown=p(${i++})>`;
 }
