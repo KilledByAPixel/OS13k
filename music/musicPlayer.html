@@ -6,8 +6,8 @@
 <button onmousedown=R()>Delete</button>
 <button onmousedown=A()>Add</button> &nbsp;
 Loop <input type=checkbox id=O><br>
-<canvas id=C style=width:250;height:29></canvas><br>
-<select id=S size=9 style=width:250;background:#000;color:#fff>
+<canvas id=C style=width:350;height:29></canvas><br>
+<select id=S size=9 style=width:350;background:#000;color:#fff>
 <script src=songs/cuddly.js></script>
 <script src=songs/iamback.js></script>
 <script src=songs/sanxion.js></script>
@@ -122,7 +122,7 @@ R=k=>(l = L[S.selectedIndex])          // get selected song
         B(localStorage[l.k] = 0);      // remove and rebuild
 
 // convert seconds to time string
-V=k=> (k/60|0) + ((k = k%60|0)<=9 ? ':0' : ':') + k;
+V=k=> (k/60|0) + ((k = k%60|0) <=9 ? ':0' : ':') + k;
 
 // test song
 localStorage['OS13kMusic,OS13k Test Song'] = JSON.stringify(
