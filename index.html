@@ -766,7 +766,7 @@ class _OS13kSystem
         onstorage=e=> this.CheckForTrophy(e.key);
 
         // stop spech if page is unloaded
-        onunload = OS13kSystem.StopSpeech();
+        onunload=e=> this.StopSpeech();
 
         // set button functions
         buttonFullScreen.onmousedown =()=> activeWindow.FullScreen();
