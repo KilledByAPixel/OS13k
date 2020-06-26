@@ -763,10 +763,10 @@ class _OS13kSystem
         analyzerCanvas.style = 'width:16;height:16;margin:2;pointer-events:none'
         
         // listen for trophies from other windows
-        window.onstorage=e=> this.CheckForTrophy(e.key);
+        onstorage=e=> this.CheckForTrophy(e.key);
 
         // stop spech if page is unloaded
-        desktop.onunload = OS13kSystem.StopSpeech();
+        onunload = OS13kSystem.StopSpeech();
 
         // set button functions
         buttonFullScreen.onmousedown =()=> activeWindow.FullScreen();
@@ -1344,7 +1344,7 @@ class OS13kWindow extends HTMLElement
         }
         
         // load src, force pages to be refreshed OPTIONAL
-        this.iframe.src = program.src + '?20780';
+        this.iframe.src = program.src + '?20781';
     }
     
     Open(target, x, y)
