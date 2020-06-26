@@ -39,9 +39,11 @@ P=e=> e < 0 ||
     f.style.transition = '1s',   // set transition time
     f.style.background = c,      // reset old background color
 
+    X(e),                        // cancel old note
+    
     // play cached sound
-    A[e] = D.map(d=>((s = OS13k.PlaySamples(d, 1))        // play samples
-        .detune.value = (e - 33 + O.value*12)*100 + Y.value*100, s)) // set semitone offset
+    A[e] = D.map(d=>((s = OS13k.PlaySamples(d, 1))                   // play samples
+        .detune.value = (e - 33 + O.value*12)*100 + Y.value*100, s)) // set frequency
 );
 
 // cancel a note
