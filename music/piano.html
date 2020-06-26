@@ -97,8 +97,11 @@ setInterval(e=>Z.map((s,i)=>               // go through canceled notes
         (Z.splice(i,1), s.stop())),        // stop note if gain is 0
     9);                                    // 9 ms update
 
-// stop all sounds if focus lost or unloaded
-onunload=onblur=e=> A.map(e=>e.map(e=>e.stop()));
+// cancel all sounds if focus lost
+onblur=e=>A.map((e,i)=>X(i));
+
+// stop all sounds if unloaded
+onunload= A.map(e=>e.map(e=>e.stop()));
         
 //////////////////////////////////////////////////////////////
 // keyboard control
