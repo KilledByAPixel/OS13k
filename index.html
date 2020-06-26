@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?126></script>
+<script src=programs.js?127></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -244,7 +244,7 @@ const OS13kVersion = 66;
 // ==ClosureCompiler==
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // @language_out ECMASCRIPT_2019
-// @js_externs localStorage.OS13k, OS13k, iframeContent.zzfx
+// @js_externs localStorage.OS13k, OS13k, iframeContent.zzfx, zzfxG
 // @js_externs OS13k.Clamp, OS13k.Percent, OS13k.Lerp
 // @js_externs OS13k.Random, OS13k.randomSeed, iframeContent.OS13kReload
 // @js_externs OS13k.Trophies, OS13k.Trophy, OS13k.GetTrophy
@@ -372,8 +372,8 @@ class _OS13k
 // OS13k Audio
 
     // play seed sound
-    PlaySeed(seed, lengthScale=1, volume=1, randomness=.05, frequency)
-    { return this.PlaySamples(this.SeedSamples(...arguments)); }
+    PlaySeed(seed, lengthScale=1, volume=1, randomness=.05, frequency, music)
+    { return this.PlaySamples(this.SeedSamples(...arguments), music); }
     
     // get seed samples
     SeedSamples(seed, lengthScale=1, volume=1, randomness=.05, frequency)
@@ -424,11 +424,11 @@ class _OS13k
     }
     
     // play audio sample data
-    PlaySamples(samples, sampleRate=defaultSampleRate)
-    { return this.PlaySamplesArray(gain, [samples], sampleRate); }
+    PlaySamples(samples, music, sampleRate=defaultSampleRate)
+    { return this.PlaySamplesArray([samples], music, sampleRate); }
     
     // play and array of audio sample data
-    PlaySamplesArray(gain, samplesArray, sampleRate=defaultSampleRate)
+    PlaySamplesArray(samplesArray, music, sampleRate=defaultSampleRate)
     {
         // create buffer and source
         const buffer = audioContext.createBuffer
@@ -442,7 +442,7 @@ class _OS13k
         // create custom gain node
         const customGain = source.gain = audioContext.createGain();
         source.connect(customGain);
-        customGain.connect(gain);
+        customGain.connect(music ? gainMusic : gain);
         source.start();
         return source;
     }
@@ -450,7 +450,7 @@ class _OS13k
     PlayMusic(song) 
     { 
         // handle errors when playing music
-        try { return this.PlaySamplesArray(gainMusic, zzfxM(...song)); }
+        try { return this.PlaySamplesArray(zzfxM(...song), 1); }
         catch(e) {console.log(e)}
     }
     
@@ -702,7 +702,7 @@ var OS13k = new _OS13k;
 
 const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26, 
       startOpenOffset = 9, popupTime = 3, defaultVolume = .3, 
-      maxWordLength = 32, defaultSampleRate = 44100, analyzerWaitTime = 3e3,
+      maxWordLength = 32, defaultSampleRate = 44100, analyzerWaitTime = 1e4,
 
     // system sounds
     soundOpen       = -8,
@@ -1278,6 +1278,7 @@ class OS13kWindow extends HTMLElement
             // pass OS13k and zzfx to iframe
             iframeContent.OS13k = OS13k;
             iframeContent.zzfx = zzfx;
+            iframeContent.zzfxG = zzfxG;
 
             // prevent iframes context menu
             iframeContent.oncontextmenu =()=> false;
@@ -1343,7 +1344,7 @@ class OS13kWindow extends HTMLElement
         }
         
         // load src, force pages to be refreshed OPTIONAL
-        this.iframe.src = program.src + '?2076';
+        this.iframe.src = program.src + '?20777';
     }
     
     Open(target, x, y)
