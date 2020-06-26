@@ -1,4 +1,4 @@
-<style>body{background:#111;color:#fff;user-select:none;text-align:center}</style><span id=B></span>Seed <input type=number id=S style=width:79 oninput=E(T=3,localStorage.OS13kP=S.value) onfocus=E(T=3)> Octave <input type=number id=O style=width:40 value=0 min=-3 max=3 onchange=O.value=OS13k.Clamp(O.value,-3,3)>&nbsp; Key <input type=number id=Y style=width:40 value=0 min=-12 max=12 onchange=Y.value=OS13k.Clamp(Y.value,-12,12)><br> Gain <input type=range style=width:60 id=V onchange=R() value=50> Noise <input type=range style=width:60 id=N onchange=R() value=0> Shape <input type=range style=width:60 id=H onchange=R() value=50> Crush <input type=range style=width:60 id=C onchange=R() value=0><hr><div><script>
+<style>body{background:#111;color:#fff;user-select:none;text-align:center}</style><span id=B></span>Seed <input type=number id=S style=width:79 oninput=E(T=3,localStorage.OS13kP=S.value) onfocus=E(T=3)> Octave <input type=number id=O style=width:40 value=0 min=-3 max=3 onfocus=this.blur()>&nbsp; Key <input type=number id=Y style=width:40 value=0 min=-12 max=12 onfocus=this.blur()><br> Gain <input type=range style=width:60 id=V onchange=R() value=50> Noise <input type=range style=width:60 id=N onchange=R() value=0> Shape <input type=range style=width:60 id=H onchange=R() value=50> Crush <input type=range style=width:60 id=C onchange=R() value=0><hr><div><script>
 
 Z = []; // canceled notes
 A = []; // played note array
@@ -104,15 +104,13 @@ onunload=onblur=e=> A.map(e=>e.map(e=>e.stop()));
 // keyboard control
 
 // get piano key from keyboard key
-K=e=> (k = 'zsxdcvgbhnjm,l.;/q2w3er5t6y7ui9o0p[=]' // map key to note
-    .indexOf(e.key.toLowerCase()),                 // find the key
-    k > 16 ? k-5 : k);                             // remap second row of keys
+K=e=> e ? (k = 'zsxdcvgbhnjm,l.;/q2w3er5t6y7ui9o0p[=]' // map key to note
+    .indexOf(e.key.toLowerCase()),                     // find the key
+    k > 16 ? k-5 : k) : -1;                            // remap second row of keys
 
 // play note on key down
 onkeydown=e=>
-    document.activeElement == S |                  // not when editing seed
-    document.activeElement == Y |                  // or changing key
-    document.activeElement == O ||                 // or changing octive
+    document.activeElement == S ||                 // not when editing seed
         e.repeat ? 0 :                             // prevent key repeats
         Math.abs(i = e.keyCode - 39) - 1 ?         // check for up & down arrows
         P(K(e)) :                                  // play note
