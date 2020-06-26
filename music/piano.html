@@ -30,16 +30,16 @@ R=e=> D =                         // save cached sound
 // play a note
 P=e=> e < 0 ||
 (
-    // animate button color
-    f = eval('B' + e),           // get the button
-    c = f.style.background,      // save old background color
-    f.style.transition = '',     // unset transition
-    f.style.background = '#f00', // set background to red
-    f.innerText,                 // force reset transition
-    f.style.transition = '1s',   // set transition time
-    f.style.background = c,      // reset old background color
-
     X(e),                        // cancel old note
+
+    // animate button color
+    b = eval('B' + e),           // get the button
+    b.B = b.style.background,    // save old background color
+    b.style.transition = '',     // unset transition
+    b.style.background = '#f00', // set background to red
+    b.innerText,                 // force reset transition
+    b.style.transition = '5s',   // set transition
+    b.style.background = '#00f', // change to blue when held
     
     // play cached sound
     A[e] = D.map(d=>((s = OS13k.PlaySamples(d, 1))                   // play samples
@@ -47,7 +47,11 @@ P=e=> e < 0 ||
 );
 
 // cancel a note
-X=e=> A[e] && A[e].map(e=>Z.push(e));
+X=e=> A[e] && (                 // has a note playing
+    b = eval('B' + e),          // get button
+    b.style.transition = '.5s', // set transition
+    b.style.background = b.B,   // reset old background color
+    Z.push(...A[e]));           // add to canceled sounds list
 
 //////////////////////////////////////////////////////////////
 // init
