@@ -1,4 +1,4 @@
-<style>body{background:#111;color:#fff;user-select:none;text-align:center}</style><span id=B></span>Seed <input type=number id=S style=width:49 oninput=E(T=3,localStorage.OS13kP=S.value) onfocus=E(T=3)> Octave <input type=number id=O style=width:40 value=0 min=-4 max=4>&nbsp; Key <input type=number id=Y style=width:40 value=0 min=-12 max=12 onchange=O.value=OS13k.Clamp(O.value,-12,12)><br> Gain <input type=range style=width:60 id=V onchange=R() value=50> Noise <input type=range style=width:60 id=N onchange=R() value=0> Shape <input type=range style=width:60 id=H onchange=R() value=50> Crush <input type=range style=width:60 id=C onchange=R() value=0><hr><div><script>
+<style>body{background:#111;color:#fff;user-select:none;text-align:center}</style><span id=B></span>Seed <input type=number id=S style=width:79 oninput=E(T=3,localStorage.OS13kP=S.value) onfocus=E(T=3)> Octave <input type=number id=O style=width:40 value=0 min=-3 max=3 onchange=O.value=OS13k.Clamp(O.value,-3,3)>&nbsp; Key <input type=number id=Y style=width:40 value=0 min=-12 max=12 onchange=Y.value=OS13k.Clamp(Y.value,-12,12)><br> Gain <input type=range style=width:60 id=V onchange=R() value=50> Noise <input type=range style=width:60 id=N onchange=R() value=0> Shape <input type=range style=width:60 id=H onchange=R() value=50> Crush <input type=range style=width:60 id=C onchange=R() value=0><hr><div><script>
 
 Z = []; // canceled notes
 A = []; // playd note array
@@ -38,7 +38,7 @@ P=e=> e < 0 ||
     b.style.transition = '',     // unset transition
     b.style.background = '#f00', // set background to red
     b.innerText,                 // force reset transition
-    b.style.transition = '5s',   // set transition
+    b.style.transition = '9s',   // set transition
     b.style.background = '#00f', // change to blue when held
     
     // play cached sound
@@ -111,11 +111,12 @@ K=e=> (k = 'zsxdcvgbhnjm,l.;/q2w3er5t6y7ui9o0p[=]' // map key to note
 // play note on key down
 onkeydown=e=>
     document.activeElement == S |                  // not when editing seed
-    document.activeElement == O ||                 // or not when changing octive
+    document.activeElement == Y |                  // or changing key
+    document.activeElement == O ||                 // or changing octive
         e.repeat ? 0 :                             // prevent key repeats
         Math.abs(i = e.keyCode - 39) - 1 ?         // check for up & down arrows
         P(K(e)) :                                  // play note
-        O.value = OS13k.Clamp(O.value - i, -4, 4); // octave control
+        O.value = OS13k.Clamp(O.value - i, -3, 3); // octave control
 
 // release note on key up
 onkeyup=e=> K(e) < 0 || X(K(e));
