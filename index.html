@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?124></script>
+<script src=programs.js?125></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -251,7 +251,7 @@ const OS13kVersion = 66;
 // @js_externs OS13kSystem.Sound, OS13k.PlaySamples, OS13k.Note
 // @js_externs OS13k.Speak, OS13k.StopSpeech, OS13k.PlaySeed
 // @js_externs OS13k.Settings(), OS13k.SaveSettings()
-// @js_externs OS13k.CreateShader, OS13k.RenderShader
+// @js_externs OS13k.CreateShader, OS13k.RenderShader, source.gain
 // @js_externs OS13k.KeyDirection, OS13k.StripHTML, OS13k.Popup
 // @js_externs settings.v, settings.m, settings.s, settings.p, settings.o
 // @js_externs settings.c, settings.d, settings.t, settings.f
@@ -371,8 +371,16 @@ class _OS13k
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Audio
 
-    // play zzfx sound from seed
+    // play seed sound
     PlaySeed(seed, lengthScale=1, volume=1, randomness=.05, frequency)
+    { return this.PlaySamples(this.SeedSamples(...arguments)); }
+    
+    // get seed samples
+    SeedSamples(seed, lengthScale=1, volume=1, randomness=.05, frequency)
+    { return zzfxG(...this.SeedParameters(...arguments)); }
+    
+    // get zzfx sound parameters from seed
+    SeedParameters(seed, lengthScale=1, volume=1, randomness=.05, frequency)
     {
         // set random seed
         this.randomSeed = seed;
@@ -392,8 +400,7 @@ class _OS13k
         f = R()**2*2e3;
         
         // generate random sound
-        return zzfx
-        (
+        return [
            volume,           // volume
            randomness,       // randomness
            frequency || f,   // frequency
@@ -413,7 +420,7 @@ class _OS13k
            C()**3/2,         // delay
            1 - C(),          // sustain volume
            decay             // decay
-        );
+        ];
     }
     
     // play audio sample data
@@ -431,7 +438,11 @@ class _OS13k
         // copy samples to buffer and play
         samplesArray.map((d,i)=>buffer.getChannelData(i).set(d));
         source.buffer = buffer;
-        source.connect(gain);
+        
+        // create custom gain node
+        const customGain = source.gain = audioContext.createGain();
+        source.connect(customGain);
+        customGain.connect(gain);
         source.start();
         return source;
     }
@@ -1332,7 +1343,7 @@ class OS13kWindow extends HTMLElement
         }
         
         // load src, force pages to be refreshed OPTIONAL
-        this.iframe.src = program.src + '?2071';
+        this.iframe.src = program.src + '?2074';
     }
     
     Open(target, x, y)
