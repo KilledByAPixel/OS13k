@@ -17,13 +17,11 @@ o=e=>
 {
     S.innerHTML = '';
     for(i=y;i<y+108;)
-    S.innerHTML += 
-    `<input value=${i} style=width:50 readonly onfocus=p(${i}) onmousedown=p(${i++})>`;
+        S.innerHTML += 
+        `<input value=${i} style=width:50 readonly onfocus=p(${i}) onmousedown=p(${i++})>` + ((i%9+9)%9 ? '' : '<br>')
 }
 
 x = 0;
 o(y = -9);
-
-
 
 </script>
