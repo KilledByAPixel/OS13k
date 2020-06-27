@@ -41,6 +41,7 @@ P=e=> e < 0 ||
     b.style.transition = '9s',   // set transition
     b.style.background = '#00f', // change to blue when held
     
+    
     // play cached sound
     A[e] = D.map(d=>((s = OS13k.PlaySamples(d, 1))                   // play samples
         .detune.value = (e - 33 + O.value*12)*100 + Y.value*100, s)) // set frequency
@@ -61,7 +62,7 @@ E=e=> R(                    // rebild cache
         B.innerHTML = '',   // clear HTML
 
         // create buttons
-        ['Piano', 'Oboe', 'Wave'].map((i,j)=>              // instruments
+        ['Organ', 'Oboe', 'Wave'].map((i,j)=>              // instruments
             B.innerHTML +=                                 // add to HTML
             `<button style='border:5px solid ${            // button and border
                 T-j? "#111" : "#f00" }' onmousedown=E(T=${ // border color
