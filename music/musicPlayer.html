@@ -91,10 +91,11 @@ I=k=> // key
 // play song
 P=k=>
 {
-    X && X.stop(X = 0);         // stop song if playing
-    N.innerText = L[            // set song name
-        Q = S.selectedIndex].n; // set queued song index
-    F.innerText = 'Loading...'; // set loading message
+    Q = S.selectedIndex;         // set queued song index
+    X && X.stop(X = 0);          // stop song if playing
+    Q < 0 ||                     // check if no selection
+    (N.innerText = L[Q].n,       // set queued song index
+    F.innerText = 'Loading...'); // set loading message
 }
 
 // add custom song
@@ -120,14 +121,11 @@ A=k=>
 }
 
 // remove song
-R=k=>(l = L[S.selectedIndex])                       // get selected song
-        .n.substring(0,5) == 'OS13k' ?              // check if system song
-    alert`⚠️ OS13k system songs can't be removed!` : // error message
-    confirm`Remove?` &&                             // confirm to remove
-        B(localStorage[l.k] = 0);                   // remove and rebuild
+R=k=> confirm`Remove?` &&                             // confirm to remove
+        B(localStorage[L[S.selectedIndex].k] = 0);    // remove and rebuild
 
 // parse json and replace null with undefined
-J=k=>JSON.parse(k, (i,j)=> j == null ? undefined : j)
+J=k=> JSON.parse(k, (i,j)=> j == null ? undefined : j)
 
 // convert seconds to time string
 V=k=> (k/60|0) + ((k = k%60|0) <=9 ? ':0' : ':') + k;
