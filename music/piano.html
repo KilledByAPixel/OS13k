@@ -42,7 +42,7 @@ P=e=> e < 0 ||
     b.style.background = '#00f', // change to blue when held
     
     // play cached sound
-    A[e] = D.map(d=>((s = OS13k.PlaySamples(d))                      // play samples
+    A[e] = D.map(d=>((s = OS13k.PlaySamples(d, 1))                   // play samples
         .detune.value = (e - 33 + O.value*12)*100 + Y.value*100, s)) // set frequency
 );
 
