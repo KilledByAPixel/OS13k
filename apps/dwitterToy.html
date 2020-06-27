@@ -1,0 +1,81 @@
+<body style=display:flex;margin:0;height:100%;overflow:hidden></body>
+<div id=A style=display:flex;flex-direction:column;flex:1>
+<textarea id=C rows=1 spellcheck=false oninput=P() style=resize:none;background:#000;outline:0;color:#fff;min-height:2px;flex:.5></textarea>
+<textarea id=E readonly rows=1 style=resize:none;background:#111;outline:0;color:#f00;flex:.2></textarea><script>
+
+// default code
+D = `c.width|=0
+for(i=1e3;i--;)
+x.fillRect(960+900*S(i*2),540+500*C(t*Math.PI/2+i*3),29,29)`;
+
+// load saved code
+C.value = localStorage.OS13kD || D;
+
+// create the program
+P=e=>
+{
+    // remove old iframe and create new one
+    F && A.removeChild(F);
+    A.prepend(F = document.createElement`iframe`);
+
+    // set iframe style
+    F.style = 'flex:1;border:none';
+
+    // get the code and save it
+    localStorage.OS13kD = c = C.value;
+
+    // detect if shadertoy
+    s = c.search(/void\s+mainImage/) >= 0;
+
+    // loop protection for dweets
+    s || (c = 'OS13k$=Date.now()+250;' + c.replace(
+            /(for\s*\((?!\s+of\s+)(?!\s+in\s+)[^;]*;[^;]*;|while\s*\()\s*(\S)/g,
+            (a, b, c)=> b && c ? b +
+                `Date.now()>OS13k$&&(e=>{throw'Timed out!'})()` +
+                (c == ')' ? '' : ',') + c : a ));
+
+    try
+    {
+        // try to create the program
+        parent.OS13k.CreateDweetOrShadertoy(
+            W = F.contentWindow,             // iframe window
+            s || S || C.value == D ? c : '', // code
+            s,                               // isShader                 
+            1,                               // awake
+            1);                              // manualUpdate
+    }
+    catch (e)
+    {
+        // set error message
+        E.innerHTML = e && e.message ? e.message : e;
+    }
+}
+
+// loop
+L=frameTime=>
+{
+    requestAnimationFrame(L);
+
+    try
+    {
+        // update and fix glitches in time
+        W.window.u && (E.innerHTML = '',
+            W.window.u(((t=W.frame++/60)*60|0==W.frame-1)&&t>0?t+1e-6:t));
+    }
+    catch (e)
+    {
+        // show error
+        E.innerHTML = e && e.message ? e.message : e;
+    }
+}
+
+// init frame, mark code as unsafe, init program and loop
+onload=e=> L(P(OS13k = parent.OS13k, S = F = 0));
+
+// reset save to default code and reset
+OS13kReload=e=> P(C.value = D);
+
+// wait for input to mark code as safe and reset
+onmousedown=e=> P(S = 1);
+
+</script>

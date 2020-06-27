@@ -31,12 +31,12 @@ programs =
 ]],
 [,'🛠️',,,,'Apps',,
 [
+    ['apps/dwitterToy.html','𝓓𝓣',,710,,,'Auto detects dweet or shadertoy.\nDweets have OS13k and zzfx.\nYour code is saved, reload to clear.'],
     ['apps/console.html','<span style=color:#0f0;background:#000;font-family:monospace>JS>'],
     ['apps/stickyNote.html','✍️',300,263,sticky|reload,,'Ctrl+B - Bold\nCtrl+I - Italic\nCtrl+U - Underline\n\Reload to clear'],
     ['apps/photoBooth.html','📸',1400,550],
     ['apps/alarm.html','⏰',400,116],
     ['apps/unicodeToys.html','𝖀',500,800],
-    ['apps/miniShadertoy.html','𝓢',340,400],
     ['apps/textEditor.html','📝'],
 ]],
 [,'🎮',,,,'Games',,
@@ -53,7 +53,7 @@ programs =
 [,'🎶',,,,'Music',,
 [
     ['music/musicPlayer.html','🎵',400,290,sticky],
-    ['music/piano.html','🎹',500,490,full|reload,,'Keyboard = Play Notes\nUp/Down = Change Octave'],
+    ['music/piano.html','🎹',500,510,full|reload,,'Keyboard = Play Notes\nUp/Down = Change Octave'],
     ['music/soundSeeds.html','🌱',350,480],
     ['music/musicVisualizer.dweet.js','👁️',,,awake|full|resize],
     ['music/bach.dweet.js','🎼'],

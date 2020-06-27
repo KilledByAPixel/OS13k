@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?128></script>
+<script src=programs.js?129></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -208,7 +208,16 @@ const OS13kVersion = 66;
     if (localStorage.OS13kVersion && localStorage.OS13kVersion != OS13kVersion)
     {
         alert('OS13k version out of date! System reset in 3, 2, 1...');
+        
+        const dwitterToy = localStorage.OS13kD;
+        const stickyNote = localStorage.OS13kN;
+        const soundSeeds = localStorage.OS13kS;
+        
         localStorage.clear();
+        
+        localStorage.OS13kD = dwitterToy;
+        localStorage.OS13kN = stickyNote;
+        localStorage.OS13kS = soundSeeds;
     }
 
     localStorage.OS13kVersion = OS13kVersion;
@@ -339,7 +348,9 @@ class _OS13k
         localStorage['OS13kTrophy,' + key] = message;
         
         // reload trophy window
-        trophyTrayIcon.program && trophyTrayIcon.program.Reload();
+        trophyTrayIcon.program && 
+            trophyTrayIcon.program.window &&
+            trophyTrayIcon.program.window.Reload();
         
         // use game as name if there is no name
         name || game && (name = game, game = '');
@@ -541,9 +552,9 @@ class _OS13k
         x.shaderSource(pixelShader, shaderProgramCode);
         x.compileShader(pixelShader);
 
-        // check pixel shader for errors OPTIONAL
-        //if (!x.getShaderParameter(pixelShader, xCOMPILE_STATUS))
-        //    throw x.getShaderInfoLog(pixelShader);
+        // check pixel shader for errors
+        if (!x.getShaderParameter(pixelShader, xCOMPILE_STATUS))
+            throw x.getShaderInfoLog(pixelShader);
 
         // create texture
         x.bindTexture(xTEXTURE_2D, x.createTexture());
@@ -694,6 +705,59 @@ class _OS13k
             });
     }
     
+/////////////////////////////////////////////////////////////////////////////
+// Special Programs (Dweets and Shadertoys)
+    
+    // setup dweet in an iframe
+    CreateDweetOrShadertoy(contentWindow, code, isShader, awake, manualUpdate)
+    { 
+        const iframeDocument = contentWindow.document;
+            
+        // create the canvas, this way seems to fix probmens with firefox
+        iframeDocument.open();
+        iframeDocument.write(
+        `<canvas id=c width=1920 height=1080 style=background:${
+                isShader ? '#000' : '#fff' };flex:1;width:100%>`);
+        iframeDocument.close();
+
+        // set body style
+        iframeDocument.body.style =
+            'background:#111;' +
+            'overflow:hidden;' +
+            'margin:0;' +
+            'display:flex;' +
+            'align-items:center';
+
+        // create the program
+        contentWindow.eval(
+            'frame=0;' +
+            (isShader ?
+                'x=c.getContext`webgl2`;' +
+                'onmousemove=e=>e.buttons&&(X=e.x,Y=c.height-e.y);' +
+                'onmousedown=e=>(X=Z=e.x,Y=W=c.height-e.y);' +
+                'onmouseup=e=>Z=W=0;' +
+                's=parent.OS13k.CreateShader(c,`' + code + '`);' +
+                'u=t=>(c.width=innerWidth,' +
+                'c.height=innerHeight,' +
+                'parent.OS13k.RenderShader(c,s,t,frame,X,Y,Z,W));' +
+                'X=Y=Z=W=0;'
+                :
+                'u=t=>{' + code + '\n};' +
+                'x=c.getContext`2d`;' +
+                'S=Math.sin;' +
+                'C=Math.cos;' +
+                'T=Math.tan;' +
+                'OS13k=parent.OS13k;' +
+                'zzfx=parent.zzfx;' +
+                'R=(r,g,b,a=1)=>`rgba(${0|r},${0|g},${0|b},${a})`;') +
+
+            // allow manual control of update
+            (manualUpdate? '' :
+                'OS13k_=t=>requestAnimationFrame(OS13k_,' +
+                (awake ? '' : 't<1e3|document.hasFocus()&&') +
+                'u(((t=frame++/60)*60|0==frame-1)&&t>0?t+1e-6:t));' +
+                'OS13k_()'));
+    }
 }; // _OS13k
 var OS13k = new _OS13k;
 
@@ -929,7 +993,7 @@ class _OS13kSystem
     // play system sound if enabled
     Sound(seed, length) 
     { hadInput && settings.o && OS13k.PlaySeed(seed, length); }
-    
+
 } // OS13kSystem
 const OS13kSystem = new _OS13kSystem;
 
@@ -1116,14 +1180,6 @@ class OS13kProgram extends HTMLElement
     
     SetActive() { this.Open(); }
     
-    // call reload function in iframe if it exists
-    Reload()
-    {
-        this.window && this.window.iframeContent &&
-            this.window.iframeContent.OS13kReload &&
-            this.window.iframeContent.OS13kReload();
-    }
-    
     // toggle program open or closed
     Toggle()
     {
@@ -1262,10 +1318,8 @@ class OS13kWindow extends HTMLElement
             // check for special extensions
             const hasExtension = program.isDweet || program.isShader;
 
-            // get iframe content (will fail if cross site)       
+            // get iframe content and document (will fail if cross site)       
             const iframeContent = this.iframeContent = e.target.contentWindow;
-
-            // get document (will fail if cross site)
             const iframeDocument = iframeContent.document;
             
             // get document text
@@ -1284,50 +1338,8 @@ class OS13kWindow extends HTMLElement
             iframeContent.oncontextmenu =()=> false;
 
             // check for extensions
-            if (hasExtension) 
-            {
-                // create full size canvas
-                iframeDocument.body.innerHTML = 
-                    `<canvas id=c width=1920 height=1080 style=` +
-                    'width:100%;background:#' +
-                    (program.isDweet ? 'fff' : '000') +'>';
-                
-                // set body style
-                iframeDocument.body.style = 
-                    'background:#111;' +
-                    'overflow:hidden;' +
-                    'margin:0;' +
-                    'display:flex;' +
-                    'align-items:center';
-
-                // create dweet
-                program.isDweet && iframeContent.eval(
-                    'u=t=>{' + iframeText + '};' +
-                    'x=c.getContext`2d`;' +
-                    'S=Math.sin;' +
-                    'C=Math.cos;' +
-                    'T=Math.tan;' +
-                    'OS13k=parent.OS13k;' +
-                    'R=(r,g,b,a=1)=>`rgba(${0|r},${0|g},${0|b},${a})`;' + 
-                    'loop=t=>requestAnimationFrame(loop,' +
-                    (program.awake? '' : 't<1e3|document.hasFocus()&&') +
-                        'u((60*(frame++/60)-frame-1|0?frame-1:frame)/60));' +
-                    'loop(frame=0)');
-
-                // create shader
-                program.isShader && iframeContent.eval(
-                    'x=c.getContext`webgl2`;' +
-                    'onmousemove=e=>e.buttons&&(X=e.x,Y=c.height-e.y);' +
-                    'onmousedown=e=>(X=Z=e.x,Y=W=c.height-e.y);' +
-                    'onmouseup=e=>Z=W=0;' +
-                    's=parent.OS13k.CreateShader(c,`' + iframeText + '`);' + 
-                    'loop=t=>requestAnimationFrame(loop,' +
-                    (program.awake? '' : 't<1e3|document.hasFocus()&&') +
-                        '(c.width=innerWidth,' + 
-                        'c.height=innerHeight,' + 
-                        'parent.OS13k.RenderShader(c,s,f/60,f++,X,Y,Z,W)));' + 
-                    'loop(X=Y=Z=W=f=0)');
-            }
+            hasExtension && OS13k.CreateDweetOrShadertoy
+                (iframeContent, iframeText, program.isShader, program.awake);
 
             // add taskbar icon if it doesnt exist (from being reloaded)
             this.taskbarIcon ||
@@ -1344,7 +1356,7 @@ class OS13kWindow extends HTMLElement
         }
         
         // load src, force pages to be refreshed OPTIONAL
-        this.iframe.src = program.src + '?20788';
+        this.iframe.src = program.src + '?20789';
     }
     
     Open(target, x, y)
@@ -1498,7 +1510,9 @@ class OS13kWindow extends HTMLElement
     Reload()
     {
         // reload program or reload iframe and set invisible
-        this.program.Reload() || 
+        this.iframeContent &&
+            this.iframeContent.OS13kReload ?
+            this.iframeContent.OS13kReload() :
             this.iframeContent.location.reload(this.iframe.style.visibility = '');
         
         OS13kSystem.Sound(soundReload);
