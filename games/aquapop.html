@@ -20,7 +20,7 @@ objs = harpoons = []; // doesn't change when level=0 and reset at start, so can 
 drawobj = ([x, y, vx, , kind, text]) => {
     context.save();
     vx > 0 && context.transform(-1, 0, 0, 1, x*2, 0);
-    sz = Math.max(kind, 0) * 20 + 20;
+    sz = (kind > 0) * kind * 20 + 20;
     context.font = sz + 'px a';
     if (text) { // player, possibly with effects
         filter = '';
@@ -41,7 +41,8 @@ tick = now => {
     requestAnimationFrame(tick); // update can fail, so we must enqueue beforehand
 
     // our collision check is primitive, so we need to ensure the minimum frame rate
-    elapsed = Math.min(now - lastnow, 100);
+    elapsed = now - lastnow;
+    if (elapsed > 100) elapsed = 100;
     harpoonshot = keydown[32] == lastnow;
     lastnow = now;
 
@@ -49,7 +50,7 @@ tick = now => {
         // enter to start (also actual reset)
         if (!level) {
             canvas.style.filter = '';
-            life = playervx = slowuntil = multiuntil = 0;
+            life = playervx = slowuntil = multiuntil = graceuntil = 0;
             playerx = 320;
             objs = [];
             harpoons = [];
@@ -82,7 +83,9 @@ tick = now => {
         }
 
         playervx = (!keydown[37] - !keydown[39]) * 300;
-        playerx = Math.min(Math.max(playerx + playervx * elapsed, 20), 620);
+        playerx += playervx * elapsed;
+        if (playerx < 20) playerx = 20;
+        if (playerx > 620) playerx = 620;
 
         // shot harpoon if no other harpoon exists or multi is enabled
         if (harpoonshot && (!harpoons[0] || now < multiuntil)) {
@@ -94,12 +97,12 @@ tick = now => {
         objs = objs.filter(obj => {
             ([x, y, vx, vy, kind] = obj);
             vy += 600 * objelapsed;
-            sz = Math.max(kind, 0) * 10 + 10; // so that (x, y) +/- sz is occupied by obj
+            sz = (kind > 0) * kind * 10 + 10; // so that (x, y) +/- sz is occupied by obj
 
             // against harpoons (for ordinary objs)
             if (kind >= 0) {
-                lextent = x - sz + Math.min(vx * objelapsed, 0);
-                rextent = x + sz + Math.max(vx * objelapsed, 0);
+                lextent = x - sz + (vx < 0) * vx * objelapsed;
+                rextent = x + sz + (vx > 0) * vx * objelapsed;
                 for (harpoon of harpoons) {
                     ([hx, htop, used] = harpoon);
                     if (!used && y > htop && lextent < hx && hx < rextent) {
@@ -110,8 +113,9 @@ tick = now => {
                                 [x, y, -vx, -350, kind - 1]);
                         }
                         // 10% chance of additional bonus objs
-                        if (Math.random() < .1) {
-                            newobjs.push([x, y, vx, vy, Math.random() * 3 - 4 | 0]);
+                        rand = Math.random();
+                        if (rand < .1) {
+                            newobjs.push([x, y, vx, vy, rand * 30 - 4 | 0]);
                         }
                         harpoon[2] = 1; // so that harpoon will be cleared off
                         return; // and this elimiates the original obj
@@ -146,7 +150,8 @@ tick = now => {
 
             // against ground
             if (y > 410 - sz) {
-                vy = Math.max(-500, -sz * 10 - 150);
+                vy = -sz * 10 - 150;
+                if (vy < -500) vy = -500;
                 y = 410 - sz;
                 if (kind < 0 && (kind -= 10) < -50) return;
             }
