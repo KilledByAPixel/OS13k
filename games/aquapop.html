@@ -1,178 +1,221 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<style>
-		.c{
-			position:absolute;
-			left:-100%;
-		}
-		.h{
-			width:2px;
-			background:#c09e3f;
-			position:absolute;
-			left:50%;
-			transform:'unset';
-		}
-		.s{
-			top: 50%;
-			left: 50%;
-			font-size: 100px;
-			font-weight: bold;
-			background: unset;
-			color: #0000;
-			text-shadow: 0 0 10px #47e8fa, 0 0 20px #2ed7f2;
-			transform: translate(-50%, -50%);
-			padding-bottom: 110px;
-		}
-		body,html{
-			position:relative;
-			padding:0;
-			margin:0;
-			width:640px;
-			height:480px;
-		}
+<html lang=en>
+<body bgcolor=black onkeydown=keydown[event.keyCode]=lastnow onkeyup=keydown[event.keyCode]=0>
+<canvas id=canvas width=640 height=480></canvas>
+<script>
+const WIDTH = canvas.width;
+const HEIGHT = canvas.height;
+context = canvas.getContext`2d`;
 
-		html{
-			background:#000;
-		}
-	</style>
-</head>
-<body>
-	<script>
-		const g = 600, gh = 70, s=300, sr=10, _d=document,_b=_d.body,cc=[],p='px';_i=window,_w=640,_h=480,ci=ks=0,kp=kd={},sk=['🦐','🐡','🐠','🐟','🐙','🦑','🐬','🐳','🐋','🦈'],sb=['💝','⏰', '⭐'],h=[];
-		ld=[[1.1],[2.1],[1.2,3.1],[3.3],[2.4,4.1],[4.2],[1.9]],ls=7;
-		cl = o=>JSON.parse(JSON.stringify(o)),
-		b = {ym:0, xm:100, y:gh, m:1};
-		ge = ()=>_d.createElement('div');
-		dl = e=>{cc.splice(cc.indexOf(e), 1);e._.parentNode.removeChild(e._);ci--;};
-		ai = (t,c)=>_d.addEventListener(t,c);
-		dc = r=>{_=_b.appendChild(ge());_.innerText=sk[(r/10-1)%10];console.log(r/10-1);_.style.fontSize=r*2+p;cc.push({...cl(b),_,r,y:r});_.classList.add('c');_.style.width=_.style.height=r*2+p;return cc[ci++]}
-		pl = (()=>{_=dc(sr*2);_.p=1,_.y=_h,_.x=_w/2;_._.innerText='🧜🏽‍♂️';_._.style.zIndex=1;_._.style.filter='';return _})();
-		hp = ()=>{_=dc(4),_._.innerText='🔱',_.xm=0,_.ym=-400,_.x=pl.x+(pl.xm>0?6:-6),_.y=_h-gh;_.h=_._.appendChild(ge());_.h.classList.add('h'); return _};
-		mp = (a,b)=>{a.x=b.x;a.y=b.y;a.xm=b.xm;a.ym=b.ym};
-		bl = l=>{
-			ld[l].forEach(n=>{
-				n=(n+'').split('.');
-				for(i=0;i<n[1];i++){
-					_=dc((+n[0]+pr)*10);
-					$=(_w/(+n[1]+1));
-					_.x=$+$*i;
-				}
-			})
-			sp.innerText=l+1+pr*ls;
-		}
-		pp = c=>{
-			if(c.r>sr){
-				[1, -1].forEach(n =>{
-					_=dc(c.r-10);
-					mp(_,c);
-					_.ym = -350;
-					_.xm *= n;
-				})
-			}
-			dl(c);
-			if(cc.filter(e=> !e.h && !e.p && !e.b).length == 0){
-				if(!(++lv%ls))pr++;
-				bl(lv%ls);
-			}
-			if(Math.random()<.1){
-				_=dc(10);
-				mp(_,c);
-				_._.innerText = sb[Math.floor(Math.random()*3)];
-				_.b = 1
-			}
-		};
-		let t = rd = d = _ = mx = my = lv = pr= li= td = ds= us= 0,
-		u = _t=>{
-			if(!t)t=_t;
-			rd=(_t-t)/1e3;
-			t=_t;
-			td-=rd;
-			us-=rd;
-			_b.style.background = `linear-gradient(0, #ada996 ${0+Math.abs(Math.sin(t/1000))*5}%, #f7e6d6 13.8%, #bbd2d8 13.8%, #66deff 15%, #57f3ff ${30+Math.cos(t/1000)*5}%, #01a4c9 ${80+Math.cos(t/2000)*10}%)`
-			for(i=0;i<cc.length;i++){
-				_=cc[i];
-				d=rd;
-				if(_.p){
-					_.ym=_.xm = 0;
-					if(kd[37]) _.xm = -s;
-					if(kd[39]) _.xm = s;
-					if(kd[32]==ks && (h.length<1 || us>0)) {
-						h.push(hp());
-					}
-					_._.style.textShadow = li>0?'0px 0px 10px white, 2px 2px 2px white':'unset';
-					_._.style.filter = us>0?'drop-shadow(2px 4px 6px orange)':'unset';
-				}else if(_.h){
-					_.h.style.height=_h+1-gh-_.y+p;
-					if(_.y<-_.r){
-						if(_.h) h=h.filter(e => e !== _),dl(_);
-						continue;
-					}
-				}else{
-					d = td>0 ? d*0.3 : d;
-					_.ym+=g*d;
-					q=0;
-					for(j=0;j<h.length;j++){
-						$=h[j];
-						if(!_.b && _.y+_.r>$.y &&  ((_.x+_.r<$.x-$.r && _.x+_.r+_.xm*d>=$.x-$.r) || (_.x-_.r>$.x+$.r && _.x-_.r+_.xm*d<=$.x+$.r) || ($.x>_.x-_.r && $.x<_.x+_.r))){
-							h=h.filter(e => e !== $);
-							dl($);
-							pp(_);
-							q=1;
-							break;
-						}
-					};
-					if(q)continue;
-					dx=_.x-pl.x;
-					dy=_.y-pl.y;
-					if(dx*dx+dy*dy<_.r*_.r+pl.r*pl.r){
-						$=_._.innerText;
-						if(sb.includes($) || --li>=0){
-							if($=='💝') li=1;
-							if($=='⏰') td=10;
-							if($=='⭐') us=10;
-							dl(_);
-						}else {
-							_b.style.filter='invert(1) ';
-							void _b.offsetWidth;
-							setTimeout(()=>{
-							h=[],t=lv=pr=0,alert('enter to reset'),kd={},pl.x=_w/2;
-							while(ci>1)dl(cc[1]);bl(lv);
-							_b.style.filter='invert(0)';
-							},0);
-							break;
-						}
-					}
-					if(_.y<_.r){
-						pp(_);
-						continue;
-					}
-				}
-				$= _.p ?[180,0]:[0,180];
-				_._.style.transform = `translate(-50%, -50%) rotateY(${_.xm<0?$[0]:$[1]}deg)`
-				_.x+=_.xm*d;
-				_.y+=_.ym*d;
+const G = 600; // px/s^2
+const OBJVX = 100;
+const GROUNDTOP = HEIGHT - 70;
+const HARPOONSPEED = 400;
 
-				if(_.y+_.r>_h-gh && !_.h){
-					_.ym=Math.max(-500,-_.r*10-150),_.y=_h-gh-_.r;
-					if(_.b++>4) dl(_);
-				}
-				if(_.x<0+_.r)_.xm*=-1,_.x=0+_.r;
-				if(_.x>_w-_.r)_.xm*=-1,_.x=_w-_.r;
-				_._.style.top=_.y+p;
-				_._.style.left=_.x+p;
-			};
-			ks++;
-			_i.requestAnimationFrame(u);
-		}
-		u(t);
-		sp=_b.appendChild(ge());
-		sp.classList.add('c','s');
-		bl(lv),
-		kl = (e,b)=>{kd[e.keyCode]=b},
-		ai('keydown', e=>{kl(e,ks)}),
-		ai('keyup', kl);
-	</script>
-</body>
+level = 0; // level "0" corresponds to "enter to start" splash
+life = 0;
+playerx = WIDTH / 2;
+const PLAYERY = GROUNDTOP - 20;
+playervx = 0;
+slowuntil = 0; // clock: slows everything but player to 0.3x for 10s
+multiuntil = 0; // star: harpoons can be shot multiple times for 10s
+graceuntil = 0; // provides temporary invincibility when life was 1 and hit by objs
+
+keydown = {}; // value is lastnow at the point of initial keydown
+
+// kind >= 0: ordinary objects, size 10*(kind+1), glyph depends on kind % 10
+// kind < 0: bonus objects, encoded as (LIFE/MULTI/SLOWKIND) - bounce count * 10
+const LIFEKIND = -1;
+const MULTIKIND = -2;
+const SLOWKIND = -3;
+const MINKIND = -50; // after 5 bounces bonuses disappear
+objs = []; // array of [x,y,vx,vy,kind]
+harpoons = []; // array of [x,top]
+
+// expects that level hasn't been yet increased
+buildlevel = () => {
+    template = [
+        [[0, 1]],
+        [[1, 1]],
+        [[0, 2], [2, 1]],
+        [[2, 3]],
+        [[1, 4], [3, 1]],
+        [[3, 2]],
+        [[0, 9]],
+    ][level % 7];
+    for ([kind, count] of template) {
+        for (i = 0; i < count; ++i) {
+            objs.push([
+                WIDTH * (i + 1) / (count + 1),
+                kind * 10 + 10, // = size; so it starts at the top
+                +OBJVX, // always points right
+                0,
+                kind + (level / 7 | 0),
+            ]);
+        }
+    }
+};
+
+drawobj = ([x, y, vx, , kind, text]) => {
+    context.save();
+    vx > 0 && context.transform(-1, 0, 0, 1, x*2, 0);
+    sz = Math.max(kind, 0) * 20 + 20;
+    context.font = sz + 'px a';
+    if (text) { // player, possibly with effects
+        filter = '';
+        if (life) filter = 'drop-shadow(0px 0px 10px white) drop-shadow(2px 2px 2px white)';
+        if (lastnow < multiuntil) filter += ' drop-shadow(2px 4px 6px orange';
+        context.filter = filter;
+    } else {
+        // ordinary objs: first 10 characters (all ex-BMP, i.e. two units in JS)
+        // bonus objs: last 3 characters (plus some ZWSP to pad to two units)
+        text = ('🦐🐡🐠🐟🐙🦑🐬🐳🐋🦈' + '⏰​⭐​💝').substr(kind % 10 * 2, 2);
+    }
+    context.fillText(text, x, y);
+    context.restore();
+};
+
+drawplayer = () => {
+    // unlike others, player is flipped horizontally
+    drawobj([playerx, PLAYERY, -playervx, 0, 1, '🧜🏽‍♂️']);
+};
+
+drawharpoon = ([x, top]) => {
+    context.font = '8px a';
+    context.fillStyle = '#c09e3f';
+    context.fillText('🔱', x, top);
+    context.fillRect(x - 1, top, 2, GROUNDTOP - top);
+};
+
+lastnow = 0;
+update = now => {
+    // our collision check is primitive, so we need to ensure the minimum frame rate
+    elapsed = Math.min(now - lastnow, 100);
+    harpoonshot = keydown[32] == lastnow;
+    lastnow = now;
+
+    // enter to start (also actual reset)
+    if (!level) {
+        if (!keydown[13]) return;
+        canvas.style.filter = '';
+        life = playervx = slowuntil = multiuntil = 0;
+        playerx = WIDTH / 2;
+        objs = [];
+        harpoons = [];
+        keydown = {}; // no pre-press advantage :-)
+    }
+
+    // if all remaining objects are bonuses (or none)
+    if (objs.every(obj => obj[4] < 0)) {
+        buildlevel();
+        ++level;
+    }
+
+    playervx = (!keydown[37] - !keydown[39]) * 300;
+    playerx = Math.min(Math.max(playerx + playervx * elapsed, 20), WIDTH - 20);
+
+    // shot harpoon if no other harpoon exists or multi is enabled
+    if (harpoonshot && (!harpoons[0] || now < multiuntil)) {
+        harpoons.push([playerx + (playervx > 0 ? 6 : -6), GROUNDTOP]);
+    }
+
+    objelapsed = elapsed * (now < slowuntil ? .3 : 1);
+    newobjs = [];
+    objs = objs.filter(obj => {
+        ([x, y, vx, vy, kind] = obj);
+        vy += G * objelapsed;
+        sz = Math.max(kind, 0) * 10 + 10; // so that (x, y) +/- sz is occupied by obj
+
+        // against harpoons (for ordinary objs)
+        if (kind >= 0) {
+            lextent = x - sz + Math.min(vx * objelapsed, 0);
+            rextent = x + sz + Math.max(vx * objelapsed, 0);
+            for (harpoon of harpoons) {
+                ([hx, htop, used] = harpoon);
+                if (!used && y > htop && lextent < hx && hx < rextent) {
+                    // larger obj generates a pair of smaller objs when popped
+                    if (kind) {
+                        newobjs.push(
+                            [x, y, vx, -350, kind - 1],
+                            [x, y, -vx, -350, kind - 1]);
+                    }
+                    // 10% chance of additional bonus objs
+                    if (Math.random() < .1) {
+                        newobjs.push([x, y, vx, vy, Math.random() * 3 - 4 | 0]);
+                    }
+                    harpoon[2] = 1; // so that harpoon will be cleared off
+                    return; // and this elimiates the original obj
+                }
+            }
+        }
+
+        // against player
+        if ((x - playerx)**2 + (y - PLAYERY)**2 < sz**2 + 20**2) {
+            if (kind < 0) {
+                if (kind % 10 == LIFEKIND) life = 1;
+                if (kind % 10 == MULTIKIND) multiuntil = now + 10;
+                if (kind % 10 == SLOWKIND) slowuntil = now + 10;
+                return;
+            }
+            // game is over when life was already 0 and grace period expires
+            if (life) {
+                life = 0;
+                graceuntil = now + 1;
+            } else if (now > graceuntil) {
+                // we can't reset right now, as drawing still happens every frame
+                // the actual reset will happen on enter
+                canvas.style.filter = 'invert(1';
+                level = 0;
+                throw 1; // this "tick" can't be continued
+            }
+        }
+
+        x += vx * objelapsed;
+        y += vy * objelapsed;
+
+        // against ground
+        if (y + sz > GROUNDTOP) {
+            vy = Math.max(-500, -sz * 10 - 150);
+            y = GROUNDTOP - sz;
+            if (kind < 0 && (kind -= 10) < MINKIND) return;
+        }
+
+        if (x < sz) vx = -vx, x = sz;
+        if (x > WIDTH - sz) vx = -vx, x = WIDTH - sz;
+
+        obj[0] = x;
+        obj[1] = y;
+        obj[2] = vx;
+        obj[3] = vy;
+        obj[4] = kind;
+        return true;
+    }).concat(newobjs);
+
+    harpoons = harpoons.filter(harpoon => {
+        return !harpoon[2] && (harpoon[1] -= HARPOONSPEED * elapsed) > -4;
+    });
+};
+
+tick = now => {
+    now /= 1e3;
+    requestAnimationFrame(tick); // update can fail, so we must enqueue beforehand
+
+    update(now);
+
+    canvas.width |= 0;
+
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.save();
+    context.font = '900 100px a';
+    context.fillStyle = '#fff';
+    context.filter = 'blur(3px)';
+    context.fillText(level || 'Enter to start', WIDTH / 2, HEIGHT / 2);
+    context.restore();
+
+    canvas.style.background = `linear-gradient(0, #ada996 ${0+Math.abs(Math.sin(now))*5}%, #f7e6d6 13.8%, #bbd2d8 13.8%, #66deff 15%, #57f3ff ${30+Math.cos(now)*5}%, #01a4c9 ${80+Math.cos(now)*10}%`;
+    objs.forEach(drawobj);
+    harpoons.forEach(drawharpoon);
+    drawplayer(); // always drawn over everything else
+};
+tick(0);
+</script>
