@@ -44,8 +44,7 @@ tick = now => {
     requestAnimationFrame(tick); // update can fail, so we must enqueue beforehand
 
     // our collision check is primitive, so we need to ensure the minimum frame rate
-    var elapsed = now - lastnow;
-    if (elapsed > 100) elapsed = 100;
+    var elapsed = now - lastnow < 100 ? now - lastnow : 100;
     var harpoonshot = keydown[32] == lastnow;
     lastnow = now;
 
@@ -87,15 +86,13 @@ tick = now => {
 
         playervx = (!keydown[37] - !keydown[39]) * 300;
         playerx += playervx * elapsed;
-        if (playerx < 20) playerx = 20;
-        if (playerx > 620) playerx = 620;
+        playerx = playerx < 20 ? 20 : playerx > 620 ? 620 : playerx;
 
         // shot harpoon if no other harpoon exists or multi is enabled
         if (harpoonshot && (!harpoons[0] || now < multiuntil))
             harpoons.push([playerx + (playervx > 0 ? 6 : -6), 410]);
 
-        var objelapsed = elapsed;
-        if (now < slowuntil) objelapsed *= .3;
+        var objelapsed = now < slowuntil ? elapsed * .3 : elapsed;
         var newobjs = [];
         objs.map(([x, y, vx, vy, kind]) => {
             vy += 600 * objelapsed;
@@ -109,7 +106,7 @@ tick = now => {
                 if (harpoons.some(harpoon =>
                     // harpoon == [hx, htop] & {u: used}
                     !harpoon.u && y > harpoon[1] && lextent < harpoon[0] && harpoon[0] < rextent && (
-                        kind && newobjs.push([x, y, vx, -350, kind - 1], [x, y, -vx, -350, kind - 1]),
+                        kind && [vx, -vx].map(vx => newobjs.push([x, y, vx, -350, kind - 1])),
                         rand = random(),
                         rand < .1 && newobjs.push([x, y, vx, vy, rand * 30 - 4 | 0]),
                         harpoon.u = 1 // this is also a return value for harpoons.some
@@ -118,7 +115,7 @@ tick = now => {
             }
 
             // against player
-            if ((x - playerx)**2 + (y - 390)**2 < sz**2 + 20**2) {
+            if ((x - playerx)**2 + (y - 390)**2 < sz * sz + 20**2) {
                 if (kind < 0) {
                     kind %= 10;
                     ++kind ? // kind != -1
@@ -173,15 +170,14 @@ tick = now => {
     objs.map(drawobj = ([x, y, vx, , kind, text]) => {
         save();
         vx > 0 && transform(-1, 0, 0, 1, x*2, 0);
-        var sz = (kind > 0) * kind * 20 + 20;
-        var textfilter = '';
-        if (text)
-            life ? textfilter = 'drop-shadow(0 0 10px #fff) drop-shadow(2px 2px 2px #fff)' : 0,
-            lastnow < multiuntil ? textfilter += ' drop-shadow(2px 4px 6px orange' : 0;
         drawtext(
-            x, y, sz, 0,
+            x,
+            y,
+            (kind > 0) * kind * 20 + 20,
+            0,
             text || '🦐🐡🐠🐟🐙🦑🐬🐳🐋🦈⏰​⭐​💝'.substr(kind % 10 * 2, 2),
-            textfilter);
+            (life ? 'drop-shadow(0 0 10px #fff) drop-shadow(2px 2px 2px #fff)' : '') +
+                (lastnow < multiuntil ? ' drop-shadow(2px 4px 6px orange' : ''));
         restore();
     });
     harpoons.forEach(([x, top]) =>
