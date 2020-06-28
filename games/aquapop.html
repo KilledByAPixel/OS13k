@@ -17,21 +17,26 @@ playerx = 320;
 keydown = {};
 objs = harpoons = []; // doesn't change when level=0 and reset at start, so can be shared
 
+drawtext = (x, y, sz, fill, text, filter/*=undefined*/) => {
+    context.font = sz + 'px a';
+    context.filter = filter; // nothing happens if undefined
+    context.fillStyle = fill;
+    context.fillText(text, x, y);
+    context.filter = 'none';
+};
+
 drawobj = ([x, y, vx, , kind, text]) => {
     context.save();
     vx > 0 && context.transform(-1, 0, 0, 1, x*2, 0);
     sz = (kind > 0) * kind * 20 + 20;
-    context.font = sz + 'px a';
-    if (text) { // player, possibly with effects
-        filter = '';
-        if (life) filter = 'drop-shadow(0px 0px 10px white) drop-shadow(2px 2px 2px white)';
-        if (lastnow < multiuntil) filter += ' drop-shadow(2px 4px 6px orange';
-        context.filter = filter;
-    } else
-        // ordinary objs: first 10 characters (all ex-BMP, i.e. two units in JS)
-        // bonus objs: last 3 characters (plus some ZWSP to pad to two units)
-        text = '🦐🐡🐠🐟🐙🦑🐬🐳🐋🦈⏰​⭐​💝'.substr(kind % 10 * 2, 2);
-    context.fillText(text, x, y);
+    filter = '';
+    if (text)
+        life ? filter = 'drop-shadow(0px 0px 10px white) drop-shadow(2px 2px 2px white)' : 0,
+        lastnow < multiuntil ? filter += ' drop-shadow(2px 4px 6px orange' : 0;
+    drawtext(
+        x, y, sz, 0,
+        text || '🦐🐡🐠🐟🐙🦑🐬🐳🐋🦈⏰​⭐​💝'.substr(kind % 10 * 2, 2),
+        filter);
     context.restore();
 };
 
@@ -174,21 +179,13 @@ tick = now => {
 
     context.textAlign = 'center';
     context.textBaseline = 'middle';
-    context.save();
-    context.font = '900 100px a';
-    context.fillStyle = '#fff';
-    context.filter = 'blur(3px)';
-    context.fillText(level || 'Enter to start', 320, 240);
-    context.restore();
+    drawtext(320, 240, '900 100', '#fff', level || 'Enter to start', 'blur(3px');
 
     canvas.style.background = `linear-gradient(0, #ada996 ${0+Math.abs(Math.sin(now))*5}%, #f7e6d6 13.8%, #bbd2d8 13.8%, #66deff 15%, #57f3ff ${30+Math.cos(now)*5}%, #01a4c9 ${80+Math.cos(now)*10}%`;
     objs.forEach(drawobj);
-    harpoons.forEach(([x, top]) => {
-        context.font = '8px a';
-        context.fillStyle = '#c09e3f';
-        context.fillText('🔱', x, top);
-        context.fillRect(x - 1, top, 2, 410 - top);
-    });
+    harpoons.forEach(([x, top]) =>
+        drawtext(x, top, 8, '#c09e3f', '🔱') |
+        context.fillRect(x - 1, top, 2, 410 - top));
     drawobj([playerx, 390, -playervx, 0, 1, '🧜🏽‍♂️']);
 };
 tick(0);
