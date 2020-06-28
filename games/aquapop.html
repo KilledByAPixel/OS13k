@@ -83,8 +83,7 @@ tick = now => {
         objelapsed = elapsed;
         if (now < slowuntil) objelapsed *= .3;
         newobjs = [];
-        objs = objs.filter(obj => {
-            ([x, y, vx, vy, kind] = obj);
+        objs.map(([x, y, vx, vy, kind]) => {
             vy += 600 * objelapsed;
             sz = (kind > 0) * kind * 10 + 10; // so that (x, y) +/- sz is occupied by obj
 
@@ -92,22 +91,15 @@ tick = now => {
             if (kind >= 0) {
                 lextent = x - sz + (vx < 0) * vx * objelapsed;
                 rextent = x + sz + (vx > 0) * vx * objelapsed;
-                for (harpoon of harpoons) {
-                    ([hx, htop, used] = harpoon);
-                    if (!used && y > htop && lextent < hx && hx < rextent) {
-                        // larger obj generates a pair of smaller objs when popped
-                        if (kind)
-                            newobjs.push(
-                                [x, y, vx, -350, kind - 1],
-                                [x, y, -vx, -350, kind - 1]);
-                        // 10% chance of additional bonus objs
-                        rand = Math.random();
-                        if (rand < .1)
-                            newobjs.push([x, y, vx, vy, rand * 30 - 4 | 0]);
-                        harpoon[2] = 1; // so that harpoon will be cleared off
-                        return; // and this elimiates the original obj
-                    }
-                }
+                if (harpoons.some(harpoon =>
+                    // harpoon == [hx, htop] & {u: used}
+                    !harpoon.u && y > harpoon[1] && lextent < harpoon[0] && harpoon[0] < rextent && (
+                        kind && newobjs.push([x, y, vx, -350, kind - 1], [x, y, -vx, -350, kind - 1]),
+                        rand = Math.random(),
+                        rand < .1 && newobjs.push([x, y, vx, vy, rand * 30 - 4 | 0]),
+                        harpoon.u = 1 // this is also a return value for harpoons.some
+                    ))
+                ) return;
             }
 
             // against player
@@ -142,22 +134,18 @@ tick = now => {
                 vy = -sz * 10 - 150;
                 if (vy < -500) vy = -500;
                 y = 410 - sz;
-                if (kind < 0 && (kind -= 10) < -50) return;
+                if (kind < 0) kind -= 10;
             }
 
             if (x < sz) vx = -vx, x = sz;
             if (x > 640 - sz) vx = -vx, x = 640 - sz;
 
-            obj[0] = x;
-            obj[1] = y;
-            obj[2] = vx;
-            obj[3] = vy;
-            obj[4] = kind;
-            return true;
-        }).concat(newobjs);
+            kind >= -50 && newobjs.push([x, y, vx, vy, kind]);
+        });
+        objs = newobjs;
 
         harpoons = harpoons.filter(
-            harpoon => !harpoon[2] && (harpoon[1] -= 400 * elapsed) > -4);
+            harpoon => !harpoon.u && (harpoon[1] -= 400 * elapsed) > -4);
     }
 
     canvas.width |= 0;
