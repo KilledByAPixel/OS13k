@@ -1,10 +1,24 @@
 <html lang=en>
-<body bgcolor=black onkeydown=keydown[event.keyCode]=lastnow onkeyup=keydown[event.keyCode]=0>
-<canvas id=canvas width=640 height=480></canvas>
+<body bgcolor=#000 onkeydown=keydown[event.keyCode]=lastnow onkeyup=keydown[event.keyCode]=0>
+<canvas id=C width=640 height=480>
 <script>
-context = canvas.getContext`2d`;
+// the following preamble is included as is:
+with(Math)with(C.getContext`2d`){
 
-lastnow =
+// ==ClosureCompiler==
+// @compilation_level ADVANCED_OPTIMIZATIONS
+// @language_out ECMASCRIPT_2019
+// @js_externs C, requestAnimationFrame, Q
+// @js_externs sin, cos, random
+// @js_externs font, textAlign, textBaseline, fliter, fillStyle, fillText, fillRect, save, transform, restore
+// @output_file_name aquapop.min.js
+// ==/ClosureCompiler==
+
+var lastnow, level, life, playerx, playervx, slowuntil, multiuntil, graceuntil;
+var keydown, objs, harpoons;
+var drawtext, drawobj, tick;
+
+lastnow = 0;
 level =
 life =
 playervx =
@@ -17,12 +31,12 @@ playerx = 320;
 keydown = {};
 objs = harpoons = []; // doesn't change when level=0 and reset at start, so can be shared
 
-drawtext = (x, y, sz, fill, text, filter/*=undefined*/) => {
-    context.font = sz + 'px a';
-    context.filter = filter; // nothing happens if undefined
-    context.fillStyle = fill;
-    context.fillText(text, x, y);
-    context.filter = 'none';
+drawtext = (x, y, sz, fill, text, textfilter) => { // textfilter optional
+    font = sz + 'px a';
+    filter = textfilter; // nothing happens if undefined
+    fillStyle = fill;
+    fillText(text, x, y);
+    filter = 'none';
 };
 
 tick = now => {
@@ -30,15 +44,15 @@ tick = now => {
     requestAnimationFrame(tick); // update can fail, so we must enqueue beforehand
 
     // our collision check is primitive, so we need to ensure the minimum frame rate
-    elapsed = now - lastnow;
+    var elapsed = now - lastnow;
     if (elapsed > 100) elapsed = 100;
-    harpoonshot = keydown[32] == lastnow;
+    var harpoonshot = keydown[32] == lastnow;
     lastnow = now;
 
     if (level || keydown[13]) {
         // enter to start (also actual reset)
         if (!level) {
-            canvas.style.filter = '';
+            C.style.filter = '';
             life = playervx = slowuntil = multiuntil = graceuntil = 0;
             playerx = 320;
             objs = [];
@@ -48,7 +62,7 @@ tick = now => {
 
         // if all remaining objects are bonuses (or none)
         if (objs.every(obj => obj[4] < 0)) {
-            template = [
+            var template = [
                 [[0, 1]],
                 [[1, 1]],
                 [[0, 2], [2, 1]],
@@ -57,9 +71,9 @@ tick = now => {
                 [[3, 2]],
                 [[0, 9]],
             ][level % 7];
-            for ([kind, count] of template)
+            for (var [kind, count] of template)
                 for (
-                    i = count++;
+                    var i = count++;
                     i;
                     objs.push([
                         640 * i-- / count,
@@ -80,22 +94,23 @@ tick = now => {
         if (harpoonshot && (!harpoons[0] || now < multiuntil))
             harpoons.push([playerx + (playervx > 0 ? 6 : -6), 410]);
 
-        objelapsed = elapsed;
+        var objelapsed = elapsed;
         if (now < slowuntil) objelapsed *= .3;
-        newobjs = [];
+        var newobjs = [];
         objs.map(([x, y, vx, vy, kind]) => {
             vy += 600 * objelapsed;
-            sz = (kind > 0) * kind * 10 + 10; // so that (x, y) +/- sz is occupied by obj
+            var sz = (kind > 0) * kind * 10 + 10; // so that (x, y) +/- sz is occupied by obj
 
             // against harpoons (for ordinary objs)
             if (kind >= 0) {
-                lextent = x - sz + (vx < 0) * vx * objelapsed;
-                rextent = x + sz + (vx > 0) * vx * objelapsed;
+                var lextent = x - sz + (vx < 0) * vx * objelapsed;
+                var rextent = x + sz + (vx > 0) * vx * objelapsed;
+                var rand;
                 if (harpoons.some(harpoon =>
                     // harpoon == [hx, htop] & {u: used}
                     !harpoon.u && y > harpoon[1] && lextent < harpoon[0] && harpoon[0] < rextent && (
                         kind && newobjs.push([x, y, vx, -350, kind - 1], [x, y, -vx, -350, kind - 1]),
-                        rand = Math.random(),
+                        rand = random(),
                         rand < .1 && newobjs.push([x, y, vx, vy, rand * 30 - 4 | 0]),
                         harpoon.u = 1 // this is also a return value for harpoons.some
                     ))
@@ -120,9 +135,9 @@ tick = now => {
                 } else if (now > graceuntil) {
                     // we can't reset right now, as drawing still happens every frame
                     // the actual reset will happen on enter
-                    canvas.style.filter = 'invert(1';
+                    C.style.filter = 'invert(1';
                     level = 0;
-                    throw 1; // this "tick" can't be continued
+                    Q(); // this "tick" can't be continued; this is a way to break out
                 }
             }
 
@@ -148,31 +163,34 @@ tick = now => {
             harpoon => !harpoon.u && (harpoon[1] -= 400 * elapsed) > -4);
     }
 
-    canvas.width |= 0;
+    C.width |= 0;
 
-    context.textAlign = 'center';
-    context.textBaseline = 'middle';
+    textAlign = 'center';
+    textBaseline = 'middle';
     drawtext(320, 240, '900 100', '#fff', level || 'Enter to start', 'blur(3px');
 
-    canvas.style.background = `linear-gradient(0, #ada996 ${0+Math.abs(Math.sin(now))*5}%, #f7e6d6 13.8%, #bbd2d8 13.8%, #66deff 15%, #57f3ff ${30+Math.cos(now)*5}%, #01a4c9 ${80+Math.cos(now)*10}%`;
+    C.style.background = `linear-gradient(0,#ada996 ${abs(sin(now))*5}%,#f7e6d6 13.8%,#bbd2d8 13.8%,#66deff 15%,#57f3ff ${30+cos(now)*5}%,#01a4c9 ${80+cos(now)*10}%`;
     objs.map(drawobj = ([x, y, vx, , kind, text]) => {
-        context.save();
-        vx > 0 && context.transform(-1, 0, 0, 1, x*2, 0);
-        sz = (kind > 0) * kind * 20 + 20;
-        filter = '';
+        save();
+        vx > 0 && transform(-1, 0, 0, 1, x*2, 0);
+        var sz = (kind > 0) * kind * 20 + 20;
+        var textfilter = '';
         if (text)
-            life ? filter = 'drop-shadow(0px 0px 10px white) drop-shadow(2px 2px 2px white)' : 0,
-            lastnow < multiuntil ? filter += ' drop-shadow(2px 4px 6px orange' : 0;
+            life ? textfilter = 'drop-shadow(0 0 10px #fff) drop-shadow(2px 2px 2px #fff)' : 0,
+            lastnow < multiuntil ? textfilter += ' drop-shadow(2px 4px 6px orange' : 0;
         drawtext(
             x, y, sz, 0,
             text || '🦐🐡🐠🐟🐙🦑🐬🐳🐋🦈⏰​⭐​💝'.substr(kind % 10 * 2, 2),
-            filter);
-        context.restore();
+            textfilter);
+        restore();
     });
     harpoons.forEach(([x, top]) =>
         drawtext(x, top, 8, '#c09e3f', '🔱') |
-        context.fillRect(x - 1, top, 2, 410 - top));
+        fillRect(x - 1, top, 2, 410 - top));
     drawobj([playerx, 390, -playervx, 0, 1, '🧜🏽‍♂️']);
 };
 tick(0);
+
+// end of closure input
+}
 </script>
