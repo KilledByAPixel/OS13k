@@ -61,26 +61,21 @@ tick = now => {
 
         // if all remaining objects are bonuses (or none)
         if (objs.every(obj => obj[4] < 0)) {
-            var template = [
-                [[0, 1]],
-                [[1, 1]],
-                [[0, 2], [2, 1]],
-                [[2, 3]],
-                [[1, 4], [3, 1]],
-                [[3, 2]],
-                [[0, 9]],
-            ][level % 7];
-            for (var [kind, count] of template)
-                for (
-                    var i = count++;
-                    i;
-                    objs.push([
-                        640 * i-- / count,
-                        -~kind * 10,
-                        100,
-                        0,
-                        kind + level / 7 | 0,
-                    ]));
+            // encoded%4 encodes kind, encoded%11 encodes count+1.
+            // if there are more kind-count pairs encoded is shifted right by 6 bits.
+            // (note that this does change mod 4/11, encoder accounts for this)
+            //
+            // A,B,D,F,G=[min(i for i in range(44) if i%4==a and i%11==b) for a,b in [(0,2),(1,2),(2,4),(3,3),(0,10)]]
+            // C,E=[min(i for i in range(4*11*64) if (i%4,i%11,(i>>6)%4,(i>>6)%11) in ((a,b+1,c,d+1), (c,d+1,a,b+1))) for a,b,c,d in [(2,1,0,2),(1,4,3,1)]]
+            // print(A,B,C,D,E,F,G)
+            for (var encoded = [24,13,168,26,343,3,32][level % 7], i; encoded; encoded >>= 6)
+                for (i = encoded % 11 - 1; i; objs.push([
+                    640 * i-- / (encoded % 11),
+                    encoded % 4 * 10 + 10,
+                    100,
+                    0,
+                    encoded % 4 + level / 7 | 0,
+                ]));
             ++level;
         }
 
