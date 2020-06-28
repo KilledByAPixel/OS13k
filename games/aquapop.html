@@ -20,7 +20,7 @@ var drawtext, drawobj, tick;
 
 var style = C.style;
 
-lastnow = 0;
+lastnow =
 level =
 life =
 playervx =
@@ -62,7 +62,7 @@ tick = now => {
         }
 
         // if all remaining objects are bonuses (or none)
-        if (objs.every(obj => obj[4] < 0)) {
+        if (objs.every(obj => obj[5])) {
             // encoded%4 encodes kind, encoded%11 encodes count+1.
             // if there are more kind-count pairs encoded is shifted right by 6 bits.
             // (note that this does change mod 4/11, encoder accounts for this)
@@ -70,13 +70,13 @@ tick = now => {
             // A,B,D,F,G=[min(i for i in range(44) if i%4==a and i%11==b) for a,b in [(0,2),(1,2),(2,4),(3,3),(0,10)]]
             // C,E=[min(i for i in range(4*11*64) if (i%4,i%11,(i>>6)%4,(i>>6)%11) in ((a,b+1,c,d+1), (c,d+1,a,b+1))) for a,b,c,d in [(2,1,0,2),(1,4,3,1)]]
             // print(A,B,C,D,E,F,G)
-            for (var encoded = [24,13,168,26,343,3,32][level % 7], i; encoded; encoded >>= 6)
+            for (var encoded = [24,13,168,26,343,3,32][level % 7], i, sz; encoded; encoded >>= 6)
                 for (i = encoded % 11 - 1; i; objs.push([
                     640 * i-- / (encoded % 11),
-                    encoded % 4 * 10 + 10,
+                    sz = -~(encoded % 4 + level / 7 | 0) * 10,
                     100,
                     0,
-                    encoded % 4 + level / 7 | 0,
+                    sz
                 ]));
             ++level;
         }
@@ -91,21 +91,20 @@ tick = now => {
 
         var objelapsed = now < slowuntil ? elapsed * .3 : elapsed;
         var newobjs = [];
-        objs.map(([x, y, vx, vy, kind], sz, rand) => (
+        objs.map(([x, y, vx, vy, sz, kind=0], rand) => (
             vy += 600 * objelapsed,
-            sz = (kind > 0) * kind * 10 + 10, // so that (x, y) +/- sz is occupied by obj
 
             // 1. for ordinary objs, collision check against harpoons
-            kind >= 0 &&
+            !kind &&
             harpoons.some(harpoon =>
                 // harpoon == [hx, htop] & {u: used}
                 !harpoon.u &&
                 y > harpoon[1] &&
                 x - sz + (vx < 0) * vx * objelapsed < harpoon[0] &&
                 x + sz + (vx > 0) * vx * objelapsed > harpoon[0] && (
-                    kind && [vx, -vx].map(vx => newobjs.push([x, y, vx, -350, kind - 1])),
+                    sz > 10 && [vx, -vx].map(vx => newobjs.push([x, y, vx, -350, sz - 10])),
                     rand = random() * 30,
-                    rand < 3 && newobjs.push([x, y, vx, vy, rand - 4 | 0]),
+                    rand < 3 && newobjs.push([x, y, vx, vy, 10, -~rand]),
                     harpoon.u = 1 // this is also a return value for harpoons.some
             ))
 
@@ -114,15 +113,16 @@ tick = now => {
             // 2. collision check against player, if harpoons didn't hit the obj
             // (marked as "<return>" is a return value for deletecur)
             (x - playerx)**2 + (y - 390)**2 < sz * sz + 20**2 && (
-                kind < 0 ?
+                kind ?
+                    // possible postprocessing: eval(' ABC'[x%5]+'=n+10')
                     (
-                        kind %= 10,
+                        kind %= 5,
                         // <return>
-                        ++kind ? // kind != -1
-                            ++kind ? // kind != -1 or -2
-                                slowuntil = now + 10 : // kind == -3
-                                multiuntil = now + 10 : // kind == -2
-                            life = 1 // kind == -1
+                        --kind ? // kind != 1
+                            --kind ? // kind != 1 or 2
+                                slowuntil = now + 10 : // kind == 3
+                                multiuntil = now + 10 : // kind == 2
+                            life = 1 // kind == 1
                         // </return>
                     )
                 // game is over when life was already 0 and grace period expires
@@ -142,17 +142,21 @@ tick = now => {
 
             // 3. move surviving objects
             x += vx * objelapsed,
-            x < sz ? (vx = -vx, x = sz) :
-            x > 640 - sz && (vx = -vx, x = 640 - sz),
+            vx =
+                x < sz ? (x = sz, -vx) :
+                x > 640 - sz ? (x = 640 - sz, -vx) :
+                vx,
 
             y += vy * objelapsed,
-            y > 410 - sz && ( // collision check against ground
-                y = 410 - sz,
-                vy = max(-sz * 10 - 150, -500),
-                kind -= kind < 0 ? 10 : 0
-            ),
+            kind +=
+                // collision check against ground, returns either 10, 0 or false
+                y > 410 - sz && (
+                    y = 410 - sz,
+                    vy = max(-sz * 10 - 150, -500),
+                    kind > 0
+                ) * 10,
 
-            kind > -50 && newobjs.push([x, y, vx, vy, kind])
+            kind < 50 && newobjs.push([x, y, vx, vy, sz, kind])
 
         ));
         objs = newobjs;
@@ -168,15 +172,15 @@ tick = now => {
     drawtext(320, 240, '900 100', '#fff', level || 'Enter to start', 'blur\(3px');
 
     style.background = `linear-gradient(0,#ada996 ${abs(sin(now))*5}%,#f7e6d6 13.8%,#bbd2d8 13.8%,#66deff 15%,#57f3ff ${30+cos(now)*5}%,#01a4c9 ${80+cos(now)*10}%`;
-    objs.map(drawobj = ([x, y, vx, , kind, text]) => {
+    objs.map(drawobj = ([x, y, vx, , sz, kind=0, text]) => {
         save();
         vx > 0 && transform(-1, 0, 0, 1, x*2, 0);
         drawtext(
             x,
             y,
-            (kind > 0) * kind * 20 + 20,
+            sz * 2,
             0,
-            text || '🦐🐡🐠🐟🐙🦑🐬🐳🐋🦈⏰​⭐​💝'.substr(kind % 10 * 2, 2),
+            text || '🦐🐡🐠🐟🐙🦑🐬🐳🐋🦈⏰​⭐​💝'.substr((sz / 10 - kind - 1) % 10 * 2, 2),
             text ?
                 (life ? 'drop-shadow(0 0 10px #fff) drop-shadow(2px 2px 2px #fff)' : '') +
                 (lastnow < multiuntil ? ' drop-shadow\(2px 4px 6px orange' : '') :
@@ -186,7 +190,7 @@ tick = now => {
     harpoons.map(([x, top]) =>
         drawtext(x, top, 8, '#c09e3f', '🔱') |
         fillRect(x - 1, top, 2, 410 - top));
-    drawobj([playerx, 390, -playervx, 0, 1, '🧜🏽‍♂️']);
+    drawobj([playerx, 390, -playervx, , 20, 0, '🧜🏽‍♂️']);
 };
 tick(0);
 
