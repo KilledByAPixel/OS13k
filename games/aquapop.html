@@ -27,11 +27,10 @@ drawobj = ([x, y, vx, , kind, text]) => {
         if (life) filter = 'drop-shadow(0px 0px 10px white) drop-shadow(2px 2px 2px white)';
         if (lastnow < multiuntil) filter += ' drop-shadow(2px 4px 6px orange';
         context.filter = filter;
-    } else {
+    } else
         // ordinary objs: first 10 characters (all ex-BMP, i.e. two units in JS)
         // bonus objs: last 3 characters (plus some ZWSP to pad to two units)
         text = '🦐🐡🐠🐟🐙🦑🐬🐳🐋🦈⏰​⭐​💝'.substr(kind % 10 * 2, 2);
-    }
     context.fillText(text, x, y);
     context.restore();
 };
@@ -68,17 +67,17 @@ tick = now => {
                 [[3, 2]],
                 [[0, 9]],
             ][level % 7];
-            for ([kind, count] of template) {
-                for (i = 0; i < count; ++i) {
+            for ([kind, count] of template)
+                for (
+                    i = count++;
+                    i;
                     objs.push([
-                        640 * (i + 1) / (count + 1),
-                        kind * 10 + 10,
+                        640 * i-- / count,
+                        -~kind * 10,
                         100,
                         0,
-                        kind + (level / 7 | 0),
-                    ]);
-                }
-            }
+                        kind + level / 7 | 0,
+                    ]));
             ++level;
         }
 
@@ -88,11 +87,11 @@ tick = now => {
         if (playerx > 620) playerx = 620;
 
         // shot harpoon if no other harpoon exists or multi is enabled
-        if (harpoonshot && (!harpoons[0] || now < multiuntil)) {
+        if (harpoonshot && (!harpoons[0] || now < multiuntil))
             harpoons.push([playerx + (playervx > 0 ? 6 : -6), 410]);
-        }
 
-        objelapsed = elapsed * (now < slowuntil ? .3 : 1);
+        objelapsed = elapsed;
+        if (now < slowuntil) objelapsed *= .3;
         newobjs = [];
         objs = objs.filter(obj => {
             ([x, y, vx, vy, kind] = obj);
@@ -107,16 +106,14 @@ tick = now => {
                     ([hx, htop, used] = harpoon);
                     if (!used && y > htop && lextent < hx && hx < rextent) {
                         // larger obj generates a pair of smaller objs when popped
-                        if (kind) {
+                        if (kind)
                             newobjs.push(
                                 [x, y, vx, -350, kind - 1],
                                 [x, y, -vx, -350, kind - 1]);
-                        }
                         // 10% chance of additional bonus objs
                         rand = Math.random();
-                        if (rand < .1) {
+                        if (rand < .1)
                             newobjs.push([x, y, vx, vy, rand * 30 - 4 | 0]);
-                        }
                         harpoon[2] = 1; // so that harpoon will be cleared off
                         return; // and this elimiates the original obj
                     }
@@ -127,9 +124,11 @@ tick = now => {
             if ((x - playerx)**2 + (y - 390)**2 < sz**2 + 20**2) {
                 if (kind < 0) {
                     kind %= 10;
-                    if (kind == -1) life = 1;
-                    if (kind == -2) multiuntil = now + 10;
-                    if (kind == -3) slowuntil = now + 10;
+                    ++kind ? // kind != -1
+                        ++kind ? // kind != -1 or -2
+                            slowuntil = now + 10 : // kind == -3
+                            multiuntil = now + 10 : // kind == -2
+                        life = 1; // kind == -1
                     return;
                 }
                 // game is over when life was already 0 and grace period expires
@@ -167,9 +166,8 @@ tick = now => {
             return true;
         }).concat(newobjs);
 
-        harpoons = harpoons.filter(harpoon => {
-            return !harpoon[2] && (harpoon[1] -= 400 * elapsed) > -4;
-        });
+        harpoons = harpoons.filter(
+            harpoon => !harpoon[2] && (harpoon[1] -= 400 * elapsed) > -4);
     }
 
     canvas.width |= 0;
