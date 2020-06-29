@@ -14,7 +14,7 @@ with(Math)with(C.getContext`2d`){
 // @output_file_name aquapop.min.js
 // ==/ClosureCompiler==
 
-var lastnow, level, life, playerx, playerxdir, slowuntil, multiuntil, graceuntil;
+var lastnow, level, life, playerx, playerxdirinv, slowuntil, multiuntil, graceuntil;
 var keydown, objs, newobjs, harpoons;
 var drawtext, drawobj, tick, style;
 var elapsed, objelapsed, harpoonshot;
@@ -25,7 +25,7 @@ style = C.style;
 lastnow =
 level =
 life =
-playerxdir =
+playerxdirinv =
 slowuntil =
 multiuntil =
 graceuntil = 0;
@@ -57,7 +57,7 @@ tick = now => {
         // enter to start (also actual reset)
         if (!level) {
             style.filter = '';
-            life = playerxdir = slowuntil = multiuntil = graceuntil = 0;
+            life = playerxdirinv = slowuntil = multiuntil = graceuntil = 0;
             playerx = 32;
             objs = [];
             harpoons = [];
@@ -84,12 +84,16 @@ tick = now => {
             ++level;
         }
 
-        playerx += playerxdir = (!keydown[37] - !keydown[39]) * 30 * elapsed;
+        playerxdirinv = !keydown[39] - !keydown[37], // -1 (right), 0 or 1 (left)
+        playerx -= playerxdirinv * 30 * elapsed;
         playerx = playerx < 2 ? 2 : playerx > 62 ? 62 : playerx;
 
         // shot harpoon if no other harpoon exists or multi is enabled
         if (harpoonshot && (!harpoons[0] || now < multiuntil))
-            harpoons.push([playerx + (playerxdir > 0 ? .6 : -.6), 41]);
+            // playerxdirinv > 0 (left): playerx + 1
+            // playerxdirinv <= 0 (right or idle): playerx - 1
+            // drawobj only inverts when playerxdivinv > 0, so this is consistent to render
+            harpoons.push([playerx - (-playerxdirinv | 1), 41]);
 
         objelapsed = now < slowuntil ? elapsed * .3 : elapsed;
         newobjs = [];
@@ -192,7 +196,7 @@ tick = now => {
         drawtext(x *= 10, top *= 10, 8, '#c09e3f', '🔱') |
         // filter is reset, so this is drawn without any filter
         fillRect(x - 1, top, 2, 410 - top));
-    drawobj([playerx, 39, -playerxdir, , 2, 0, '🧜🏽‍♂️']);
+    drawobj([playerx, 39, playerxdirinv, , 2, 0, '🧜🏽‍♂️']);
 };
 tick(0);
 
