@@ -14,18 +14,18 @@ with(Math)with(C.getContext`2d`){
 // @output_file_name aquapop.min.js
 // ==/ClosureCompiler==
 
-var lastnow, level, life, playerx, playervx, slowuntil, multiuntil, graceuntil;
+var lastnow, level, life, playerx, playerxdir, slowuntil, multiuntil, graceuntil;
 var keydown, objs, newobjs, harpoons;
 var drawtext, drawobj, tick, style;
 var elapsed, objelapsed, harpoonshot;
-var encoded, i, sz;
+var i, j, k; // short-lived temporary variables
 
 style = C.style;
 
 lastnow =
 level =
 life =
-playervx =
+playerxdir =
 slowuntil =
 multiuntil =
 graceuntil = 0;
@@ -55,7 +55,7 @@ tick = now => {
         // enter to start (also actual reset)
         if (!level) {
             style.filter = '';
-            life = playervx = slowuntil = multiuntil = graceuntil = 0;
+            life = playerxdir = slowuntil = multiuntil = graceuntil = 0;
             playerx = 320;
             objs = [];
             harpoons = [];
@@ -64,35 +64,34 @@ tick = now => {
 
         // if all remaining objects are bonuses (or none)
         if (objs.every(obj => obj[5])) {
-            // encoded%4 encodes kind, encoded%11 encodes count+1.
-            // if there are more kind-count pairs encoded is shifted right by 6 bits.
+            // k%4 encodes kind, k%11 encodes count+1.
+            // if there are more kind-count pairs k is shifted right by 6 bits.
             // (note that this does change mod 4/11, encoder accounts for this)
             //
             // A,B,D,F,G=[min(i for i in range(44) if i%4==a and i%11==b) for a,b in [(0,2),(1,2),(2,4),(3,3),(0,10)]]
             // C,E=[min(i for i in range(4*11*64) if (i%4,i%11,(i>>6)%4,(i>>6)%11) in ((a,b+1,c,d+1), (c,d+1,a,b+1))) for a,b,c,d in [(2,1,0,2),(1,4,3,1)]]
             // print(A,B,C,D,E,F,G)
-            for (encoded = [24,13,168,26,343,3,32][level % 7], i, sz; encoded; encoded >>= 6)
-                for (i = encoded % 11 - 1; i; objs.push([
-                    640 * i-- / (encoded % 11),
-                    sz = -~(encoded % 4 + level / 7 | 0) * 10,
+            for (k = [24,13,168,26,343,3,32][level % 7]; k; k >>= 6)
+                for (i = k % 11 - 1; i; objs.push([
+                    640 * i-- / (k % 11),
+                    j = -~(k % 4 + level / 7 | 0) * 10,
                     100,
                     0,
-                    sz
+                    j
                 ]));
             ++level;
         }
 
-        playervx = (!keydown[37] - !keydown[39]) * 300;
-        playerx += playervx * elapsed;
+        playerx += playerxdir = (!keydown[37] - !keydown[39]) * 300 * elapsed;
         playerx = playerx < 20 ? 20 : playerx > 620 ? 620 : playerx;
 
         // shot harpoon if no other harpoon exists or multi is enabled
         if (harpoonshot && (!harpoons[0] || now < multiuntil))
-            harpoons.push([playerx + (playervx > 0 ? 6 : -6), 410]);
+            harpoons.push([playerx + (playerxdir > 0 ? 6 : -6), 410]);
 
         objelapsed = now < slowuntil ? elapsed * .3 : elapsed;
         newobjs = [];
-        objs.map(([x, y, vx, vy, sz, kind=0], rand) => (
+        objs.map(([x, y, vx, vy, sz, kind=0]) => (
             vy += 600 * objelapsed,
 
             // 1. for ordinary objs, collision check against harpoons
@@ -104,8 +103,8 @@ tick = now => {
                 x - sz + (vx < 0) * vx * objelapsed < harpoon[0] &&
                 x + sz + (vx > 0) * vx * objelapsed > harpoon[0] && (
                     sz > 10 && [vx, -vx].map(vx => newobjs.push([x, y, vx, -350, sz - 10])),
-                    rand = random() * 30,
-                    rand < 3 && newobjs.push([x, y, vx, vy, 10, -~rand]),
+                    i = random() * 30,
+                    i < 3 && newobjs.push([x, y, vx, vy, 10, -~i]),
                     harpoon.u = 1 // this is also a return value for harpoons.some
             ))
 
@@ -190,7 +189,7 @@ tick = now => {
         drawtext(x, top, 8, '#c09e3f', '🔱') |
         // filter is reset, so this is drawn without any filter
         fillRect(x - 1, top, 2, 410 - top));
-    drawobj([playerx, 390, -playervx, , 20, 0, '🧜🏽‍♂️']);
+    drawobj([playerx, 390, -playerxdir, , 20, 0, '🧜🏽‍♂️']);
 };
 tick(0);
 
