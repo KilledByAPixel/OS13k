@@ -10,15 +10,17 @@ with(Math)with(C.getContext`2d`){
 // @language_out ECMASCRIPT_2019
 // @js_externs C, requestAnimationFrame, Q
 // @js_externs sin, cos, random, min, max
-// @js_externs font, textAlign, textBaseline, fliter, fillStyle, fillText, fillRect, save, transform, restore
+// @js_externs font, textAlign, textBaseline, fliter, fillStyle, fillText, fillRect, transform, resetTransform
 // @output_file_name aquapop.min.js
 // ==/ClosureCompiler==
 
 var lastnow, level, life, playerx, playervx, slowuntil, multiuntil, graceuntil;
-var keydown, objs, harpoons;
-var drawtext, drawobj, tick;
+var keydown, objs, newobjs, harpoons;
+var drawtext, drawobj, tick, style;
+var elapsed, objelapsed, harpoonshot;
+var encoded, i, sz;
 
-var style = C.style;
+style = C.style;
 
 lastnow =
 level =
@@ -35,10 +37,9 @@ objs = harpoons = []; // doesn't change when level=0 and reset at start, so can 
 
 drawtext = (x, y, sz, fill, text, textfilter) => { // textfilter optional
     font = sz + 'px a';
-    filter = textfilter; // nothing happens if undefined
+    filter = textfilter || 'none';
     fillStyle = fill;
     fillText(text, x, y);
-    filter = 'none';
 };
 
 tick = now => {
@@ -46,8 +47,8 @@ tick = now => {
     requestAnimationFrame(tick); // update can fail, so we must enqueue beforehand
 
     // our collision check is primitive, so we need to ensure the minimum frame rate
-    var elapsed = now - lastnow < 100 ? now - lastnow : 100;
-    var harpoonshot = keydown[32] == lastnow;
+    elapsed = now - lastnow < 100 ? now - lastnow : 100;
+    harpoonshot = keydown[32] == lastnow;
     lastnow = now;
 
     if (level || keydown[13]) {
@@ -70,7 +71,7 @@ tick = now => {
             // A,B,D,F,G=[min(i for i in range(44) if i%4==a and i%11==b) for a,b in [(0,2),(1,2),(2,4),(3,3),(0,10)]]
             // C,E=[min(i for i in range(4*11*64) if (i%4,i%11,(i>>6)%4,(i>>6)%11) in ((a,b+1,c,d+1), (c,d+1,a,b+1))) for a,b,c,d in [(2,1,0,2),(1,4,3,1)]]
             // print(A,B,C,D,E,F,G)
-            for (var encoded = [24,13,168,26,343,3,32][level % 7], i, sz; encoded; encoded >>= 6)
+            for (encoded = [24,13,168,26,343,3,32][level % 7], i, sz; encoded; encoded >>= 6)
                 for (i = encoded % 11 - 1; i; objs.push([
                     640 * i-- / (encoded % 11),
                     sz = -~(encoded % 4 + level / 7 | 0) * 10,
@@ -89,8 +90,8 @@ tick = now => {
         if (harpoonshot && (!harpoons[0] || now < multiuntil))
             harpoons.push([playerx + (playervx > 0 ? 6 : -6), 410]);
 
-        var objelapsed = now < slowuntil ? elapsed * .3 : elapsed;
-        var newobjs = [];
+        objelapsed = now < slowuntil ? elapsed * .3 : elapsed;
+        newobjs = [];
         objs.map(([x, y, vx, vy, sz, kind=0], rand) => (
             vy += 600 * objelapsed,
 
@@ -172,23 +173,22 @@ tick = now => {
     drawtext(320, 240, '900 100', '#fff', level || 'Enter to start', 'blur\(3px');
 
     style.background = `linear-gradient(0,#ada996 ${abs(sin(now))*5}%,#f7e6d6 13.8%,#bbd2d8 13.8%,#66deff 15%,#57f3ff ${30+cos(now)*5}%,#01a4c9 ${80+cos(now)*10}%`;
-    objs.map(drawobj = ([x, y, vx, , sz, kind=0, text]) => {
-        save();
-        vx > 0 && transform(-1, 0, 0, 1, x*2, 0);
-        drawtext(
-            x,
-            y,
-            sz * 2,
-            0,
-            text || '🦐🐡🐠🐟🐙🦑🐬🐳🐋🦈⏰​⭐​💝'.substr((sz / 10 - kind - 1) % 10 * 2, 2),
-            text ?
-                (life ? 'drop-shadow(0 0 10px #fff) drop-shadow(2px 2px 2px #fff)' : '') +
-                (lastnow < multiuntil ? ' drop-shadow\(2px 4px 6px orange' : '') :
-            0);
-        restore();
-    });
+    objs.map(drawobj = ([x, y, vx, , sz, kind=0, text]) =>
+        resetTransform(
+            drawtext(
+                x,
+                y,
+                sz * 2,
+                0,
+                text || '🦐🐡🐠🐟🐙🦑🐬🐳🐋🦈⏰​⭐​💝'.substr((sz / 10 - kind - 1) % 10 * 2, 2),
+                text ?
+                    (life ? 'drop-shadow(0 0 10px #fff) drop-shadow(2px 2px 2px #fff)' : '') +
+                    (lastnow < multiuntil ? ' drop-shadow\(2px 4px 6px orange' : '') :
+                0,
+                vx > 0 && transform(-1, 0, 0, 1, x*2, 0))));
     harpoons.map(([x, top]) =>
         drawtext(x, top, 8, '#c09e3f', '🔱') |
+        // filter is reset, so this is drawn without any filter
         fillRect(x - 1, top, 2, 410 - top));
     drawobj([playerx, 390, -playervx, , 20, 0, '🧜🏽‍♂️']);
 };
