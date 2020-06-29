@@ -47,7 +47,7 @@ tick = now => {
     requestAnimationFrame(tick); // update can fail, so we must enqueue beforehand
 
     // our collision check is primitive, so we need to ensure the minimum frame rate
-    elapsed = now - lastnow < 100 ? now - lastnow : 100;
+    elapsed = now - lastnow < .1 ? now - lastnow : .1;
     harpoonshot = keydown[32] == lastnow;
     lastnow = now;
 
