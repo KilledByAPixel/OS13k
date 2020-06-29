@@ -1,5 +1,4 @@
-<html lang=en>
-<body bgcolor=0 onkeydown=keydown[event.keyCode]=lastnow onkeyup=keydown[event.keyCode]=0>
+<body bgcolor=0 style="margin:0" onkeydown=keydown[event.keyCode]=lastnow onkeyup=keydown[event.keyCode]=0>
 <canvas id=C width=640 height=480>
 <script>
 // the following preamble is included as is:
@@ -108,7 +107,10 @@ tick = now => {
                     harpoon.u = 1 // this is also a return value for harpoons.some
             ))
 
-        ) || (
+        ) ||
+        y<sz
+        ||
+        (
 
             // 2. collision check against player, if harpoons didn't hit the obj
             // (marked as "<return>" is a return value for deletecur)
@@ -189,8 +191,8 @@ tick = now => {
     });
     harpoons.map(([x, top]) =>
         drawtext(x, top, 8, '#c09e3f', '🔱') |
-        fillRect(x - 1, top, 2, 410 - top));
-    drawobj([playerx, 390, -playervx, , 20, 0, '🧜🏽‍♂️']);
+        fillRect(x - 1, top, 2, 414 - top));
+    drawobj([playerx, 400, -playervx, , 20, 0, '🧜🏽‍♂️']);
 };
 tick(0);
 
