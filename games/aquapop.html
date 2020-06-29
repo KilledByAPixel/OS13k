@@ -13,27 +13,30 @@
 /* only used for terser
 var lastnow, level, life, playerx, playerxdirinv, slowuntil, multiuntil, graceuntil;
 var keydown, objs, newobjs, harpoons;
-var drawtext, drawobj, tick, style;
+var reset, drawtext, drawobj, tick, style;
 var elapsed, objelapsed, harpoonshot;
 var i, j, k; // short-lived temporary variables
 //*/
 
-style = C.style;
+reset = _ =>
+    // no pre-press advantage :-) also, we can put anything to the first few elements
+    keydown = [
+        lastnow =
+        level =
+        life =
+        playerxdirinv =
+        slowuntil =
+        multiuntil =
+        graceuntil = 0,
 
-lastnow =
-level =
-life =
-playerxdirinv =
-slowuntil =
-multiuntil =
-graceuntil = 0;
+        // all coordinates (including object sizes) are scaled by 10 to get simpler numbers,
+        // except for `sz` argument of drawtext which should be scaled by the caller
+        playerx = 32,
 
-// all coordinates (including object sizes) are scaled by 10 to get simpler numbers,
-// except for `sz` argument of drawtext which should be scaled by the caller
-playerx = 32;
-
-keydown = {};
-objs = harpoons = []; // does not change when level=0 and reset at start, so can be shared
+        objs = [],
+        harpoons = []
+    ];
+reset(style = C.style);
 
 drawtext = (x, y, sz, fill, text, textfilter) => { // textfilter optional
     font = sz + "px a";
@@ -53,14 +56,7 @@ tick = now => {
 
     if (level || keydown[13]) {
         // enter to start (also actual reset)
-        if (!level) {
-            style.filter = "";
-            life = playerxdirinv = slowuntil = multiuntil = graceuntil = 0;
-            playerx = 32;
-            objs = [];
-            harpoons = [];
-            keydown = {}; // no pre-press advantage :-)
-        }
+        level || reset(style.filter = "");
 
         // if all remaining objects are bonuses (or none)
         if (objs.every(obj => obj[5])) {
