@@ -30,7 +30,9 @@ slowuntil =
 multiuntil =
 graceuntil = 0;
 
-playerx = 320;
+// all coordinates (including object sizes) are scaled by 10 to get simpler numbers,
+// except for drawtext's `sz` argument which should be scaled by the caller
+playerx = 32;
 
 keydown = {};
 objs = harpoons = []; // doesn't change when level=0 and reset at start, so can be shared
@@ -39,7 +41,7 @@ drawtext = (x, y, sz, fill, text, textfilter) => { // textfilter optional
     font = sz + 'px a';
     filter = textfilter || 'none';
     fillStyle = fill;
-    fillText(text, x, y);
+    fillText(text, x * 10, y * 10);
 };
 
 tick = now => {
@@ -56,7 +58,7 @@ tick = now => {
         if (!level) {
             style.filter = '';
             life = playerxdir = slowuntil = multiuntil = graceuntil = 0;
-            playerx = 320;
+            playerx = 32;
             objs = [];
             harpoons = [];
             keydown = {}; // no pre-press advantage :-)
@@ -73,26 +75,26 @@ tick = now => {
             // print(A,B,C,D,E,F,G)
             for (k = [24,13,168,26,343,3,32][level % 7]; k; k >>= 6)
                 for (i = k % 11 - 1; i; objs.push([
-                    640 * i-- / (k % 11),
-                    j = -~(k % 4 + level / 7 | 0) * 10,
-                    100,
+                    64 * i-- / (k % 11),
+                    j = k % 4 + level / 7 + 1 | 0,
+                    10,
                     0,
                     j
                 ]));
             ++level;
         }
 
-        playerx += playerxdir = (!keydown[37] - !keydown[39]) * 300 * elapsed;
-        playerx = playerx < 20 ? 20 : playerx > 620 ? 620 : playerx;
+        playerx += playerxdir = (!keydown[37] - !keydown[39]) * 30 * elapsed;
+        playerx = playerx < 2 ? 2 : playerx > 62 ? 62 : playerx;
 
         // shot harpoon if no other harpoon exists or multi is enabled
         if (harpoonshot && (!harpoons[0] || now < multiuntil))
-            harpoons.push([playerx + (playerxdir > 0 ? 6 : -6), 410]);
+            harpoons.push([playerx + (playerxdir > 0 ? .6 : -.6), 41]);
 
         objelapsed = now < slowuntil ? elapsed * .3 : elapsed;
         newobjs = [];
         objs.map(([x, y, vx, vy, sz, kind=0]) => (
-            vy += 600 * objelapsed,
+            vy += 60 * objelapsed,
 
             // 1. for ordinary objs, collision check against harpoons
             !kind &&
@@ -102,9 +104,10 @@ tick = now => {
                 y > harpoon[1] &&
                 x - sz + (vx < 0) * vx * objelapsed < harpoon[0] &&
                 x + sz + (vx > 0) * vx * objelapsed > harpoon[0] && (
-                    sz > 10 && [vx, -vx].map(vx => newobjs.push([x, y, vx, -350, sz - 10])),
+                    // now this object is gone, can modify any local var as wanted
+                    --sz && [vx, -vx].map(vx => newobjs.push([x, y, vx, -35, sz])),
                     i = random() * 30,
-                    i < 3 && newobjs.push([x, y, vx, vy, 10, -~i]),
+                    i < 3 && newobjs.push([x, y, vx, vy, 1, -~i]),
                     harpoon.u = 1 // this is also a return value for harpoons.some
             ))
 
@@ -112,7 +115,7 @@ tick = now => {
 
             // 2. collision check against player, if harpoons didn't hit the obj
             // (marked as "<return>" is a return value for deletecur)
-            (x - playerx)**2 + (y - 390)**2 < sz * sz + 20**2 && (
+            (x - playerx)**2 + (y - 39)**2 < sz * sz + 2 * 2 && (
                 kind ?
                     // possible postprocessing: eval(' ABC'[x%5]+'=n+10')
                     (
@@ -144,15 +147,15 @@ tick = now => {
             x += vx * objelapsed,
             vx =
                 x < sz ? (x = sz, -vx) :
-                x > 640 - sz ? (x = 640 - sz, -vx) :
+                x > 64 - sz ? (x = 64 - sz, -vx) :
                 vx,
 
             y += vy * objelapsed,
             kind +=
                 // collision check against ground, returns either 10, 0 or false
-                y > 410 - sz && (
-                    y = 410 - sz,
-                    vy = max(-sz * 10 - 150, -500),
+                y > 41 - sz && (
+                    y = 41 - sz,
+                    vy = -min(sz * 10 + 15, 50),
                     kind > 0
                 ) * 10,
 
@@ -162,14 +165,14 @@ tick = now => {
         objs = newobjs;
 
         harpoons = harpoons.filter(
-            harpoon => !harpoon.u && (harpoon[1] -= 400 * elapsed) > -4);
+            harpoon => !harpoon.u && (harpoon[1] -= 40 * elapsed) > -.4);
     }
 
     C.width |= 0;
 
     textAlign = 'center';
     textBaseline = 'middle';
-    drawtext(320, 240, '900 100', '#fff', level || 'Enter to start', 'blur\(3px');
+    drawtext(32, 24, '900 100', '#fff', level || 'Enter to start', 'blur\(3px');
 
     style.background = `linear-gradient(0,#ada996 ${abs(sin(now))*5}%,#f7e6d6 13.8%,#bbd2d8 13.8%,#66deff 15%,#57f3ff ${30+cos(now)*5}%,#01a4c9 ${80+cos(now)*10}%`;
     objs.map(drawobj = ([x, y, vx, , sz, kind=0, text]) =>
@@ -177,19 +180,19 @@ tick = now => {
             drawtext(
                 x,
                 y,
-                sz * 2,
+                sz * 20,
                 0,
-                text || '🦐🐡🐠🐟🐙🦑🐬🐳🐋🦈⏰​⭐​💝'.substr((sz / 10 - kind - 1) % 10 * 2, 2),
+                text || '🦐🐡🐠🐟🐙🦑🐬🐳🐋🦈⏰​⭐​💝'.substr((sz - kind - 1) % 10 * 2, 2),
                 text ?
                     (life ? 'drop-shadow(0 0 10px #fff) drop-shadow(2px 2px 2px #fff)' : '') +
                     (lastnow < multiuntil ? ' drop-shadow\(2px 4px 6px orange' : '') :
                 0,
-                vx > 0 && transform(-1, 0, 0, 1, x*2, 0))));
+                vx > 0 && transform(-1, 0, 0, 1, x*20, 0))));
     harpoons.map(([x, top]) =>
-        drawtext(x, top, 8, '#c09e3f', '🔱') |
+        drawtext(x *= 10, top *= 10, 8, '#c09e3f', '🔱') |
         // filter is reset, so this is drawn without any filter
         fillRect(x - 1, top, 2, 410 - top));
-    drawobj([playerx, 390, -playerxdir, , 20, 0, '🧜🏽‍♂️']);
+    drawobj([playerx, 39, -playerxdir, , 2, 0, '🧜🏽‍♂️']);
 };
 tick(0);
 
