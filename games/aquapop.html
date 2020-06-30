@@ -31,12 +31,13 @@ reset(style = a.style),
 // fillorxdir is either fillStyle (texts, harpoons) or -1/+1 x direction (objects, player)
 // textfilter is optional
 drawtext = (x, y, fillorxdir, sz, text, textfilter) =>
-    resetTransform( // no arguments required
+    setTransform(
+        fillorxdir > 0 ? -10 : 10, 0, 0, 10, fillorxdir > 0 ? x * 20 : 0, 0,
+        // stray arguments for parentheses-free exprs
         font = sz + "px a",
         filter = textfilter || "none",
-        fillStyle = fillorxdir,
-        fillorxdir > 0 && transform(-1, 0, 0, 1, x * 20, 0),
-        fillText(text, x * 10, y * 10)),
+        fillStyle = fillorxdir) |
+    fillText(text, x, y),
 
 tick = now => {
     now /= 1e3;
@@ -169,19 +170,19 @@ tick = now => {
 
     textAlign = "center";
     textBaseline = "middle";
-    drawtext(32, 24, "#fff", "900 100", level || "Enter to start", "blur\(3px");
+    drawtext(32, 24, "#fff", "900 10", level || "Enter to start", "blur\(3px");
 
     style.background = `linear-gradient(0,#ada996 ${abs(sin(now))*5}%,#f7e6d6 13.8%,#bbd2d8 13.8%,#66deff 15%,#57f3ff ${30+cos(now)*5}%,#01a4c9 ${80+cos(now)*10}%`;
     objs.map(([x, y, xdir, , sz, kind]) =>
-        drawtext(x, y, xdir, sz * 20,
+        drawtext(x, y, xdir, sz * 2,
             // sz + ~kind == sz - (kind || 0) - 1
             "🦐🐡🐠🐟🐙🦑🐬🐳🐋🦈⏰​⭐​💝".substr((sz + ~kind) % 10 * 2, 2)));
     harpoons.map(([x, top]) =>
-        drawtext(x, top, "#c09e3f", 8, "🔱") |
-        // filter is reset, so this is drawn without any filter
-        fillRect(x * 10 - 1, top *= 10, 2, 414 - top));
+        drawtext(x, top, "#c09e3f", .8, "🔱") |
+        // drawtext always fixes filter (unset) and transform (flipped at x) at this point
+        fillRect(x + .1, top, .2, 41.4 - top));
     drawtext(
-        playerx, 40, playerxdirinv, 40, "🧜🏽‍♂️",
+        playerx, 40, playerxdirinv, 4, "🧜🏽‍♂️",
         (life ? "drop-shadow(0 0 10px #fff) drop-shadow(2px 2px 2px #fff)" : "") +
             (lastnow < multiuntil ? " drop-shadow\(2px 4px 6px orange" : ""));
 },
