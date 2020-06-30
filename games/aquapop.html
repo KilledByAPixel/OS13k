@@ -52,25 +52,35 @@ tick = now => {
         // enter to start (also actual reset)
         level || reset(style.filter = "");
 
-        // if all remaining objects are bonuses (or none)
-        if (objs.every(obj => obj[5])) {
-            // k%4 encodes kind, k%11 encodes count+1.
-            // if there are more kind-count pairs k is shifted right by 6 bits.
-            // (note that this does change mod 4/11, encoder accounts for this)
-            //
-            // A,B,D,F,G=[min(i for i in range(44) if i%4==a and i%11==b) for a,b in [(0,2),(1,2),(2,4),(3,3),(0,10)]]
-            // C,E=[min(i for i in range(4*11*64) if (i%4,i%11,(i>>6)%4,(i>>6)%11) in ((a,b+1,c,d+1), (c,d+1,a,b+1))) for a,b,c,d in [(2,1,0,2),(1,4,3,1)]]
-            // print(A,B,C,D,E,F,G)
-            for (k = [24,13,168,26,343,3,32][level % 7]; k; k >>= 6)
-                for (i = k % 11 - 1; i; objs.push([
-                    64 * i-- / (k % 11),
-                    j = k % 4 + level / 7 + 1 | 0,
-                    10,
-                    0,
-                    j
-                ]));
-            ++level;
-        }
+        for (
+            // if all remaining objects are bonuses (or none), increase and rebuild the level
+            k = objs.every(obj => obj[5]) &&
+                // k%5 encodes kind, k%11 encodes count+1.
+                // this encoding is always possible due to Chinese (Sun-tzu) remainder theorem.
+                // if there are more kind-count pairs k is shifted right by 6 bits.
+                // (note that this does change mod 4/11, encoder accounts for this)
+                /*
+                [[0,2], [1,2], [0,3,2,2], [2,4], [1,5,3,2], [3,3], [0,10]].map(([a,b,c,d], level) => {
+                    // level is read twice, once unmodified, later increased. account for the latter.
+                    if (level < 6) ++a, ++c;
+                    for (let i = 1; i < 5*11*64; ++i) {
+                        if (i%5==a && i%11==b && (d ? (i>>6)%5==c && (i>>6)%11==d : (i>>6)==0 || (i>>6)%11==0)) return i;
+                        // if there are two entries, also try the other order
+                        if (d && i%5==c && i%11==d && (i>>6)%5==a && (i>>6)%11==b) return i;
+                    }
+                })
+                */
+                [46,2,861,48,1567,14,10][level++ % 7];
+            k;
+            k >>= 6
+        )
+            for (i = k % 11 - 1; i; objs.push([
+                64 * i-- / (k % 11),
+                j = k % 5 + level / 7 | 0,
+                10,
+                0,
+                j
+            ]));
 
         playerxdirinv = !keydown[39] - !keydown[37], // -1 (right), 0 or 1 (left)
         playerx -= playerxdirinv * 30 * elapsed;
