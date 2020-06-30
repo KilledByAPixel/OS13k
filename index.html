@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?130></script>
+<script src=programs.js?131></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -1476,6 +1476,21 @@ class OS13kWindow extends HTMLElement
         
         // create the iframe
         this.CreateFrame();
+        
+        // set active and clamp
+        this.SetActive(1, 1);
+    }
+    
+    WriteToFrame(code)
+    {
+        // open iframe to write code
+        const iframeDocument = this.iframeContent.document;
+        iframeDocument.open();
+
+        // set on error now to catch errors on load
+        this.iframeContent.onerror =(message, source, lineno, colno, e)=>((this.errorText.value = e), true);
+        this.program.safeCode && iframeDocument.write(code);
+        iframeDocument.close();
     }
     
     CreateFrame()
@@ -1489,8 +1504,11 @@ class OS13kWindow extends HTMLElement
         const program = this.program;
         
         // wait for frame to load
-        const loadFrame =e=>
+        const loadFrame =(reload)=>
         {
+            // rewrite the code to iframe user program reloaded itself
+            reload && this.WriteToFrame(program.info.code);
+
             // check for special extensions
             program.info.user && (program.info.code.trim()[0] != '<' ?
                 program.isDweet = !( program.isShader = program.info.code.search(/void\s+mainImage/) >= 0) :
@@ -1527,12 +1545,10 @@ class OS13kWindow extends HTMLElement
             if (hasExtension && program.safeCode) try
             {
                 // create the canvas, this way seems to fix probmens with firefox
-                iframeDocument.open();
-                iframeDocument.write(
-                `<canvas id=c width=1920 height=1080 style=background:${
-                        program.isShader ?
-                        '#000' : '#fff' };width:100%>`);
-                iframeDocument.close();
+                this.WriteToFrame(
+                    `<canvas id=c width=1920 height=1080 style=background:${
+                    program.isShader ?
+                    '#000' : '#fff' };width:100%>`);
 
                 // set body style
                 iframeDocument.body.style =
@@ -1615,8 +1631,11 @@ class OS13kWindow extends HTMLElement
             // update loading
             loading = loading && --loading
             
-            // set active if not grabbing and update startup routine
-            OS13kSystem.UpdateStartup(grabWindow || this.SetActive());
+            // update startup routine
+            OS13kSystem.UpdateStartup();
+
+            // listen for reload
+            program.info.user && (iframe.onload =()=> loadFrame(1));
         }
         
         // load src, force pages to be refreshed
@@ -1635,23 +1654,15 @@ class OS13kWindow extends HTMLElement
                     this.liveEdit.checked && this.Reload(program.safeCode = 1), e);
 
                 // write code to iframe
-                iframeContent.document.body.innerHTML = '';
-
-                // write code to iframe
-                iframeContent.document.open();
-
-                // set on error now to catch errors on load
-                iframeContent.onerror=(message, source, lineno, colno, e)=>((this.errorText.value = e), true);
-                program.safeCode && iframeContent.document.write(program.info.code);
-                iframeContent.document.close();
+                this.WriteToFrame(program.info.code);
 
                 // load frame immediatly
                 loadFrame();
         }
         else
         {
-            this.iframe.src = program.src + '?13';
-            iframe.onload = loadFrame;
+            this.iframe.src = program.src + '?14';
+            iframe.onload =()=> loadFrame();
         }
     }
         
