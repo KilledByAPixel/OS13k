@@ -17,7 +17,7 @@ defaultFlags = full|reload|resize,
 defaultWidth = 720, defaultHeight = 405, // 16:9 aspect
 
 // program format
-//[src, icon, width, height, flags, name, help, folder, systemFlags]
+//[src, icon, width, height, flags, name, help, folder]
 
 programs = 
 [

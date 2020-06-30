@@ -1560,9 +1560,9 @@ class OS13kWindow extends HTMLElement
             {
                 // create the canvas, this way seems to fix probmens with firefox
                 this.WriteToFrame(
-                    `<canvas id=c width=1920 height=1080 style=background:${
+                    `<canvas id=c width=1920 height=1080 style=width:100%;background:${
                     program.isShader ?
-                    '#000' : '#fff' };width:100%>`);
+                    '#000' : '#fff' }>`);
 
                 // set body style
                 iframeDocument.body.style =
