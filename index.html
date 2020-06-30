@@ -1033,11 +1033,18 @@ class OS13kProgramMenu extends HTMLElement
         this.style.visibility = 'visible';
     }
 
-    AddCustomProgram(userCode, icon='✋', name)
+    AddCustomProgram(copyProgram)
     {
+        let icon = '✋', name, width, height,
+            code = 'for(x.fillRect(0,0,i=W=2e3,W);i--;)\nx.clearRect((S(i)*1e9-t*i/9)%W,i*9%W,i%9,i%7)';
+
         // create new program
-        const program = new OS13kProgram(...
-            [,icon,,,defaultFlags|code,name,,,++nextUserProgramId]);
+        const program = new OS13kProgram(...(
+            copyProgram ? 
+            [, 
+            copyProgram.icon, copyProgram.width, copyProgram.height, defaultFlags|code, 
+                copyProgram.name + ' (Copy)', , ,++nextUserProgramId] :
+            [,'✋',,,defaultFlags|code,,,,++nextUserProgramId]));
         
         // add to menu program infos
         this.programInfos.push({program});
@@ -1047,10 +1054,15 @@ class OS13kProgramMenu extends HTMLElement
         loadIcon.windowOrMenu.Rebuild();
         
         // set code and open
-        program.info.code = userCode;
+        program.info.code = copyProgram ? copyProgram.info.code :
+            'for(x.fillRect(0,0,i=W=2e3,W);i--;)\nx.clearRect((S(i)*1e9-t*i/9)%W,i*9%W,i%9,i%7)';
         program.info.user = 1;
+        copyProgram && (
+            program.info.scale = copyProgram.info.scale,
+            windowOpenX = copyProgram.info.x,
+            windowOpenY = copyProgram.info.y + titlebarHeight);
         program.Open();
-        
+            
         // mark code as safe reload and show code
         program.window.Reload(program.safeCode = 1);
         program.window.ShowCode(1);
@@ -1083,7 +1095,7 @@ class OS13kProgram extends HTMLElement
             .replace(/([a-z](?=[A-Z]))/g, '$1 ');
             
         // make first letter uppercase and set if no name
-        name = name || (userProgramId ? "Program " + userProgramId :
+        name = name || (userProgramId ? "User Program " + userProgramId :
             srcCleanName[0].toUpperCase() + srcCleanName.slice(1));
         
         // check for special extensions
@@ -1207,8 +1219,7 @@ class OS13kProgram extends HTMLElement
         else if (this.flags & newUserProgram)
         {
             // create user program with default code
-            this.programMenu.AddCustomProgram(
-                'for(x.fillRect(0,0,i=W=2e3,W);i--;)\nx.clearRect((S(i)*1e9-t*i/9)%W,i*9%W,i%9,i%7)');
+            this.programMenu.AddCustomProgram();
             
             // prevent main document focus
             return false;
@@ -1259,8 +1270,8 @@ class OS13kProgram extends HTMLElement
             width: this.width,
             height: this.height,
             open,
-            x: open | this.sticky ? this.window.style.left : 0,
-            y: this.window.style.top,
+            x: open | this.sticky ? parseInt(this.window.style.left) : 0,
+            y: parseInt(this.window.style.top),
             scale: open | this.sticky ? this.window.scale : 1,
             code: this.info.code,
             user: this.info.code != undefined
@@ -1366,17 +1377,15 @@ class OS13kWindow extends HTMLElement
             this.codeDisplay.appendChild(document.createElement('div'));
         codeOptions.id = 'codeOptions';
         
-        codeOptions.style = 'font-size:16;padding:10;white-space:normal' +
-            (program.info.user ? '' : ';display:none');
+        codeOptions.style = 'font-size:16;padding:10;overflow:auto' + (program.info.user ? '' : ';display:none');
 
         codeOptions.innerHTML =
-            '<span style=display:none><a id=A></a><canvas id=V></canvas></span>' +
-            '<span style=white-space:nowrap>Icon <input style=width:50 id=I></span> ' +
-            '<span style=white-space:nowrap>Name <input style=width:99 id=N></span> ' +
-            '<span style=white-space:nowrap>Size <input style=width:50 type=number id=W> x <input style=width:50 type=number id=H></span> ' +            
-            '<span style=white-space:nowrap>Live Edit <input type=checkbox id=L checked></span> &nbsp;' +
-            '<button id=S>📷</button> ' +
-            '<span style=white-space:nowrap><button id=C>Copy</button> <button id=D>Delete';
+            'Icon <input style=width:50 id=I> ' +
+            'Name <input id=N> ' +
+            'Size <input style=width:50 type=number id=W> x <input style=width:50 type=number id=H><br><br> ' +  
+            '&nbsp;<button id=S>📷</button> <button id=C>Copy</button> <button id=D>Delete</button> ' +
+            'Live Edit <input type=checkbox id=L checked>' +
+            '<a id=A></a><canvas id=V style=display:none></canvas>';
 
         const errorText = this.errorText =
             this.codeDisplay.appendChild(document.createElement('textarea'));
@@ -1384,14 +1393,7 @@ class OS13kWindow extends HTMLElement
         errorText.readOnly = 'true';
         
         // copy button
-        this.shadowRoot.getElementById('C').onmousedown=()=>
-        {
-            // set copy to be same scale as parent and place directly bellow
-            const newProgram = program.programMenu.AddCustomProgram(program.info.code, program.icon, program.name + ' (Copy)');
-            newProgram.window.Resize(this.scale);
-            newProgram.window.style.left = parseInt(this.style.left);
-            newProgram.window.style.top = parseInt(this.style.top) + titlebarHeight;
-        }
+        this.shadowRoot.getElementById('C').onmousedown=()=>program.programMenu.AddCustomProgram(program);
 
         // delete button
         this.shadowRoot.getElementById('D').onmousedown=()=>
@@ -1625,8 +1627,8 @@ class OS13kWindow extends HTMLElement
                 if (!program.info.user) throw e;
             }
             
-            // mouse down on iframe to load unsafe code
-            program.safeCode || (iframeContent.onmousedown=()=> this.Reload(program.safeCode = 1));
+            // mouse down on iframe to load unsafe code, and call normal mousedown
+            program.safeCode || (iframeContent.onmousedown =e=>(this.Reload(program.safeCode = 1), onmousedown(e)));
             
             // prevent iframes context menu, reload if mouse down and not safe
             iframeContent.oncontextmenu =()=> false;
