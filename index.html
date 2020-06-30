@@ -1035,9 +1035,6 @@ class OS13kProgramMenu extends HTMLElement
 
     AddUserProgram(copyProgram)
     {
-        let icon = '✋', name, width, height,
-            code = 'for(x.fillRect(0,0,i=W=2e3,W);i--;)\nx.clearRect((S(i)*1e9-t*i/9)%W,i*9%W,i%9,i%7)';
-
         // create new program
         const program = new OS13kProgram(...(
             copyProgram ? 
@@ -1055,7 +1052,7 @@ class OS13kProgramMenu extends HTMLElement
         
         // set code and open
         program.info.code = copyProgram ? copyProgram.info.code :
-            '// Auto detects HTML, Dweet, or Shadertoy and saves your code! Alt+Enter = Reload ✌️😄\nfor(x.fillRect(0,0,i=W=2e3,W);i--;)\nx.clearRect((S(i)*1e9-t*i/9)%W,i*9%W,i%9,i%7)';
+            '// Auto detects HTML, Dweet, or Shadertoy! ✌️😄\n// Alt+Enter = Reload  Drag+Drop = Load File\nfor(x.fillRect(0,0,i=W=2e3,W);i--;)\nx.clearRect((S(i)*1e9-t*i/9)%W,i*9%W,i%9,i%7)';
         program.info.user = 1;
         copyProgram && (
             program.info.scale = copyProgram.info.scale,
@@ -1380,7 +1377,7 @@ class OS13kWindow extends HTMLElement
         codeOptions.style = 'font-size:16;padding:10;overflow:auto' + (program.info.user ? '' : ';display:none');
 
         codeOptions.innerHTML =
-            'Icon <input style=width:50 id=I> ' +
+            'Icon <input style=width:35 id=I> ' +
             'Name <input id=N> ' +
             'Size <input style=width:50 type=number id=W> x <input style=width:50 type=number id=H><br><br> ' +  
             '&nbsp;<button id=S>📷</button> <button id=C>Copy</button> <button id=D>Delete</button> ' +
@@ -1633,8 +1630,8 @@ class OS13kWindow extends HTMLElement
             // mouse down on iframe to load unsafe code, and call normal mousedown
             program.safeCode || (iframeContent.onmousedown =e=>(this.Reload(program.safeCode = 1), onmousedown(e)));
             
-            // prevent iframes context menu, reload if mouse down and not safe
-            iframeContent.oncontextmenu =()=> false;
+            // prevent iframes context menu and drop events
+            iframeContent.ondragover = iframeContent.ondrop = iframeContent.oncontextmenu =()=> false;
             
             // add taskbar icon if it doesnt exist (from being reloaded)
             this.taskbarIcon || (this.taskbarIcon = new OS13kTaskbarIcon(program, this));
@@ -1662,7 +1659,7 @@ class OS13kWindow extends HTMLElement
                 this.codeText.onkeydown =e=> !e.altKey ||
                     (e.keyCode == 13 && this.SetCode(this.codeText.value), e.keyCode != 18);
                 this.codeText.oninput =e=> this.liveEdit.checked && this.SetCode(this.codeText.value);
-                    
+
                 // reload when mouse pressed if not safe
                 this.codeText.onmousedown =e=> (program.safeCode || 
                     this.liveEdit.checked && this.Reload(program.safeCode = 1), e);
@@ -2073,6 +2070,29 @@ onmouseup=e=>
 oncontextmenu=e=>false;
             
 } // mouse input
+
+///////////////////////////////////////////////////////////////////////////////
+// Drag and Drop
+
+// prevent default drop events
+ondragover =e=>false;
+
+// allow drag and drop code into editor
+ondrop =e=>
+{
+    const originalTarget = e.originalTarget || e.path[0];
+    if (originalTarget.id == 'codeText' && e.target.program.info.user)
+    {
+        // read file and reload
+        const target = e.target;
+        const reader = new FileReader();
+        reader.readAsText(e.dataTransfer.files[0], 'UTF-8'); 
+
+        // set code and set active
+        reader.onload =e=>target.SetActive(1,0,target.SetCode(target.codeText.value = e.target.result));
+    }
+    return false;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // ZzFXMicro - Zuper Zmall Zound Zynth
