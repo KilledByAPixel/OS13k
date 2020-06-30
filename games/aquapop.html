@@ -78,8 +78,8 @@ tick = now => {
                 64 * i-- / (k % 11),
                 j = k % 5 + level / 7 | 0,
                 10,
-                0,
-                j
+                j,
+                0
             ]));
 
         playerxdirinv = !keydown[39] - !keydown[37], // -1 (right), 0 or 1 (left)
@@ -94,7 +94,7 @@ tick = now => {
 
         objelapsed = now < slowuntil ? elapsed * .3 : elapsed;
         newobjs = [];
-        objs.map(([x, y, vx, vy, sz, kind]) => (
+        objs.map(([x, y, vx, sz, vy, kind]) => (
             vy += 60 * objelapsed,
 
             // 1. for ordinary objs, collision check against harpoons
@@ -106,11 +106,13 @@ tick = now => {
                 x - sz + (vx < 0) * vx * objelapsed < harpoon[0] &&
                 x + sz + (vx > 0) * vx * objelapsed > harpoon[0] && (
                     // now this object is gone, can modify any local var as wanted
-                    --sz && [vx, -vx].map(vx => newobjs.push([x, y, vx, -35, sz])),
+                    // possible postprocessing: rename vx to match the outer scope
+                    --sz && [vx, -vx].map(vx => newobjs.push([x, y, vx, sz, -35])),
                     i = random() * 30,
-                    i < 3 && newobjs.push([x, y, vx, vy, 1, -~i]),
-                    harpoon.u = 1 // this is also a return value for harpoons.some
-            ))
+                    // always set to non-zero because Array.push returns this.length
+                    // there is a extremely small chance of i == 3, we ignore that
+                    // this is also a return value for harpoons.some
+                    harpoon.u = i > 3 || newobjs.push([x, y, vx, 1, vy, -~i])))
 
         ) ||
 
@@ -143,7 +145,7 @@ tick = now => {
                     // the actual reset will happen on enter
                     style.filter = "invert\(1",
                     level = 0,
-                    Z() // this "tick" cannot be continued; this is a way to break out
+                    Z // this "tick" cannot be continued; this is a way to break out
                 ) : 0 // <return>
             )
 
@@ -166,7 +168,7 @@ tick = now => {
                     10),
 
             // also works when kind is undefined or NaN
-            kind > 50 || newobjs.push([x, y, vx, vy, sz, kind])
+            kind > 50 || newobjs.push([x, y, vx, sz, vy, kind])
 
         ));
         objs = newobjs;
@@ -182,14 +184,14 @@ tick = now => {
     drawtext(32, 24, "#fff", "900 10", level || "Enter to start", "blur\(3px");
 
     style.background = `linear-gradient(0,#ada996 ${/*Math.*/abs(/*Math.*/sin(now))*5}%,#f7e6d6 13.8%,#bbd2d8 13.8%,#66deff 15%,#57f3ff ${30+/*Math.*/cos(now)*5}%,#01a4c9 ${80+/*Math.*/cos(now)*10}%`;
-    objs.map(([x, y, xdir, , sz, kind]) =>
-        drawtext(x, y, xdir, sz * 2,
+    objs.map(([x, y, vx, sz, , kind]) =>
+        drawtext(x, y, vx, sz * 2,
             // sz + ~kind == sz - (kind || 0) - 1
             "🦐🐡🐠🐟🐙🦑🐬🐳🐋🦈⏰​⭐​💝".substr((sz + ~kind) % 10 * 2, 2)));
     harpoons.map(([x, top]) =>
         drawtext(x, top, "#c09e3f", .8, "🔱") |
         // drawtext always fixes filter (unset) and transform (flipped at x) at this point
-        /*c.*/fillRect(x + .1, top, .2, 41.4 - top));
+        /*c.*/fillRect(.1 + x, top, .2, 41.4 - top));
     drawtext(
         playerx, 40, playerxdirinv, 4, "🧜🏽‍♂️",
         (life ? "drop-shadow(0 0 10px #fff) drop-shadow(2px 2px 2px #fff)" : "") +
