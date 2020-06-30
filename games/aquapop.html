@@ -84,7 +84,7 @@ tick = now => {
 
         objelapsed = now < slowuntil ? elapsed * .3 : elapsed;
         newobjs = [];
-        objs.map(([x, y, vx, vy, sz, kind=0]) => (
+        objs.map(([x, y, vx, vy, sz, kind]) => (
             vy += 60 * objelapsed,
 
             // 1. for ordinary objs, collision check against harpoons
@@ -147,15 +147,16 @@ tick = now => {
                 vx,
 
             y += vy * objelapsed,
+            // check against ground; this is `kind += false` or `kind += 10`
+            // if kind is undefined or NaN, kind becomes NaN, which is falsy thus okay
             kind +=
-                // collision check against ground, returns either 10, 0 or false
                 y > 41 - sz && (
                     y = 41 - sz,
                     vy = -min(sz * 10 + 15, 50),
-                    kind > 0
-                ) * 10,
+                    10),
 
-            kind < 50 && newobjs.push([x, y, vx, vy, sz, kind])
+            // also works when kind is undefined or NaN
+            kind > 50 || newobjs.push([x, y, vx, vy, sz, kind])
 
         ));
         objs = newobjs;
