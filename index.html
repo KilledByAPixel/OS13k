@@ -1384,7 +1384,8 @@ class OS13kWindow extends HTMLElement
             'Name <input id=N> ' +
             'Size <input style=width:50 type=number id=W> x <input style=width:50 type=number id=H><br><br> ' +  
             '&nbsp;<button id=S>📷</button> <button id=C>Copy</button> <button id=D>Delete</button> ' +
-            'Live Edit <input type=checkbox id=L checked>' +
+            '&nbsp;Live Edit <input type=checkbox id=L checked> ' +
+            `&nbsp;<span id=Z></span> Bytes` +
             '<a id=A></a><canvas id=V style=display:none></canvas>';
 
         const errorText = this.errorText =
@@ -1441,11 +1442,13 @@ class OS13kWindow extends HTMLElement
         const nameInput = this.shadowRoot.getElementById('N');
         const widthInput = this.shadowRoot.getElementById('W');
         const heightInput = this.shadowRoot.getElementById('H');
+        this.codeSize = this.shadowRoot.getElementById('Z');
         this.liveEdit = this.shadowRoot.getElementById('L'); 
         nameInput.value = program.name; 
         iconInput.value = program.icon;
         widthInput.value = program.width; 
         heightInput.value = program.height;
+        this.codeSize.innerHTML = program.info.code && [...program.info.code].length;
 
         // set new icon and name when changed
         iconInput.oninput =
@@ -1681,6 +1684,7 @@ class OS13kWindow extends HTMLElement
     {
         // set code when changed
         this.program.info.code = code;
+        this.codeSize.innerHTML = [...code].length;
         this.program.Save();
 
         // reset iframe
