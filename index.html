@@ -1735,7 +1735,7 @@ class OS13kWindow extends HTMLElement
         sound && OS13kSystem.Sound(sound);
     
         // change size of window while preserving aspect
-        const wNew = OS13k.Clamp(this.program.width * scale, 300, 1920);
+        const wNew = OS13k.Clamp(this.program.width * scale, 200, 1920);
         const hNew = this.program.height * (this.scale = wNew / this.program.width);
         
         // get old width
