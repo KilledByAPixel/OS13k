@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?132></script>
+<script src=programs.js?133></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -234,19 +234,26 @@ const OS13kVersion = 68;
     {
         alert('No programs found, using defaults!')
 
-        var sticky=2**0, reload=2**1, awake=2**2, full=2**3, resize=2**4, code=2**5;
-        var defaultFlags = full|reload|resize, defaultWidth = 720, defaultHeight = 405;
-        var programs = 
+        var sticky=2**0, reload=2**1, awake=2**2, full=2**3, resize=2**4, code=2**5,
+        closeAll = 2**7, newUserProgram = 2**8, clearUserPrograms = 2**9,
+        defaultFlags = full|reload|resize, defaultWidth = 720, defaultHeight = 405,
+        programs = 
         [
-            [,'❌',,,,'Close All'],
+            [,'❌',,,closeAll,'Close All'],
             ['help.html','<b><span style=color:#0f0>?',380,400,sticky],
 
             [,'⚙️',,,,'System',,
             [
-                ['system/settings.html','🎚️',470,160,sticky],
-                ['system/trophyCase.html','🏆',,,resize|sticky],
+                ['system/settings.html','🎚️',470,190,sticky],
+                ['system/trophyCase.html','🏆',,,full|resize|sticky],
                 ['system/clock.dweet.js','🕰️',200,200,sticky|code|awake],
                 ['system/systemTest.html',,600,370,defaultFlags|code],
+            ]],
+            
+            [,'😀',,,,'User Programs',,
+            [
+                [,'📌',,,newUserProgram,'New User Program'],
+                [,'⚠️',,,clearUserPrograms,'Clear User Programs'],
             ]]
         ];
     }
@@ -1367,9 +1374,9 @@ class OS13kWindow extends HTMLElement
             '<span style=white-space:nowrap>Icon <input style=width:50 id=I></span> ' +
             '<span style=white-space:nowrap>Name <input style=width:99 id=N></span> ' +
             '<span style=white-space:nowrap>Size <input style=width:50 type=number id=W> x <input style=width:50 type=number id=H></span> ' +            
-            '<button id=S>📷</button> ' +
             '<span style=white-space:nowrap>Live Edit <input type=checkbox id=L checked></span> &nbsp;' +
-            '<span style=white-space:nowrap><button id=C>Copy</button> &nbsp; <button id=D>Delete';
+            '<button id=S>📷</button> ' +
+            '<span style=white-space:nowrap><button id=C>Copy</button> <button id=D>Delete';
 
         const errorText = this.errorText =
             this.codeDisplay.appendChild(document.createElement('textarea'));

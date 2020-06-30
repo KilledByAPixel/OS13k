@@ -85,8 +85,5 @@ programs =
 [
     [,'📌',,,newUserProgram,'New User Program'],
     [,'⚠️',,,clearUserPrograms,'Clear User Programs'],
-    /*['dweets/blackHole.dweet.js','🌌',,,edit|defaultFlags,'User 1'],
-    ['dweets/underwaterCavern.dweet.js','🌊',,,edit|defaultFlags,'User 2'],
-    ['dweets/cityTraffic.dweet.js','🚌',,,edit|defaultFlags,'User 3'],*/
 ]],
 ]; // programs
