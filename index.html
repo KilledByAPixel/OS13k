@@ -1047,6 +1047,9 @@ class OS13kProgramMenu extends HTMLElement
         // mark code as safe reload and show code
         program.window.Reload(program.safeCode = 1);
         program.window.ShowCode(1);
+
+        // focus on input
+        program.window.codeText.focus();
         return program;
     }
 
