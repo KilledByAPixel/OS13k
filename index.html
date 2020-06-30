@@ -790,7 +790,7 @@ class _OS13kSystem
         buttonFullScreen.onmousedown =()=> activeWindow.FullScreen();
         buttonHelp.onmousedown       =
         buttonCode.onmousedown       =()=> activeWindow.ShowCode();
-        buttonResetSize.onmousedown  =()=> activeWindow.Resize(1, soundGrow, activeWindow.SetActive(1, 1));
+        buttonResetSize.onmousedown  =()=> activeWindow.SetActive(1, 1, activeWindow.Resize(1, soundGrow));
         buttonReload.onmousedown     =()=> activeWindow.Reload();
         buttonClose.onmousedown      =()=> activeWindow.Close();
 
