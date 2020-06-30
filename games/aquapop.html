@@ -31,13 +31,13 @@ reset(style = a.style),
 // fillorxdir is either fillStyle (texts, harpoons) or -1/+1 x direction (objects, player)
 // textfilter is optional
 drawtext = (x, y, fillorxdir, sz, text, textfilter) =>
-    setTransform(
+    /*c.*/setTransform(
         fillorxdir > 0 ? -10 : 10, 0, 0, 10, fillorxdir > 0 ? x * 20 : 0, 0,
         // stray arguments for parentheses-free exprs
-        font = sz + "px a",
-        filter = textfilter || "none",
-        fillStyle = fillorxdir) |
-    fillText(text, x, y),
+        /*c.*/font = sz + "px a",
+        /*c.*/filter = textfilter || "none",
+        /*c.*/fillStyle = fillorxdir) |
+    /*c.*/fillText(text, x, y),
 
 tick = now => {
     now /= 1e3;
@@ -83,8 +83,7 @@ tick = now => {
             ]));
 
         playerxdirinv = !keydown[39] - !keydown[37], // -1 (right), 0 or 1 (left)
-        playerx -= playerxdirinv * 30 * elapsed;
-        playerx = playerx < 2 ? 2 : playerx > 62 ? 62 : playerx;
+        playerx = /*Math.*/min(/*Math.*/max(playerx - playerxdirinv * 30 * elapsed, 2), 62);
 
         // shot harpoon if no other harpoon exists or multi is enabled
         if (harpoonshot && (!harpoons[0] || now < multiuntil))
@@ -122,7 +121,7 @@ tick = now => {
 
             // 2. collision check against player, if harpoons did not hit the obj
             // (marked as "<return>" is a return value for deletecur)
-            hypot(x - playerx, y - 39) < sz + 2 && (
+            /*Math.*/hypot(x - playerx, y - 39) < sz + 2 && (
                 kind ?
                     // possible postprocessing: eval(" ABC"[x%5]+"=n+10")
                     (
@@ -163,7 +162,7 @@ tick = now => {
             kind +=
                 y > 41 - sz && (
                     y = 41 - sz,
-                    vy = -min(sz * 10 + 15, 50),
+                    vy = -/*Math.*/min(sz * 10 + 15, 50),
                     10),
 
             // also works when kind is undefined or NaN
@@ -178,11 +177,11 @@ tick = now => {
 
     a.width |= 0;
 
-    textAlign = "center";
-    textBaseline = "middle";
+    /*c.*/textAlign = "center";
+    /*c.*/textBaseline = "middle";
     drawtext(32, 24, "#fff", "900 10", level || "Enter to start", "blur\(3px");
 
-    style.background = `linear-gradient(0,#ada996 ${abs(sin(now))*5}%,#f7e6d6 13.8%,#bbd2d8 13.8%,#66deff 15%,#57f3ff ${30+cos(now)*5}%,#01a4c9 ${80+cos(now)*10}%`;
+    style.background = `linear-gradient(0,#ada996 ${/*Math.*/abs(/*Math.*/sin(now))*5}%,#f7e6d6 13.8%,#bbd2d8 13.8%,#66deff 15%,#57f3ff ${30+/*Math.*/cos(now)*5}%,#01a4c9 ${80+/*Math.*/cos(now)*10}%`;
     objs.map(([x, y, xdir, , sz, kind]) =>
         drawtext(x, y, xdir, sz * 2,
             // sz + ~kind == sz - (kind || 0) - 1
@@ -190,7 +189,7 @@ tick = now => {
     harpoons.map(([x, top]) =>
         drawtext(x, top, "#c09e3f", .8, "🔱") |
         // drawtext always fixes filter (unset) and transform (flipped at x) at this point
-        fillRect(x + .1, top, .2, 41.4 - top));
+        /*c.*/fillRect(x + .1, top, .2, 41.4 - top));
     drawtext(
         playerx, 40, playerxdirinv, 4, "🧜🏽‍♂️",
         (life ? "drop-shadow(0 0 10px #fff) drop-shadow(2px 2px 2px #fff)" : "") +
