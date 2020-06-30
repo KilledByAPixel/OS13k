@@ -1877,7 +1877,7 @@ class OS13kWindow extends HTMLElement
         this.program.window = 0;
         
         // remove taskbar icon and self
-        this.taskbarIcon.remove();
+        this.taskbarIcon && this.taskbarIcon.remove();
         this.remove();
         
         OS13kSystem.Sound(soundClose);
