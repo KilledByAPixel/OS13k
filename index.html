@@ -484,7 +484,8 @@ class _OS13k
         catch(e) {console.log(e)}
     }
     
-    GetAnalyzer() { return analyzerCanvas; }
+    GetAnalyzer() { return analyserCanvas; }
+    GetAnalyserData() { return analyserData; }
     
     // get frequency of a musical note on a diatonic scale
     Note(semitoneOffset=0, rootNoteFrequency=440)
@@ -745,7 +746,7 @@ const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26,
 
 let grabWindow, grabOffsetX, grabOffsetY, finishedStartup, nextUserProgramId = 0,
     activeWindow, activeProgram, activeTaskbarIcon, loadIcon, 
-    analyzerCanvas, lastMusicTime = -analyzerWaitTime,
+    analyserCanvas, analyserData = [], lastMusicTime = -analyzerWaitTime,
     lastActiveFrame, topZ = 0, loading = 0, hadInput = 0,
     windowOpenX = startOpenOffset, windowOpenY = startOpenOffset + taskbarHeight,
     startProgram, startProgramId, programInfos = [], trophies = [],
@@ -787,8 +788,8 @@ class _OS13kSystem
         clockTrayIcon     = new OS13kTrayIcon();
         
         // create analyzer canvas
-        analyzerCanvas = musicTrayIcon.appendChild(document.createElement('canvas'));
-        analyzerCanvas.style = 'width:16;height:16;margin:2;pointer-events:none'
+        analyserCanvas = musicTrayIcon.appendChild(document.createElement('canvas'));
+        analyserCanvas.style = 'width:16;height:16;margin:2;pointer-events:none'
         
         // listen for trophies from other windows
         onstorage=e=> this.CheckForTrophy(e.key);
@@ -868,26 +869,27 @@ class _OS13kSystem
             = clockTrayIcon.title.replace(/.*(\d+:\d+):.*/, '$1');
         
         // get analyzer data
-        const frequencyData = new Uint8Array(musicAnalyser.fftSize = 64),
-            context = analyzerCanvas.getContext('2d');
+        musicAnalyser.fftSize = 64
+        const frequencyData = new Uint8Array(analyserCanvas.width = analyserCanvas.height = 32),
+            context = analyserCanvas.getContext('2d');
         musicAnalyser.getByteFrequencyData(frequencyData);
-        analyzerCanvas.width = analyzerCanvas.height = 32;
         
         // render analyzer
         let total = 0, i = 0;
         for(; i < 32; )
         {
             // get frequency band volume and adjust for loudness
-            const volume = frequencyData[i] * -8/255
-                * (1 + Math.log10((i+.5) * defaultSampleRate / 64 ));
+            const volume = frequencyData[i] / 255
+                * (1 + Math.log10((i+.5) * defaultSampleRate / 32 ));
 
             // draw the loudness bar
-            context.fillStyle = `hsl(${9*volume - 99} 99%50%)`;
-            context.fillRect(i, 30, 1, volume);
+            context.fillStyle = `hsl(${-99-69*volume} 99%50%)`;
+            context.fillRect(i, 31, 1, -8*volume);
             
-            // bottom row of pixels is loudness
-            context.fillStyle = `hsl(0 0%${-3*volume}%)`;
-            context.fillRect(i++, 31, 1, 1);
+            // set anaylzer data, normalize between 0-1
+            analyserData[i++] = OS13k.Clamp(volume / 5, 0, 1);
+
+            // track total volume
             total += volume;
         }
         
@@ -895,7 +897,7 @@ class _OS13kSystem
         total && (lastMusicTime = time);
         
         // set analyzer visibility
-        analyzerCanvas.style.display = 
+        analyserCanvas.style.display = 
             time - lastMusicTime < analyzerWaitTime ? '' : 'none';
         
         // show popups after startup is finished and there was input
@@ -1674,7 +1676,7 @@ class OS13kWindow extends HTMLElement
         }
         else
         {
-            this.iframe.src = program.src + '?14';
+            this.iframe.src = program.src + '?15';
             iframe.onload =()=> loadFrame();
         }
     }
@@ -2029,8 +2031,7 @@ onmousedown=e=>
             (target.SetActive ? target : loadIcon).SetActive();
 
             // get which menu to open
-            const targetMenu = e.target.menu 
-                ? (OS13kSystem.Sound(soundMenu, .5), menu) : programsMenu;
+            const targetMenu = e.target.menu ? (OS13kSystem.Sound(soundMenu, .5), menu) : programsMenu;
 
             // show context menu
             targetMenu.style.left = e.x;
