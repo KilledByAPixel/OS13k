@@ -38,12 +38,15 @@ reset = _ =>
     ];
 reset(style = C.style);
 
-drawtext = (x, y, sz, fill, text, textfilter) => { // textfilter optional
-    font = sz + "px a";
-    filter = textfilter || "none";
-    fillStyle = fill;
-    fillText(text, x * 10, y * 10);
-};
+// fillorxdir is either fillStyle (texts, harpoons) or -1/+1 x direction (objects, player)
+// textfilter is optional
+drawtext = (x, y, fillorxdir, sz, text, textfilter) =>
+    resetTransform( // no arguments required
+        font = sz + "px a",
+        filter = textfilter || "none",
+        fillStyle = fillorxdir,
+        fillorxdir > 0 && transform(-1, 0, 0, 1, x * 20, 0),
+        fillText(text, x * 10, y * 10));
 
 tick = now => {
     now /= 1e3;
@@ -110,8 +113,10 @@ tick = now => {
             ))
 
         ) ||
-        y<sz
-        ||
+
+        // 1 1/2. all objects hit the ceiling disappear
+        y < sz ||
+
         (
 
             // 2. collision check against player, if harpoons did not hit the obj
@@ -173,27 +178,21 @@ tick = now => {
 
     textAlign = "center";
     textBaseline = "middle";
-    drawtext(32, 24, "900 100", "#fff", level || "Enter to start", "blur\(3px");
+    drawtext(32, 24, "#fff", "900 100", level || "Enter to start", "blur\(3px");
 
     style.background = `linear-gradient(0,#ada996 ${abs(sin(now))*5}%,#f7e6d6 13.8%,#bbd2d8 13.8%,#66deff 15%,#57f3ff ${30+cos(now)*5}%,#01a4c9 ${80+cos(now)*10}%`;
-    objs.map(drawobj = ([x, y, vx, , sz, kind=0, text]) =>
-        resetTransform(
-            drawtext(
-                x,
-                y,
-                sz * 20,
-                0,
-                text || "🦐🐡🐠🐟🐙🦑🐬🐳🐋🦈⏰​⭐​💝".substr((sz - kind - 1) % 10 * 2, 2),
-                text ?
-                    (life ? "drop-shadow(0 0 10px #fff) drop-shadow(2px 2px 2px #fff)" : "") +
-                    (lastnow < multiuntil ? " drop-shadow\(2px 4px 6px orange" : "") :
-                0,
-                vx > 0 && transform(-1, 0, 0, 1, x*20, 0))));
+    objs.map(([x, y, xdir, , sz, kind]) =>
+        drawtext(x, y, xdir, sz * 20,
+            // sz + ~kind == sz - (kind || 0) - 1
+            "🦐🐡🐠🐟🐙🦑🐬🐳🐋🦈⏰​⭐​💝".substr((sz + ~kind) % 10 * 2, 2)));
     harpoons.map(([x, top]) =>
-        drawtext(x *= 10, top *= 10, 8, "#c09e3f", "🔱") |
+        drawtext(x, top, "#c09e3f", 8, "🔱") |
         // filter is reset, so this is drawn without any filter
-        fillRect(x - 1, top, 2, 414 - top));
-    drawobj([playerx, 40, playerxdirinv, , 2, 0, "🧜🏽‍♂️"]);
+        fillRect(x * 10 - 1, top *= 10, 2, 414 - top));
+    drawtext(
+        playerx, 40, playerxdirinv, 40, "🧜🏽‍♂️",
+        (life ? "drop-shadow(0 0 10px #fff) drop-shadow(2px 2px 2px #fff)" : "") +
+            (lastnow < multiuntil ? " drop-shadow\(2px 4px 6px orange" : ""));
 };
 tick(0);
 
