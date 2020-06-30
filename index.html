@@ -1836,6 +1836,9 @@ class OS13kWindow extends HTMLElement
         this.codeDisplay.style.display = 
             (this.showCode = !this.showCode) ? 'inline' : '';
         
+        // set active and clamp to window
+        activeWindow.SetActive(1, 1);
+
         silent || OS13kSystem.Sound(this.program.help ? soundHelp : soundCode);
         this.program.help || OS13k.Trophy('OS13k','👨‍💻','Hacker','Viewed Code');
     }
@@ -1845,6 +1848,9 @@ class OS13kWindow extends HTMLElement
         // update program info
         this.program.info.user && (this.program.info.code = this.codeText.value);
         this.program.Save();
+        
+        // set active and clamp to window
+        activeWindow.SetActive(1, 1);
         
         // reload program or reload iframe and set invisible
         this.iframeContent &&
