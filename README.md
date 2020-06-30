@@ -40,19 +40,20 @@ Add an icon config to programs.js to register your program, and send me pull req
 - Prefix all local storage keys with OS13kYourProgramName to prevent collisions during JS13k (use at least 2 letters)
 - When the reload button is clicked, OS13kReload is called if it exists instead of reloading the iframe
 - OS13k works well on mobile devices, so we could have a separate entry for the JS13k mobile category
-- We recommend [Brackets](http://brackets.io/) for development, but you can use whatever you want
+- For development we recommend [VSCode](https://code.visualstudio.com/) with the [Live Server Plugin](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer)
+- You can also create a custom program to edit code directly in OS13k.
 
 ### Minification Tips
 - The goal is to fit as much as possible into 13 kilobytes so everything must be small and clean
 - For inclusion in the JS13k build, programs need be around 100-500 bytes when minified
 - *Always remember, this will be zipped! Don't over golf your code.*
-- There is less overhead for common functions calls and html tags then program logic
-- Try to limit your use of non repeated text strings, those compresses the worst, use emojis where possible
-- Don't compress your code in any way, let zip do the work for us
-- Dweets and Shadertoys are great for making programs with smaller setup
+- There is much less overhead for common functions calls and html tags then program logic
+- Try to limit your use of non repeated text strings, those compresses the worst, try using emojis
+- Don't compress your code, let zip do the work for us
+- Dweets and Shadertoys can help save space by reducing setup cost
 - You do not need charset=utf-8, it will be applied automatically
 - For the OS13k core system we are using [Google Closer](https://closure-compiler.appspot.com/home) and [Terser](https://xem.github.io/terser-online)
-- For JS13k we will pack everything together into one giant html file before zipping to save space
+- For JS13k we will pack everything together into one massive html file before zipping to save space
 
 ### Games
 - *JS13k is a game development competition, so we need to focus on games and fun apps*
