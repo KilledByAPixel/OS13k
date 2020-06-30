@@ -1,16 +1,6 @@
-<body bgcolor=0 style=margin:0 onkeydown=keydown[event.keyCode]=lastnow onkeyup=keydown[event.keyCode]=0 onload='with(Math)with(C.getContext`2d`)
-{ // the preamble above is included as is
+<body bgcolor=0 style=margin:0 onkeydown=keydown[event.keyCode]=lastnow onkeyup=keydown[event.keyCode]=0 onload='with(Math)with(a.getContext`2d`)
+/* copy & paste from here; we need to tell terser to mangle global variables
 
-// ==ClosureCompiler==
-// @compilation_level ADVANCED_OPTIMIZATIONS
-// @language_out ECMASCRIPT_2019
-// @js_externs C, requestAnimationFrame, Q
-// @js_externs sin, cos, random, min, max
-// @js_externs font, textAlign, textBaseline, fliter, fillStyle, fillText, fillRect, transform, resetTransform
-// @output_file_name aquapop.min.js
-// ==/ClosureCompiler==
-
-/* only used for terser
 var lastnow, level, life, playerx, playerxdirinv, slowuntil, multiuntil, graceuntil;
 var keydown, objs, newobjs, harpoons;
 var reset, drawtext, drawobj, tick, style;
@@ -35,8 +25,8 @@ reset = _ =>
 
         objs = [],
         harpoons = []
-    ];
-reset(style = C.style);
+    ],
+reset(style = a.style),
 
 // fillorxdir is either fillStyle (texts, harpoons) or -1/+1 x direction (objects, player)
 // textfilter is optional
@@ -46,7 +36,7 @@ drawtext = (x, y, fillorxdir, sz, text, textfilter) =>
         filter = textfilter || "none",
         fillStyle = fillorxdir,
         fillorxdir > 0 && transform(-1, 0, 0, 1, x * 20, 0),
-        fillText(text, x * 10, y * 10));
+        fillText(text, x * 10, y * 10)),
 
 tick = now => {
     now /= 1e3;
@@ -121,7 +111,7 @@ tick = now => {
 
             // 2. collision check against player, if harpoons did not hit the obj
             // (marked as "<return>" is a return value for deletecur)
-            (x - playerx)**2 + (y - 39)**2 < sz * sz + 2 * 2 && (
+            hypot(x - playerx, y - 39) < sz + 2 && (
                 kind ?
                     // possible postprocessing: eval(" ABC"[x%5]+"=n+10")
                     (
@@ -143,7 +133,7 @@ tick = now => {
                     // the actual reset will happen on enter
                     style.filter = "invert\(1",
                     level = 0,
-                    Q() // this "tick" cannot be continued; this is a way to break out
+                    Z() // this "tick" cannot be continued; this is a way to break out
                 ) : 0 // <return>
             )
 
@@ -174,7 +164,7 @@ tick = now => {
             harpoon => !harpoon.u && (harpoon[1] -= 40 * elapsed) > -.4);
     }
 
-    C.width |= 0;
+    a.width |= 0;
 
     textAlign = "center";
     textBaseline = "middle";
@@ -193,8 +183,7 @@ tick = now => {
         playerx, 40, playerxdirinv, 40, "🧜🏽‍♂️",
         (life ? "drop-shadow(0 0 10px #fff) drop-shadow(2px 2px 2px #fff)" : "") +
             (lastnow < multiuntil ? " drop-shadow\(2px 4px 6px orange" : ""));
-};
+},
 tick(0);
 
-// end of closure input
-}'><canvas id=C width=640 height=480>
+'><canvas id=a width=640 height=480>
