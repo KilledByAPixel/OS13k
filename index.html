@@ -166,7 +166,7 @@ body
 }
 #codeText
 {
-    height:199;
+    height:99;
     background:#000;
     color:#fff;
 }
@@ -1363,11 +1363,11 @@ class OS13kWindow extends HTMLElement
             (program.info.user ? '' : ';display:none');
 
         codeOptions.innerHTML =
-            '<button id=S>📷</button> &nbsp;' +
             '<span style=display:none><a id=A></a><canvas id=V></canvas></span>' +
             '<span style=white-space:nowrap>Icon <input style=width:50 id=I></span> ' +
             '<span style=white-space:nowrap>Name <input style=width:99 id=N></span> ' +
-            '<span style=white-space:nowrap>Size <input style=width:50 type=number id=W> x <input style=width:50 type=number id=H></span> ' +
+            '<span style=white-space:nowrap>Size <input style=width:50 type=number id=W> x <input style=width:50 type=number id=H></span> ' +            
+            '<button id=S>📷</button> ' +
             '<span style=white-space:nowrap>Live Edit <input type=checkbox id=L checked></span> &nbsp;' +
             '<span style=white-space:nowrap><button id=C>Copy</button> &nbsp; <button id=D>Delete';
 
@@ -1519,7 +1519,7 @@ class OS13kWindow extends HTMLElement
             const hasExtension = program.isDweet || program.isShader;
 
             // only dweets and shadertoys can do screenshots
-            this.screenshot.disabled = !hasExtension;
+            this.screenshot.disabled = !hasExtension || !program.safeCode;
 
             // show error messages from user code
             program.info.user && (iframeContent.onerror =(message, source, lineno, colno, e)=>((this.errorText.value = e), true));
