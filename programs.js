@@ -31,7 +31,7 @@ programs =
     ['system/systemTest.html',,600,370,defaultFlags|code],
     [,'📁',,,,'Test',,
     [
-        ['index.html','✌️😄',,,,'Meta OS13k asd asd asd asd asd asd sa '],
+        ['index.html','✌️😄',,,,'Meta OS13k'],
     ]],
 ]],
 [,'🛠️',,,,'Apps',,
