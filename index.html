@@ -1198,7 +1198,7 @@ class OS13kProgram extends HTMLElement
         {
             // create user program with default code
             this.programMenu.AddCustomProgram(
-                'x.fillRect(0,0,i=F=2e3,F)\nfor(;i--;)\nx.clearRect((S(i)*1e9-t*i/9)%F,i*9%F,j=i%7,j)');
+                'for(x.fillRect(0,0,i=2e3,i);i--;)\nx.clearRect(960+900*S(i*2),540+500*C(t+i*3),29,29)');
             
             // prevent main document focus
             return false;
@@ -1806,6 +1806,9 @@ class OS13kWindow extends HTMLElement
     {
         // check if full screen allowed
         if (!this.program.full) return;
+
+        // reload code if it wasnt safe yet
+        !this.program.safeCode && this.Reload(this.program.safeCode = 1);
         
         // set full screen
         this.iframeWrapper.webkitRequestFullScreen &&
