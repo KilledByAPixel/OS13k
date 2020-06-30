@@ -1570,10 +1570,10 @@ class OS13kWindow extends HTMLElement
                     
                 // loop protection for user dweets
                 const code = program.info.user && !program.isShader? 
-                    'OS13kL=Date.now()+200;' +
+                    'OS13kL=0;' +
                     iframeText.replace(
                         /(for\s*\((?!\s+of\s+)(?!\s+in\s+)[^;]*;[^;]*;|while\s*\()\s*(\S)/g, (a, b, c)=> b && c ? b +
-                        `Date.now()>OS13kL&&(e=>{throw'Timed out!'})()` +
+                        `++OS13kL>1e5&&(u=e=>{throw'Timed out!'})()` +
                         (c == ')' ? '' : ',') + c : a ) : iframeText;
 
                 iframeContent.OS13kW = this;
