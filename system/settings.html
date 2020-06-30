@@ -17,15 +17,15 @@ f=
 [
     ['Default',  ''],
     ['Gray',     'grayscale('],
-    ['Game Boy', 'sepia()hue-rotate(40deg)contrast(.8'],
+    ['Game Boy', 'sepia()hue-rotate(40deg)contrast(.8)brightness(.8'],
     ['Ocean',    'invert()sepia()invert('],
     ['Sepia',    'sepia('],
     ['Fruity',   'saturate(9',]
 ];
 
 // load settings
-O = parent.OS13k;                  // get OS13k
-i = O.Settings();                  // get settings
+O = parent.OS13k;                 // get OS13k
+i = O.Settings();                 // get settings
 V.value   = i.v * 100;            // volume
 M.value   = i.m * 100;            // music volume
 S.checked = i.s;                  // speech
@@ -35,7 +35,7 @@ C.value   = i.c;                  // color 1
 D.value   = i.d;                  // color 2
 T.value   = i.t;                  // background text
 t = f.findIndex(e=>e[1]==i.f);    // find filter
-t = t < 0 ? 0 : t;                 // filter
+t = t < 0 ? 0 : t;                // filter
 
 // rebuild and save settings
 s=e=>

@@ -1,22 +1,27 @@
 // flags
 var 
-sticky  = 2**0, // always save position and if open
-reload  = 2**1, // show reload button
-awake   = 2**2, // prevent dim and pause when not active
-full    = 2**3, // show full screen button
-resize  = 2**4, // show resize buttons (apect ratio maintained)
-code    = 2**5, // show code button (cant show code if help is set)
+sticky   = 2**0, // always save position and if open
+reload   = 2**1, // show reload button
+awake    = 2**2, // prevent dim and pause when not active
+full     = 2**3, // show full screen button
+resize   = 2**4, // show resize buttons (apect ratio maintained)
+code     = 2**5, // show code button (cant show code if help is set)
+
+// system flags
+closeAll   = 2**7,        // close all open windows
+newUserProgram = 2**8,    // create new user program
+clearUserPrograms = 2**9, // remove all user programs
 
 // defaults
 defaultFlags = full|reload|resize,
 defaultWidth = 720, defaultHeight = 405, // 16:9 aspect
 
 // program format
-//[src, icon, width, height, flags, name, help, folder]
+//[src, icon, width, height, flags, name, help, folder, systemFlags]
 
 programs = 
 [
-[,'❌',,,,'Close All'],
+[,'❌',,,closeAll,'Close All'],
 ['help.html','<b><span style=color:#0f0>?',380,400,sticky,,'Check here to see help when available.\nSome programs have a option to show code instead.\n\nHave fun! ✌️😄'],
 [,'⚙️',,,,'System',,
 [
@@ -26,12 +31,11 @@ programs =
     ['system/systemTest.html',,600,370,defaultFlags|code],
     [,'📁',,,,'Test',,
     [
-        ['index.html','✌️😄',,,,'Meta OS13k'],
+        ['index.html','✌️😄',,,,'Meta OS13k asd asd asd asd asd asd sa '],
     ]],
 ]],
 [,'🛠️',,,,'Apps',,
 [
-    ['apps/dwitterToy.html','𝓓𝓣',,710,,,'Auto detects dweet or shadertoy.\nDweets have OS13k and zzfx.\nYour code is saved, reload to clear.'],
     ['apps/console.html','<span style=color:#0f0;background:#000;font-family:monospace>JS>'],
     ['apps/stickyNote.html','✍️',300,263,sticky|reload,,'Ctrl+B - Bold\nCtrl+I - Italic\nCtrl+U - Underline\n\Reload to clear'],
     ['apps/photoBooth.html','📸',1400,550],
@@ -55,7 +59,7 @@ programs =
     ['music/musicPlayer.html','🎵',400,290,sticky],
     ['music/piano.html','🎹',500,510,full|reload,,'Keyboard = Play Notes\nUp/Down = Change Octave'],
     ['music/soundSeeds.html','🌱',350,480],
-    ['music/musicVisualizer.dweet.js','👁️',,,awake|full|resize],
+    ['music/musicVisualizer.dweet.js','👁️',,,awake|full|resize|code],
     ['music/bach.dweet.js','🎼'],
     ['music/minBytes.html','<span style=color:#f00>𝓜',450,450],
     ['music/smallSeeds.html','🦗',520,340,full,,'This is a special tool for devs.\nUse smaller seeds to save space.\nYou can also tab through the list.'],
@@ -76,5 +80,13 @@ programs =
     ['dweets/automaticBreakout.dweet.js','■'],
     ['dweets/colorZoom.dweet.js','❤️'],
     ['dweets/triFractal.dweet.js','🔺'],
+]],
+[,'😀',,,,'User Programs',,
+[
+    [,'📌',,,newUserProgram,'New User Program'],
+    [,'⚠️',,,clearUserPrograms,'Clear User Programs'],
+    /*['dweets/blackHole.dweet.js','🌌',,,edit|defaultFlags,'User 1'],
+    ['dweets/underwaterCavern.dweet.js','🌊',,,edit|defaultFlags,'User 2'],
+    ['dweets/cityTraffic.dweet.js','🚌',,,edit|defaultFlags,'User 3'],*/
 ]],
 ]; // programs

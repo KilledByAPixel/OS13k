@@ -6,6 +6,9 @@ Seed &nbsp;<input type=number id=S value=0 onmousedown=p(S.value)><br><br>
 Auto Save <input id=E type=checkbox><hr><div id=A>
 <script>
 
+// save last played sound
+x = 0;
+
 // stop last sound and play sound
 p=e=>{x && x.stop(); x = OS13k.PlaySeed(...[e,,,,,1])}
 
@@ -28,8 +31,5 @@ b=e=>
 
 // load saved sounds
 b(a = localStorage.OS13kS ? JSON.parse(localStorage.OS13kS) : []);
-
-// save last played sound
-x = 0;
 
 </script>

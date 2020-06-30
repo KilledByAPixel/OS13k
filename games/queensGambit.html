@@ -1,179 +1,19 @@
-<body style=margin:0>
-<canvas id=a width=1280 height=720 style=width:100%;height:100%;background:#000>
+<meta charset="utf-8">
+<body style="background-color:#000;margin:0">
+<canvas id=a style='touch-action:none'></canvas>
 <script>
 
 // init shim variables 
-const b = document.body;
-const c = a.getContext`2d`;
+d=document;b=d.body;c=a.getContext`2d`;
+a.width = innerWidth;
+a.height = innerHeight;
+onresize = e => location.reload();
 
-//////////////////////////////////////////////////
-// Queen's Gambit - AKA Chesstron 1024
-// Frank Force 2019
-//////////////////////////////////////////////////
+C=function(t,l,s,o,f,p){this.b=(i=>{e+=1<p,c.font=2*f+"px'",c.fillStyle="hsl("+80*(p-2?4+p:h/9)+" 90%"+(-1<p?50:99)+"%)",c.fillText(p-2?"❀♛♥♛♞1♟♜♝"[m>9?0:3+p]:" "+m,s-f,o+f/2),s+=t*=s+t>a.width|0>s+t?-.5:!p|3==p?.8:1,o+=l*=o+l>a.height|0>o+l?-.5:!p|3==p?.8:1,0>p|1==p&&(f*=13<f?-1>p?.9:.99:n.splice(n.indexOf(this),1)),p||(c.fillText("♛x"+I,9,49),t+=r[2]-r[0],l+=r[3]-r[1],0==h%5&&n.push(new C((u-s)/9,(v-o)/9,s,o,18,-1))),n.map(n=>n.a(s,o,f,p,this))}),this.a=((e,a,c,d,u)=>{0<p&-3<d&1>d&(!!d|9<h)&&(!d&60<h&!w(x)&&(3==p&&(t+=0>e-s?-9:9,l+=0>a-o?-9:9),4==p&&(40<++f&&n.push(new C(0,0,s,o,f=25,3)),l=(t=w(2)?0:w(2)?-4:4)?0:w(2)?-4:4),5==p&&(w(9)||n.push(new C((e-s)/80,(a-o)/80,s,o,50,1)),t=w(2)?-4:4,l=w(2)?-4:4)),(e-s)**2<(f+c)**2&&(a-o)**2<(f+c)**2&&(n.push(new C(0,0,s,o,2*f,-3)),d+2&&n.splice(n.indexOf(u),1),n.splice(n.indexOf(this),1),d?0:y=--I))})},setInterval(t=>{if(c.fillStyle="#0005",c.fillRect(0,0,a.width,a.height),e=0,n.map(n=>n.b()),0==++h%50&&9<x&&--x,!e||y&&0<I)for(i=e||25*++m,x=40-m,y=h=0,n=[],9>=m&&n.push(new C(0,0,a.width/2,a.height/2,25,0,n.push(new C(0,0,a.width/2,a.height/2,a.width/9,-2))));i--;)n.push(new C(0,0,w(a.width),w(a.height),25+w(9),w(2)+!w(3)+!w(3)+2))},16),onkeydown=n=>r[n.keyCode%37]=2,onkeyup=n=>r[n.keyCode%37]=0,onmousemove=n=>{u=n.x,v=n.y},r=[m=h=u=v=y=n=[],0,0,0],I=3,w=n=>Math.random()*n|0
 
-// game object
-A=function(vx, vy, x, y, s, type)
-{
-    // object types...
-    //  5 ♝ bishop - moves randomly diagonals, shoots at player
-    //  4 ♜ rook - moves randomly at right angles, spawns pawns
-    //  3 ♟ pawn - moves towards player in short steps
-    //  2 number - stationary enemy, shows level number
-    //  1 ♞ horse - enemy bullet
-    // >0 enemies
-    // <=0 player stuff
-    //  0 ♛ player
-    // -1 ♥ heart - player bullet
-    // -2 ♛ enemy killbox at start of round
-    // -3 ❀ explosion effect
-    
-    this.U=()=>   // object update
-    {
-        // update enemy count
-        enemycount += type > 1;
-
-        // draw object
-        c.font = 2*s+"px'";
-        c.fillStyle=`hsl(${80*(type-2?4+type:framecount/9)} 90%${type>-1?50:99}%)`;
-        c.fillText(type-2?"❀♛♥♛♞1♟♜♝"[level>9?0:3+type]:" "+level,x-s,y+s/2);
-        //c.strokeStyle ="#F00";c.strokeRect(x-s/2,y-s/2,s,s); // debug hitbox
-        //c.fillText(agro,9,199); // debug agro
-
-        // update position, bounce off walls, and apply damping
-        x += vx *=x+vx > a.width  | x+vx < 0?-.5:(!type | type == 3)?.8:1;
-        y += vy *=y+vy > a.height | y+vy < 0?-.5:(!type | type == 3)?.8:1;
-
-        // get smaller and die over time
-        if (type < 0 | type == 1) // ♥ heart, ❀ explosion, ♛ killbox, and ♞ horse
-            s *= s>13?(type<-1?.9:.99):actorList.splice(actorList.indexOf(this),1);
-        
-        if (!type) // ♛ player update
-        {
-            // show player lives
-            c.fillText("♛x"+lives,9,49);
-        
-            // movement controls
-            vx += inputIsDown[2] - inputIsDown[0];
-            vy += inputIsDown[3] - inputIsDown[1];
-
-            // auto shoot in direction of mouse
-            if (framecount%5==0)
-                actorList.push(new A((mouseX - x)/9,(mouseY - y)/9,x,y,18, -1));
-        }
-
-        // cross update with each other actor
-        actorList.map(a=>a.C(x,y,s,type,this));
-    }
-    
-    this.C=(ox,oy,os,otype,that)=>    // cross update
-    {
-        // check enemy vs bullet or player
-        if (type > 0 & otype > -3 & otype < 1 & (!!otype|framecount>9))
-        {
-            // update enemies periodically
-            if (!otype & framecount > 60 & !R(agro))
-            {
-                if (type == 3)  // ♟ pawn
-                {
-                    // move towards player
-                    vx += ox-x<0?-9:9;
-                    vy += oy-y<0?-9:9;
-                }
-                if (type == 4) // ♜ rook
-                {
-                    // get larger and split into smaller copy of self and pawn at max size
-                    if (++s>40)
-                        actorList.push(new A(0,0,x,y,s=25,3));
-                     
-                    // move randomly in 90 degree angles
-                    vx = R(2)?0:R(2)?-4:4;
-                    vy = vx?0:R(2)?-4:4;
-                } 
-                if (type == 5)    // ♝ bishop
-                {
-                    // shoot at player
-                    if (!R(9))
-                        actorList.push(new A((ox - x)/80,(oy - y)/80,x,y,50, 1));
-                    
-                    // move randomly on diagonals
-                    vx = R(2)?-4:4;
-                    vy = R(2)?-4:4;
-                }
-            }
-            
-            // object collision check
-            if ((ox-x)**2 < (s+os)**2 && (oy-y)**2 < (s+os)**2)
-            {
-                // ❀ spawn hit effect
-                actorList.push(new A(0,0,x,y,2*s,-3));
-                
-                // remove dead actors (except for kill box)
-                if (otype+2)
-                    actorList.splice(actorList.indexOf(that),1);
-                actorList.splice(actorList.indexOf(this),1);
-                
-                // check if player died
-                otype?0:playerDead=--lives;
-            }
-        }
-    }
-}
-
-setInterval(
-L=()=> // main game loop
-{
-    // clear screen
-    c.fillStyle="#0005";
-    c.fillRect(0,0,a.width,a.height);
-     
-    // actor update
-    enemycount = 0;
-    actorList.map(a=>a.U());
-    
-    // increase agro over time
-    agro-= ++framecount%50==0&agro>9;
-    
-    // check if all enemies or player is dead
-    if (!enemycount||playerDead&&lives>0)    
-    {
-        // reset player dead and frame count
-        playerDead = framecount=0;
-        
-        // increase enemy count each level
-        i = enemycount? enemycount : ++level*25;
-        
-        // more agro as level increases
-        agro = 40-level;
-        
-        // reset actor list
-        actorList = [];
-        
-        // spawn player & killbox if not final level
-        level<=9&&actorList.push(
-            new A(0,0,a.width/2,a.height/2,25,0), 
-            new A(0,0,a.width/2,a.height/2,a.width/9,-2)
-        );
-        
-        // spawn random enemies
-        for(;i--;)
-            actorList.push(new A(0,0,R(a.width),R(a.height),25+R(9), R(2)+!R(3)+!R(3)+2));
-    }
-},16);
-    
-// input
-onkeydown   = x=> inputIsDown[x.keyCode%37]=2;
-onkeyup     = x=> inputIsDown[x.keyCode%37]=0;
-onmousemove = x=> {mouseX = x.x*a.width/innerWidth; mouseY = x.y*a.height/innerHeight;}
-
-// init 
-let actorList=[], inputIsDown=[0,0,0,0], level=0, framecount=0, mouseX=0, mouseY=0, playerDead=0, lives=3;
-let R=m=>Math.random()*m|0; // random integer
-let enemycount, agro;       // can be removed from minified
-
-/////////////////////////////////////////////////////////////////////////////////////
 // ENHANCE - wasd control
-WASD=x=>x==87?1:x==83?3:x==65?0:x==68?2:4
-onkeydown=x=>{inputIsDown[WASD(x.keyCode)]=2;inputIsDown[x.keyCode%37]=2;}
-onkeyup  =x=>{inputIsDown[WASD(x.keyCode)]=0;inputIsDown[x.keyCode%37]=0;}
+W=x=>x==87?1:x==83?3:x==65?0:x==68?2:4
+onkeydown   =x=>{r[W(x.keyCode)]=2;r[x.keyCode%37]=2;}
+onkeyup     =x=>{r[W(x.keyCode)]=0;r[x.keyCode%37]=0;}
 
 </script>
