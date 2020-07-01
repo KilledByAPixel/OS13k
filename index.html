@@ -269,7 +269,8 @@ const OS13kVersion = 68;
 // ==ClosureCompiler==
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // @language_out ECMASCRIPT_2019
-// @js_externs localStorage.OS13k, OS13k, iframeContent.zzfx, zzfxG
+// @js_externs localStorage.OS13k, OS13k, zzfxG
+// @js_externs iframeContent.zzfx, iframeContent.OS13kW
 // @js_externs OS13k.Clamp, OS13k.Percent, OS13k.Lerp
 // @js_externs OS13k.Random, OS13k.randomSeed, iframeContent.OS13kReload
 // @js_externs OS13k.Trophies, OS13k.Trophy, OS13k.GetTrophy
@@ -609,7 +610,8 @@ class _OS13k
         x.uniform1i(x.getUniformLocation(shaderProgram,'iChannel0'), 0);
         x.uniform4f(x.getUniformLocation(shaderProgram,'iMouse'), X, Y, Z, W);
         
-        // render shader
+        // set vieport and render shader
+        x.viewport(0, 0, canvas.width, canvas.height);
         x.drawArrays(xTRIANGLE_FAN, 0, 3);
         
         // set texture to newly rendered image
@@ -1570,6 +1572,7 @@ class OS13kWindow extends HTMLElement
                         `++OS13kL>1e5&&(u=e=>{throw'Timed out!'})()` +
                         (c == ')' ? '' : ',') + c : a ) : iframeText;
 
+                // set iframe link to parent window
                 iframeContent.OS13kW = this;
 
                 // show error messages from user code (must be set again here because it got wiped out)
@@ -1583,16 +1586,17 @@ class OS13kWindow extends HTMLElement
                         'onmousemove=e=>e.buttons&&(X=e.x,Y=c.height-e.y);' +
                         'onmousedown=e=>(X=Z=e.x,Y=W=c.height-e.y);' +
                         'onmouseup=e=>Z=W=0;' +
-                        'X=Y=Z=W=0;' +
                         's=parent.OS13k.CreateShader(c,`' + code + '`);' +
-                        'u=t=>(parent.OS13k.RenderShader(c,s,t,frame++,X,Y,Z,W));' +
+                        'u=t=>(' +
+                        'c.width=innerWidth,' +
+                        'c.height=innerHeight,' +
+                        'parent.OS13k.RenderShader(c,s,t,frame++,X,Y,Z,W));' +
                         'OS13k_=t=>requestAnimationFrame(OS13k_,' +
                             (program.awake || !program.info.allowSleep? '' : 
                                 't<1e3|parent.document.activeElement==OS13kW&&') +
                             'u(t/1e3));' +
-                            'OS13k_(0)'
+                            'OS13k_(X=Y=Z=W=0)'
                         :
-                        'OS13kF=0;' +
                         'x=c.getContext`2d`;' +
                         'S=Math.sin;' +
                         'C=Math.cos;' +
@@ -1608,7 +1612,7 @@ class OS13kWindow extends HTMLElement
                                 't<1e3|parent.document.activeElement==OS13kW&&') +
                             't>OS13kF-2&&'+
                             'u(((t=frame++/60)*60|0==frame-1)&&t>0?t+1e-6:t, OS13kF=Math.max(OS13kF+1000/60,t)));' +
-                            'OS13k_(0)'));
+                            'OS13k_(OS13kF=0)'));
             }
             catch (e)
             { 
