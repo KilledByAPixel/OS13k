@@ -1387,12 +1387,21 @@ class OS13kWindow extends HTMLElement
             '&nbsp;<button id=S>📷</button> ' +
             `&nbsp;Live Edit <input type=checkbox id=L ${program.info.liveEdit != false ? 'checked' : ''}> ` +
             `&nbsp;Sleep <input type=checkbox id=P ${program.info.allowSleep != false ? 'checked' : ''}> ` +
-            '&nbsp;<button id=C>Copy</button> <button id=D>Delete</button> ' +
+            '&nbsp;<button id=G>Save</button> ' +
+            '<button id=C>Copy</button> ' +
+            '<button id=D>Delete</button> ' +
             '&nbsp;<span id=Z></span> Bytes' +
             '<a id=A><canvas id=V style=display:none>';
 
-        const errorText = this.errorText =
-            this.codeDisplay.appendChild(document.createElement('textarea'));
+        // get links to code options and create error text
+        const iconInput = this.shadowRoot.getElementById('I'),
+            nameInput = this.shadowRoot.getElementById('N'),
+            widthInput = this.shadowRoot.getElementById('W'),
+            heightInput = this.shadowRoot.getElementById('H'),
+            link = this.shadowRoot.getElementById('A'),
+            canvas = this.shadowRoot.getElementById('V'),
+            context = canvas.getContext('2d'),
+            errorText = this.errorText = this.codeDisplay.appendChild(document.createElement('textarea'));
         errorText.id = 'errorText';
         errorText.readOnly = true;
         
@@ -1415,34 +1424,30 @@ class OS13kWindow extends HTMLElement
             loadIcon.windowOrMenu.Rebuild();
         }
         
+        // save button
+        this.shadowRoot.getElementById('G').onmousedown=()=>
+            link.click(link.href = URL.createObjectURL(new Blob([this.codeText.value], {type:"text/plain"})),
+            link.download = 'OS13k_File_' + program.name);
+
         // screenshot button
         this.screenshot = this.shadowRoot.getElementById('S');
         this.screenshot.onmousedown=()=>
         {
-            try
-            {
-                // copy the canvas to a white canvas before saving
-                const link = this.shadowRoot.getElementById('A'),
-                    canvas = this.shadowRoot.getElementById('V'),
-                    context = canvas.getContext('2d'),
-                    iframeCanvas = this.iframeContent.c;
-                canvas.width = iframeCanvas.width;
-                canvas.height = iframeCanvas.height;
-                context.fillStyle = '#fff';
-                context.fillRect(0,0, canvas.width, canvas.height)
-                context.drawImage(iframeCanvas, 0, 0);
-                link.href = canvas.toDataURL("image/jpeg");
-                link.download = 'OS13k';
-                link.click();
-            }
-            catch(e) {}
+            // wrap in try block in case canvas doesnt exist
+            try {
+                link.click(
+                    // copy to a white canvas before saving
+                    context.fillStyle = '#fff',
+                    context.fillRect(0, 0, 
+                        canvas.width  = this.iframeContent.c.width, 
+                        canvas.height = this.iframeContent.c.height),
+                    context.drawImage(this.iframeContent.c, 0, 0),
+                    link.href = canvas.toDataURL("image/jpeg"),
+                    link.download = 'OS13k_Image_' + program.name);
+            } catch(e) {} // ignore screenshot errorts
         }
 
         // get elements by id
-        const iconInput = this.shadowRoot.getElementById('I');
-        const nameInput = this.shadowRoot.getElementById('N');
-        const widthInput = this.shadowRoot.getElementById('W');
-        const heightInput = this.shadowRoot.getElementById('H');
         this.codeSize = this.shadowRoot.getElementById('Z');
         this.liveEdit = this.shadowRoot.getElementById('L'); 
         this.allowSleep = this.shadowRoot.getElementById('P'); 
