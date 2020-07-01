@@ -603,8 +603,7 @@ class _OS13k
         const xTEXTURE_2D    = 3553;
         
         // set uniforms
-        x.uniform3f(x.getUniformLocation(shaderProgram,'iResolution'), 
-            canvas.width, canvas.height, 1);
+        x.uniform3f(x.getUniformLocation(shaderProgram,'iResolution'), canvas.width, canvas.height, 1);
         x.uniform1f(x.getUniformLocation(shaderProgram,'iTime'), time);
         x.uniform1f(x.getUniformLocation(shaderProgram,'iFrame'), frame);
         x.uniform1i(x.getUniformLocation(shaderProgram,'iChannel0'), 0);
@@ -1586,9 +1585,7 @@ class OS13kWindow extends HTMLElement
                         'onmouseup=e=>Z=W=0;' +
                         'X=Y=Z=W=0;' +
                         's=parent.OS13k.CreateShader(c,`' + code + '`);' +
-                        'u=t=>(c.width=innerWidth,' +
-                        'c.height=innerHeight,' +
-                        'parent.OS13k.RenderShader(c,s,t,frame++,X,Y,Z,W));' +
+                        'u=t=>(parent.OS13k.RenderShader(c,s,t,frame++,X,Y,Z,W));' +
                         'OS13k_=t=>requestAnimationFrame(OS13k_,' +
                             (program.awake || !program.info.allowSleep? '' : 
                                 't<1e3|parent.document.activeElement==OS13kW&&') +
