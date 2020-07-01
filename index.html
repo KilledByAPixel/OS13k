@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?133></script>
+<script src=programs.js?135></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -1371,8 +1371,8 @@ class OS13kWindow extends HTMLElement
           
         // use custom code  
         program.userProgram ? this.codeText.value = program.info.code :
-            this.codeText.setAttribute('readOnly', 'true');
-        this.codeText.setAttribute('spellcheck', 'false');
+            this.codeText.setAttribute('readOnly', true);
+        this.codeText.setAttribute('spellcheck', false);
 
         // init custom code options
         const codeOptions = this.codeOptions =
@@ -1394,7 +1394,7 @@ class OS13kWindow extends HTMLElement
         const errorText = this.errorText =
             this.codeDisplay.appendChild(document.createElement('textarea'));
         errorText.id = 'errorText';
-        errorText.readOnly = 'true';
+        errorText.readOnly = true;
         
         // copy button
         this.shadowRoot.getElementById('C').onmousedown=()=>program.programMenu.AddUserProgram(program);
@@ -1673,7 +1673,7 @@ class OS13kWindow extends HTMLElement
         }
         else
         {
-            this.iframe.src = program.src + '?15';
+            this.iframe.src = program.src + '?16';
             iframe.onload =()=> loadFrame();
         }
     }
@@ -1772,9 +1772,6 @@ class OS13kWindow extends HTMLElement
         // save start program if finished startup and not sticky
         finishedStartup && !this.program.sticky && 
             (startProgramId = this.program.id, OS13k.Save());
-
-        // set focus to iframe and set active frame to prevent user input being set
-        document.activeElement != this && this.iframeContent && this.iframeContent.focus(lastActiveFrame = this.iframe);
 
         // clamp window to screen
         const rect = this.getBoundingClientRect();
