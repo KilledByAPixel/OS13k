@@ -147,6 +147,15 @@ Add an icon config to programs.js to register your program, and send me pull req
  - OS13k.GetTrophy(game, name) - Get most recent matching trophy, 0 if no trophy
  - OS13k.Trophies() - Get full list of trophy objects
  
+ ### User Programs
+ - You can create and access custom programs in user programs folder
+ - *User programs have the same capabilities as any other program!*
+ - It auto detects HTML (starts with <), Shadertoy (has void mainImage), or Dweet
+ - Drag and drop a file into the text box to load it
+ - The screenshot button is available for Dweets and Shadertoys
+ - User Dweets has loop protection to help prevent freeze ups, though it can still occur
+ - User programs will not run until clicked to prevent executing bad code
+ 
  ### Any JS13k game can add trophies and music, even if not part of OS13k!
  - *To add a trophy or music track, just save a special key to localStorage!*
  - The smallest way to add a single trophy (like for winning) is localStorage['OS13kTrophy,GameName,Icon']=''
