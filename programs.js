@@ -59,7 +59,7 @@ programs =
     ['music/musicPlayer.html','🎵',400,290,sticky],
     ['music/piano.html','🎹',500,510,full|reload,,'Keyboard = Play Notes\nUp/Down = Change Octave'],
     ['music/soundSeeds.html','🌱',350,480],
-    ['music/musicVisualizer.dweet.js','👁️',,,awake|full|resize|code],
+    ['music/visualizer.dweet.js','👁️',,,awake|full|resize|code],
     ['music/bach.dweet.js','🎼'],
     ['music/minBytes.html','<span style=color:#f00>𝓜',450,450],
     ['music/smallSeeds.html','🦗',520,340,full,,'This is a special tool for devs.\nUse smaller seeds to save space.\nYou can also tab through the list.'],
