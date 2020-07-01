@@ -155,6 +155,7 @@ Add an icon config to programs.js to register your program, and send me pull req
  - Drag and drop a file into the text box to load it
  - The screenshot button is available for Dweets and Shadertoys
  - User Dweets has loop protection to help prevent freeze ups, though it can still occur
+ - Press Alt+Enter to reload when not using live edit
  - User programs will not run until clicked to prevent executing bad code
  
  ### Any JS13k game can add trophies and music, even if not part of OS13k!
