@@ -1093,8 +1093,7 @@ class OS13kProgram extends HTMLElement
             .replace(/([a-z](?=[A-Z]))/g, '$1 ');
             
         // make first letter uppercase and set if no name
-        name = name || (userProgramId ? "User Program " + userProgramId :
-            srcCleanName[0].toUpperCase() + srcCleanName.slice(1));
+        name = name || srcCleanName && (srcCleanName[0].toUpperCase() + srcCleanName.slice(1));
         
         // check for special extensions
         const extension = src ? srcParts[1] : '';
@@ -1107,10 +1106,10 @@ class OS13kProgram extends HTMLElement
         this.width         = width;
         this.height        = height;
         this.folder        = folder;
+        this.id            = userProgramId || this.name;
 
         // set the program name and id
         this.SetName(icon, name);
-        this.id = userProgramId || this.name;
 
         // set code only if help not shown or if has extension and not disabled
         this.code = !(this.help = help) && 
@@ -1159,7 +1158,8 @@ class OS13kProgram extends HTMLElement
         
         // name and folder
         this.innerHTML += `<div style=flex:1;padding-right:9;pointer-events:none>${
-            this.name = name}</div>` + (this.folder? '▶' : '');
+            this.name = OS13k.StripHTML(name) || "User Program " + this.id
+            }</div>` + (this.folder? '▶' : '');
     }
     
     Move()
@@ -1457,7 +1457,7 @@ class OS13kWindow extends HTMLElement
         nameInput.oninput =
         this.liveEdit.oninput =e=>
         {
-            program.SetName(iconInput.value, OS13k.StripHTML(nameInput.value));
+            program.SetName(iconInput.value, nameInput.value);
             program.Save();
             SetName();
             this.taskbarIcon.SetName();
