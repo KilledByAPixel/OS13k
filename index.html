@@ -875,12 +875,11 @@ class _OS13kSystem
         musicAnalyser.getByteFrequencyData(frequencyData);
         
         // render analyzer
-        let total = 0, i = 0;
+        let i = 0;
         for(; i < 32; )
         {
             // get frequency band volume and adjust for loudness
-            const volume = frequencyData[i] / 255
-                * (1 + Math.log10((i+.5) * defaultSampleRate / 32 ));
+            const volume = frequencyData[i] / 255 * (1 + Math.log10((i+.5) * defaultSampleRate / 32 ));
 
             // draw the loudness bar
             context.fillStyle = `hsl(${-99-69*volume} 99%50%)`;
@@ -889,12 +888,9 @@ class _OS13kSystem
             // set anaylzer data, normalize between 0-1
             analyserData[i++] = OS13k.Clamp(volume / 5, 0, 1);
 
-            // track total volume
-            total += volume;
+            // save how long there has been no music
+            volume && (lastMusicTime = time)
         }
-        
-        // save how long there has been no music
-        total && (lastMusicTime = time);
         
         // set analyzer visibility
         analyserCanvas.style.display = 
