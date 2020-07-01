@@ -56,7 +56,7 @@ programs =
 ]],
 [,'🎶',,,,'Music',,
 [
-    ['music/musicPlayer.html','🎵',400,290,sticky],
+    ['music/musicPlayer.html','🎵',400,330,sticky],
     ['music/piano.html','🎹',500,510,full|reload,,'Keyboard = Play Notes\nUp/Down = Change Octave'],
     ['music/soundSeeds.html','🌱',350,480],
     ['music/visualizer.dweet.js','👁️',,,awake|full|resize|code],
