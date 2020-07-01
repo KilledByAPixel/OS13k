@@ -879,7 +879,7 @@ class _OS13kSystem
         for(; i < 32; )
         {
             // get frequency band volume and adjust for loudness
-            const volume = frequencyData[i] / 255 * (1 + Math.log10((i+.5) * defaultSampleRate / 32 ));
+            const volume = frequencyData[i] / 255 * (1 + Math.log10((i+1) * defaultSampleRate / 64 ));
 
             // draw the loudness bar
             context.fillStyle = `hsl(${-99-69*volume} 99%50%)`;
