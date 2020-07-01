@@ -151,6 +151,7 @@ Add an icon config to programs.js to register your program, and send me pull req
  - You can create and access custom programs in user programs folder
  - *User programs have the same capabilities as any other program!*
  - It auto detects HTML (starts with <), Shadertoy (has void mainImage), or Dweet
+ - This can be used to iterate on dweets or small shaders, or to load a full program.
  - Drag and drop a file into the text box to load it
  - The screenshot button is available for Dweets and Shadertoys
  - User Dweets has loop protection to help prevent freeze ups, though it can still occur
