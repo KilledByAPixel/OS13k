@@ -77,7 +77,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 - We can have music generators, synth instruments, and maybe even mini albums
 - The idea is that players can listen to music while playing with other games and apps
 - Music programs should continue playing if the frame loses focus, but reduced graphics if necessary to lower the load
-- OS13k.GetAnalyzer() - returns a 32x32 music analyzer canvas
+- OS13k.GetAnalyser() - returns a 32x32 music analyser canvas
 - OS13k.GetAnalyserData() - returns a 32 length array of frequency volumes normalized between 0-1
 
 ### Dweets and Shadertoys
