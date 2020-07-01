@@ -1457,7 +1457,7 @@ class OS13kWindow extends HTMLElement
         nameInput.oninput =
         this.liveEdit.oninput =e=>
         {
-            program.SetName(iconInput.value, nameInput.value);
+            program.SetName(OS13k.StripHTML(iconInput.value), nameInput.value);
             program.Save();
             SetName();
             this.taskbarIcon.SetName();
