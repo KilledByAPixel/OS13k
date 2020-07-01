@@ -86,7 +86,7 @@ tick = now => {
         playerx = /*Math.*/min(/*Math.*/max(playerx - playerxdirinv * 30 * elapsed, 2), 62);
 
         // shot harpoon if no other harpoon exists or multi is enabled
-        if (harpoonshot && (!harpoons[0] || now < multiuntil))
+        harpoonshot && (!harpoons[0] || now < multiuntil) &&
             // playerxdirinv > 0 (left): playerx + 1
             // playerxdirinv <= 0 (right or idle): playerx - 1
             // drawobj only inverts when playerxdivinv > 0, so this is consistent to render
@@ -124,6 +124,7 @@ tick = now => {
             // 2. collision check against player, if harpoons did not hit the obj
             // (marked as "<return>" is a return value for deletecur)
             /*Math.*/hypot(x - playerx, y - 39) < sz + 2 && (
+                // a bonus object
                 kind ?
                     // possible postprocessing: eval(" ABC"[x%5]+"=n+10")
                     (
@@ -136,17 +137,17 @@ tick = now => {
                             life = 1 // kind == 1
                         // </return>
                     )
-                // game is over when life was already 0 and grace period expires
-                : life ? (
-                    graceuntil = now + 1,
-                    life = 0 // <return>
-                ) : now > graceuntil ? (
-                    // we cannot reset right now, as drawing still happens every frame
-                    // the actual reset will happen on enter
-                    style.filter = "invert\(1",
-                    level = 0,
-                    Z // this "tick" cannot be continued; this is a way to break out
-                ) : 0 // <return>
+                :
+                // an ordinary object, either life is reset (to falsy) or game is over
+                life = life ?
+                    !(graceuntil = now + 1) : // graceuntil is always positive
+                    now > graceuntil && (
+                        // we cannot reset right now, as drawing still happens every frame
+                        // the actual reset will happen on enter
+                        style.filter = "invert\(1",
+                        level = 0,
+                        Z // this "tick" cannot be continued; this is a way to break out
+                    )
             )
 
         ) || (
