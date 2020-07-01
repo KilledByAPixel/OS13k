@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?135></script>
+<script src=programs.js?136></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -1673,7 +1673,7 @@ class OS13kWindow extends HTMLElement
         }
         else
         {
-            this.iframe.src = program.src + '?16';
+            this.iframe.src = program.src + '?15';
             iframe.onload =()=> loadFrame();
         }
     }
@@ -1772,6 +1772,9 @@ class OS13kWindow extends HTMLElement
         // save start program if finished startup and not sticky
         finishedStartup && !this.program.sticky && 
             (startProgramId = this.program.id, OS13k.Save());
+
+        // set focus to iframe and set active frame to prevent user input being set
+        loading || document.activeElement != this && this.iframeContent && this.iframeContent.focus(lastActiveFrame = this.iframe);
 
         // clamp window to screen
         const rect = this.getBoundingClientRect();
