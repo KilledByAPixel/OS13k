@@ -746,7 +746,7 @@ const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26,
     musicAnalyser = audioContext.createAnalyser();
 
 let grabWindow, grabOffsetX, grabOffsetY, finishedStartup, nextUserProgramId = 0,
-    activeWindow, activeProgram, activeTaskbarIcon, loadIcon, 
+    activeWindow, activeProgram, activeTaskbarIcon, loadIcon, safeCode,
     analyserCanvas, analyserData = [], lastMusicTime = -analyserWaitTime,
     lastActiveFrame, topZ = 0, loading = 0, hadInput = 0,
     windowOpenX = startOpenOffset, windowOpenY = startOpenOffset + taskbarHeight,
@@ -1063,7 +1063,7 @@ class OS13kProgramMenu extends HTMLElement
         program.Open();
             
         // mark code as safe reload and show code
-        program.window.Reload(program.safeCode = 1);
+        program.window.Reload(safeCode = 1);
         program.window.ShowCode(1);
 
         // focus on input
@@ -1128,9 +1128,8 @@ class OS13kProgram extends HTMLElement
         // load saved program data
         this.Load();
 
-        // check for user code, mark as unsafe
+        // check for user code
         this.userProgram = this.info.code != undefined;
-        this.safeCode = !this.info.code;
         
         // save special programs
         name == 'Settings'     && settingsTrayIcon.SetProgram(this);
@@ -1509,7 +1508,7 @@ class OS13kWindow extends HTMLElement
 
         // set on error now to catch errors on load
         this.iframeContent.onerror =(message, source, lineno, colno, e)=>((this.errorText.value = e), true);
-        this.program.safeCode && iframeDocument.write(code);
+        (!this.program.userProgram || safeCode) && iframeDocument.write(code);
         iframeDocument.close();
     }
     
@@ -1524,8 +1523,11 @@ class OS13kWindow extends HTMLElement
                 program.isDweet = program.isShader = 0);
             const hasExtension = program.isDweet || program.isShader;
 
+            // check if code is safe to execute
+            const codeIsSafe = !this.program.userProgram || safeCode;
+
             // only dweets and shadertoys can do screenshots
-            this.screenshot.disabled = !hasExtension || !program.safeCode;
+            this.screenshot.disabled = !hasExtension || !codeIsSafe;
 
             // show error messages from user code
             program.userProgram && (iframeContent.onerror =(message, source, lineno, colno, e)=>((this.errorText.value = e), true));
@@ -1545,10 +1547,10 @@ class OS13kWindow extends HTMLElement
             iframeContent.zzfxG = zzfxG;
 
             // set to black if code is not safe
-            program.safeCode || (iframeDocument.body.style.background = '#000');
+            codeIsSafe || (iframeDocument.body.style.background = '#000');
 
             // check for extensions
-            if (hasExtension && program.safeCode) try
+            if (hasExtension && codeIsSafe) try
             {
                 // create the canvas, this way seems to fix probmens with firefox
                 this.WriteToFrame(
@@ -1623,7 +1625,7 @@ class OS13kWindow extends HTMLElement
             }
             
             // mouse down on iframe to load unsafe code, and call normal mousedown
-            program.safeCode || (iframeContent.onmousedown =e=>(this.Reload(program.safeCode = 1), onmousedown(e)));
+            codeIsSafe || (iframeContent.onmousedown =e=>(this.Reload(safeCode = 1), onmousedown(e)));
             
             // prevent iframes context menu and drop events
             iframeContent.ondrop = iframeContent.ondragover = iframeContent.oncontextmenu =()=>false;
@@ -1663,8 +1665,8 @@ class OS13kWindow extends HTMLElement
             this.codeText.oninput =e=> this.liveEdit.checked && this.SetCode(this.codeText.value);
 
             // reload when mouse pressed if not safe
-            this.codeText.onmousedown =e=> (program.safeCode || 
-                this.liveEdit.checked && this.Reload(program.safeCode = 1), e);
+            this.codeText.onmousedown =e=> (safeCode || 
+                this.liveEdit.checked && this.Reload(safeCode = 1), e);
 
             // write code to iframe
             this.WriteToFrame(program.info.code);
@@ -1687,7 +1689,7 @@ class OS13kWindow extends HTMLElement
         this.program.Save();
 
         // reset iframe
-        this.program.safeCode = 1;
+        safeCode = 1;
         this.iframeWrapper.removeChild(this.iframe);
         this.CreateFrame();
     }
@@ -1821,8 +1823,8 @@ class OS13kWindow extends HTMLElement
         // check if full screen allowed
         if (!this.program.full) return;
 
-        // reload code if it wasnt safe yet
-        !this.program.safeCode && this.Reload(this.program.safeCode = 1);
+        // reload code if it wasnt safe yet and set it is safe
+        safeCode || this.Reload(safeCode = 1);
         
         // set full screen
         this.iframeWrapper.webkitRequestFullScreen &&
