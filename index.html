@@ -1514,20 +1514,9 @@ class OS13kWindow extends HTMLElement
     
     CreateFrame()
     {
-        // create iframe
-        const iframe = this.iframe = 
-            this.iframeWrapper.appendChild(document.createElement('iframe')); 
-        iframe.id = 'frame';
-            
-        const iframeContent = this.iframeContent = iframe.contentWindow;
-        const program = this.program;
-        
         // wait for frame to load
-        const loadFrame =(reload)=>
+        const loadFrame =()=>
         {
-            // rewrite the code to iframe user program reloaded itself
-            reload && this.WriteToFrame(program.info.code);
-
             // check for special extensions
             program.userProgram && (program.info.code.trim()[0] != '<' ?
                 program.isDweet = !( program.isShader = program.info.code.search(/void\s+mainImage/) >= 0) :
@@ -1650,30 +1639,37 @@ class OS13kWindow extends HTMLElement
             // update startup routine
             OS13kSystem.UpdateStartup();
 
-            // listen for reload
-            program.userProgram && (iframe.onload =()=> loadFrame(1));
+            // listen for reload from iframe
+            program.userProgram && (iframe.onload =()=> reloadCount++ && this.Reload(1, 0));
         }
+        
+        // create iframe
+        const iframe = this.iframe = this.iframeWrapper.appendChild(document.createElement('iframe')); 
+        const iframeContent = this.iframeContent = iframe.contentWindow;
+        const program = this.program;
+        let reloadCount = 0;
+        iframe.id = 'frame';
         
         // load src, force pages to be refreshed
         if (program.userProgram)
         {
-                // clear error text
-                this.errorText.value = '';
+            // clear error text
+            this.errorText.value = '';
 
-                // allow code editing
-                this.codeText.onkeydown =e=> !e.altKey ||
-                    (e.keyCode == 13 && this.SetCode(this.codeText.value), e.keyCode != 18);
-                this.codeText.oninput =e=> this.liveEdit.checked && this.SetCode(this.codeText.value);
+            // allow code editing
+            this.codeText.onkeydown =e=> !e.altKey ||
+                (e.keyCode == 13 && this.SetCode(this.codeText.value), e.keyCode != 18);
+            this.codeText.oninput =e=> this.liveEdit.checked && this.SetCode(this.codeText.value);
 
-                // reload when mouse pressed if not safe
-                this.codeText.onmousedown =e=> (program.safeCode || 
-                    this.liveEdit.checked && this.Reload(program.safeCode = 1), e);
+            // reload when mouse pressed if not safe
+            this.codeText.onmousedown =e=> (program.safeCode || 
+                this.liveEdit.checked && this.Reload(program.safeCode = 1), e);
 
-                // write code to iframe
-                this.WriteToFrame(program.info.code);
+            // write code to iframe
+            this.WriteToFrame(program.info.code);
 
-                // load frame immediatly
-                loadFrame();
+            // load frame immediatly
+            loadFrame();
         }
         else
         {
@@ -1850,14 +1846,14 @@ class OS13kWindow extends HTMLElement
         this.program.help || OS13k.Trophy('OS13k','👨‍💻','Hacker','Viewed Code');
     }
     
-    Reload(silent)
+    Reload(silent, clamp=1)
     {
         // update program info
         this.program.userProgram && (this.program.info.code = this.codeText.value);
         this.program.Save();
         
         // set active and clamp to window
-        activeWindow.SetActive(1, 1);
+        activeWindow.SetActive(1, clamp);
         
         // reload program or reload iframe and set invisible
         this.iframeContent &&
