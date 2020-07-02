@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?v142></script>
+<script src=programs.js?v143></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -1161,7 +1161,7 @@ class OS13kProgram extends HTMLElement
         {
             // remove from menu info and close windows
             this.programMenu.programInfos = this.programMenu.programInfos.filter(info=>
-                info.program.userProgram && (info.program?.window.Close(), false));
+                info.program.userProgram && (info.program?.window?.Close(), false));
             
             // remove user program infos
             programInfos = programInfos.filter(info=>info.code == undefined);
