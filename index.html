@@ -144,7 +144,7 @@ body
 .titlebarActiveUser   { background:linear-gradient(#eee,#8f8); }
 .titlebarActiveSticky { background:linear-gradient(#eee,#f88); }
 .titlebarSticky       { background:linear-gradient(#ccc,#844); }
-#name           { width:100%; overflow:hidden; cursor:grab; }
+#name                 { width:100%; overflow:hidden; cursor:grab; }
 #icon           
 { 
     display:inline;
@@ -317,7 +317,7 @@ class _OS13k
     Clamp   (a, min=0, max=1)  { return Math.min(Math.max(a, min), max); }
     Percent (v, a, b)          { return b-a ? this.Clamp((v-a)/(b-a), 0, 1) : 0; }
     Lerp    (p, a, b)          { return a + this.Clamp(p, 0, 1) * (b-a); }
-    Hash    (s)                { return [...s].reduce((a,c)=>c.charCodeAt()+(a<<5)-a, 0); }
+    Hash    (s)                { return [...s].reduce((a,c)=>c.charCodeAt()+a*31|0, 0); }
     Random  (max=1, min=0)    
     {
         // seeded random numbers - Mersenne Twister
@@ -433,7 +433,7 @@ class _OS13k
                 seed = OS13k.Hash(seed);
         }
 
-        // set the seed
+        // set seed
         this.randomSeed = seed;
            
         // clamp max length
@@ -902,7 +902,7 @@ class _OS13kSystem
             // get frequency band volume and adjust for loudness
             const volume = frequencyData[i] / 255 * (1 + Math.log10((i+1) * defaultSampleRate / 64 ));
 
-            // draw the loudness bar
+            // draw loudness bar
             context.fillStyle = `hsl(${-99-69*volume} 99%50%)`;
             context.fillRect(i, 31, 1, -8*volume);
             
@@ -1072,21 +1072,22 @@ class OS13kProgramMenu extends HTMLElement
         program.programMenu = this;
         loadIcon.windowOrMenu.Rebuild();
         
-        // set code and open
+        // set code and open, use default if none found
         program.userProgram = 1;
         program.info.code = copyProgram ? copyProgram.info.code :
-        '// Auto detects HTML, Dweet, or Shadertoy! ✌️😄\nfor(x.fillRect(0,0,i=s=2e3,s);i--;x.fillStyle="#0001")\nx.clearRect((S(i)*1e9-t*i/9)%s,i*9%s,i%9,i%9)';
+        '// Auto detects HTML, Dweet, or Shadertoy! ✌️😄\n' +
+        'for(x.fillRect(0,0,i=s=2e3,s);i--;x.fillStyle="#0001")\n' +
+        'x.clearRect((S(i)*1e9-t*i/9)%s,i*9%s,i%9,i%9)';
+
+        // copy program info
         copyProgram && (
             program.info.scale = copyProgram.info.scale,
             windowOpenX = copyProgram.info.x,
             windowOpenY = copyProgram.info.y + titlebarHeight);
-        program.Open();
             
-        // mark code as safe reload and show code
-        program.window.Reload(safeCode = 1);
+        // mark code as safe and open
+        program.Open(safeCode = 1);
         program.window.ShowCode(1);
-
-        // focus on input
         program.window.codeText.focus();
         return program;
     }
@@ -1224,7 +1225,15 @@ class OS13kProgram extends HTMLElement
             // prevent main document focus
             return false;
         }
-        else if (this.flags & closeAll)
+        if (this.flags & newUserProgram)
+        {
+            // create user program with default code
+            this.programMenu.AddUserProgram();
+            
+            // prevent main document focus
+            return false;
+        }
+        if (this.flags & closeAll)
         {
             // close all windows if no src or folder
             [...desktop.children].map(child=> child.Close && child.Close());
@@ -1235,15 +1244,7 @@ class OS13kProgram extends HTMLElement
 
             OS13k.Trophy('OS13k','☕','Coffee Is For Closers','Closed All');
         }
-        else if (this.flags & newUserProgram)
-        {
-            // create user program with default code
-            this.programMenu.AddUserProgram();
-            
-            // prevent main document focus
-            return false;
-        }
-        else if (this.flags & clearUserPrograms && confirm(this.name + '?'))
+        if (this.flags & clearUserPrograms && confirm(this.name + '?'))
         {
             // remove from menu info and close windows
             this.programMenu.programInfos = this.programMenu.programInfos.filter(info=>
@@ -1251,7 +1252,7 @@ class OS13kProgram extends HTMLElement
                 (info.program.window && info.program.window.Close(), false)
             );
             
-            // remove infos
+            // remove user program infos
             programInfos = programInfos.filter(info=>info.code == undefined);
             OS13k.Save();
             
@@ -1400,6 +1401,7 @@ class OS13kWindow extends HTMLElement
         codeOptions.id = 'codeOptions';
         program.userProgram || (codeOptions.style.display = 'none');
 
+        // build code options html
         codeOptions.innerHTML =
             'Icon <input style=width:35 id=I> ' +
             'Name <input id=N> ' +
@@ -1410,7 +1412,7 @@ class OS13kWindow extends HTMLElement
             '&nbsp;<button id=G>Save</button> ' +
             '<button id=C>Copy</button> ' +
             '<button id=D>Delete</button> ' +
-            '&nbsp;<span id=Z></span> Bytes' +
+            `&nbsp;<span id=Z>${program.info.code && program.info.code.length}</span> Bytes` +
             '<a id=A><canvas id=V style=display:none>';
 
         // get links to code options and create error text
@@ -1420,7 +1422,7 @@ class OS13kWindow extends HTMLElement
             heightInput = this.shadowRoot.getElementById('H'),
             link = this.shadowRoot.getElementById('A'),
             canvas = this.shadowRoot.getElementById('V'),
-            context = canvas.getContext('2d'),
+            canvasContext = canvas.getContext('2d'),
             errorText = this.errorText = this.codeDisplay.appendChild(document.createElement('textarea'));
         errorText.id = 'errorText';
         errorText.readOnly = true;
@@ -1457,14 +1459,14 @@ class OS13kWindow extends HTMLElement
             try {
                 link.click(
                     // copy to a white canvas before saving
-                    context.fillStyle = '#fff',
-                    context.fillRect(0, 0, 
+                    canvasContext.fillStyle = '#fff',
+                    canvasContext.fillRect(0, 0, 
                         canvas.width  = this.iframeContent.c.width, 
                         canvas.height = this.iframeContent.c.height),
-                    context.drawImage(this.iframeContent.c, 0, 0),
+                        canvasContext.drawImage(this.iframeContent.c, 0, 0),
                     link.href = canvas.toDataURL("image/jpeg"),
                     link.download = 'OS13k_Image_' + program.name);
-            } catch(e) {} // ignore screenshot errorts
+            } catch(e) {} // ignore screenshot errors
         }
 
         // get elements by id
@@ -1475,7 +1477,6 @@ class OS13kWindow extends HTMLElement
         iconInput.value = program.icon;
         widthInput.value = program.width; 
         heightInput.value = program.height;
-        this.codeSize.innerHTML = program.info.code && program.info.code.length;
 
         // set new icon and name when changed
         iconInput.oninput =
@@ -1488,9 +1489,7 @@ class OS13kWindow extends HTMLElement
             this.taskbarIcon.SetName();
         }
 
-        this.allowSleep.oninput =e=> this.Reload(1, program.Save());
-
-        // set new icon and name when changed
+        // size options
         widthInput.onchange =
         heightInput.onchange =e=>
         {
@@ -1501,6 +1500,9 @@ class OS13kWindow extends HTMLElement
             this.Resize(1);
             this.SetActive(1, 1);
         }
+
+        // allow sleep button
+        this.allowSleep.oninput =e=> this.Reload(1, program.Save());
 
         // resize window size to fit inner width while preserving aspect
         const width = program.resize ? 
@@ -1518,7 +1520,7 @@ class OS13kWindow extends HTMLElement
         // track if programs are loading during startup
         loading += !finishedStartup;
         
-        // create the iframe
+        // create iframe
         this.CreateFrame();
         
         // set active and clamp
@@ -1577,7 +1579,7 @@ class OS13kWindow extends HTMLElement
             // check for extensions
             if (hasExtension && codeIsSafe) try
             {
-                // create the canvas, this way seems to fix probmens with firefox
+                // create canvas
                 this.WriteToFrame(
                     `<canvas id=c width=1920 height=1080 style=width:100%;background:${
                     program.isShader ?
@@ -1605,7 +1607,7 @@ class OS13kWindow extends HTMLElement
                 // show error messages from user code (must be set again here because it got wiped out)
                 program.userProgram && (iframeContent.onerror =(message, source, lineno, colno, e)=>((this.errorText.value = e), true));
 
-                // create the program
+                // create dweet or shader program
                 iframeContent.eval(
                     'frame=0;' +
                     (program.isShader ? // preserve buffer for user programs for screenshot
@@ -1642,10 +1644,9 @@ class OS13kWindow extends HTMLElement
                             'OS13k_(OS13kF=0)'));
             }
             catch (e)
-            { 
-                this.errorText.value = e && e.message ? e.message : e; 
-
-                // throw error if not user code
+            {
+                // set error text and throw error if not user code
+                this.errorText.value = e && e.message ? e.message : e;
                 if (!program.userProgram) throw e;
             }
             
@@ -1721,7 +1722,7 @@ class OS13kWindow extends HTMLElement
     
     Open(target, x, y)
     {
-        // set active if not the copy button
+        // set active if not copy button
         target.id != 'C' && this.SetActive();
         
         // set grab window if name is target
@@ -1813,18 +1814,15 @@ class OS13kWindow extends HTMLElement
 
         if (activeWindow != this)
         {
-            // deactivate old window
+            // deactivate old window and set this one active
             activeWindow && activeWindow.SetActive(0);
-            
-            // set this to be active window
             activeWindow = this;
 
             // move z to top
             this.style.zIndex = ++topZ;
 
             // show menu buttons
-            const SetButtonVisibility=(button, visible)=>
-                button.style.display = visible ? '' : 'none';
+            const SetButtonVisibility = (button, visible)=>button.style.display = visible ? '' : 'none';
             SetButtonVisibility(buttonFullScreen, this.program.full);
             SetButtonVisibility(buttonCode,       this.program.code);
             SetButtonVisibility(buttonHelp,       this.program.help);
