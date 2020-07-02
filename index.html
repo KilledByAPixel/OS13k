@@ -1220,6 +1220,7 @@ class OS13kWindow extends HTMLElement
         this.style.left = x;
         this.style.top = y;
         this.menu = 1;
+        this.activeCount = 0;
         
         // shadow root
 		this.attachShadow({mode: 'open'});
@@ -1682,7 +1683,7 @@ class OS13kWindow extends HTMLElement
             // deactivate old window and set this one active and play sound
             activeWindow && activeWindow.SetActive(0);
             activeWindow = this;
-            grabWindow || hadInput && OS13kSystem.Sound(this.program.info.open ? soundActive : soundOpen);
+            grabWindow || hadInput && OS13kSystem.Sound(this.activeCount++ ? soundActive : soundOpen);
 
             // move z to top
             this.style.zIndex = ++topZ;
