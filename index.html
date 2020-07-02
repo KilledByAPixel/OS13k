@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?v138></script>
+<script src=programs.js?v139></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -316,6 +316,7 @@ class _OS13k
     Clamp   (a, min=0, max=1)  { return Math.min(Math.max(a, min), max); }
     Percent (v, a, b)          { return b-a ? this.Clamp((v-a)/(b-a), 0, 1) : 0; }
     Lerp    (p, a, b)          { return a + this.Clamp(p, 0, 1) * (b-a); }
+    Hash    (s)                { return [...s].reduce((a,c)=>c.charCodeAt(0)+(a<<5)-a, 0); }
     Random  (max=1, min=0)    
     {
         // seeded random numbers - Mersenne Twister
@@ -413,7 +414,25 @@ class _OS13k
     // get zzfx sound parameters from seed
     SeedParameters(seed, lengthScale=1, volume=1, randomness=.05, frequency)
     {
-        // set random seed
+        // check if eed is a number
+        if (parseFloat(seed = (seed+'').trim()) != seed)
+        {
+            // seed is not number, check if zzfx string
+            if (seed.slice(0,9) == 'zzfx(...[')
+            {
+                // get zzfx parameters from string
+                const parameters = [];
+                for (const p of seed.slice(9).split(','))
+                    parameters.push(p.length? parseFloat(p) : undefined);
+                
+                // play zzfx sound
+                return parameters;
+            }
+            else
+                seed = OS13k.Hash(seed);
+        }
+
+        // set the seed
         this.randomSeed = seed;
            
         // clamp max length
@@ -1681,7 +1700,7 @@ class OS13kWindow extends HTMLElement
         }
         else
         {
-            this.iframe.src = program.src + '?v21';
+            this.iframe.src = program.src + '?v22';
             iframe.onload =()=> loadFrame();
         }
     }

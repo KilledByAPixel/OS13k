@@ -1,7 +1,7 @@
 <style>body{background:#111;color:#fff;user-select:none;text-align:center}</style>
-Seed &nbsp;<input type=number id=S value=0 onmousedown=p(S.value)><br><br>
+Seed &nbsp;<input id=S value=0 onmousedown="p(S.value.replace(/'/g,''))"><br><br>
 <button onmousedown=p(S.value=Math.random()*1e6|0,E.checked&&s())>Random</button>
-<button onmousedown=p(s())>Save</button>
+<button onmousedown=s()>Save</button>
 <button onmousedown='confirm`Clear All?`&&b(a=[])'>Clear</button> &nbsp;
 Auto Save <input id=E type=checkbox><hr><div id=A>
 <script>
@@ -13,20 +13,19 @@ x = 0;
 p=e=>{x && x.stop(); x = OS13k.PlaySeed(...[e,,,,,1])}
 
 // save the seed
-s=e=> b(S.value, a.push(S.value));
+s=e=> b(e = (S.value+'').replace(/'/g, ''), a.push(e), p(e));
 
 // refresh list
 b=e=>
 {
-    localStorage.OS13kS = JSON.stringify(a);        // save seed list
-    A.innerHTML = '';                               // reset html
-    a.map((i,j)=>{                                  // go through list
+    localStorage.OS13kS = JSON.stringify(a);          // save seed list
+    A.innerHTML = '';                                 // reset html
+    a.map((i,j)=>{                                    // go through list
         A.prepend(d = document.createElement('div')); // create div
-        d.innerHTML = `<button onmousedown=b(p(${   // remove button
-        i }),a.splice(${                            // play removed sound
-        j },1))>❌</button> <input onmousedown=p(${ // remove and refresh
-        i }) value=${                               // input mouse down
-        i } readonly>`});                           // inputext
+        d.innerHTML = `<button onmousedown=b(p(a[${    // remove button
+        j }]),a.splice(${                             // play removed sound
+        j },1))>❌</button> <input onmousedown=p(a[${ // remove and refresh
+        j }]) value='${i}' readonly>`});               // inputext
 }
 
 // load saved sounds
