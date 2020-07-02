@@ -1,31 +1,29 @@
 <style>body{background:#111;color:#fff;user-select:none;text-align:center}</style>
-Seed &nbsp;<input id=S value=0 onmousedown="p(S.value.replace(/'/g,''))"><br><br>
+Seed &nbsp;<input id=S onmousedown="p(S.value.replace(/'/g,''))"><br><br>
 <button onmousedown=p(S.value=Math.random()*1e6|0,E.checked&&s())>Random</button>
 <button onmousedown=s()>Save</button>
 <button onmousedown='confirm`Clear All?`&&b(a=[])'>Clear</button> &nbsp;
-Auto Save <input id=E type=checkbox><hr><div id=A>
-<script>
+Auto Save <input id=E type=checkbox><hr><div id=A><script>
 
 // save last played sound
 x = 0;
 
 // stop last sound and play sound
-p=e=>{x && x.stop(); x = OS13k.PlaySeed(...[e,,,,,1])}
+p = e=>{x && x.stop(); x = OS13k.PlaySeed(e)}
 
-// save the seed
-s=e=> b(e = (S.value+'').replace(/'/g, ''), a.push(e), p(e));
+// save the seed and play it
+s = e=> b(a.push(e = S.value.replace(/'/g, '')), p(e));
 
 // refresh list
-b=e=>
+b = e=>
 {
-    localStorage.OS13kS = JSON.stringify(a);          // save seed list
-    A.innerHTML = '';                                 // reset html
-    a.map((i,j)=>{                                    // go through list
-        A.prepend(d = document.createElement('div')); // create div
-        d.innerHTML = `<button onmousedown=b(p(a[${    // remove button
-        j }]),a.splice(${                             // play removed sound
-        j },1))>❌</button> <input onmousedown=p(a[${ // remove and refresh
-        j }]) value='${i}' readonly>`});               // inputext
+    localStorage.OS13kS = JSON.stringify(a);              // save seed list
+    A.innerHTML = '';                                     // reset html
+    a.map((i,j)=>                                         // go through list
+        A.innerHTML = `<button onmousedown=b(p(a[${       // remove button
+        j }]),a.splice(${                                 // play removed sound
+        j },1))>❌</button> <input onmousedown=p(a[${    // remove and refresh
+        j }]) value='${i}' readonly><br>` + A.innerHTML); // seed text
 }
 
 // load saved sounds
