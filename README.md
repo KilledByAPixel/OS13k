@@ -144,7 +144,7 @@ Add an icon config to programs.js to register your program, and send me pull req
  - *Keep your trophy names and messages short, experiment with fun ideas and icons!*
 
  ### Trophy Functions
- - OS13k.Trophy(game='', icon='', name='', message='', language='ja') - Unlock a trophy
+ - OS13k.Trophy(game='', icon='', name='', message='') - Unlock a trophy
  - OS13k.GetTrophy(game, name) - Get most recent matching trophy, 0 if no trophy
  - OS13k.Trophies() - Get full list of trophy objects
  
