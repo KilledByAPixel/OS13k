@@ -2,7 +2,7 @@
 var 
 sticky   = 2**0, // always save position and if open
 reload   = 2**1, // show reload button
-awake    = 2**2, // prevent dim and pause when not active
+awake    = 2**2, // prevent sleep and dim when not active
 full     = 2**3, // show full screen button
 resize   = 2**4, // show resize buttons (apect ratio maintained)
 code     = 2**5, // show code button (cant show code if help is set)

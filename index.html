@@ -233,27 +233,15 @@ const OS13kVersion = 68;
     localStorage.OS13kVersion = OS13kVersion;
 
     // load default programs if none found
-    var programsDefault = 0;
     if (typeof programs == 'undefined')
     {
-        alert('No programs found, using defaults!')
-
-        var sticky=2**0, reload=2**1, awake=2**2, full=2**3, resize=2**4, code=2**5,
+        alert('No programs found!')
+        var sticky = 2**0, reload = 2**1, awake = 2**2, full = 2**3, resize= 2**4, code = 2**5,
         closeAll = 2**7, newUserProgram = 2**8, clearUserPrograms = 2**9,
         defaultFlags = full|reload|resize, defaultWidth = 720, defaultHeight = 405,
         programs = 
         [
             [,'❌',,,closeAll,'Close All'],
-            ['help.html','<b><span style=color:#0f0>?',380,400,sticky],
-
-            [,'⚙️',,,,'System',,
-            [
-                ['system/settings.html','🎚️',470,190,sticky],
-                ['system/trophyCase.html','🏆',,,full|resize|sticky],
-                ['system/clock.dweet.js','🕰️',200,200,sticky|code|awake],
-                ['system/systemTest.html',,600,370,defaultFlags|code],
-            ]],
-            
             [,'😀',,,,'User Programs',,
             [
                 [,'📌',,,newUserProgram,'New User Program'],
