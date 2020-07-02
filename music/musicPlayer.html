@@ -66,7 +66,7 @@ B=k=>
             E ? L.findIndex(e=>e.k == E) : i,      // look for added song key 
             E = 0, S.length - 1);                  // clamp to select length
             
-    localStorage.OS13kK = JSON.stringify(K);       // save known song list
+    localStorage.OS13kM = JSON.stringify(K);       // save known song list
 }
 
 // insert song into list
@@ -162,7 +162,7 @@ localStorage['OS13kMusic,OS13k Test Song'] = JSON.stringify(
 ); // test song
 
 // load know songs
-K = localStorage.OS13kK ? JSON.parse(localStorage.OS13kK) : []
+K = localStorage.OS13kM ? JSON.parse(localStorage.OS13kM) : []
 
 // build music list and stop music when unloaded
 B(onunload=_=> X && X.stop());

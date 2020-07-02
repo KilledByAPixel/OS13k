@@ -283,8 +283,6 @@ const OS13kVersion = 68;
 // @js_externs localStorage.OS13k, OS13k, zzfxG
 // @js_externs iframeContent.OS13k, iframeContent.OS13kWindow
 // @js_externs iframeContent.zzfx, iframeContent.zzfxG
-// @js_externs settings.v, settings.m, settings.s, settings.p, settings.o
-// @js_externs settings.c, settings.d, settings.t, settings.f
 // @output_file_name OS13k.min.js
 // ==/ClosureCompiler==
 
@@ -1705,7 +1703,7 @@ class OS13kWindow extends HTMLElement
         }
         else
         {
-            this.iframe.src = program.src + '?v22';
+            this.iframe.src = program.src + '?v23';
             iframe.onload =()=> loadFrame();
         }
     }
