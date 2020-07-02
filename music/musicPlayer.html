@@ -75,7 +75,7 @@ I=k=> // key
     p = k.split`,`;                          // get key parts
     f = p.shift();                           // get first part of key
     if (f.substring(0,10) != 'OS13kMusic')   // check if music key
-        return;                              // must have name
+        return;
             
     n = p[0] ? p[0] : 'Untitled';            // get song name
     f.substring(10,11) == 'U' ?              // check if user song
@@ -93,11 +93,11 @@ I=k=> // key
 // play song
 P=k=>
 {
-    Q = S.selectedIndex;         // set queued song index
     X && X.stop(X = 0);          // stop song if playing
+    Q = S.selectedIndex;         // set queued song index
     Q < 0 ||                     // check if no selection
-    (N.innerText = L[Q].n,       // set queued song index
-    F.innerText = 'Loading...'); // set loading message
+        (N.innerText = L[Q].n,       // set queued song index
+        F.innerText = 'Loading...'); // set loading message
 }
 
 // add custom song
