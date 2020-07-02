@@ -109,6 +109,7 @@ body
     font-family:impact;
     font-size:30vw;
     font-weight:900;
+    position:absolute;
 }
 .program, #taskbar, .taskbarIcon, #background, #tray
 {
@@ -316,7 +317,7 @@ class _OS13k
     Clamp   (a, min=0, max=1)  { return Math.min(Math.max(a, min), max); }
     Percent (v, a, b)          { return b-a ? this.Clamp((v-a)/(b-a), 0, 1) : 0; }
     Lerp    (p, a, b)          { return a + this.Clamp(p, 0, 1) * (b-a); }
-    Hash    (s)                { return [...s].reduce((a,c)=>c.charCodeAt(0)+(a<<5)-a, 0); }
+    Hash    (s)                { return [...s].reduce((a,c)=>c.charCodeAt()+(a<<5)-a, 0); }
     Random  (max=1, min=0)    
     {
         // seeded random numbers - Mersenne Twister
