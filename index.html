@@ -638,20 +638,6 @@ class _OS13k
         // set texture to newly rendered image
         x.texImage2D(xTEXTURE_2D, 0, xRGBA, xRGBA, xUNSIGNED_BYTE, canvas);
     }
-
-/////////////////////////////////////////////////////////////////////////////
-// OS13k Input
-
-    // get direction from wasd or arrow keys
-    KeyDirection(keyCode)
-    {
-        let x=0, y=0;
-        (keyCode == 87 | keyCode == 38) && ++y; // up
-        (keyCode == 83 | keyCode == 40) && --y; // down
-        (keyCode == 68 | keyCode == 39) && ++x; // right
-        (keyCode == 65 | keyCode == 37) && --x; // left
-        return {x, y};
-    }
     
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Text
@@ -1698,12 +1684,12 @@ class OS13kWindow extends HTMLElement
             // write code to iframe
             this.WriteToFrame(program.info.code);
 
-            // load frame immediatly
+            // load frame immediately
             loadFrame();
         }
         else
         {
-            this.iframe.src = program.src + '?v23';
+            this.iframe.src = program.src + '?v25';
             iframe.onload =()=> loadFrame();
         }
     }

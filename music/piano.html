@@ -1,26 +1,24 @@
-<style>body{background:#111;color:#fff;user-select:none;text-align:center}</style><span id=B></span>Seed <input id=S style=width:79 oninput=E(T=3,localStorage.OS13kP=S.value) onfocus=E(T=3)>
+<style>body{background:#111;color:#fff;user-select:none;text-align:center}</style><span id=B></span>Seed
+<input id=S style=width:79 oninput=E(T=3) onfocus=E(T=3)>
 Octave <input type=number id=O style=width:40 value=0 min=-3 max=3 onfocus=this.blur()>&nbsp;
 Key <input type=number id=Y style=width:40 value=0 min=-12 max=12 onfocus=this.blur()><br>
-Gain <input type=range style=width:60 id=V onchange=R() value=50>
-Noise <input type=range style=width:60 id=N onchange=R() value=0>
-Shape <input type=range style=width:60 id=H onchange=R() value=50>
-Crush <input type=range style=width:60 id=C onchange=R() value=0><hr><div><script>
-
-Z = []; // canceled notes
-A = []; // played note array
+Gain <input type=range style=width:60 onchange=R() id=V>
+Noise <input type=range style=width:60 onchange=R() value=0 id=N>
+Shape <input type=range style=width:60 onchange=R() id=H>
+Crush <input type=range style=width:60 onchange=R() value=0 id=C><hr><div><script>
 
 //////////////////////////////////////////////////////////////
 // sound
 
 // build cached samples
-R=e=> D =                         // save cached sound
+R = e=>D =                        // save cached sound
     T-3 ? [                       // instruments
-        [1, 2, 4, 8, 16],         // organ
-        [3, 5, 7, 9, 11],         // oboe
+        [1, 2, 4, 8],             // organ
+        [3, 5, 7, 9],             // oboe
         [1]                       // sin wave
     ][ T ].map(e=>                // get instrument
             parent.zzfxG(...[     // generate zzfx samples
-            V.value/150/          // get volume
+            V.value/99/           // get volume
                 (1+Math.log2(e)), // scale volume
             0,                    // no randomness
             e*440,,               // root frequency A 440
@@ -31,22 +29,17 @@ R=e=> D =                         // save cached sound
             .7,                   // sustain volume
             .1                    // decay
         ])) :
-    [OS13k.SeedSamples(S.value, 1, V.value / 50, 0)]; // get seed samples
+    [OS13k.SeedSamples(S.value, 1, V.value / 99, 0)]; // get seed samples
 
 // play a note
-P=e=> e < 0 ||
+P = e=> e < 0 ||
 (
-    X(e),                        // cancel old note
-
     // animate button color
     b = eval('B' + e),           // get the button
     b.B = b.style.background,    // save old background color
     b.style.transition = '',     // unset transition
     b.style.background = '#f00', // set background to red
     b.innerText,                 // force reset transition
-    b.style.transition = '9s',   // set transition
-    b.style.background = '#00f', // change to blue when held
-    
     
     // play cached sound
     A[e] = D.map(d=>((s = OS13k.PlaySamples(d, 1))                   // play samples
@@ -54,31 +47,41 @@ P=e=> e < 0 ||
 );
 
 // cancel a note
-X=e=> A[e] && (                 // has a note playing
+X = e=> A[e] && 
+(
     b = eval('B' + e),          // get button
     b.style.transition = '.5s', // set transition
     b.style.background = b.B,   // reset old background color
-    Z.push(...A[e]));           // add to canceled sounds list
+    Z.push(...A[e])             // add to canceled sounds list
+);
+
+// stop all sounds if focus lost or unloaded
+onunload = onblur = e=>
+(
+    A.map((e,i)=>X(i)), // cancel all notes
+    Z.map(e=>e.stop()), // stop all canceled notes
+    Z = []              // clear canceled notes
+)
 
 //////////////////////////////////////////////////////////////
 // init
 
 // rebuild everything
-E=e=> R(                    // rebild cache
-        B.innerHTML = '',   // clear HTML
+E = e=> R(                    // rebild cache
+        B.innerHTML = '',     // clear HTML
 
         // create buttons
-        ['Organ', 'Oboe', 'Wave'].map((i,j)=>              // instruments
-            B.innerHTML +=                                 // add to HTML
-            `<button style='border:5px solid ${            // button and border
-                T-j? "#111" : "#f00" }' onmousedown=E(T=${ // border color
-                j })>${                                    // click
-                i }</button> `),                           // text
+        ['Organ', 'Oboe', 'Wave'].map((i,j)=>               // instruments
+            B.innerHTML +=                                  // add to HTML
+            `<button style='border:5px solid ${             // button and border
+                T-j ? "#111" : "#f00" }' onmousedown=E(T=${ // border color
+                j })>${                                     // select on mouse down
+                i }</button> `),                            // button text
                 
         // set seed boder
         S.style.border = `5px solid ${                    // set border
-            (C.disabled = H.disabled = N.disabled = T==3) // disable if seed
-            ? "#f00" : "#111"}`);                         // set color
+            (C.disabled = H.disabled = N.disabled = T-3)  // disable if seed
+            ? "#111" : "#f00"}`);                         // set color
 
 // create piano keys
 for( T = i = 0;  // init selected sound & iterator
@@ -89,44 +92,39 @@ for( T = i = 0;  // init selected sound & iterator
     }) onmousedown=P(${ z                                      // mouse down
     }) onmouseup=X(${ z                                        // mouse up
     }) onmouseout=X(${ z                                       // mouse out
-    }) style="display:inline-block;border:1px solid #000;background:${ // style
+    }) style="display:inline-block;border:2px solid#000;background:${ // style
     '02579'.indexOf( i%12 - 1 ) < 0 ?                          // b or w
     '#fff;width:54;height:129' :                               // white
     '#000;position:absolute;margin-left:-14;width:27;height:70'}"></div>${ // black
     ++i%12 ? '' : '<br>'}`;
 
-// load saved seed and init
-E(S.value = localStorage.OS13kP|0 || 0);
+// init
+E(  Z = [],  // canceled notes
+    A = []); // played note array
 
 // update to fade out canceled notes
 setInterval(e=>Z.map((s,i)=>               // go through canceled notes
-        (s.gain.gain.value -= .05 ) > 0 || // ramp off gain 
-        (Z.splice(i,1), s.stop())),        // stop note if gain is 0
+        (s.gain.gain.value -= .1 ) > 0 ||  // ramp off gain 
+        (Z.splice(i,1), s.stop())),        // remove and stop if gain is 0
     9);                                    // 9 ms update
 
-// cancel all sounds if focus lost
-onblur=e=>A.map((e,i)=>X(i));
-
-// stop all sounds if unloaded
-onunload= A.map(e=>e.map(e=>e.stop()));
-        
 //////////////////////////////////////////////////////////////
 // keyboard control
 
 // get piano key from keyboard key
-K=e=> e ? (k = 'zsxdcvgbhnjm,l.;/q2w3er5t6y7ui9o0p[=]' // map key to note
-    .indexOf(e.key.toLowerCase()),                     // find the key
-    k > 16 ? k-5 : k) : -1;                            // remap second row of keys
+K = e=>(k = 'zsxdcvgbhnjm,l.;/q2w3er5t6y7ui9o0p[=]' // map key to note
+    .indexOf(e.key.toLowerCase()),                  // find the key
+    k > 16 ? k-5 : k);                              // remap second row of keys
 
 // play note on key down
-onkeydown=e=>
-    document.activeElement == S ||                 // not when editing seed
+onkeydown = e=>
+    document.activeElement == S |                  // not when editing seed
         e.repeat ? 0 :                             // prevent key repeats
         Math.abs(i = e.keyCode - 39) - 1 ?         // check for up & down arrows
         P(K(e)) :                                  // play note
         O.value = OS13k.Clamp(O.value - i, -3, 3); // octave control
 
 // release note on key up
-onkeyup=e=> K(e) < 0 || X(K(e));
+onkeyup = e=> X(K(e));
 
 </script>

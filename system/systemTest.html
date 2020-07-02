@@ -7,9 +7,6 @@ Hello OS13k!
 <br><button onClick=OS13k.Speak(a.value)>Test Speech</button>
 <button onClick="s&&s.stop();s=parent.OS13k.PlaySeed(r=++r%1e4);seed.innerHTML=r">
 Test ZzFX</button> <span id=seed></span>
-<br>
-<br>Test WASD input direction
-<br><input id=move readonly>
 </td><td>
 Test Shader
 <br><canvas id=c style='border:1px solid'>
@@ -43,13 +40,6 @@ let shader, s, r = Date.now();
 
 // load local storage text area
 a.value = localStorage.OS13kTest || a.value;
-
-// input test
-onkeydown=e=>
-{
-    const p = OS13k.KeyDirection(e.keyCode); 
-    move.value = p.x + ', ' + p.y;
-}
 
 // main loop
 const Loop=t=>
