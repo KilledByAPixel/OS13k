@@ -3,48 +3,4 @@
 <input type=number style=text-align:right;width:79 min=0 max=60 id=S value=0>s
 <br><input style=width:170 id=N value=Reminder>
 <button id=T onmousedown=I() style=width:99>Start</button>
-<script>
-
-// inputs...
-// M = minutes
-// S = seconds
-// N = name
-// T = start button
-
-A = 0; // interval & is alarm set
-
-// start the timer
-I=e=>
-{
-    // enable / disable inputs
-    M.disabled = S.disabled = A = A ? clearInterval(A) : 1;
-    T.innerHTML = A ? 'Stop' : 'Start';
-
-    // reset / save time values
-    A ? (E = OS13k.Clamp(M.value*1, P=0, 60),  // save minutes & init popup timer
-            F = OS13k.Clamp(S.value*1, 0, 60), // save seconds
-            U(A = setInterval(U, 1e3))) :      // set interval every 1 second
-        (M.value = E, S.value = F);            // reset time values on stop
-}
-
-// timer update
-U=e=>
-{
-    // get new time
-    t = Math.max(0,                        // stop at 0
-        OS13k.Clamp(M.value, 0, 60) * 60 + // minutes
-        OS13k.Clamp(S.value, 0, 60) - 1);  // seconds minus 1
-
-    // update time inputs
-    M.value = t/60|0; // minutes
-    S.value = t%60;   // seconds
-
-    // play alarm sound, popup every 10 seconds
-    t || (zzfx(...[2,.8,999,,,,,1.5,,.3,-99,.1,1.63,,,.11,.22]), // alarm sound
-        P++%10 ||                                                // every 10 seconds
-        parent.document.hasFocus() &&                            // has focus
-        OS13k.Popup('<div style=font-size:40>⏰</div>'+          // popup alarm icon
-            (n = OS13k.StripHTML(N.value)), n))                  // text and speak
-}
-
-</script>
+<script>A=0,I=a=>{M.disabled=S.disabled=A=A?clearInterval(A):1,T.innerHTML=A?"Stop":"Start",A?(E=OS13k.Clamp(1*M.value,P=0,60),F=OS13k.Clamp(1*S.value,0,60),U(A=setInterval(U,1e3))):(M.value=E,S.value=F)},U=a=>{t=Math.max(0,60*OS13k.Clamp(M.value,0,60)+OS13k.Clamp(S.value,0,60)-1),M.value=t/60|0,S.value=t%60,t||(zzfx(...[2,.8,999,,,,,1.5,,.3,-99,.1,1.63,,,.11,.22]),P++%10||parent.document.hasFocus()&&OS13k.Popup("<div style=font-size:40>⏰</div>"+(n=OS13k.StripHTML(N.value)),n))}</script>
