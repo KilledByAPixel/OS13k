@@ -40,7 +40,6 @@ programs =
     ['apps/stickyNote.html','✍️',300,263,sticky|reload,,'Ctrl+B - Bold\nCtrl+I - Italic\nCtrl+U - Underline\n\Reload to clear'],
     ['apps/timer.html','⏰',400,136,close|reload],
     ['apps/photoBooth.html','📸',1400,550],
-    ['apps/unicodeToys.html','𝖀',500,800],
     ['apps/textEditor.html','📝'],
 ]],
 [,'🎮',,,,'Games',,

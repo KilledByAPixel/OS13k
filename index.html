@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?v139></script>
+<script src=programs.js?v140></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -270,16 +270,19 @@ const OS13kVersion = 68;
 // ==ClosureCompiler==
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // @language_out ECMASCRIPT_2019
-// @js_externs localStorage.OS13k, OS13k, zzfxG
-// @js_externs iframeContent.zzfx, iframeContent.OS13kW
-// @js_externs OS13k.Clamp, OS13k.Percent, OS13k.Lerp
+// @js_externs OS13k.Clamp, OS13k.Percent, OS13k.Lerp, OS13k.Hash
 // @js_externs OS13k.Random, OS13k.randomSeed, iframeContent.OS13kReload
 // @js_externs OS13k.Trophies, OS13k.Trophy, OS13k.GetTrophy
-// @js_externs OS13kSystem.Sound, OS13k.PlaySamples, OS13k.Note
+// @js_externs OS13k.PlaySamples, OS13k.Note
+// @js_externs OS13k.PlayMusic, OS13k.GetAnalyser, OS13k.GetAnalyserData
 // @js_externs OS13k.Speak, OS13k.StopSpeech, OS13k.PlaySeed
-// @js_externs OS13k.Settings(), OS13k.SaveSettings()
+// @js_externs OS13k.SeedSamples, OS13k.SeedParameters
+// @js_externs OS13k.Settings, OS13k.SaveSettings
 // @js_externs OS13k.CreateShader, OS13k.RenderShader, source.gain
 // @js_externs OS13k.KeyDirection, OS13k.StripHTML, OS13k.Popup
+// @js_externs localStorage.OS13k, OS13k, zzfxG
+// @js_externs iframeContent.OS13k, iframeContent.OS13kWindow
+// @js_externs iframeContent.zzfx, iframeContent.zzfxG
 // @js_externs settings.v, settings.m, settings.s, settings.p, settings.o
 // @js_externs settings.c, settings.d, settings.t, settings.f
 // @output_file_name OS13k.min.js
@@ -1602,7 +1605,7 @@ class OS13kWindow extends HTMLElement
                         (c == ')' ? '' : ',') + c : a ) : iframeText;
 
                 // set iframe link to parent window
-                iframeContent.OS13kW = this;
+                iframeContent.OS13kWindow = this;
 
                 // show error messages from user code (must be set again here because it got wiped out)
                 program.userProgram && (iframeContent.onerror =(message, source, lineno, colno, e)=>((this.errorText.value = e), true));
@@ -1622,7 +1625,7 @@ class OS13kWindow extends HTMLElement
                         'parent.OS13k.RenderShader(c,s,t,frame++,X,Y,Z,W));' +
                         'OS13k_=t=>requestAnimationFrame(OS13k_,' +
                             (program.awake || !program.info.allowSleep? '' : 
-                                't<1e3|parent.document.activeElement==OS13kW&&') +
+                                't<1e3|parent.document.activeElement==OS13kWindow&&') +
                             'u(t/1e3));' +
                             'OS13k_(X=Y=Z=W=0)'
                         :
@@ -1638,7 +1641,7 @@ class OS13kWindow extends HTMLElement
                         // update, limit framerate and fix time glitches
                         'OS13k_=t=>(requestAnimationFrame(OS13k_),' +
                             (program.awake || !program.info.allowSleep? '' : 
-                                't<1e3|parent.document.activeElement==OS13kW&&') +
+                                't<1e3|parent.document.activeElement==OS13kWindow&&') +
                             't>OS13kF-2&&'+
                             'u(((t=frame++/60)*60|0==frame-1)&&t>0?t+1e-6:t, OS13kF=Math.max(OS13kF+1000/60,t)));' +
                             'OS13k_(OS13kF=0)'));
