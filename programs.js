@@ -22,7 +22,7 @@ defaultWidth = 720, defaultHeight = 405, // 16:9 aspect
 programs = 
 [
 [,'❌',,,closeAll,'Close All'],
-['help.html','<b><span style=color:#0f0>?',380,400,sticky,,'Check here to see help when available.\nSome programs have a option to show code instead.\n\nHave fun! ✌️😄'],
+['help.html','<b><span style=color:#0f0>?',380,400,sticky,,'Check here to see help, code, or edit user programs.\n\nHave fun! ✌️😄'],
 [,'⚙️',,,,'System',,
 [
     ['system/settings.html','🎚️',470,190,sticky],

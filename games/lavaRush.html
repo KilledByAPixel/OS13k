@@ -70,7 +70,7 @@ HEAD_BOB=     8,
 $main = $a => {
 
     requestAnimationFrame($main);
-    if (!document.hasFocus())
+    if ($a>1e3 && !document.hasFocus())
         return;
 
     $shaderWriteBuffer[DEAD_FRAMES] > 180 && $init();
