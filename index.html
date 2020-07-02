@@ -1148,7 +1148,7 @@ class OS13kProgram extends HTMLElement
         }
         if (this.flags & closeAll)
         {
-            // close all windows if no src or folder
+            // close all windows if no src or folder and play sound
             [...desktop.children].map(child=>child.Close?.());
 
             // reset window open position
@@ -1161,7 +1161,8 @@ class OS13kProgram extends HTMLElement
         {
             // remove from menu info and close windows
             this.programMenu.programInfos = this.programMenu.programInfos.filter(info=>
-                info.program.userProgram && (info.program?.window?.Close(), false));
+                !info.program.userProgram || (info.program?.window?.Close(), false));
+            OS13kSystem.Sound(soundClose, 4);
             
             // remove user program infos
             programInfos = programInfos.filter(info=>info.code == undefined);
@@ -1764,8 +1765,9 @@ class OS13kWindow extends HTMLElement
     
     Close()
     {
-        // remove start program if closed
+        // remove start program if closed and play sound
         this.program.id == startProgramId && (startProgramId = '');
+        OS13kSystem.Sound(soundClose);
             
         // save info and set closed
         this.program.Save(0);
@@ -1776,8 +1778,6 @@ class OS13kWindow extends HTMLElement
         // remove taskbar icon and self
         this.taskbarIcon && this.taskbarIcon.remove();
         this.remove();
-        
-        OS13kSystem.Sound(soundClose);
     }
 } // OS13kWindow
 customElements.define('w-', OS13kWindow);
