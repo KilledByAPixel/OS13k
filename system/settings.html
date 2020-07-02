@@ -7,68 +7,49 @@ Popups <input type=checkbox id=P oninput=s()>
 <br><br>Background
 <input id=C type=color oninput=s()>&nbsp;&nbsp;
 <input id=D type=color oninput=s()>&nbsp;&nbsp;
-<input id=T oninput=s()>
-<br><br>Filters
-<span id=F>
-<script>
+<input id=T oninput=s()><br><br>Filters
+<span id=F><script>
 
-// filters
-f=
-[
-    ['Default',  ''],
-    ['Gray',     'grayscale('],
-    ['Game Boy', 'sepia()hue-rotate(40deg)contrast(.8)brightness(.8'],
-    ['Ocean',    'invert()sepia()invert('],
-    ['Sepia',    'sepia('],
-    ['Fruity',   'saturate(9',]
-];
-
-// load settings
-O = parent.OS13k;                 // get OS13k
-i = O.Settings();                 // get settings
-V.value   = i.v * 100;            // volume
-M.value   = i.m * 100;            // music volume
-S.checked = i.s;                  // speech
-P.checked = i.p;                  // popups
-Y.checked = i.o;                  // system sounds
-C.value   = i.c;                  // color 1
-D.value   = i.d;                  // color 2
-T.value   = i.t;                  // background text
-t = f.findIndex(e=>e[1]==i.f);    // find filter
-t = t < 0 ? 0 : t;                // filter
-
-// rebuild and save settings
-s=e=>
-{
-    // add buttons for filters
-    F.innerHTML = '';                        // clear old buttons
-    f.map((i,j)=>                            // iterate through filters
-    {
-        F.innerHTML +=                       // add to html
-        `<button style='border:5px solid #${ // create button
-            j == t ? 'f00' : '111'           // selected color
-            }' onmousedown="s(O.Speak('${    // mouse down
-            i[0]                             // speak name
-            }'),t=${ j                       // save filter
-            })">` + i[0];                    // set button name
-    });
-
-    // save settings
-    O.SaveSettings
-    (
-        V.value / 100, // volume
-        M.value / 100, // music volume
-        S.checked,     // speech
-        P.checked,     // system sounds
-        Y.checked,     // popups
-        D.value,       // color 1
-        C.value,       // color 2
-        T.value,       // background text
-        f[t][1]        // filter
-    );
-}
+// save settings and rebuild
+s = e=>parent.OS13k.SaveSettings
+(
+    V.value / 100,  // volume
+    M.value / 100,  // music volume
+    S.checked,      // speech
+    P.checked,      // system sounds
+    Y.checked,      // popups
+    D.value,        // color 1
+    C.value,        // color 2
+    T.value,        // background text
+    t,              // filter
+    F.innerHTML = '',                         // init filters
+    [   ['Default',  ''],
+        ['Gray',     'grayscale('],
+        ['Game Boy', 'sepia()hue-rotate(40deg)contrast(.8)brightness(.8'],
+        ['Ocean',    'invert()sepia()invert('],
+        ['Sepia',    'sepia('],
+        ['Fruity',   'saturate(9',]
+    ].map(e=>                                 // rebuilld filters
+        F.innerHTML +=                        // add to html
+        `<button style='border:5px solid${    // create button
+            e[1] == t ? '#f00' : '#111'       // selected color
+            }' onmousedown=s(t='${ e[1] }')>` // set filter
+            + e[0]                            // set button text
+    )
+);
 
 // build settings
-s();
+s(
+    i = parent.OS13k.Settings(),  // load settings
+    V.value   = i.v * 100,        // volume
+    M.value   = i.m * 100,        // music volume
+    S.checked = i.s,              // speech
+    P.checked = i.p,              // popups
+    Y.checked = i.o,              // system sounds
+    C.value   = i.c,              // color 1
+    D.value   = i.d,              // color 2
+    T.value   = i.t,              // background text
+    t = i.f                       // filter
+);
 
 </script>

@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?v140></script>
+<script src=programs.js?v141></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -283,6 +283,8 @@ const OS13kVersion = 68;
 // @js_externs localStorage.OS13k, OS13k, zzfxG
 // @js_externs iframeContent.OS13k, iframeContent.OS13kWindow
 // @js_externs iframeContent.zzfx, iframeContent.zzfxG
+// @js_externs settings.v, settings.m, settings.s, settings.p, settings.o
+// @js_externs settings.c, settings.d, settings.t, settings.f
 // @output_file_name OS13k.min.js
 // ==/ClosureCompiler==
 
@@ -1689,7 +1691,7 @@ class OS13kWindow extends HTMLElement
         }
         else
         {
-            this.iframe.src = program.src + '?v25';
+            this.iframe.src = program.src + '?v26';
             iframe.onload =()=> loadFrame();
         }
     }

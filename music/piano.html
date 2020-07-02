@@ -31,7 +31,7 @@ R = e=>D =                        // save cached sound
         ])) :
     [OS13k.SeedSamples(S.value, 1, V.value / 99, 0)]; // get seed samples
 
-// play a note
+// play note
 P = e=> e < 0 ||
 (
     // animate button color
@@ -46,7 +46,7 @@ P = e=> e < 0 ||
         .detune.value = (e - 33 + O.value*12)*100 + Y.value*100, s)) // set frequency
 );
 
-// cancel a note
+// cancel note
 X = e=> A[e] && 
 (
     b = eval('B' + e),          // get button
@@ -66,14 +66,14 @@ onunload = onblur = e=>
 //////////////////////////////////////////////////////////////
 // init
 
-// rebuild everything
+// rebuild instrument buttons
 E = e=> R(                    // rebild cache
         B.innerHTML = '',     // clear HTML
 
         // create buttons
         ['Organ', 'Oboe', 'Wave'].map((i,j)=>               // instruments
             B.innerHTML +=                                  // add to HTML
-            `<button style='border:5px solid ${             // button and border
+            `<button style='border:5px solid${              // button and border
                 T-j ? "#111" : "#f00" }' onmousedown=E(T=${ // border color
                 j })>${                                     // select on mouse down
                 i }</button> `),                            // button text
@@ -103,10 +103,10 @@ E(  Z = [],  // canceled notes
     A = []); // played note array
 
 // update to fade out canceled notes
-setInterval(e=>Z.map((s,i)=>               // go through canceled notes
-        (s.gain.gain.value -= .1 ) > 0 ||  // ramp off gain 
-        (Z.splice(i,1), s.stop())),        // remove and stop if gain is 0
-    9);                                    // 9 ms update
+setInterval(e=>Z.map((s,i)=>              // go through canceled notes
+        (s.gain.gain.value -= .1) > 0 ||  // ramp off gain 
+        (Z.splice(i,1), s.stop())),       // remove and stop if gain is 0
+    9);                                   // 9 ms update
 
 //////////////////////////////////////////////////////////////
 // keyboard control
