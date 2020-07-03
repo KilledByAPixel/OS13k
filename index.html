@@ -1679,7 +1679,7 @@ class OS13kWindow extends HTMLElement
             // deactivate old window and set this one active and play sound
             activeWindow && activeWindow.SetActive(0);
             activeWindow = this;
-            grabWindow || hadInput && OS13kSystem.Sound(this.activeCount++ ? soundActive : soundOpen);
+            OS13kSystem.Sound(this.activeCount++ ? soundActive : soundOpen);
 
             // move z to top
             this.style.zIndex = ++topZ;
