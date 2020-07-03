@@ -472,7 +472,7 @@ class _OS13k
     }
     
     GetAnalyser = ()=> analyserCanvas;
-    GetAnalyserData =()=> analyserData;
+    GetAnalyserData =e=> analyserData[e];
     
     // get frequency of a note on a musical scale
     Note = (semitoneOffset=0, rootNoteFrequency=440, scaleNotes=12)=>
@@ -817,16 +817,16 @@ class _OS13kSystem
         const frequencyData = new Uint8Array(analyserCanvas.width = analyserCanvas.height = 32),
             context = analyserCanvas.getContext('2d');
         musicAnalyser.getByteFrequencyData(frequencyData);
-        
+
         // render analyser
         for(let i = 0; i < 32; )
         {
             // get frequency band volume and adjust for loudness
-            const volume = frequencyData[i] / 255 * (1 + Math.log10((i+1) * defaultSampleRate / 64 ));
+            const volume = (frequencyData[i] / 255)**3 * (1 + Math.log10((i+1) * defaultSampleRate / 64 ));
 
             // draw loudness bar
-            context.fillStyle = `hsl(${-99-69*volume} 99%50%)`;
-            context.fillRect(i, 31, 1, -8*volume);
+            context.fillStyle = `hsl(${-99-59*volume} 99%50%)`;
+            context.fillRect(i, 31, 1, -7*volume);
             
             // set anaylzer data, normalize between 0-1
             analyserData[i++] = OS13k.Clamp(volume / 5, 0, 1);
@@ -1576,7 +1576,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             iframe.onload = ()=> loadFrame();
-            this.iframe.src = program.src + '?v40';
+            this.iframe.src = program.src + '?v42';
         }
     }
         
