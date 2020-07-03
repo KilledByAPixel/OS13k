@@ -25,7 +25,7 @@ R = e=>
                 V.value/99/                  // get volume
                     (1+Math.log2(e)),        // scale volume
                 0,                           // no randomness
-                i*e*parent.OS13k.Note(-33),, // root frequency C
+                i*e*parent.OS13k.Note(-21),, // root frequency C
                 2,                           // sustain
                 .5,,                         // release
                 (H.value/50)**4,,,,,,        // shape curve
@@ -48,9 +48,12 @@ P = e=> e < 0 || !A[e] && // skip if invalid note or already playing
     b.innerText,                 // force reset transition
 
     // play cached sound
-    A[e] = D[2 + O.value*1+Y.value/12 + e/12|0]. // get octave
-        map(d=>((s = OS13k.PlaySamples(d, 1)).   // play samples
-        detune.value = e%12*100-1200, s))        // set frequency
+    A[e] = D[2 + O.value*1 + e/12|0].           // get octave
+        map(d=>((s = OS13k.PlaySamples(d, 1)).  // play samples
+        detune.value =                          // set frequency
+            e%12*100 +                          // get note offset
+            Y.value*100                         // apply key control
+            -1200, s))                          // start 1 octave below
 );
 
 // cancel note
@@ -113,7 +116,7 @@ E(  Z = [],  // canceled notes
 
 // update to fade out canceled notes
 setInterval(e=>Z.map((s,i)=>              // go through canceled notes
-        (s.gain.gain.value -= .05) > 0 || // ramp off gain 
+        (s.gain.gain.value -= .1) > 0 || // ramp off gain 
         (Z.splice(i,1), s.stop())),       // remove and stop if gain is 0
     9);                                   // 9 ms update
 
