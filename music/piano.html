@@ -69,7 +69,7 @@ onunload = onblur = e=>
     A.map((e,i)=>X(i)), // cancel all notes
     Z.map(e=>e.stop()), // stop all canceled notes
     Z = []              // clear canceled notes
-)
+);
 
 //////////////////////////////////////////////////////////////
 // init
@@ -113,7 +113,7 @@ E(  Z = [],  // canceled notes
 
 // update to fade out canceled notes
 setInterval(e=>Z.map((s,i)=>              // go through canceled notes
-        (s.gain.gain.value -= .05) > 0 ||  // ramp off gain 
+        (s.gain.gain.value -= .05) > 0 || // ramp off gain 
         (Z.splice(i,1), s.stop())),       // remove and stop if gain is 0
     9);                                   // 9 ms update
 
@@ -124,7 +124,7 @@ setInterval(e=>Z.map((s,i)=>              // go through canceled notes
 K = e=> e.key ?                                  // check for invalid key
     (k = 'ZSXDCVGBHNJM,L.;/Q2W3ER5T6Y7UI9O0P[=]' // map key to note
     .indexOf(e.key.toUpperCase()),               // find the key
-    k > 16 ? k-5 : k) : - 1 ;                    // remap second row of keys
+    k > 16 ? k-5 : k) : -1;                      // remap second row of keys
 
 // play note on key down
 onkeydown = e=>
