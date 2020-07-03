@@ -89,7 +89,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 - The idea is that players can listen to music while playing with other games and apps
 - Music programs should continue playing if the frame loses focus, but reduced graphics if necessary to lower the load
 - OS13k.GetAnalyser() - returns a 32x32 music analyser canvas
-- OS13k.GetAnalyserData() - returns a 32 length array of frequency volumes normalized between 0-1
+- OS13k.GetAnalyserData(i) - returns index into a 32 length array of frequency volumes normalized between 0-1
 
 ### Dweets and Shadertoys
 - Programs with the extension .dweet.js or .shader.txt or will automatically load as Dweets or Shadertoys!
