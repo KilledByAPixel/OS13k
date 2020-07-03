@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?v144></script>
+<script src=programs.js?v145></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -1501,7 +1501,7 @@ class OS13kWindow extends HTMLElement
                         'c.height=innerHeight,' +
                         'parent.OS13k.RenderShader(c,s,t,frame++,X,Y,Z,W));' +
                         'OS13k_=t=>requestAnimationFrame(OS13k_,' +
-                            (program.awake || !program.info.allowSleep? '' : 
+                            (program.awake || program.info.allowSleep == 0? '' : 
                                 't<1e3|parent.document.activeElement==OS13kWindow&&') +
                             'u(t/1e3));' +
                             'OS13k_(X=Y=Z=W=0)'
@@ -1517,7 +1517,7 @@ class OS13kWindow extends HTMLElement
 
                         // update, limit framerate and fix time glitches
                         'OS13k_=t=>(requestAnimationFrame(OS13k_),' +
-                            (program.awake || !program.info.allowSleep? '' : 
+                            (program.awake || program.info.allowSleep == 0? '' : 
                                 't<1e3|parent.document.activeElement==OS13kWindow&&') +
                             't>OS13kF-2&&'+
                             'u(((t=frame++/60)*60|0==frame-1)&&t>0?t+1e-6:t, OS13kF=Math.max(OS13kF+1000/60,t)));' +

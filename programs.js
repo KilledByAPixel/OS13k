@@ -6,6 +6,7 @@ awake    = 2**2, // prevent sleep and dim when not active
 full     = 2**3, // show full screen button
 resize   = 2**4, // show resize buttons (apect ratio maintained)
 code     = 2**5, // show code button (cant show code if help is set)
+close    = 2**6, // show code button (cant show code if help is set)
 
 // system flags
 closeAll   = 2**7,        // close all open windows
@@ -38,7 +39,7 @@ programs =
 [
     ['apps/console.html','<span style=color:#0f0;background:#000;font-family:monospace>JS>'],
     ['apps/stickyNote.html','✍️',300,263,sticky|reload,,'Ctrl+B - Bold\nCtrl+I - Italic\nCtrl+U - Underline\n\Reload to clear'],
-    ['apps/timer.html','⌛',400,79,sticky|close|reload],
+    ['apps/timer.html','⌛',400,79,sticky|reload],
     ['apps/photoBooth.html','📸',1400,550],
     ['apps/textEditor.html','📝'],
 ]],
@@ -56,7 +57,7 @@ programs =
 [,'🎶',,,,'Music',,
 [
     ['music/musicPlayer.html','🎵',400,330,sticky],
-    ['music/piano.html','🎹',500,510,full|reload,,'Keyboard = Play Notes\nUp/Down = Change Octave'],
+    ['music/piano.html','🎹',520,510,reload],
     ['music/soundSeeds.html','🌱',350,480,close],
     ['music/visualizer.dweet.js','👁️',,,awake|full|resize|code],
     ['music/bach.dweet.js','🎼'],
