@@ -3,8 +3,8 @@
 <div id=F style=height:9></div><br>
 <button onmousedown=P()>Play</button>
 <button onmousedown=X&&X.stop(X=0)>Stop</button>
-<button onmousedown=A()>Add</button>
-<button onmousedown=R()>Remove</button><br><br>
+<button onmousedown=A()>Load</button>
+<button onmousedown=R()>Delete</button><br><br>
 Volume <input type=range id=V value=100>
 Loop <input type=checkbox id=O><br>
 <canvas id=C style=width:350;height:29;image-rendering:-moz-crisp-edges;image-rendering:pixelated></canvas><br>
@@ -29,7 +29,7 @@ U=k=>
         T = 0,                        // reset time
         Q = -1,                       // reset song to play
         (X = OS13k.PlayMusic(l.d)) || // play the music
-            alert`⚠️ Error!`);         // song failed to play
+            alert`⚠️ Error!`);        // song failed to play
 
     // copy analyzer canvas
     C.getContext`2d`.drawImage(OS13k.GetAnalyser(), 0, 0, C.width = 32, C.height = 32);
@@ -118,11 +118,11 @@ A=k=>
                 prompt`Name`.replace(/,/g, '')         // get song name
             ] = d);                                    // set data
     }
-    catch (e) { alert`⚠️ Error!`; console.log(e);}      // load failed
+    catch (e) { alert`⚠️ Error!`; console.log(e);}     // load failed
 }
 
 // remove song
-R=k=> confirm`Remove?` &&                             // confirm to remove
+R=k=> confirm`⚠️ Delete?` &&                          // confirm to remove
         B(localStorage[L[S.selectedIndex].k] = 0);    // remove and rebuild
 
 // parse json and replace null with undefined
