@@ -1751,7 +1751,7 @@ class OS13kWindow extends HTMLElement
             this.iframeContent.OS13kReload() :
             this.program.userProgram ?
                 this.SetCode(this.program.info.code) :
-            this.iframeContent.location.reload(this.iframe.style.visibility = '');
+            this.CreateFrame(this.iframe.style.visibility = '');
     }
     
     Close()
