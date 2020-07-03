@@ -861,8 +861,7 @@ class _OS13kSystem
             else if (!document.fullscreenElement)
             {
                 // move popup up, set to bottom if it was invisible
-                let y = popup.style.visibility ? 
-                     innerHeight : parseFloat(popup.style.top) + offsetY - 9;
+                let y = popup.style.visibility ? innerHeight : parseInt(popup.style.top) + offsetY - 9;
                 popup.style.visibility = '';
                 
                 if (y < taskbarHeight)
@@ -1906,7 +1905,7 @@ onmousedown = e=>
     e.target.Open ? e.target.Open(originalTarget, e.x, e.y) : activeWindow?.SetActive();
     
     // allow event to contiue only if input
-    return /input|textarea|button/.test(originalTarget.localName);
+    return e.target == loadIcon || /input|textarea|button/.test(originalTarget.localName);
 }
 
 onmousemove = e=>
@@ -2172,7 +2171,7 @@ if (typeof ontouchstart != 'undefined')
         }
 
         // pass event to mouse down, prevent closing folders
-        touching & !wasTouching & !e.target.folder && onmousedown(e);
+        touching & !wasTouching & !e.target.folder && e.target != loadIcon && onmousedown(e);
 
         // pass event to mouse up
         !touching & wasTouching && onmouseup(e);
@@ -2187,7 +2186,7 @@ if (typeof ontouchstart != 'undefined')
         const originalTarget = e.originalTarget || e.path[0];
         
         // allow event to contiue only if input
-        return !e.cancelable || /input|textarea|button/.test(originalTarget.localName);
+        return !e.cancelable || e.target == loadIcon || /input|textarea|button/.test(originalTarget.localName);
     }
     
     // set touch events
