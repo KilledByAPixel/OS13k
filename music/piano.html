@@ -32,12 +32,12 @@ R = e=>D =                        // save cached sound
     [OS13k.SeedSamples(S.value, 1, V.value / 99, 0)]; // get seed samples
 
 // play note
-P = e=> e < 0 ||
+P = e=> e < 0 || !A[e] &&
 (
-    // animate button color
+    // change button color
     b = eval('B' + e),           // get the button
-    b.B = b.style.background,    // save old background color
     b.style.transition = '',     // unset transition
+    b.B = b.style.background,    // save old background color
     b.style.background = '#f00', // set background to red
     b.innerText,                 // force reset transition
     
@@ -52,7 +52,8 @@ X = e=> A[e] &&
     b = eval('B' + e),          // get button
     b.style.transition = '.5s', // set transition
     b.style.background = b.B,   // reset old background color
-    Z.push(...A[e])             // add to canceled sounds list
+    Z.push(...A[e]),            // add to canceled sounds list
+    A[e] = 0                    // remove from playing sounds list
 );
 
 // stop all sounds if focus lost or unloaded
@@ -79,7 +80,7 @@ E = e=> R(                    // rebild cache
                 i }</button> `),                            // button text
                 
         // set seed boder
-        S.style.border = `5px solid ${                    // set border
+        S.style.border = `5px solid${                     // set border
             (C.disabled = H.disabled = N.disabled = T-3)  // disable if seed
             ? "#111" : "#f00"}`);                         // set color
 
@@ -94,13 +95,14 @@ for( T = i = 0;  // init selected sound & iterator
     }) onmouseout=X(${ z                                       // mouse out
     }) style="display:inline-block;border:2px solid#000;background:${ // style
     '02579'.indexOf( i%12 - 1 ) < 0 ?                          // b or w
-    '#fff;width:54;height:129' :                               // white
-    '#000;position:absolute;margin-left:-14;width:27;height:70'}"></div>${ // black
-    ++i%12 ? '' : '<br>'}`;
+    '#fff;width:54;height:129;color:#000' :                    // white
+    '#000;position:absolute;margin-left:-14;width:27;height:70'}">${ // black
+        'I9O0P[=]    Q2W3ER5T6Y7UZSXDCVGBHNJM'[i]              // show key
+    }</div>${++i%12 ? '' : '<br>'}`;                           // 12 keys per row
 
 // init
 E(  Z = [],  // canceled notes
-    A = []); // played note array
+    A = []); // active note array
 
 // update to fade out canceled notes
 setInterval(e=>Z.map((s,i)=>              // go through canceled notes
@@ -112,8 +114,8 @@ setInterval(e=>Z.map((s,i)=>              // go through canceled notes
 // keyboard control
 
 // get piano key from keyboard key
-K = e=>(k = 'zsxdcvgbhnjm,l.;/q2w3er5t6y7ui9o0p[=]' // map key to note
-    .indexOf(e.key.toLowerCase()),                  // find the key
+K = e=>(k = 'ZSXDCVGBHNJM,L.;/Q2W3ER5T6Y7UI9O0P[=]' // map key to note
+    .indexOf(e.key.toUpperCase()),                  // find the key
     k > 16 ? k-5 : k);                              // remap second row of keys
 
 // play note on key down
