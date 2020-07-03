@@ -459,6 +459,7 @@ class _OS13k
         // create custom gain node and start
         source.connect(source.gain = audioContext.createGain());
         source.gain.connect(music ? gainMusic : gain);
+        music && source.connect(musicAnalyser);
         source.start();
         return source;
     }
@@ -728,7 +729,6 @@ class _OS13kSystem
         // setup audio
         gain.connect(audioContext.destination);
         gainMusic.connect(audioContext.destination);
-        gainMusic.connect(musicAnalyser);
         
         // create tray icons
         musicTrayIcon     = new OS13kTrayIcon();
