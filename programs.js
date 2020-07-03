@@ -58,7 +58,7 @@ programs =
 [
     ['music/musicPlayer.html','🎵',400,330,sticky],
     ['music/piano.html','🎹',520,510,reload],
-    ['music/soundSeeds.html','🌱',350,480,close],
+    ['music/soundSeeds.html','🌱',350,480],
     ['music/visualizer.dweet.js','👁️',,,awake|full|resize|code],
     ['music/bach.dweet.js','🎼'],
     ['music/minBytes.html','<span style=color:#f00>𝓜',450,450],
