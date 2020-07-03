@@ -1537,7 +1537,7 @@ class OS13kWindow extends HTMLElement
             // prevent iframes context menu and drop events
             iframeContent.ondrop = iframeContent.ondragover = iframeContent.oncontextmenu =()=>false;
             
-            // add taskbar icon if it doesnt exist and set active (from being reloaded)
+            // add taskbar icon if it doesnt exist and set active
             this.taskbarIcon || (this.taskbarIcon = new OS13kTaskbarIcon(program, this)).SetActive();
 
             // make visible
@@ -1551,6 +1551,9 @@ class OS13kWindow extends HTMLElement
 
             // listen for reload from iframe, prevent infnite recursion
             program.userProgram && (iframe.onload = ()=> reloadCount++ && this.Reload(1, 0));
+
+            // release grab window since this one will be in front
+            grabWindow && onmouseup();
         }
         
         // create iframe
