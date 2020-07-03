@@ -15,26 +15,29 @@ R = e=>
 {
     // cache samples
     D = [];
-    for(i=6;--i;) D[i] =                     // for each octave
-        T-3 ? [                              // instruments
-            [1, 2, 4, 8],                    // organ
-            [3, 5, 7, 9],                    // oboe
-            [1]                              // sin wave
-        ][ T ].map(e=>                       // get instrument
-                parent.zzfxG(...[            // generate zzfx samples
-                V.value/99/                  // get volume
-                    (1+Math.log2(e)),        // scale volume
-                0,                           // no randomness
-                i*e*parent.OS13k.Note(-21),, // root frequency C
-                2,                           // sustain
-                .5,,                         // release
-                (H.value/50)**4,,,,,,        // shape curve
-                N.value/99,,                 // noise
-                C.value/500,,                // bit crush  
-                .7,                          // sustain volume
-                .1                           // decay
+    
+    for(i=6;--i;) 
+        r = parent.OS13k.Note(i*12-21), // root frequency C
+        D[i] =                          // for each octave
+        T-3 ? [                         // instruments
+            [1, 2, 4, 8],               // organ
+            [3, 5, 7, 9],               // oboe
+            [1]                         // sin wave
+        ][ T ].map(e=>                  // get instrument
+                parent.zzfxG(...[       // generate zzfx samples
+                V.value/99/             // get volume
+                    (1+Math.log2(e)),   // scale volume
+                0,                      // no randomness
+                e*r,,                   // frequency
+                2,                      // sustain
+                .5,,                    // release
+                (H.value/50)**4,,,,,,   // shape curve
+                N.value/99,,            // noise
+                C.value/500,,           // bit crush  
+                .7,                     // sustain volume
+                .1                      // decay
             ])) :
-        [OS13k.SeedSamples(S.value, 1, V.value / 99, 0, i*55)]; // get seed samples
+        [OS13k.SeedSamples(S.value, 1, V.value / 99, 0, r)]; // get seed samples
 }
 
 // play note
