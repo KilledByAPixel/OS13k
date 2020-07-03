@@ -18,9 +18,11 @@ U=e=>
         M.value * 60 + // minutes
         S.value*1 - 1))  // seconds minus 1
 
-    // play alarm sound, popup every 10 seconds
+    // play alarm sound and show popup
     || (zzfx(...[2,.8,999,,,,1,2,,,,,1,,,.1,.2]),
-        --P || (OS13k.Popup('⌛ <b>' + T, T), P = 10));
+        --P%10 ||                                  // every 10 seconds
+        (parent.document.hasFocus() || !P) &&      // has focus or first popup
+        OS13k.Popup('⌛ <b>' + T, T));             // show popup
 
     // update time inputs
     M.value = t/60|0; // minutes

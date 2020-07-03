@@ -1881,8 +1881,8 @@ onmousedown = e=>
     // close menus on mouse down
     OS13kSystem.CloseMenus();
 
-    // reset program menu position, put it way offscreen if not the load icon to fix firefox bug
-    programsMenu.style.left = e.target == loadIcon ? 0 : -999;
+    // reset program menu position
+    programsMenu.style.left = 0;
     programsMenu.style.top = taskbarHeight;
 
     // prevent stuck grab (from tabbing to another window while grabbing)
