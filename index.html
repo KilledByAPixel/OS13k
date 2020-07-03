@@ -1556,6 +1556,9 @@ class OS13kWindow extends HTMLElement
             grabWindow && onmouseup();
         }
         
+        // remove old iframe if it exists
+        this.iframe && this.iframeWrapper.removeChild(this.iframe);
+
         // create iframe
         const iframe = this.iframe = this.iframeWrapper.appendChild(document.createElement('iframe')); 
         const iframeContent = this.iframeContent = iframe.contentWindow;
@@ -1572,10 +1575,6 @@ class OS13kWindow extends HTMLElement
             // allow code editing, check for alt+enter to reload
             this.codeText.onkeydown =e=> !e.altKey || e.keyCode == 13 && this.SetCode(this.codeText.value);
             this.codeText.oninput =e=> this.liveEdit.checked && this.SetCode(this.codeText.value);
-
-            // reload when mouse pressed on code if not safe and live editing
-            this.codeText.onmousedown =e=> (allCodeIsSafe || 
-                this.liveEdit.checked && this.Reload(allCodeIsSafe = 1), e);
 
             // write code to iframe and load it immediately
             loadFrame(this.WriteToFrame(program.info.code));
@@ -1596,7 +1595,6 @@ class OS13kWindow extends HTMLElement
         this.program.Save();
 
         // mark code as safe and reset iframe
-        this.iframeWrapper.removeChild(this.iframe);
         this.CreateFrame(allCodeIsSafe = 1);
     }
     
