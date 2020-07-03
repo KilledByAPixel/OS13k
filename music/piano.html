@@ -113,7 +113,7 @@ E(  Z = [],  // canceled notes
 
 // update to fade out canceled notes
 setInterval(e=>Z.map((s,i)=>              // go through canceled notes
-        (s.gain.gain.value -= .1) > 0 ||  // ramp off gain 
+        (s.gain.gain.value -= .05) > 0 ||  // ramp off gain 
         (Z.splice(i,1), s.stop())),       // remove and stop if gain is 0
     9);                                   // 9 ms update
 
