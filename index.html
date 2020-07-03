@@ -817,8 +817,8 @@ class _OS13kSystem
         clockTrayIcon.innerHTML = clockTrayIcon.title.replace(/.* (\d+:\d+):.*/, '$1');
         
         // get analyser data
-        musicAnalyser.fftSize = 128
-        const frequencyData = new Uint8Array(64),
+        musicAnalyser.fftSize = 512;
+        const frequencyData = new Uint8Array(512),
             context = analyserCanvas.getContext('2d');
         musicAnalyser.getByteFrequencyData(frequencyData);
         analyserCanvas.width = analyserCanvas.height = 32
@@ -827,7 +827,7 @@ class _OS13kSystem
         for(let i = 0; i < 32; )
         {
             // get frequency band volume and adjust for loudness
-            const volume = (frequencyData[i+2] / 255)**3 * (1 + Math.log10((i+2) * defaultSampleRate / 128 ));
+            const volume = (frequencyData[i+3] / 255)**3 * (1 + Math.log10((i+3) * defaultSampleRate / 1024 ));
 
             // draw loudness bar
             context.fillStyle = `hsl(${-99-59*volume} 99%50%)`;
