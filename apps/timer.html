@@ -1,25 +1,26 @@
 <style>body{background:#111;color:#fff;user-select:none;text-align:center}*{font-size:28}input{margin:9}</style>
-<input type=number style=text-align:right;width:79 min=0 max=60 id=M value=2>m
-<input type=number style=text-align:right;width:79 min=0 max=60 id=S value=0>s&nbsp;
-<button id=T onmousedown=U(setInterval(U,1e3),T.disabled=M.disabled=S.disabled=P=1) style=width:99>Start</button>
+<input type=number style=width:79;text-align:right min=0 id=M value=2>m
+<input type=number style=width:79;text-align:right min=0 id=S value=0>s&nbsp;
+<button id=A onmousedown=setInterval(U,1e3,A.disabled=M.disabled=S.disabled=P=1) style=width:99>Start</button>
 <script>
 
-// inputs...
+// globals
 // M = minutes
 // S = seconds
-// T = start button
+// A = start button
+T = "Time's Up!"
 
 // timer update
 U=e=>
 {
-    // get new time
-    (t = Math.max(0,                       // stop at 0
-        OS13k.Clamp(M.value, 0, 60) * 60 + // minutes
-        OS13k.Clamp(S.value, 0, 60) - 1))  // seconds minus 1
+    // update time
+    (t = Math.max(0,   // stop at 0
+        M.value * 60 + // minutes
+        S.value*1 - 1))  // seconds minus 1
 
     // play alarm sound, popup every 10 seconds
     || (zzfx(...[2,.8,999,,,,1,2,,,,,1,,,.1,.2]),
-        --P || (OS13k.Popup("⌛ <b>Time's up!", "Time's up!'"), P = 10));
+        --P || (OS13k.Popup('⌛ <b>' + T, T), P = 10));
 
     // update time inputs
     M.value = t/60|0; // minutes
