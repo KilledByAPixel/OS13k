@@ -12,7 +12,6 @@ Loop <input type=checkbox id=O><br>
 <script src=songs/cuddly.js></script>
 <script src=songs/iamback.js></script>
 <script src=songs/sanxion.js?1></script>
-<script src=songs/error.js?1></script>
 <script>
 
 OS13k = parent.OS13k; // get OS13k
@@ -81,7 +80,7 @@ I=k=> // key
     f.substring(10,11) == 'U' ?              // check if user song
         Z = Math.max(Z, f.substring(11)) :   // update highest user song
         K.indexOf(k) < 0 && (OS13k.Popup(    // check if new song
-            '🎵 New Music<br><b>' + n),      // new music popup
+            '🎵 New Music<br><b>' + n, n),   // new music popup
             K.push(k));                      // add song to known list
               
     try {                                    // try to load the data
