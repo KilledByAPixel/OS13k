@@ -1,7 +1,7 @@
 <style>body{background:#111;color:#fff;user-select:none;text-align:center}</style><span id=B></span>Seed
 <input id=S style=width:79 oninput=E(T=3) onfocus=E(T=3)>
-Octave <input type=number id=O style=width:40 value=0 min=-1 max=1 onfocus=this.blur()>&nbsp;
-Key <input type=number id=Y style=width:40 value=0 min=0 max=12 onfocus=this.blur()><br>
+Octave <input type=number id=O style=width:40 value=0 min=-2 max=2 onfocus=this.blur()>&nbsp;
+Key <input type=number id=Y style=width:40 value=0 min=-12 max=12 onfocus=this.blur()><br>
 Gain <input type=range style=width:60 onchange=R() id=V>
 Noise <input type=range style=width:60 onchange=R() value=0 id=N>
 Shape <input type=range style=width:60 onchange=R() id=H>
@@ -13,45 +13,50 @@ Crush <input type=range style=width:60 onchange=R() value=0 id=C><hr><div><scrip
 // build cached samples
 R = e=>
 {
-    // cache samples
-    D = [];
-    for(i=6;--i;) D[i] =                     // for each octave
-        T-3 ? [                              // instruments
-            [1, 2, 4, 8],                    // organ
-            [3, 5, 7, 9],                    // oboe
-            [1]                              // sin wave
-        ][ T ].map(e=>                       // get instrument
-                parent.zzfxG(...[            // generate zzfx samples
-                V.value/99/                  // get volume
-                    (1+Math.log2(e)),        // scale volume
-                0,                           // no randomness
-                i*e*parent.OS13k.Note(-33),, // root frequency C
-                2,                           // sustain
-                .5,,                         // release
-                (H.value/50)**4,,,,,,        // shape curve
-                N.value/99,,                 // noise
-                C.value/500,,                // bit crush  
-                .7,                          // sustain volume
-                .1                           // decay
-            ])) :
-        [OS13k.SeedSamples(S.value, 1, V.value / 99, 0, i*55)]; // get seed samples
+    D = []                            // save cached sound
 }
 
 // play note
-P = e=> e < 0 || !A[e] && // skip if invalid note or already playing
-(
+P = e=>
+{
+    // skip if invalid note or already playing
+    if ( e < 0 || A[e])
+        return;
+
     // change button color
-    b = eval('B' + e),           // get the button
-    b.style.transition = '',     // unset transition
-    b.B = b.style.background,    // save old background color
-    b.style.background = '#f00', // set background to red
-    b.innerText,                 // force reset transition
+    b = eval('B' + e);           // get the button
+    b.style.transition = '';     // unset transition
+    b.B = b.style.background;    // save old background color
+    b.style.background = '#f00'; // set background to red
+    b.innerText;                 // force reset transition
+    
+    // cache sample if not found
+    D[o = 1 + O.value*1+Y.value/12 + e/12|0] ? 0 :
+        D[o] = 
+        T-3 ? [                       // instruments
+            [1, 2, 4, 8],             // organ
+            [3, 5, 7, 9],             // oboe
+            [1]                       // sin wave
+        ][ T ].map(e=>                // get instrument
+                parent.zzfxG(...[     // generate zzfx samples
+                V.value/99/           // get volume
+                    (1+Math.log2(e)), // scale volume
+                0,                    // no randomness
+                o*e*55,,              // root frequency A 440
+                5,,,                  // sustain
+                (H.value/50)**4,,,,,, // shape curve
+                N.value/99,,          // noise
+                C.value/500,,         // bit crush  
+                .7,                   // sustain volume
+                .1                    // decay
+            ])) :
+        [OS13k.SeedSamples(S.value, 1, V.value / 99, 0, o*55)]; // get seed samples
 
     // play cached sound
-    A[e] = D[2 + O.value*1+Y.value/12 + e/12|0]. // get octave
-        map(d=>((s = OS13k.PlaySamples(d, 1)).   // play samples
-        detune.value = e%12*100-1200, s))        // set frequency
-);
+    console.log('o=' + o + ' n=' + e%12);
+    A[e] = D[o].map(d=>((s = OS13k.PlaySamples(d, 1))  // play samples
+        .detune.value = e%12*100, s));              // set frequency
+}
 
 // cancel note
 X = e=> A[e] && 
@@ -121,10 +126,9 @@ setInterval(e=>Z.map((s,i)=>              // go through canceled notes
 // keyboard control
 
 // get piano key from keyboard key
-K = e=> e.key ?                                  // check for invalid key
-    (k = 'ZSXDCVGBHNJM,L.;/Q2W3ER5T6Y7UI9O0P[=]' // map key to note
-    .indexOf(e.key.toUpperCase()),               // find the key
-    k > 16 ? k-5 : k) : - 1 ;                    // remap second row of keys
+K = e=>(k = 'ZSXDCVGBHNJM,L.;/Q2W3ER5T6Y7UI9O0P[=]' // map key to note
+    .indexOf(e.key.toUpperCase()),                  // find the key
+    k > 16 ? k-5 : k);                              // remap second row of keys
 
 // play note on key down
 onkeydown = e=>
@@ -132,7 +136,7 @@ onkeydown = e=>
         e.repeat ? 0 :                             // prevent key repeats
         Math.abs(i = e.keyCode - 39) - 1 ?         // check for up & down arrows
         P(K(e)) :                                  // play note
-        O.value = OS13k.Clamp(O.value - i, -1, 1); // octave control
+        O.value = OS13k.Clamp(O.value - i, -2, 2); // octave control
 
 // release note on key up
 onkeyup = e=> X(K(e));
