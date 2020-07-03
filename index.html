@@ -2050,10 +2050,12 @@ zzfxG = (volume = 1, randomness = .05, frequency = 220, attack = 0, sustain = 0,
     return b;
 },
 
+///////////////////////////////////////////////////////////////////////////////
 //! ZzFXM (v1.0.0) | (C) Keith Clark | MIT | https://github.com/keithclark/ZzFXM
+
 zzfxM = (instruments, patterns, sequence, speed = 6, panning) => {
-  let SAMPLE_RATE = 44100;                  // this must match ZzFX sample rate
-  let BPM = 125                             // beats per min - always 125
+  let SAMPLE_RATE = defaultSampleRate;
+  let BPM = 125;                             // beats per min - always 125
   let ticksPerSecond = 1000 / (2500 / BPM);
   let tickRowSize = SAMPLE_RATE / (ticksPerSecond / speed) | 0;
   let bufferStart = 0
@@ -2143,6 +2145,7 @@ zzfxM = (instruments, patterns, sequence, speed = 6, panning) => {
 
   return [leftChannelBuffer, rightChannelBuffer];
 }
+
 ///////////////////////////////////////////////////////////////////////////////
 // Start OS13k!
 
