@@ -1,5 +1,5 @@
 // flags
-var 
+var              // change to const for final build
 sticky   = 2**0, // always save position and if open
 reload   = 2**1, // show reload button
 awake    = 2**2, // prevent sleep and dim when not active
