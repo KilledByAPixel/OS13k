@@ -1,7 +1,7 @@
 <style>body{background:#111;color:#fff;user-select:none;text-align:center}*{font-size:28}input{margin:9}</style>
 <input type=number style=text-align:right;width:79 min=0 max=60 id=M value=2>m
 <input type=number style=text-align:right;width:79 min=0 max=60 id=S value=0>s&nbsp;
-<button id=T onmousedown=U(setInterval(U,1e3),T.disabled=M.disabled=S.disabled=1) style=width:99>Start</button>
+<button id=T onmousedown=U(setInterval(U,1e3),T.disabled=M.disabled=S.disabled=P=1) style=width:99>Start</button>
 <script>
 
 // inputs...
@@ -13,13 +13,13 @@
 U=e=>
 {
     // get new time
-    (t = Math.max(0,                        // stop at 0
+    (t = Math.max(0,                       // stop at 0
         OS13k.Clamp(M.value, 0, 60) * 60 + // minutes
         OS13k.Clamp(S.value, 0, 60) - 1))  // seconds minus 1
 
-    // play alarm sound and popup first time
+    // play alarm sound, popup every 10 seconds
     || (zzfx(...[2,.8,999,,,,1,2,,,,,1,,,.1,.2]),
-        S.value-1 || OS13k.Popup("<b style=font-size:40>⌛</b><br>Time's up!", "Time's up!'"));
+        --P || (OS13k.Popup("⌛ <b>Time's up!", "Time's up!'"), P = 10));
 
     // update time inputs
     M.value = t/60|0; // minutes
