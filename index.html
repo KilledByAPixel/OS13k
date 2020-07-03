@@ -814,7 +814,7 @@ class _OS13kSystem
         
         // update time
         clockTrayIcon.title = new Date();
-        clockTrayIcon.innerHTML = clockTrayIcon.title.replace(/.*(\d+:\d+):.*/, '$1');
+        clockTrayIcon.innerHTML = clockTrayIcon.title.replace(/.* (\d+:\d+):.*/, '$1');
         
         // get analyser data
         musicAnalyser.fftSize = 128
