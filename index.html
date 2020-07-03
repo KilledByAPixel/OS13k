@@ -392,9 +392,13 @@ class _OS13k
         // check if seed is a number
         if (parseFloat(seed = (seed+'').trim()) != seed)
         {
-            // seed is not number, check if zzfx string and get parameters
+            // seed is not number, check if zzfx string and apply overrides
             if (seed.slice(0,9) == 'zzfx(...[')
-                return seed.slice(9).split(',').map(p=>p.length? parseFloat(p) : undefined);
+                return seed.slice(9).split(',').map((p,i)=>
+                    !i ? volume :
+                    i==1 ? randomness :
+                    i==2 && frequency ? frequency :
+                    p.length ? parseFloat(p) : undefined);
             
             // use hash string as seed 
             seed = this.Hash(seed);

@@ -17,7 +17,7 @@ R = e=>
     D = [];
     
     for(i=6;--i;) 
-        r = parent.OS13k.Note(i*12-45), // root frequency C
+        f = parent.OS13k.Note(i*12-45), // root frequency C
         D[i] =                          // for each octave
         T-3 ? [                         // instruments
             [1, 2, 4, 8],               // organ
@@ -28,7 +28,7 @@ R = e=>
                 V.value/99/             // get volume
                     (1+Math.log2(e)),   // scale volume
                 0,                      // no randomness
-                e*r,,                   // frequency
+                e*f,,                   // frequency
                 2,                      // sustain
                 .5,,                    // release
                 (H.value/50)**4,,,,,,   // shape curve
@@ -37,7 +37,7 @@ R = e=>
                 .7,                     // sustain volume
                 .1                      // decay
             ])) :
-        [OS13k.SeedSamples(S.value, 1, V.value / 99, 0, r)]; // get seed samples
+        [OS13k.SeedSamples(S.value, 1, V.value / 99, 0, f)]; // get seed samples
 }
 
 // play note
