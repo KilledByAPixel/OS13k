@@ -128,11 +128,9 @@ K = e=> e.key ?                                  // check for invalid key
 
 // play note on key down
 onkeydown = e=>
-    document.activeElement == S |                  // not when editing seed
-        e.repeat ? 0 :                             // prevent key repeats
-        Math.abs(i = e.keyCode - 39) - 1 ?         // check for up & down arrows
-        P(K(e)) :                                  // play note
-        O.value = OS13k.Clamp(O.value - i, -1, 1); // octave control
+    document.activeElement == S | // not when editing seed
+        e.repeat ? 0 :            // prevent key repeats
+        P(K(e));                  // play note
 
 // release note on key up
 onkeyup = e=> X(K(e));
