@@ -1006,9 +1006,11 @@ class OS13kProgramMenu extends HTMLElement
             windowOpenY = copyProgram.info.y + titlebarHeight);
             
         // mark code as safe, open, and show code
+        program.stopFocus = 1;
         program.Open(program.userProgram = allCodeIsSafe = 1);
         program.window.ShowCode(1);
         program.window.codeText.focus();
+        program.stopFocus = 0;
         return program;
     }
 
@@ -1664,7 +1666,7 @@ class OS13kWindow extends HTMLElement
         finishedStartup && !this.program.sticky && OS13k.Save(startProgramId = this.program.id);
 
         // set focus to iframe using timeout to make it work cross browser
-        loading || document.activeElement != this && setTimeout(e=>this.iframeContent?.focus(lastActiveFrame = this.iframe));
+        loading || this.program.stopFocus || document.activeElement != this && setTimeout(e=>this.iframeContent?.focus(lastActiveFrame = this.iframe));
 
         // clamp window to screen
         const rect = this.getBoundingClientRect();
@@ -1905,7 +1907,7 @@ onmousedown = e=>
     e.target.Open ? e.target.Open(originalTarget, e.x, e.y) : activeWindow?.SetActive();
     
     // allow event to contiue only if input
-    return e.target == loadIcon || /input|textarea|button/.test(originalTarget.localName);
+    return e.target == loadIcon || /input|textarea/.test(originalTarget.localName);
 }
 
 onmousemove = e=>
