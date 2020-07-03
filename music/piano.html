@@ -25,7 +25,7 @@ R = e=>
             [1]                         // sin wave
         ][ T ].map(e=>                  // get instrument
                 parent.zzfxG(...[       // generate zzfx samples
-                V.value/99/             // get volume
+                V.value/99/            // get volume
                     (1+Math.log2(e)),   // scale volume
                 0,                      // no randomness
                 e*f,,                   // frequency
@@ -65,17 +65,14 @@ X = e=> A[e] &&
     b = eval('B' + e),          // get button
     b.style.transition = '.5s', // set transition
     b.style.background = b.B,   // reset old background color
-    Z.push(...A[e]),            // add to canceled sounds list
+    A[e].map(e=>(                                                  // for each sound
+        e.gain.gain.setValueAtTime(1, t = e.context.currentTime),  // set the current gain to 1
+        e.gain.gain.linearRampToValueAtTime(0, t + .1))),          // ramp off to 0
     A[e] = 0                    // remove from playing sounds list
 );
 
 // stop all sounds if focus lost or unloaded
-onunload = onblur = e=>
-(
-    A.map((e,i)=>X(i)), // cancel all notes
-    Z.map(e=>e.stop()), // stop all canceled notes
-    Z = []              // clear canceled notes
-);
+onunload = onblur = e=>A.map((e,i)=>X(i));
 
 //////////////////////////////////////////////////////////////
 // init
@@ -114,14 +111,7 @@ for( T = i = 0;  // init selected sound & iterator
     }</div>${++i%12 ? '' : '<br>'}`;                           // 12 keys per row
 
 // init
-E(  Z = [],  // canceled notes
-    A = []); // active note array
-
-// update to fade out canceled notes
-setInterval(e=>Z.map((s,i)=>              // go through canceled notes
-        (s.gain.gain.value -= .1) > 0 || // ramp off gain 
-        (Z.splice(i,1), s.stop())),       // remove and stop if gain is 0
-    9);                                   // 9 ms update
+E(A = []); // active note array
 
 //////////////////////////////////////////////////////////////
 // keyboard control
