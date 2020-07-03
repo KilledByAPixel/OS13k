@@ -889,7 +889,7 @@ class _OS13kSystem
     {
         // hide all menus
         for(const child of programsMenu.children)
-            child.style.visibility = programsMenu.style.visibility = '';
+            child.style.visibility = menu.style.visibility = '';
         
         // unselect active program
         activeProgram && (activeProgram.className = 'program');
@@ -907,7 +907,7 @@ class _OS13kSystem
     StopSpeech() { speechSynthesis && speechSynthesis.cancel(); }
     
     // play system sound if enabled
-    Sound(seed, length) { hadInput && settings.o && OS13k.PlaySeed(seed, length); }
+    Sound(seed, length) { finishedStartup && hadInput && settings.o && OS13k.PlaySeed(seed, length); }
 
 } // OS13kSystem
 const OS13kSystem = new _OS13kSystem;
@@ -984,7 +984,7 @@ class OS13kProgramMenu extends HTMLElement
         const program = new OS13kProgram(...
             copyProgram ? 
             [,copyProgram.icon, copyProgram.width, copyProgram.height, defaultFlags|code, 
-                copyProgram.name + ' (Copy)', , ,++nextUserProgramId] :
+                copyProgram.name + '+', , ,++nextUserProgramId] :
             [,'✋',,,defaultFlags|code,,,,++nextUserProgramId]);
         
         // add to menu program infos
@@ -1136,9 +1136,6 @@ class OS13kProgram extends HTMLElement
         {
             // create user program with default code
             this.programMenu.AddUserProgram();
-            
-            // prevent main document focus (allow code input to be focused)
-            return false;
         }
         if (this.flags & closeAll)
         {
@@ -1621,9 +1618,7 @@ class OS13kWindow extends HTMLElement
             // save grab offset
             grabOffsetX = x - parseInt(this.style.left);
             grabOffsetY = y - parseInt(this.style.top);
-            
-            // stop event propogation
-            return false;
+            return;
         }
         
         // check for title bar buttons
@@ -1633,9 +1628,6 @@ class OS13kWindow extends HTMLElement
         target.id == 'Shrink'      && this.Resize(this.scale - .2, soundShrink);
         target.id == 'Grow'        && this.Resize(this.scale + .2, soundGrow);
         (target.id == 'Help' | target.id == 'Code') && this.ShowCode();
-        
-        // allow event to contiue if it is input
-        return /input|textarea/.test(target.localName);
     }
     
     Resize(scale, sound)
@@ -1673,7 +1665,7 @@ class OS13kWindow extends HTMLElement
         finishedStartup && !this.program.sticky && OS13k.Save(startProgramId = this.program.id);
 
         // set focus to iframe using timeout to make it work cross browser
-        loading || document.activeElement != this && setTimeout(e=>this.iframeContent?.focus());
+        loading || document.activeElement != this && setTimeout(e=>this.iframeContent?.focus(lastActiveFrame = this.iframe));
 
         // clamp window to screen
         const rect = this.getBoundingClientRect();
@@ -1703,8 +1695,6 @@ class OS13kWindow extends HTMLElement
             // set taskbar icon active if it exists
             this.taskbarIcon?.SetActive();
         }
-    
-        return false;
     }
     
     FullScreen()
@@ -1800,14 +1790,7 @@ class OS13kTaskbarIcon extends HTMLElement
         this.title = this.program.name;
     }
     
-    Open()
-    {
-        // set active
-        this.SetActive();
-        
-        // allow main document focus only if load icon
-        return this == loadIcon;
-    }
+    Open() { this.SetActive(); }
     
     SetActive(active=1)
     {
@@ -1919,8 +1902,11 @@ onmousedown = e=>
         return;
     }
 
-    // open window or reactivate if no valid target
-    return e.target.Open ? e.target.Open(originalTarget, e.x, e.y) : activeWindow?.SetActive();
+    // open or reactivate window if no valid target
+    e.target.Open ? e.target.Open(originalTarget, e.x, e.y) : activeWindow?.SetActive();
+    
+    // allow event to contiue only if input
+    return /input|textarea|button/.test(originalTarget.localName);
 }
 
 onmousemove = e=>
@@ -2182,7 +2168,7 @@ if (typeof ontouchstart != 'undefined')
             e.y = e.touches[0].clientY;
 
             // pass event to mousemove and give focus to main window
-            window.focus(onmousemove(e));
+            onmousemove(e);
         }
 
         // pass event to mouse down, prevent closing folders
@@ -2199,9 +2185,9 @@ if (typeof ontouchstart != 'undefined')
         
         // prevent default if not edit area
         const originalTarget = e.originalTarget || e.path[0];
-        return originalTarget.parentElement.id == 'codeOptions' || 
-            originalTarget.parentElement.parentElement && originalTarget.parentElement.parentElement.id == 'codeOptions' || 
-            originalTarget.parentElement.id == 'codeDisplay' || !e.cancelable;
+        
+        // allow event to contiue only if input
+        return !e.cancelable || /input|textarea|button/.test(originalTarget.localName);
     }
     
     // set touch events
