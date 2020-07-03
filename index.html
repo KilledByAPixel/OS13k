@@ -449,8 +449,8 @@ class _OS13k
     PlaySamples = (samples, music, sampleRate=defaultSampleRate)=>
         this.PlaySamplesArray([samples], music, sampleRate);
     
-    // play array of audio sample data
-    PlaySamplesArray(samplesArray, music, sampleRate=defaultSampleRate)
+    // play array of audio sample data, connect analyser to gain if musicOrInstrument > 1
+    PlaySamplesArray(samplesArray, musicOrInstrument, sampleRate=defaultSampleRate)
     {
         // create buffer and source
         const buffer = audioContext.createBuffer(samplesArray.length, samplesArray[0].length, sampleRate),
@@ -460,10 +460,12 @@ class _OS13k
         samplesArray.map((d,i)=>buffer.getChannelData(i).set(d));
         source.buffer = buffer;
         
-        // create custom gain node and start
+        // create custom gain node
         source.connect(source.gain = audioContext.createGain());
-        source.gain.connect(music ? gainMusic : gain);
-        music && source.connect(musicAnalyser);
+        source.gain.connect(musicOrInstrument ? gainMusic : gain);
+        
+        // connect analyser and start
+        musicOrInstrument && (musicOrInstrument > 1 ? source.gain : source).connect(musicAnalyser);
         source.start();
         return source;
     }
@@ -1583,7 +1585,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             iframe.onload = ()=> loadFrame();
-            this.iframe.src = program.src + '?v50';
+            this.iframe.src = program.src + '?v51';
         }
     }
         

@@ -52,7 +52,7 @@ P = e=> e < 0 || !A[e] && // skip if invalid note or already playing
 
     // play cached sound
     A[e] = D[2 + O.value*1 + e/12|0].           // get octave
-        map(d=>((s = OS13k.PlaySamples(d, 1)).  // play samples
+        map(d=>((s = OS13k.PlaySamples(d, 2)).  // play samples
         detune.value =                          // set frequency
             e%12*100 +                          // get note offset
             Y.value*100                         // apply key control
