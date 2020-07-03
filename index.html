@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?v145></script>
+<script src=programs.js?v146></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -793,12 +793,11 @@ class _OS13kSystem
         // check if iframe became new active element
         const activeElement = document.activeElement;
         const activeFrame = 
-            activeElement.shadowRoot?.activeElement == activeElement.iframe ?
+            activeElement.shadowRoot?.activeElement == activeElement.iframe ? 
             activeElement.iframe : 0;
                 
-        // set active element and set that we had input
-        activeFrame && lastActiveFrame != activeFrame &&
-            document.activeElement.SetActive(hadInput = 1);
+        // if a new frame took focus, set window active and that we had input
+        activeFrame && lastActiveFrame != activeFrame && activeElement.SetActive(hadInput = 1);
          
          // set last active frame
         lastActiveFrame = activeFrame;
@@ -1406,9 +1405,6 @@ class OS13kWindow extends HTMLElement
         
         // update loading and create iframe
         this.CreateFrame(loading += !finishedStartup);
-        
-        // set active and clamp
-        this.SetActive(1, 1);
     }
     
     WriteToFrame(code)
@@ -1668,8 +1664,8 @@ class OS13kWindow extends HTMLElement
         // save start program if finished startup and not sticky
         finishedStartup && !this.program.sticky && OS13k.Save(startProgramId = this.program.id);
 
-        // set focus to iframe and set active frame to prevent user input being set
-        loading || document.activeElement != this && this.iframeContent && this.iframeContent.focus(lastActiveFrame = this.iframe);
+        // set focus to iframe using timeout to make it work cross browser
+        loading || document.activeElement != this && setTimeout(e=>this.iframeContent?.focus());
 
         // clamp window to screen
         const rect = this.getBoundingClientRect();
