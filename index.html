@@ -2061,8 +2061,7 @@ zzfxM = (instruments, patterns, sequence, speed = 6, panning) => {
   let instrument;
   let instrumentParams;
   let period;
-  let leftChannelBuffer=[];
-  let rightChannelBuffer=[];
+  let channelBuffers=[[],[]];
 
   sequence.map(patternIndex => {
 
@@ -2077,7 +2076,9 @@ zzfxM = (instruments, patterns, sequence, speed = 6, panning) => {
       // we fallback to alternating each song channel between the left and right
       // speakers (even channel indexes will come from the left speaker, odd
       // from the right speaker)
-      pan = panning ? .5 + (panning[channelIndex] || 0) / 2 : channelIndex & 1;
+
+      // OS13k - alternate left, center, right if no panning provided
+      pan = panning ? .5 + (panning[channelIndex] || 0) / 2 : channelIndex%2*2-1;
 
       // Read the channel data.
       for (noteIndex = 0; noteIndex < channel.length; bufferOffset += tickRowSize) {
@@ -2087,30 +2088,26 @@ zzfxM = (instruments, patterns, sequence, speed = 6, panning) => {
 
         // If we have a period then we need to play a note using the current
         // instrument.
-        period = channel[noteIndex++];
-        if (period) {
+        if (period = channel[noteIndex++]) {
           // Reset the attenuation and sample buffer offset so we can play a new
           // note.
           attenuation = sampleOffset = 0;
 
           // Create a unique key for this sample (this will coerced to a string)
-          sampleCacheKey = [period,instrument];
+          //sampleCacheKey = [period,instrument];
 
           // If we haven't done so already, build and cache the ZzFX sample for
           // the current period and instrument. Without caching the browser will
           // will hang.
-          if (!sampleCache[sampleCacheKey]) {
-            instrumentParams = [...instruments[instrument - 1]];
-            instrumentParams[2] *= 2 ** ((period - 12) / 12);
-            sampleCache[sampleCacheKey] = zzfxG(...instrumentParams);
-          }
-
-          sample = sampleCache[sampleCacheKey];
+          sample = sampleCache[sampleCacheKey = [period,instrument]] || (
+            instrumentParams = [...instruments[instrument - 1]],
+            instrumentParams[2] *= 2 ** ((period - 12) / 12),
+            sampleCache[sampleCacheKey] = zzfxG(...instrumentParams));
         }
 
         // Update the channel attenuation value. We'll use this to control the
         // volume when rendering the sample slice for this row.
-        attenuation = (channel[noteIndex++] / 64) || attenuation;
+        attenuation = channel[noteIndex++] / 64 || attenuation;
 
         // Fill the left and right audio buffers with data for this channel.
         // If we have sample data (a new note or the remaining sample data from
@@ -2120,19 +2117,16 @@ zzfxM = (instruments, patterns, sequence, speed = 6, panning) => {
         // empty we need to prefill it with `0` values for periods of slience to
         // prevent the clicking and popping noises caused by `undefined` values
         // in some browsers.
-        for (bufferPos = bufferOffset; bufferPos < bufferOffset + tickRowSize; bufferPos++) {
-          sampleByte = sample && (sample[sampleOffset++] * (1 - attenuation)) || 0;
-          leftChannelBuffer[bufferPos] = (leftChannelBuffer[bufferPos] || 0) + sampleByte * (1 - pan);
-          rightChannelBuffer[bufferPos] = (rightChannelBuffer[bufferPos] || 0) + sampleByte * pan;
-        }
+        for (bufferPos = bufferOffset; bufferPos++ < bufferOffset + tickRowSize; 
+          channelBuffers.map((buffer,side)=> buffer[bufferPos] = (buffer[bufferPos] || 0) + sampleByte * (side? pan: 1-pan)))
+            sampleByte = sample && sample[sampleOffset++] * (1 - attenuation) || 0;
       }
-
     });
 
     bufferStart = bufferPos;
   });
 
-  return [leftChannelBuffer, rightChannelBuffer];
+  return channelBuffers;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
