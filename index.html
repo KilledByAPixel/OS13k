@@ -1353,10 +1353,10 @@ class OS13kWindow extends HTMLElement
             try {
                 link.click(
                     // copy to a white canvas before saving
-                    canvasContext.fillStyle = '#fff',
                     canvasContext.fillRect(0, 0, 
                         canvas.width  = this.iframeContent.c.width, 
-                        canvas.height = this.iframeContent.c.height),
+                        canvas.height = this.iframeContent.c.height,
+                        canvasContext.fillStyle = '#fff'),
                         canvasContext.drawImage(this.iframeContent.c, 0, 0),
                     link.href = canvas.toDataURL('image/jpeg'),
                     link.download = 'OS13k_Image_' + program.name);
