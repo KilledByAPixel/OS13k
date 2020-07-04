@@ -1452,7 +1452,7 @@ class OS13kWindow extends HTMLElement
             this.screenshot.disabled = !hasExtension || !codeIsSafe;
 
             // show error messages from user code
-            program.userProgram && (iframeContent.onerror = (message, source, lineno, colno, e)=>this.SetErrorText(this.errorText))
+            program.userProgram && (iframeContent.onerror = (message, source, lineno, colno, e)=>this.SetErrorText(e))
 
             // get iframe content and document (will fail if cross site)       
             const iframeDocument = iframeContent.document;
