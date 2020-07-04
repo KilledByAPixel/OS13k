@@ -1389,7 +1389,7 @@ class OS13kWindow extends HTMLElement
         heightInput.onchange =e=>
         {
             program.width = widthInput.value = OS13k.Clamp(widthInput.value, 99, defaultWidth);
-            program.height = heightInput.value = OS13k.Clamp(heightInput.value, 99, program.width);
+            program.height = heightInput.value = OS13k.Clamp(heightInput.value, 99, program.width*2);
 
             // update to new size and clamp to desktop
             this.Resize(1);
@@ -1645,7 +1645,7 @@ class OS13kWindow extends HTMLElement
     Resize(scale, sound)
     {
         // get new width and fix window offset
-        const wNew = OS13k.Clamp(this.program.width * scale, 250, 1920);
+        const wNew = OS13k.Clamp(this.program.width * scale, 170, 1920);
         this.style.left = parseInt(this.style.left) + parseInt(this.style.width) - wNew;
         
         // set new size
