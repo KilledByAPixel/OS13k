@@ -1429,7 +1429,7 @@ class OS13kWindow extends HTMLElement
     SetErrorText(text)
     {
         this.errorText.value = text;
-        this.errorText.style.display = text ? '' : 'none';
+        this.errorText.style.display = text != undefined ? '' : 'none';
         return true;
     }
     
@@ -1519,7 +1519,7 @@ class OS13kWindow extends HTMLElement
                             'u(((t=frame++/60)*60|0==frame-1)&&t>0?t+1e-6:t,' +
                             'OS13kL=0,' +
                             'OS13kF=Math.max(OS13kF+100/6,t))') +
-                    ';(OS13kA=t=>requestAnimationFrame(OS13kA,' +
+                    ';(OS13kA=t=>(requestAnimationFrame(OS13kA),' +
                         (program.awake || program.info.allowSleep == 0? '' : 
                             't<1e3|parent.document.activeElement==OS13kWindow&&') +
                     'OS13kU(t)))' +
