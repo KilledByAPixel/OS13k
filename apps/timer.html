@@ -1,14 +1,14 @@
 <style>body{background:#111;color:#fff;user-select:none;text-align:center}*{font-size:28}input{margin:9}</style>
-<input type=number style=width:79;text-align:right min=0 id=M value=2>m
-<input type=number style=width:79;text-align:right min=0 id=S value=0>s&nbsp;
-<button id=A onmousedown=setInterval(U,1e3,M.disabled=S.disabled=P=1,A.style.display='none') style=width:99>Start</button>
-<script>
+<input type=number style=width:79;text-align:right min=0 value=2 id=M>m
+<input type=number style=width:79;text-align:right min=0 value=0 id=S>s<br>
+<input id=N style=width:199 value="Time's up!">&nbsp;
+<button id=A onmousedown=setInterval(U,1e3,A.disabled=M.disabled=S.disabled=P=1) style=width:99>Start</button><script>
 
 // globals
 // M = minutes
 // S = seconds
+// N = notification
 // A = start button
-T = "Time's Up!"
 
 // timer update
 U=e=>
@@ -22,7 +22,7 @@ U=e=>
     || (zzfx(...[2,.8,999,,,,1,2,,,,,1,,,.1,.2]),
         --P%10 ||                                  // every 10 seconds
         (parent.document.hasFocus() || !P) &&      // has focus or first popup
-        OS13k.Popup('⌛ <b>' + T, T));             // show popup
+        OS13k.Popup('⌛ <b>' + OS13k.StripHTML(N.value), N.value));             // show popup
 
     // update time inputs
     M.value = t/60|0; // minutes

@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?v152></script>
+<script src=programs.js?v153></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -191,7 +191,9 @@ span {white-space:nowrap; }
     width:100%;
     resize:none;
     outline:0;
+    border-top:2px solid;
 }
+textarea      {padding:9;}
 #Full:hover   { background:#fff; }
 #Help:hover   { background:#0ff; }
 #Code:hover   { background:#f0f; }
@@ -1585,7 +1587,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             iframe.onload = ()=> loadFrame();
-            this.iframe.src = program.src + '?v53';
+            this.iframe.src = program.src + '?v54';
         }
     }
         
