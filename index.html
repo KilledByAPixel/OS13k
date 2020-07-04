@@ -192,7 +192,7 @@ span {white-space:nowrap; }
     width:100%;
     resize:none;
     outline:0;
-    border-top:2px solid#fff;
+    border-top:2px solid;
 }
 #Full:hover   { background:#fff; }
 #Help:hover   { background:#0ff; }
@@ -1422,9 +1422,16 @@ class OS13kWindow extends HTMLElement
         this.iframeContent.document.open();
 
         // set on error now to catch errors on load
-        this.iframeContent.onerror = (message, source, lineno, colno, e)=>((this.errorText.value = e), true);
+        this.iframeContent.onerror = (message, source, lineno, colno, e)=>this.SetErrorText(e);
         !this.program.userProgram || allCodeIsSafe ? this.iframeContent.document.write(code) : 0;
         this.iframeContent.document.close();
+    }
+
+    SetErrorText(text)
+    {
+        this.errorText.value = text;
+        this.errorText.style.display = text ? '' : 'none';
+        return true;
     }
     
     CreateFrame()
@@ -1445,7 +1452,7 @@ class OS13kWindow extends HTMLElement
             this.screenshot.disabled = !hasExtension || !codeIsSafe;
 
             // show error messages from user code
-            program.userProgram && (iframeContent.onerror = (message, source, lineno, colno, e)=>((this.errorText.value = e), true));
+            program.userProgram && (iframeContent.onerror = (message, source, lineno, colno, e)=>this.SetErrorText(this.errorText))
 
             // get iframe content and document (will fail if cross site)       
             const iframeDocument = iframeContent.document;
@@ -1490,7 +1497,7 @@ class OS13kWindow extends HTMLElement
                         (c == ')' ? '' : ',') + c : a ) : iframeText;
 
                 // show error messages from user code (must be set again here because it got wiped out)
-                iframeContent.onerror = (message, source, lineno, colno, e)=>((this.errorText.value = e), true);
+                iframeContent.onerror = (message, source, lineno, colno, e)=>this.SetErrorText(e);
 
                 // create dweet or shader program
                 iframeContent.eval(
@@ -1531,7 +1538,7 @@ class OS13kWindow extends HTMLElement
             catch (e)
             {
                 // set error text and throw error if not user code
-                this.errorText.value = e && e.message ? e.message : e;
+                this.SetErrorText(e && e.message ? e.message : e);
                 if (!program.userProgram) throw e;
             }
             
@@ -1574,7 +1581,7 @@ class OS13kWindow extends HTMLElement
         if (program.userProgram)
         {
             // clear error text
-            this.errorText.value = '';
+            this.SetErrorText();
 
             // allow code editing, check for alt+enter to reload
             this.codeText.onkeydown =e=> !e.altKey || e.keyCode == 13 && this.SetCode(this.codeText.value);
