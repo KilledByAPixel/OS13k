@@ -1404,7 +1404,7 @@ class OS13kWindow extends HTMLElement
             program.width;
             
         // set window width, height, and scale while preserving aspect ratio
-        this.style.width                = width;
+        this.style.width = width;
         this.iframeWrapper.style.height = width * program.height / program.width;
         this.scale = width / program.width;
         
@@ -1489,10 +1489,9 @@ class OS13kWindow extends HTMLElement
                     
                 // loop protection for user dweets
                 const code = program.userProgram && !program.isShader? 
-                    'OS13kL=0;' +
                     iframeText.replace(
                         /(for\s*\((?!\s+of\s+)(?!\s+in\s+)[^;]*;[^;]*;|while\s*\()\s*(\S)/g, (a, b, c)=> b && c ? b +
-                        `++OS13kL>1e5&&(u=e=>{throw'Timed out!'})()` +
+                        `++OS13kL>1e5&&(e=>{throw'Timed out!'})()` +
                         (c == ')' ? '' : ',') + c : a ) : iframeText;
 
                 // show error messages from user code (must be set again here because it got wiped out)
@@ -1500,39 +1499,31 @@ class OS13kWindow extends HTMLElement
 
                 // create dweet or shader program
                 iframeContent.eval(
-                    'frame=0;' +
+                    'OS13k=parent.OS13k;x=c.getContext' +
                     (program.isShader ? // preserve buffer for user programs for screenshot
-                        `x=c.getContext('webgl2',${program.userProgram ? '{preserveDrawingBuffer:true}' : ''});` +
+                        `('webgl2'${program.userProgram ? ',{preserveDrawingBuffer:true}' : ''});` +
+                        'X=Y=Z=W=0;' +
                         'onmousemove=e=>e.buttons&&(X=e.x,Y=c.height-e.y);' +
                         'onmousedown=e=>(X=Z=e.x,Y=W=c.height-e.y);' +
                         'onmouseup=e=>Z=W=0;' +
-                        's=parent.OS13k.CreateShader(c,`' + code + '`);' +
-                        'u=t=>(' +
-                        'c.width=innerWidth,' +
-                        'c.height=innerHeight,' +
-                        'parent.OS13k.RenderShader(c,s,t,frame++,X,Y,Z,W));' +
-                        'OS13k_=t=>requestAnimationFrame(OS13k_,' +
-                            (program.awake || program.info.allowSleep == 0? '' : 
-                                't<1e3|parent.document.activeElement==OS13kWindow&&') +
-                            'u(t/1e3));' +
-                            'OS13k_(X=Y=Z=W=0)'
+                        's=OS13k.CreateShader(c,`' + code + '`);' +
+                        'OS13kU=t=>' +
+                        'OS13k.RenderShader(c,s,t/1e3,frame++,X,Y,Z,W,c.width=innerWidth,c.height=innerHeight)'
                         :
-                        'x=c.getContext`2d`;' +
-                        'S=Math.sin;' +
-                        'C=Math.cos;' +
-                        'T=Math.tan;' +
-                        'OS13k=parent.OS13k;' +
+                        '`2d`;' +
                         'zzfx=parent.zzfx;' +
+                        'S=Math.sin;C=Math.cos;T=Math.tan;' +
                         'R=(r,g,b,a=1)=>`rgba(${0|r},${0|g},${0|b},${a})`;' +
                         'u=t=>{' + code + '\n};' +
-
-                        // update, limit framerate and fix time glitches
-                        'OS13k_=t=>(requestAnimationFrame(OS13k_),' +
-                            (program.awake || program.info.allowSleep == 0? '' : 
-                                't<1e3|parent.document.activeElement==OS13kWindow&&') +
-                            't>OS13kF-2&&'+
-                            'u(((t=frame++/60)*60|0==frame-1)&&t>0?t+1e-6:t, OS13kF=Math.max(OS13kF+1000/60,t)));' +
-                            'OS13k_(OS13kF=0)'));
+                        'OS13kU=t=>t>OS13kF-2&&' + 
+                            'u(((t=frame++/60)*60|0==frame-1)&&t>0?t+1e-6:t,' +
+                            'OS13kL=0,' +
+                            'OS13kF=Math.max(OS13kF+100/6,t))') +
+                    ';(OS13kA=t=>requestAnimationFrame(OS13kA,' +
+                        (program.awake || program.info.allowSleep == 0? '' : 
+                            't<1e3|parent.document.activeElement==OS13kWindow&&') +
+                    'OS13kU(t)))' +
+                    '(frame=OS13kF=0)');
             }
             catch (e)
             {
