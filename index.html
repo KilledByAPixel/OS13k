@@ -1584,7 +1584,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             iframe.onload = ()=> loadFrame();
-            this.iframe.src = program.src + '?v56';
+            this.iframe.src = program.src + '?v57';
         }
     }
         
@@ -2061,7 +2061,8 @@ zzfxM = (instruments, patterns, sequence, speed = 6, panning) => {
   let instrument;
   let instrumentParams;
   let period;
-  let channelBuffers=[[],[]];
+  let leftChannelBuffer=[];
+  let rightChannelBuffer=[];
 
   sequence.map(patternIndex => {
 
@@ -2117,16 +2118,18 @@ zzfxM = (instruments, patterns, sequence, speed = 6, panning) => {
         // empty we need to prefill it with `0` values for periods of slience to
         // prevent the clicking and popping noises caused by `undefined` values
         // in some browsers.
-        for (bufferPos = bufferOffset; bufferPos++ < bufferOffset + tickRowSize; 
-          channelBuffers.map((buffer,side)=> buffer[bufferPos] = (buffer[bufferPos] || 0) + sampleByte * (side? pan: 1-pan)))
-            sampleByte = sample && sample[sampleOffset++] * (1 - attenuation) || 0;
+        for (bufferPos = bufferOffset; bufferPos < bufferOffset + tickRowSize; bufferPos++) {
+          sampleByte = sample && (sample[sampleOffset++] * (1 - attenuation)) || 0;
+          leftChannelBuffer[bufferPos] = (leftChannelBuffer[bufferPos] || 0) + sampleByte * (1 - pan);
+          rightChannelBuffer[bufferPos] = (rightChannelBuffer[bufferPos] || 0) + sampleByte * pan;
+        }
       }
     });
 
     bufferStart = bufferPos;
   });
 
-  return channelBuffers;
+  return [leftChannelBuffer, rightChannelBuffer];
 }
 
 ///////////////////////////////////////////////////////////////////////////////

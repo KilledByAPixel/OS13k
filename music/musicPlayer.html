@@ -20,6 +20,14 @@ E =     // added song key
 T = 0;  // current song time
 Q = -1; // pending song to play
 
+// html constants
+// N = song name
+// F = song info
+// C = canvas
+// S = select area
+// V = volume
+// O = loop
+
 // update loop
 U=k=>
 {
@@ -104,13 +112,8 @@ A=k=>
 {
     // test song [[[,0,219,,,,,1.1,,-.1,-50,-.05,-.01,1],[2,0,84,,,.1,,.7,,,,.5,,6.7,1,.05]],[[[1,1,0,0,0,0,1,5,32,0,0,0],[2,8,0,2,8,16,1,3,0,0,0,0]]],[0,0,0,0],4,[-1,1]]
 
-    try {                                              // try to add song
-        j = J( d = prompt `ZzFXM Data`                 // convert to json and back
-            .replace(/(?![\[,])([^,\[\]]+)(?=[\],])/g, // look for numbers
-                (i,j)=>j*1)                            // convert to float
-      	     .replace(/([\[,])(?=[\],])/g, '$1null')); // insert nulls
-             
-        parent.zzfxM(...j);                            // try to generate song
+    try {
+        parent.zzfxM(...J(d = prompt `ZzFXM Data`));   // try to generate song
         
         B(                                             // rebuild song list
             localStorage[                              // add song to storage
@@ -125,8 +128,8 @@ A=k=>
 R=k=> confirm`⚠️ Delete?` &&                          // confirm to remove
         B(localStorage[L[S.selectedIndex].k] = 0);    // remove and rebuild
 
-// parse json and replace null with undefined
-J=k=> JSON.parse(k, (i,j)=> j == null ? undefined : j)
+// check if music string is safe and use use eval to code
+J=k=> /undefined|[[\],\d\.-]/g.test(k = k.replace(/null/g, 'undefined')) && eval(k);
 
 // convert seconds to time string
 W=k=> (k/60|0) + ((k = k%60|0) <=9 ? ':0' : ':') + k;
