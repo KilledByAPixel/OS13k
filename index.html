@@ -132,7 +132,7 @@ body
 }
 input, button,span { margin:4; }
 textarea           { padding:9; }
-span {white-space:nowrap; }
+span               { white-space:nowrap; }
 .titlebar
 {
     height:34;
@@ -1299,14 +1299,14 @@ class OS13kWindow extends HTMLElement
         // build code options html
         codeOptions.innerHTML = 
             '<span><button id=S>📷</button></span>' +
-            '<span>Icon<input style=width:35 id=I></span> ' +
-            '<span>Name<input id=N></span> ' +
-            '<span>Size<input style=width:50 type=number id=W>x<input style=width:50 type=number id=H></span>' + 
-            `<span>Sleep<input type=checkbox id=P ${program.info.allowSleep != false ? 'checked' : ''}></span>` +
-            `<span>Live Edit<input type=checkbox id=L ${program.info.liveEdit != false ? 'checked' : ''}></span>` +
-            '<button id=G>Save</button>' +
-            '<button id=C>Copy</button>' +
-            '<button id=D>Delete</button>' +
+            '<span>Icon <input style=width:35 id=I></span> ' +
+            '<span>Name <input id=N></span> ' +
+            '<span>Size <input style=width:50 type=number id=W>x<input style=width:50 type=number id=H></span>' + 
+            `<span>Sleep <input type=checkbox id=P ${program.info.allowSleep != false ? 'checked' : ''}></span>` +
+            `<span>Live Edit <input type=checkbox id=L ${program.info.liveEdit != false ? 'checked' : ''}></span>` +
+            '<span><button id=G>Save</button></span>' +
+            '<span><button id=C>Copy</button></span>' +
+            '<span><button id=D>Delete</button></span>' +
             `<span><span id=Z>${program.info.code?.length}</span> Bytes` +
             '<a id=A><canvas id=V style=display:none>';
 
