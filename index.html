@@ -1709,6 +1709,7 @@ class OS13kWindow extends HTMLElement
         OS13kSystem.Sound(soundFullScreen);
         
         // set full screen
+        this.iframeContent.focus();
         this.iframeWrapper.webkitRequestFullScreen &&
             this.iframeWrapper.webkitRequestFullScreen();
         this.iframeWrapper.mozRequestFullScreen &&
