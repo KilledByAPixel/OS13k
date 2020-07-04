@@ -129,7 +129,7 @@ R=k=> confirm`⚠️ Delete?` &&                          // confirm to remove
         B(localStorage[L[S.selectedIndex].k] = 0);    // remove and rebuild
 
 // check if music string is safe and use use eval to code
-J=k=> /undefined|[[\],\d\.-]/g.test(k = k.replace(/null/g, undefined)) && eval(k);
+J=k=> (k = k.replace(/null/g, undefined)).replace(/undefined|[[\],\d\.-]/g, '') == '' && eval(k);
 
 // convert seconds to time string
 W=k=> (k/60|0) + ((k = k%60|0) <=9 ? ':0' : ':') + k;
