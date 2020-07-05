@@ -7,126 +7,136 @@ Noise <input type=range style=width:60 onchange=R() value=0 id=N>
 Shape <input type=range style=width:60 onchange=R() id=H>
 Crush <input type=range style=width:60 onchange=R() value=0 id=C><hr><div><script>
 
+// globals
+// B = instrument button container
+// S = seed
+// O = octave
+// Y = key
+// N = noise
+// H = shape
+// C = crush
+// T = instrument type
+// A = active sounds
+
 //////////////////////////////////////////////////////////////
 // sound
 
 // build cached samples
 R = e=>
 {
-    // cache samples
-    D = [];
-    
-    for(i=6;--i;) 
-        f = parent.OS13k.Note(i*12-45), // root frequency C
-        D[i] =                          // for each octave
-        T-3 ? [                         // instruments
-            [1, 2, 4, 8],               // organ
-            [3, 5, 7, 9],               // oboe
-            [1]                         // sin wave
-        ][ T ].map(e=>                  // get instrument
-                parent.zzfxG(...[       // generate zzfx samples
-                V.value/99/            // get volume
-                    (1+Math.log2(e)),   // scale volume
-                0,                      // no randomness
-                e*f,,                   // frequency
-                2,                      // sustain
-                .5,,                    // release
-                (H.value/50)**4,,,,,,   // shape curve
-                N.value/99,,            // noise
-                C.value/500,,           // bit crush  
-                .7,                     // sustain volume
-                .1                      // decay
-            ])) :
-        [OS13k.SeedSamples(S.value, 1, V.value / 99, 0, f)]; // get seed samples
+    onblur(D = []);                             // cancel all sounds and init sample cache
+    for(i=6;--i;                                // for each octave
+            T-3 ?                               // is it an instrument?
+                [                               // instruments
+                    [1, 2, 4, 8],               // organ
+                    [3, 5, 7, 9],               // oboe
+                    [1]                         // sin wave
+                ][ T ].map(e=>                  // get instrument
+                    parent.zzfxG(...[           // generate zzfx samples
+                        V.value/99/             // get volume
+                            (1+Math.log2(e)),   // scale volume
+                        0,                      // no randomness
+                        e*f,,                   // frequency
+                        2,                      // sustain
+                        .5,,                    // release
+                        (H.value/50)**4,,,,,,   // shape curve
+                        N.value/99,,            // noise
+                        C.value/500,,           // bit crush  
+                        .7,                     // sustain volume
+                        .1                      // decay
+                    ]).map((e,j)=>              // for each sample
+                        d[j] = (d[j]||0) + e )) // combine samples
+            :
+            D[i] = OS13k.SeedSamples(           // get seed samples
+                S.value, 1, V.value/99, 0, f))  // seed parameters
+        f = parent.OS13k.Note(i*12-45),         // root frequency C
+        d = D[i] = [];                          // clear samples
 }
 
 // play note
-P = e=> e < 0 || !A[e] && // skip if invalid note or already playing
+P = e=> e < 0 | !A[e] &&         // is note valid and not playing
 (
     // change button color
     b = eval('B' + e),           // get the button
     b.style.transition = '',     // unset transition
-    b.B = b.style.background,    // save old background color
+    b.b = b.style.background,    // save original background color
     b.style.background = '#f00', // set background to red
     b.innerText,                 // force reset transition
 
     // play cached sound
-    A[e] = D[2 + O.value*1 + e/12|0].           // get octave
-        map(d=>((s = OS13k.PlaySamples(d, 2)).  // play samples
-        detune.value =                          // set frequency
-            e%12*100 +                          // get note offset
-            Y.value*100                         // apply key control
-            -1200, s))                          // start 1 octave below
+    (A[e] =                                 // set sound                 
+        OS13k.PlaySamples(                  // play samples
+            D[2 + O.value*1 + e/12|0], 2)). // get octave
+                detune.value =              // set frequency
+                    e%12*100 +              // get note offset
+                    Y.value*100             // apply key control
+                    -1200                   // root is 1 octave below
 );
 
 // cancel note
-X = e=> A[e] && 
+X = e=> A[e] &&                 // is note playing
 (
     b = eval('B' + e),          // get button
     b.style.transition = '.5s', // set transition
-    b.style.background = b.B,   // reset old background color
-    A[e].map(e=>(                                                  // for each sound
-        e.gain.gain.setValueAtTime(1, t = e.context.currentTime),  // set the current gain to 1
-        e.gain.gain.linearRampToValueAtTime(0, t + .1))),          // ramp off to 0
+    b.style.background = b.b,   // reset old background color
+    A[e].gain.gain.setValueAtTime(1, t = A[e].context.currentTime),  // set the current gain to 1
+    A[e].gain.gain.linearRampToValueAtTime(0, t + .1),               // ramp off to 0
     A[e] = 0                    // remove from playing sounds list
 );
 
-// stop all sounds if focus lost or unloaded
-onunload = onblur = e=>A.map((e,i)=>X(i));
 
 //////////////////////////////////////////////////////////////
 // init
 
 // rebuild instrument buttons
-E = e=> R(                    // rebild cache
-        B.innerHTML = '',     // clear HTML
+E = e=> R(                // rebild cache
+    B.innerHTML = '',     // clear HTML
 
-        // create buttons
-        ['Organ', 'Oboe', 'Wave'].map((i,j)=>               // instruments
-            B.innerHTML +=                                  // add to HTML
-            `<button style='border:5px solid${              // button and border
-                T-j ? "#111" : "#f00" }' onmousedown=E(T=${ // border color
-                j })>${                                     // select on mouse down
-                i }</button> `),                            // button text
-                
-        // set seed boder
-        S.style.border = `5px solid${                     // set border
-            (C.disabled = H.disabled = N.disabled = T==3) // disable if seed
-            ? "#f00" : "#111" }`);                        // set color
+    // create buttons
+    ['Organ', 'Oboe', 'Wave'].map((i,j)=>               // instruments
+        B.innerHTML +=                                  // add to HTML
+        `<button style='border:5px solid${              // button and border
+            T-j ? "#111" : "#f00" }' onmousedown=E(T=${ // border color
+            j })>${                                     // select on mouse down
+            i }</button> `),                            // button text
+            
+    // set seed boder
+    S.style.border = `5px solid${                     // set border
+        (C.disabled = H.disabled = N.disabled = T==3) // disable settings if seed
+        ? "#f00" : "#111" }`);                        // set color
 
 // create piano keys
-for( T = i = 0;  // init selected sound & iterator
-        i < 36;) // 36 keys
-    document.body.innerHTML +=                                 // add to html
-    `<div id=B${ z = 24 - (i/12|0)*12 + i%12                   // reorder keys
-    } onmouseover=event.buttons&&P(${ z                        // mouse over
-    }) onmousedown=P(${ z                                      // mouse down
-    }) onmouseup=X(${ z                                        // mouse up
-    }) onmouseout=X(${ z                                       // mouse out
-    }) style="display:inline-block;border:1px solid#000;background:${ // style
-    '02579'.indexOf( i%12 - 1 ) < 0 ?                          // b or w
-    '#fff;width:54;height:129;color:#000' :                    // white
-    '#000;position:absolute;margin-left:-14;width:27;height:70'}">${ // black
-        'I9O0P[=]    Q2W3ER5T6Y7UZSXDCVGBHNJM'[i]              // show key
-    }</div>${++i%12 ? '' : '<br>'}`;                           // 12 keys per row
+for( T = i = 0; i < 36;                          // init selected sound & iterator, 3 rows of 12 keys
+    onunload = onblur = e=> A.map((e,i)=> X(i))) // stop all sounds if focus lost or unloaded
+        document.body.innerHTML +=                                            // add to html
+            `<div id=B${ z = 24 - (i/12|0)*12 + i%12                          // reorder keys
+            } onmouseover=event.buttons&&P(${ z                               // mouse over
+            }) onmousedown=P(${ z                                             // mouse down
+            }) onmouseup=X(${ z                                               // mouse up
+            }) onmouseout=X(${ z                                              // mouse out
+            }) style="display:inline-block;border:1px solid#000;background:${ // style
+            '02579'.indexOf( i%12 - 1 ) < 0 ?                                 // b or w
+            '#fff;width:54;height:129;color:#000' :                           // white
+            '#000;position:absolute;margin-left:-14;width:27;height:70'}">${  // black
+                'I9O0P[=]    Q2W3ER5T6Y7UZSXDCVGBHNJM'[i]                     // show key
+            }</div>${++i%12 ? '' : '<br>'}`;                                  // 12 keys per row
 
-// init
-E(A = []); // active note array
+// rebuild and init active sounds
+E(A = []);
 
 //////////////////////////////////////////////////////////////
-// keyboard control
+// keyboard controls
 
-// get piano key from keyboard key
-K = e=> e.key ?                                  // check for invalid key
+// keyboard key to piano key
+K = e=>
     (k = 'ZSXDCVGBHNJM,L.;/Q2W3ER5T6Y7UI9O0P[=]' // map key to note
-    .indexOf(e.key.toUpperCase()),               // find the key
-    k > 16 ? k-5 : k) : -1;                      // remap second row of keys
+    .indexOf(e.key?.toUpperCase()),              // find the key and check for invalid key
+    k - 5 * (k > 16));                           // remap second row of keys
 
 // play note on key down
 onkeydown = e=>
-    document.activeElement == S | // not when editing seed
-        e.repeat ? 0 :            // prevent key repeats
-        P(K(e));                  // play note
+    document.activeElement == S || // not when editing seed
+        P(K(e));                   // play note
 
 // release note on key up
 onkeyup = e=> X(K(e));

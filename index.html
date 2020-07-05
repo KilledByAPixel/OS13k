@@ -313,7 +313,7 @@ class _OS13k
     Lerp    = (p, a, b)=>          a + this.Clamp(p, 0, 1) * (b-a);
 
     // convert string to hash value like Java's hashCode()
-    Hash    = (s)=>                [...s].reduce((a,c)=>c.charCodeAt()+a*31|0, 0);
+    Hash    = (s)=>                [...s].reduce((a,c)=> c.charCodeAt()+a*31|0, 0);
     
     // seeded random numbers - Mersenne Twister
     Random  = (max=1, min=0)=>
@@ -331,7 +331,7 @@ class _OS13k
     Trophy(game='', icon='', name='', message='')
     {
         // replace commas and apostrophes
-        const Clean = string=>this.StripHTML(string, maxWordLength).replace(/[,`]/g, '');
+        const Clean = string=> this.StripHTML(string, maxWordLength).replace(/[,`]/g, '');
         game    = Clean(game);
         icon    = Clean(icon);
         name    = Clean(name);
@@ -341,7 +341,7 @@ class _OS13k
         const key = game + `,${ icon },` + name;
                 
         // find in trophy list
-        const i = trophies.findIndex(e=>e[4] == key);
+        const i = trophies.findIndex(e=> e[4] == key);
         
         // skip if same message
         if (i >=0 && trophies[i][3] == message) return;
@@ -370,7 +370,7 @@ class _OS13k
     }
     
     // get message, 0 if no trophy
-    GetTrophy = (game, name)=> trophies.find(e=>e[0]==game & e[1]==name);
+    GetTrophy = (game, name)=> trophies.find(e=> e[0]==game & e[1]==name);
     
     // get trophy list
     Trophies = ()=> trophies;
@@ -414,7 +414,7 @@ class _OS13k
         lengthScale = this.Clamp(lengthScale, 0, 5);
      
         // helper functions
-        const R = ()=>this.Random(), C = ()=>R()<.5?R():0, S = e=>C()?e:-e,
+        const R=()=>this.Random(), C=()=>R()<.5?R():0, S=e=>C()?e:-e,
         
             // randomize sound length
             attack  = R()**3/4*lengthScale,
@@ -460,7 +460,7 @@ class _OS13k
             source = audioContext.createBufferSource();
         
         // copy samples to buffer and play
-        samplesArray.map((d,i)=>buffer.getChannelData(i).set(d));
+        samplesArray.map((d,i)=> buffer.getChannelData(i).set(d));
         source.buffer = buffer;
         
         // create custom gain node
@@ -481,7 +481,7 @@ class _OS13k
     }
     
     GetAnalyser = ()=> analyserCanvas;
-    GetAnalyserData =e=> analyserData[e];
+    GetAnalyserData = e=> analyserData[e];
     
     // get frequency of a note on a musical scale
     Note = (semitoneOffset=0, rootNoteFrequency=440, scaleNotes=12)=>
@@ -502,7 +502,7 @@ class _OS13k
         utterance.lang = language;
 
         // stop speech if set
-        stopSpeech && OS13kSystem.StopSpeech();
+        stopSpeech && StopSpeech();
 
         // play speech if allowed
         settings.s && finishedStartup && speechSynthesis && speechSynthesis.speak(utterance);
@@ -644,7 +644,7 @@ class _OS13k
         gainMusic.gain.value = settings.m;
            
         // stop speech if not enabled or sound muted
-        settings.s && settings.v || OS13kSystem.StopSpeech();
+        settings.s && settings.v || StopSpeech();
         
         // background
         background.style.background = `linear-gradient(${settings.c},${settings.d})`;
@@ -675,7 +675,7 @@ class _OS13k
 var OS13k = new _OS13k;
 
 ///////////////////////////////////////////////////////////////////////////////
-// OS13k Variables
+// OS13k System Functions and Consts - handles non client facing features of OS13k
 
 const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26, 
       startOpenOffset = 9, popupTime = 3, defaultVolume = .3, 
@@ -701,7 +701,188 @@ const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26,
     audioContext = new AudioContext, 
     gain = audioContext.createGain(), 
     gainMusic = audioContext.createGain(), 
-    musicAnalyser = audioContext.createAnalyser();
+    musicAnalyser = audioContext.createAnalyser(),
+
+Start = ()=>
+{
+    // load OS13k data
+    if (localStorage.OS13k)
+    {
+        const saveData    = JSON.parse(localStorage.OS13k);
+        trophies          = saveData.t;
+        settings          = saveData.s;
+        programInfos      = saveData.i;
+        startProgramId    = saveData.p;
+        nextUserProgramId = saveData.n;
+    }
+    
+    // save and update settings
+    OS13k.Save();
+    
+    // setup audio
+    gain.connect(audioContext.destination);
+    gainMusic.connect(audioContext.destination);
+    
+    // create tray icons
+    musicTrayIcon     = new OS13kTrayIcon();
+    trophyTrayIcon    = new OS13kTrayIcon();
+    settingsTrayIcon  = new OS13kTrayIcon();
+    clockTrayIcon     = new OS13kTrayIcon();
+    
+    // create analyser canvas
+    analyserCanvas = musicTrayIcon.appendChild(document.createElement('canvas'));
+    analyserCanvas.style = 'width:16;height:16;margin:2;pointer-events:none';
+    
+    // listen for trophies from other windows
+    onstorage = e=> CheckForTrophy(e.key);
+
+    // stop spech if page is unloaded
+    onunload = e=> StopSpeech();
+
+    // set menu button functions
+    buttonFullScreen.onmousedown = ()=> activeWindow.FullScreen();
+    buttonHelp.onmousedown       =
+    buttonCode.onmousedown       = ()=> activeWindow.ShowCode();
+    buttonResetSize.onmousedown  = ()=> activeWindow.SetActive(1, 1, activeWindow.Resize(1, soundGrow));
+    buttonReload.onmousedown     = ()=> activeWindow.Reload();
+    buttonClose.onmousedown      = ()=> activeWindow.Close();
+
+    // create load program taskbar icon and add folders/programs
+    loadIcon = new OS13kTaskbarIcon( {icon:'💾', name:'Load Program'}, new OS13kProgramMenu(programs) );
+    loadIcon.windowOrMenu.Rebuild();
+
+    // welcome message
+    OS13k.Trophy('', '👋', 'Welcome to OS13k!');
+
+    // search local storage for new trophies (from other JS13k games)
+    for (const key in localStorage) CheckForTrophy(key);
+
+    // try to update startup and kick off first update
+    Update(UpdateStartup());
+},
+
+// wait for startup to finish
+UpdateStartup = ()=> !loading & !finishedStartup && OS13k.Save(
+        self == top | startProgram?.sticky && startProgram?.Open?.(startProgram = 0),
+        finishedStartup = 1),
+
+// main update loop
+Update = (time)=>
+{
+    // request new animation frame
+    requestAnimationFrame(Update);
+        
+    // check if iframe became new active element
+    const activeElement = document.activeElement;
+    const activeFrame = 
+        activeElement.shadowRoot?.activeElement == activeElement.iframe ? 
+        activeElement.iframe : 0;
+            
+    // if a new frame took focus, set window active and that we had input
+    activeFrame && lastActiveFrame != activeFrame && activeElement.SetActive(hadInput = 1);
+        
+        // set last active frame
+    lastActiveFrame = activeFrame;
+
+    // fade in desktop after loading, convert opacity to number
+    loading || (document.body.style.opacity = Math.min(1,.02 + document.body.style.opacity*1));
+
+    // update trophy count
+    trophyTrayIcon.innerHTML = trophies.length + ' 🏆';
+    
+    // update time
+    clockTrayIcon.title = new Date();
+    clockTrayIcon.innerHTML = clockTrayIcon.title.replace(/.* (\d+:\d+):.*/, '$1');
+    
+    // get analyser data
+    musicAnalyser.fftSize = 512;
+    const frequencyData = new Uint8Array(512),
+        context = analyserCanvas.getContext('2d');
+    musicAnalyser.getByteFrequencyData(frequencyData);
+    analyserCanvas.width = analyserCanvas.height = 32
+
+    // render analyser
+    for(let i = 0; i < 32; )
+    {
+        // get frequency band volume and adjust for loudness
+        const volume = (frequencyData[i+3] / 255)**3 * (1 + Math.log10((i+3) * defaultSampleRate / 1024 ));
+
+        // draw loudness bar
+        context.fillStyle = `hsl(${-99-59*volume} 99%50%)`;
+        context.fillRect(i, 31, 1, -7*volume);
+        
+        // set anaylzer data, normalize between 0-1
+        analyserData[i++] = OS13k.Clamp(volume / 5, 0, 1);
+
+        // save how long there has been no music
+        lastMusicTime = volume ? time : lastMusicTime;
+    }
+    
+    // set analyser visibility
+    analyserCanvas.style.display = time - lastMusicTime < analyserWaitTime ? '' : 'none';
+    
+    // show popups after startup is finished and there was input
+    if (!finishedStartup || !hadInput) return;
+    
+    // update popups, use copy to prevent skipping if removed
+    let offsetY = 0;
+    [...popups.children].map((popup,i)=>
+    {
+        // speak popup
+        popup.speak && OS13k.Speak(popup.speak, 1, 1, 1, popup.speakLanguage);
+        popup.speak = 0;
+        
+        if (!settings.p)
+            popups.removeChild(popup);
+        else if (!document.fullscreenElement)
+        {
+            // move popup up, set to bottom if it was invisible
+            let y = popup.style.visibility ? innerHeight : parseInt(popup.style.top) + offsetY - 9;
+            popup.style.visibility = '';
+            
+            if (y < taskbarHeight)
+            {
+                // stop popup below taskbar
+                y = taskbarHeight;
+
+                // fade out popup if at top
+                if (!i && (popup.style.opacity = (popup.style.opacity || popupTime) - .01) < 0)
+                {
+                    // remove when invisible and adjust for height
+                    offsetY += popup.getBoundingClientRect().height;
+                    popups.removeChild(popup);
+                }
+            }
+
+            // set popup position
+            popup.style.top = y;
+        }});
+},
+
+// close all menus
+CloseMenus = ()=>
+{
+    // hide all menus
+    for(const child of programsMenu.children)
+        child.style.visibility = menu.style.visibility = '';
+    
+    // unselect active program
+    activeProgram && (activeProgram.className = 'program');
+},
+
+// try to give trophy if key is valid
+CheckForTrophy = (key, keyParts = key ? key.split(',') : [])=>
+    keyParts.shift() == 'OS13kTrophy' &&
+        OS13k.Trophy(...keyParts, localStorage[key]),
+
+// stop any current or queued speech
+StopSpeech = ()=> speechSynthesis && speechSynthesis.cancel(),
+
+// play system sound if enabled
+Sound = (seed, length)=> finishedStartup & hadInput & settings.o && OS13k.PlaySeed(seed, length);
+
+///////////////////////////////////////////////////////////////////////////////
+// Global Variables
 
 let grabWindow, grabOffsetX, grabOffsetY, finishedStartup, nextUserProgramId = 0,
     activeWindow, activeProgram, activeTaskbarIcon, loadIcon, allCodeIsSafe,
@@ -713,206 +894,6 @@ let grabWindow, grabOffsetX, grabOffsetY, finishedStartup, nextUserProgramId = 0
 
     // volume, music, speech, popups, color1, color2, text, filter
     settings = {v:.3, m:.3, s:1, p:1, o:1, c:'#222233', d:'#332222', t:'OS13k', f:''};
-
-///////////////////////////////////////////////////////////////////////////////
-// OS13k System Functions - handles non client facing features of OS13k
-
-class _OS13kSystem
-{
-    Start()
-    {
-        // load os13k data
-        if (localStorage.OS13k)
-        {
-            const saveData    = JSON.parse(localStorage.OS13k);
-            trophies          = saveData.t;
-            settings          = saveData.s;
-            programInfos      = saveData.i;
-            startProgramId    = saveData.p;
-            nextUserProgramId = saveData.n;
-        }
-        
-        // save and update settings
-        OS13k.Save();
-        
-        // setup audio
-        gain.connect(audioContext.destination);
-        gainMusic.connect(audioContext.destination);
-        
-        // create tray icons
-        musicTrayIcon     = new OS13kTrayIcon();
-        trophyTrayIcon    = new OS13kTrayIcon();
-        settingsTrayIcon  = new OS13kTrayIcon();
-        clockTrayIcon     = new OS13kTrayIcon();
-        
-        // create analyser canvas
-        analyserCanvas = musicTrayIcon.appendChild(document.createElement('canvas'));
-        analyserCanvas.style = 'width:16;height:16;margin:2;pointer-events:none';
-        
-        // listen for trophies from other windows
-        onstorage = e=> this.CheckForTrophy(e.key);
-
-        // stop spech if page is unloaded
-        onunload = e=> this.StopSpeech();
-
-        // set menu button functions
-        buttonFullScreen.onmousedown =()=> activeWindow.FullScreen();
-        buttonHelp.onmousedown       =
-        buttonCode.onmousedown       =()=> activeWindow.ShowCode();
-        buttonResetSize.onmousedown  =()=> activeWindow.SetActive(1, 1, activeWindow.Resize(1, soundGrow));
-        buttonReload.onmousedown     =()=> activeWindow.Reload();
-        buttonClose.onmousedown      =()=> activeWindow.Close();
-
-        // create load program taskbar icon and add folders/programs
-        loadIcon = new OS13kTaskbarIcon( {icon:'💾', name:'Load Program'}, new OS13kProgramMenu(programs) );
-        loadIcon.windowOrMenu.Rebuild();
-
-        // welcome message
-        OS13k.Trophy('', '👋', 'Welcome to OS13k!');
-
-        // search local storage for new trophies (from other JS13k games)
-        for (const key in localStorage) this.CheckForTrophy(key);
-
-        // try to update startup and kick off first update
-        this.Update(this.UpdateStartup());
-    }
-
-    // wait for startup to finish
-    UpdateStartup()
-    {
-        // skip until not loading and finished startup
-        if (loading | finishedStartup) return;
-            
-        // open start program (check top to stop infinite recursion if meta)
-        self == top | startProgram?.sticky && startProgram?.Open?.(startProgram = 0);
-            
-        // finish startup after opening startup programs
-        finishedStartup = 1;
-        
-        // save os13k data
-        OS13k.Save();
-    }
-
-    // main update loop
-    Update(time)
-    {
-        // request new animation frame
-        requestAnimationFrame(OS13kSystem.Update);
-            
-        // check if iframe became new active element
-        const activeElement = document.activeElement;
-        const activeFrame = 
-            activeElement.shadowRoot?.activeElement == activeElement.iframe ? 
-            activeElement.iframe : 0;
-                
-        // if a new frame took focus, set window active and that we had input
-        activeFrame && lastActiveFrame != activeFrame && activeElement.SetActive(hadInput = 1);
-         
-         // set last active frame
-        lastActiveFrame = activeFrame;
-
-        // fade in desktop after loading, convert opacity to number
-        loading || (document.body.style.opacity = Math.min(1,.02 + document.body.style.opacity*1));
-
-        // update trophy count
-        trophyTrayIcon.innerHTML = trophies.length + ' 🏆';
-        
-        // update time
-        clockTrayIcon.title = new Date();
-        clockTrayIcon.innerHTML = clockTrayIcon.title.replace(/.* (\d+:\d+):.*/, '$1');
-        
-        // get analyser data
-        musicAnalyser.fftSize = 512;
-        const frequencyData = new Uint8Array(512),
-            context = analyserCanvas.getContext('2d');
-        musicAnalyser.getByteFrequencyData(frequencyData);
-        analyserCanvas.width = analyserCanvas.height = 32
-
-        // render analyser
-        for(let i = 0; i < 32; )
-        {
-            // get frequency band volume and adjust for loudness
-            const volume = (frequencyData[i+3] / 255)**3 * (1 + Math.log10((i+3) * defaultSampleRate / 1024 ));
-
-            // draw loudness bar
-            context.fillStyle = `hsl(${-99-59*volume} 99%50%)`;
-            context.fillRect(i, 31, 1, -7*volume);
-            
-            // set anaylzer data, normalize between 0-1
-            analyserData[i++] = OS13k.Clamp(volume / 5, 0, 1);
-
-            // save how long there has been no music
-            lastMusicTime = volume ? time : lastMusicTime;
-        }
-        
-        // set analyser visibility
-        analyserCanvas.style.display = time - lastMusicTime < analyserWaitTime ? '' : 'none';
-        
-        // show popups after startup is finished and there was input
-        if (!finishedStartup || !hadInput) return;
-        
-        // update popups, use copy to prevent skipping if removed
-        let offsetY = 0;
-        [...popups.children].map((popup,i)=>
-        {
-            // speak popup
-            popup.speak && OS13k.Speak(popup.speak, 1, 1, 1, popup.speakLanguage);
-            popup.speak = 0;
-            
-            if (!settings.p)
-                popups.removeChild(popup);
-            else if (!document.fullscreenElement)
-            {
-                // move popup up, set to bottom if it was invisible
-                let y = popup.style.visibility ? innerHeight : parseInt(popup.style.top) + offsetY - 9;
-                popup.style.visibility = '';
-                
-                if (y < taskbarHeight)
-                {
-                    // stop popup below taskbar
-                    y = taskbarHeight;
-
-                    // fade out popup if at top
-                    if (!i && (popup.style.opacity = (popup.style.opacity || popupTime) - .01) < 0)
-                    {
-                        // remove when invisible and adjust for height
-                        offsetY += popup.getBoundingClientRect().height;
-                        popups.removeChild(popup);
-                    }
-                }
-
-                // set popup position
-                popup.style.top = y;
-            }});
-    }
-
-    // close all menus
-    CloseMenus()
-    {
-        // hide all menus
-        for(const child of programsMenu.children)
-            child.style.visibility = menu.style.visibility = '';
-        
-        // unselect active program
-        activeProgram && (activeProgram.className = 'program');
-    }
-
-    // try to give trophy if key is valid
-    CheckForTrophy(key)
-    {
-        const keyParts = key ? key.split(',') : [];
-        return keyParts.shift() == 'OS13kTrophy' &&
-            OS13k.Trophy(...keyParts, localStorage[key]);
-    }
-    
-    // stop any current or queued speech
-    StopSpeech() { speechSynthesis && speechSynthesis.cancel(); }
-    
-    // play system sound if enabled
-    Sound(seed, length) { finishedStartup && hadInput && settings.o && OS13k.PlaySeed(seed, length); }
-
-} // OS13kSystem
-const OS13kSystem = new _OS13kSystem;
 
 ///////////////////////////////////////////////////////////////////////////////
 // OS13kProgramMenu - holds a list of programs
@@ -949,7 +930,7 @@ class OS13kProgramMenu extends HTMLElement
         programsMenu.appendChild(this);
   
         // add programs to menu
-        this.programInfos.map(info=>this.appendChild(info.program));
+        this.programInfos.map(info=> this.appendChild(info.program));
         
         // set position
         this.style.top  = y;
@@ -971,7 +952,7 @@ class OS13kProgramMenu extends HTMLElement
     SetActive()
     {
         // close menus so they can reopen with this active
-        OS13kSystem.CloseMenus();
+        CloseMenus();
         
         // set parent active
         this.parentMenu?.SetActive();
@@ -1106,7 +1087,7 @@ class OS13kProgram extends HTMLElement
         
         // set active
         this.className = 'program programActive';
-        activeProgram !=this && OS13kSystem.Sound(soundProgram, 0);
+        activeProgram !=this && Sound(soundProgram, 0);
         activeProgram = this;
     }
     
@@ -1144,7 +1125,7 @@ class OS13kProgram extends HTMLElement
         if (this.flags & closeAll)
         {
             // close all windows if no src or folder and play sound
-            [...desktop.children].map(child=>child.Close?.());
+            [...desktop.children].map(child=> child.Close?.());
 
             // reset window open position
             windowOpenX = startOpenOffset;
@@ -1157,10 +1138,10 @@ class OS13kProgram extends HTMLElement
             // remove from menu info and close windows
             this.programMenu.programInfos = this.programMenu.programInfos.filter(info=>
                 !info.program.userProgram || (info.program?.window?.Close(), false));
-            OS13kSystem.Sound(soundClose, 4);
+            Sound(soundClose, 4);
             
             // remove user program infos
-            programInfos = programInfos.filter(info=>info.code == undefined);
+            programInfos = programInfos.filter(info=> info.code == undefined);
             OS13k.Save();
             
             // rebuild menu
@@ -1175,7 +1156,7 @@ class OS13kProgram extends HTMLElement
     Load() 
     {
         // load saved program info from local storage
-        const i = programInfos.findIndex(e=>e.id == this.id);
+        const i = programInfos.findIndex(e=> e.id == this.id);
         this.info = i < 0 ? {} : programInfos[i];
     }
 
@@ -1202,7 +1183,7 @@ class OS13kProgram extends HTMLElement
         }
         
         // add to programs info and save
-        const i = programInfos.findIndex(e=>e.id == this.id);
+        const i = programInfos.findIndex(e=> e.id == this.id);
         i < 0 ? programInfos.push(this.info) : programInfos[i] = this.info
         OS13k.Save();
     }
@@ -1322,18 +1303,18 @@ class OS13kWindow extends HTMLElement
         errorText.readOnly = true;
         
         // copy button
-        this.shadowRoot.getElementById('C').onmousedown=()=>program.programMenu.AddUserProgram(program);
+        this.shadowRoot.getElementById('C').onmousedown = ()=> program.programMenu.AddUserProgram(program);
 
         // delete button
-        this.shadowRoot.getElementById('D').onmousedown=()=>
+        this.shadowRoot.getElementById('D').onmousedown = ()=>
         {
             // remove from menu info and close
             program.programMenu.programInfos 
-                = program.programMenu.programInfos.filter(info=>info.program.info.id != program.id);
+                = program.programMenu.programInfos.filter(info=> info.program.info.id != program.id);
             this.Close();
             
             // remove infos
-            programInfos = programInfos.filter(info=>info.id != program.id);
+            programInfos = programInfos.filter(info=> info.id != program.id);
 
             // close, save, and rebuild menu
             OS13k.Save();
@@ -1341,13 +1322,13 @@ class OS13kWindow extends HTMLElement
         }
         
         // save button
-        this.shadowRoot.getElementById('G').onmousedown=()=>
+        this.shadowRoot.getElementById('G').onmousedown = ()=>
             link.click(link.href = URL.createObjectURL(new Blob([this.codeText.value], {type:'text/plain'})),
             link.download = 'OS13k_File_' + program.name);
 
         // screenshot button
         this.screenshot = this.shadowRoot.getElementById('S');
-        this.screenshot.onmousedown=()=>
+        this.screenshot.onmousedown = ()=>
         {
             // wrap in try block in case canvas doesnt exist
             try {
@@ -1375,7 +1356,7 @@ class OS13kWindow extends HTMLElement
         // set new icon and name when changed
         iconInput.oninput =
         nameInput.oninput =
-        this.liveEdit.oninput =e=>
+        this.liveEdit.oninput = e=>
         {
             program.SetName(OS13k.StripHTML(iconInput.value), nameInput.value);
             program.Save();
@@ -1385,7 +1366,7 @@ class OS13kWindow extends HTMLElement
 
         // size options
         widthInput.onchange =
-        heightInput.onchange =e=>
+        heightInput.onchange = e=>
         {
             program.width = widthInput.value = OS13k.Clamp(widthInput.value, 99, defaultWidth);
             program.height = heightInput.value = OS13k.Clamp(heightInput.value, 99, program.width*2);
@@ -1396,7 +1377,7 @@ class OS13kWindow extends HTMLElement
         }
 
         // allow sleep button
-        this.allowSleep.oninput =e=> this.Reload(1, program.Save());
+        this.allowSleep.oninput = e=> this.Reload(1, program.Save());
 
         // resize window size to fit inner width while preserving aspect
         const width = program.resize ? 
@@ -1421,7 +1402,7 @@ class OS13kWindow extends HTMLElement
         this.iframeContent.document.open();
 
         // set on error now to catch errors on load
-        this.iframeContent.onerror = (message, source, lineno, colno, e)=>this.SetErrorText(e);
+        this.iframeContent.onerror = (message, source, lineno, colno, e)=> this.SetErrorText(e);
         !this.program.userProgram || allCodeIsSafe ? this.iframeContent.document.write(code) : 0;
         this.iframeContent.document.close();
     }
@@ -1451,7 +1432,7 @@ class OS13kWindow extends HTMLElement
             this.screenshot.disabled = !hasExtension || !codeIsSafe;
 
             // show error messages from user code
-            program.userProgram && (iframeContent.onerror = (message, source, lineno, colno, e)=>this.SetErrorText(e))
+            program.userProgram && (iframeContent.onerror = (message, source, lineno, colno, e)=> this.SetErrorText(e))
 
             // get iframe content and document (will fail if cross site)       
             const iframeDocument = iframeContent.document;
@@ -1495,7 +1476,7 @@ class OS13kWindow extends HTMLElement
                         (c == ')' ? '' : ',') + c : a ) : iframeText;
 
                 // show error messages from user code (must be set again here because it got wiped out)
-                iframeContent.onerror = (message, source, lineno, colno, e)=>this.SetErrorText(e);
+                iframeContent.onerror = (message, source, lineno, colno, e)=> this.SetErrorText(e);
 
                 // create dweet or shader program
                 iframeContent.eval(
@@ -1533,10 +1514,10 @@ class OS13kWindow extends HTMLElement
             }
             
             // mouse down on iframe to load unsafe code, and call normal mousedown
-            codeIsSafe || (iframeContent.onmousedown = e=>(this.Reload(allCodeIsSafe = 1), onmousedown(e)));
+            codeIsSafe || (iframeContent.onmousedown = e=> (this.Reload(allCodeIsSafe = 1), onmousedown(e)));
             
             // prevent iframes context menu and drop events
-            iframeContent.ondrop = iframeContent.ondragover = iframeContent.oncontextmenu =()=>false;
+            iframeContent.ondrop = iframeContent.ondragover = iframeContent.oncontextmenu = ()=> false;
             
             // add taskbar icon if it doesnt exist and set active
             this.taskbarIcon || (this.taskbarIcon = new OS13kTaskbarIcon(program, this)).SetActive();
@@ -1548,7 +1529,7 @@ class OS13kWindow extends HTMLElement
             loading = loading && --loading
             
             // update startup routine
-            OS13kSystem.UpdateStartup();
+            UpdateStartup();
 
             // listen for reload from iframe, prevent infnite recursion
             program.userProgram && (iframe.onload = ()=> reloadCount++ && this.Reload(1, 0));
@@ -1574,8 +1555,8 @@ class OS13kWindow extends HTMLElement
             this.SetErrorText();
 
             // allow code editing, check for alt+enter to reload
-            this.codeText.onkeydown =e=> !e.altKey || e.keyCode == 13 && this.SetCode(this.codeText.value);
-            this.codeText.oninput =e=> this.liveEdit.checked && this.SetCode(this.codeText.value);
+            this.codeText.onkeydown = e=> !e.altKey || e.keyCode == 13 && this.SetCode(this.codeText.value);
+            this.codeText.oninput = e=> this.liveEdit.checked && this.SetCode(this.codeText.value);
 
             // write code to iframe and load it immediately
             loadFrame(this.WriteToFrame(program.info.code));
@@ -1584,7 +1565,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             iframe.onload = ()=> loadFrame();
-            this.iframe.src = program.src + '?v59';
+            this.iframe.src = program.src + '?v60';
         }
     }
         
@@ -1609,7 +1590,7 @@ class OS13kWindow extends HTMLElement
         {
             // set grab window and play sound
             grabWindow = this;
-            OS13kSystem.Sound(soundGrabStart)
+            Sound(soundGrabStart)
             
             // use grabbing cursor
             document.body.style.cursor = 'grabbing';
@@ -1644,13 +1625,13 @@ class OS13kWindow extends HTMLElement
     
         // update program info and play sound
         this.program.Save();
-        sound && OS13kSystem.Sound(sound);
+        sound && Sound(sound);
     }
     
     SetActive(active=1, clamp)
     {
         // close menus when window is set active
-        OS13kSystem.CloseMenus();
+        CloseMenus();
         
         // set style, dim non active windows
         this.className = active? 'activeWindow' : '';
@@ -1667,7 +1648,7 @@ class OS13kWindow extends HTMLElement
         finishedStartup && !this.program.sticky && OS13k.Save(startProgramId = this.program.id);
 
         // set focus to iframe using timeout to make it work cross browser
-        loading || this.program.stopFocus || document.activeElement != this && setTimeout(e=>this.iframeContent?.focus(lastActiveFrame = this.iframe));
+        loading || this.program.stopFocus || document.activeElement != this && setTimeout(e=> this.iframeContent?.focus(lastActiveFrame = this.iframe));
 
         // clamp window to screen
         const rect = this.getBoundingClientRect();
@@ -1681,13 +1662,13 @@ class OS13kWindow extends HTMLElement
             // deactivate old window and set this one active and play sound
             activeWindow && activeWindow.SetActive(0);
             activeWindow = this;
-            OS13kSystem.Sound(this.activeCount++ ? soundActive : soundOpen);
+            Sound(this.activeCount++ ? soundActive : soundOpen);
 
             // move z to top
             this.style.zIndex = ++topZ;
 
             // show menu buttons
-            const SetButtonVisibility = (button, visible)=>button.style.display = visible ? '' : 'none';
+            const SetButtonVisibility = (button, visible)=> button.style.display = visible ? '' : 'none';
             SetButtonVisibility(buttonFullScreen, this.program.full);
             SetButtonVisibility(buttonCode,       this.program.code);
             SetButtonVisibility(buttonHelp,       this.program.help);
@@ -1706,7 +1687,7 @@ class OS13kWindow extends HTMLElement
 
         // reload code if it wasnt safe yet and set it is safe and play sound
         allCodeIsSafe || this.Reload(allCodeIsSafe = 1);
-        OS13kSystem.Sound(soundFullScreen);
+        Sound(soundFullScreen);
         
         // set full screen
         this.iframeContent.focus();
@@ -1722,7 +1703,7 @@ class OS13kWindow extends HTMLElement
     {
         // toggle showing code and play sound
         this.codeDisplay.style.display = (this.showCode = !this.showCode) ? 'inline' : '';
-        silent || OS13kSystem.Sound(this.program.help ? soundHelp : soundCode);
+        silent || Sound(this.program.help ? soundHelp : soundCode);
         
         // set active and clamp
         activeWindow.SetActive(1, 1);
@@ -1735,7 +1716,7 @@ class OS13kWindow extends HTMLElement
         // update program info and play sound
         this.program.userProgram && (this.program.info.code = this.codeText.value);
         this.program.Save();
-        silent || OS13kSystem.Sound(soundReload);
+        silent || Sound(soundReload);
         
         // set active and clamp
         activeWindow.SetActive(1, clamp);
@@ -1753,7 +1734,7 @@ class OS13kWindow extends HTMLElement
     {
         // remove start program if closed and play sound
         this.program.id == startProgramId && (startProgramId = '');
-        OS13kSystem.Sound(soundClose);
+        Sound(soundClose);
             
         // save info and set closed
         this.program.Save(0);
@@ -1802,7 +1783,7 @@ class OS13kTaskbarIcon extends HTMLElement
     
         // load icon cant be active taskbar item
         if (this == loadIcon)
-            return OS13kSystem.Sound(soundMenu, .5);
+            return Sound(soundMenu, .5);
         
         // set active style
         this.className = 'taskbarIcon ' + (active ? 'taskbarIconActive' : '');
@@ -1857,7 +1838,7 @@ onmousedown = e=>
     if (e.target == loadIcon && e.target.windowOrMenu.style.visibility)
     {
         // close menus because they were open
-        OS13kSystem.CloseMenus();
+        CloseMenus();
         
         // reactivate active window
         activeWindow?.SetActive();
@@ -1867,7 +1848,7 @@ onmousedown = e=>
     }
     
     // close menus on mouse down
-    OS13kSystem.CloseMenus();
+    CloseMenus();
 
     // reset program menu position
     programsMenu.style.left = 0;
@@ -1893,7 +1874,7 @@ onmousedown = e=>
             (e.target.SetActive ? e.target : loadIcon).SetActive();
 
             // get which menu to open
-            const targetMenu = e.target.menu ? (OS13kSystem.Sound(soundMenu, .5), menu) : programsMenu;
+            const targetMenu = e.target.menu ? (Sound(soundMenu, .5), menu) : programsMenu;
 
             // show context menu
             targetMenu.style.left = e.x;
@@ -1925,12 +1906,12 @@ onmousemove = e=>
 onmouseup = ()=>
     // set grab window active, no clamp, and set cursor to default, unset grab
     grabWindow && (grabWindow.program.Save(),
-    OS13kSystem.Sound(soundGrabEnd),
+    Sound(soundGrabEnd),
     grabWindow.SetActive(1, 0),
         document.body.style.cursor = desktop.style.pointerEvents = grabWindow = '');
 
 // prevent default right click context menu
-oncontextmenu = ()=>false;
+oncontextmenu = ()=> false;
 
 } // mouse input
 
@@ -1938,16 +1919,16 @@ oncontextmenu = ()=>false;
 // Drag and Drop
 
 // prevent default drop events
-ondragover = ()=>false;
+ondragover = ()=> false;
 
 // allow drag and drop code into editor
-ondrop =e=>
+ondrop = e=>
 {
     if (e.target.program.userProgram && (e.originalTarget || e.path[0]).id == 'codeText')
     {
         // read file, set code, and set active
         const reader = new FileReader();
-        reader.onload = f=>e.target.SetActive(1, 0, e.target.SetCode(f.target.result));
+        reader.onload = f=> e.target.SetActive(1, 0, e.target.SetCode(f.target.result));
         reader.readAsText(e.dataTransfer.files[0], 'utf-8'); 
     }
     return false;
@@ -1957,7 +1938,7 @@ ondrop =e=>
 // ZzFXMicro - Zuper Zmall Zound Zynth
 
 // play a zzfx sound
-var zzfx = (...parameters)=>OS13k.PlaySamples(zzfxG(...parameters)),
+var zzfx = (...parameters)=> OS13k.PlaySamples(zzfxG(...parameters)),
 
  // generate zzfx samples
 zzfxG = (volume = 1, randomness = .05, frequency = 220, attack = 0, sustain = 0, release = .1, shape = 0, shapeCurve = 1, slide = 0, deltaSlide = 0, pitchJump = 0, pitchJumpTime = 0, repeatTime = 0, noise = 0, modulation = 0, bitCrush = 0, delay = 0, sustainVolume = 1, decay = 0, sampleRate = defaultSampleRate, b = [])=>
@@ -1971,8 +1952,8 @@ zzfxG = (volume = 1, randomness = .05, frequency = 220, attack = 0, sustain = 0,
     for(
         // init parameters and helper functions
         let PI2 = Math.PI*2,
-        random =r=> 1 + r*2*Math.random() - r,
-        sign =v=> v>0? 1 : -1,
+        random = r=> 1 + r*2*Math.random() - r,
+        sign = v=> v>0? 1 : -1,
         length = attack + decay + sustain + release + delay,
         startSlide = slide *= 500 * PI2 / sampleRate**2,
         startFrequency = frequency *= random(randomness) * PI2 / sampleRate,
@@ -2135,7 +2116,7 @@ zzfxM = (instruments, patterns, sequence, speed = 6, panning) => {
 ///////////////////////////////////////////////////////////////////////////////
 // Start OS13k!
 
-OS13kSystem.Start();
+Start();
 
 ///////////////////////////////////////////////////////////////////////////////
 // Mobile Support OPTIONAL
@@ -2146,9 +2127,9 @@ let wasTouching;
 if (typeof ontouchstart != 'undefined')
 {
     // remove hovers, they get stuck on mobile
-    const RemoveHovers=e=>
+    const RemoveHovers = e=>
     {
-        [...e.styleSheets].map(sheet=>{
+        [...e.styleSheets].map(sheet=> {
         for(let i = sheet.rules.length; i--; )
             sheet.rules[i].selectorText &&
             sheet.rules[i].selectorText.match('hover') &&
@@ -2157,7 +2138,7 @@ if (typeof ontouchstart != 'undefined')
     RemoveHovers(document);
                 
     // handle touch event
-    const ProcessTouch=e=>
+    const ProcessTouch = e=>
     {
         // check if touching
         const touching = e.touches.length;
