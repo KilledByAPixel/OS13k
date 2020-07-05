@@ -792,7 +792,8 @@ Update = (time)=>
     
     // update time
     clockTrayIcon.title = new Date();
-    clockTrayIcon.innerHTML = clockTrayIcon.title.replace(/.* (\d+:\d+):.*/, '$1');
+    clockTrayIcon.innerHTML = clockTrayIcon.title.
+        replace(/.* (\d+):(\d+):.*/, (a,b,c)=> (b%12||12)+':'+c);
     
     // get analyser data
     musicAnalyser.fftSize = 512;
