@@ -54,7 +54,7 @@ R = e=>
 }
 
 // play note
-P = e=> e < 0 | !A[e] &&         // is note valid and not playing
+P = e=> e < 0 || !A[e] &&         // is note valid and not playing
 (
     // change button color
     b = eval('B' + e),           // get the button
@@ -93,12 +93,12 @@ E = e=> R(                // rebild cache
     B.innerHTML = '',     // clear HTML
 
     // create buttons
-    ['Organ', 'Oboe', 'Wave'].map((i,j)=>               // instruments
-        B.innerHTML +=                                  // add to HTML
-        `<button style='border:5px solid${              // button and border
-            T-j ? "#111" : "#f00" }' onmousedown=E(T=${ // border color
-            j })>${                                     // select on mouse down
-            i }</button> `),                            // button text
+    ['Organ', 'Oboe', 'Wave'].map((i,j)=>                 // instruments
+        B.innerHTML +=                                    // add to HTML
+        `<button style='border:5px solid${                // button and border
+            T-j ? "#111" : "#f00" }' onmousedown=T-(T=${j // border color
+            })&&E()>${                                    // rebuild if newly selected
+            i}</button> `),                               // button text
             
     // set seed boder
     S.style.border = `5px solid${                     // set border
