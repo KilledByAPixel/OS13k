@@ -54,7 +54,7 @@ R = e=>
 }
 
 // play note
-P = e=> e < 0 | A[e] ||         // is note valid and not playing
+P = e=> e < 0 | !A[e] &&         // is note valid and not playing
 (
     // change button color
     b = eval('B' + e),           // get the button
