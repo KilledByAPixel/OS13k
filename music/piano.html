@@ -96,7 +96,7 @@ E = e=> R(                // rebild cache
     ['Organ', 'Oboe', 'Wave'].map((i,j)=>                 // instruments
         B.innerHTML +=                                    // add to HTML
         `<button style='border:5px solid${                // button and border
-            T-j ? "#111" : "#f00" }' onmousedown=T-(T=${j // border color
+            T-j ? "#111" : "#f00" }'onmousedown=T-(T=${j  // border color
             })&&E()>${                                    // rebuild if newly selected
             i}</button> `),                               // button text
             
@@ -108,18 +108,19 @@ E = e=> R(                // rebild cache
 // create piano keys
 for( T = i = 0; i < 36;                          // init selected sound & iterator, 3 rows of 12 keys
     onunload = onblur = e=> A.map((e,i)=> X(i))) // stop all sounds if focus lost or unloaded
-        document.body.innerHTML +=                                            // add to html
-            `<div id=B${ z = 24 - (i/12|0)*12 + i%12                          // reorder keys
-            } onmouseover=event.buttons&&P(${ z                               // mouse over
-            }) onmousedown=P(${ z                                             // mouse down
-            }) onmouseup=X(${ z                                               // mouse up
-            }) onmouseout=X(${ z                                              // mouse out
-            }) style="display:inline-block;border:1px solid#000;background:${ // style
-            '02579'.indexOf( i%12 - 1 ) < 0 ?                                 // b or w
-            '#fff;width:54;height:129;color:#000' :                           // white
-            '#000;position:absolute;margin-left:-14;width:27;height:70'}">${  // black
-                'I9O0P[=]    Q2W3ER5T6Y7UZSXDCVGBHNJM'[i]                     // show key
-            }</div>${++i%12 ? '' : '<br>'}`;                                  // 12 keys per row
+        document.body.innerHTML +=                                         // add to html
+            `<div id=B${ z = 24 - (i/12|0)*12 + i%12                       // reorder keys
+            } 
+            style="display:inline-block;border:1px solid#000;background:${ // style
+            '02579'.indexOf( i%12 - 1 ) < 0 ?                              // b or w
+            '#fff;width:54;height:129;color:#000' :                        // white
+            '#000;position:absolute;margin-left:-14;width:27;height:70'    // black
+            }"onmouseover=event.buttons&&P(${ z                            // mouse over
+            }) onmousedown=P(${ z                                          // mouse down
+            }) onmouseup=X(${ z                                            // mouse up
+            }) onmouseout=X(${ z                                           // mouse out
+            })>${ 'I9O0P[=]    Q2W3ER5T6Y7UZSXDCVGBHNJM'[i]                // show key
+            }</div>${++i%12 ? '' : '<br>'}`;                               // 12 keys per row
 
 // rebuild and init active sounds
 E(A = []);

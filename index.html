@@ -856,15 +856,15 @@ Update = (time)=>
 
             // set popup position
             popup.style.top = y;
-        }});
+        }
+    });
 },
 
 // close all menus
 CloseMenus = ()=>
 {
     // hide all menus
-    for(const child of programsMenu.children)
-        child.style.visibility = menu.style.visibility = '';
+    [...programsMenu.children].map(e=>e.style.visibility = menu.style.visibility = '');
     
     // unselect active program
     activeProgram && (activeProgram.className = 'program');
@@ -1071,7 +1071,7 @@ class OS13kProgram extends HTMLElement
 
         // create div for icon to auto close html tags
         const iconDisplay = this.appendChild(document.createElement('div'));
-        iconDisplay.style = 'pointer-events:none;width:45;text-shadow:1px 1px 3px #000;text-align:center';
+        iconDisplay.style = 'pointer-events:none;width:45;text-shadow:1px 1px 3px#000;text-align:center';
         iconDisplay.innerHTML = this.icon = icon;;
         
         // name and folder
@@ -1244,7 +1244,7 @@ class OS13kWindow extends HTMLElement
             icon.id = title.split(' ')[0];
             icon.title = title;
             icon.innerHTML = 
-            `<svg style=height:100%;width:28;pointer-events:none viewBox='0 0 10 10'><${shape} stroke=#000 fill=none ${svg} />`;
+            `<svg viewBox='0 0 10 10'style=height:100%;width:28;pointer-events:none><${shape} stroke=#000 fill=none ${svg} />`;
         }
         program.resize && 
             AddTitlebarIcon('Grow', 'd="M2 5L8 5M5 8L5 2"',
@@ -1565,7 +1565,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             iframe.onload = ()=> loadFrame();
-            this.iframe.src = program.src + '?v63';
+            this.iframe.src = program.src + '?v65';
         }
     }
         

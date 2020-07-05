@@ -72,7 +72,6 @@ B=k=>
         OS13k.Clamp(                               // clamp to select length
             E ? L.findIndex(e=>e.k == E) : i,      // look for added song key 
             E = 0, S.length - 1);                  // clamp to select length
-            
     localStorage.OS13kM = JSON.stringify(K);       // save known song list
 }
 
@@ -100,9 +99,8 @@ I=k=> // key
 // play song
 P=k=>
 {
-    X && X.stop(X = 0);          // stop song if playing
-    Q = S.selectedIndex;         // set queued song index
-    Q < 0 ||                     // check if no selection
+    X && X.stop(X = 0);              // stop song if playing
+    (Q = S.selectedIndex) < 0 ||     // set queued song index and check if no selection
         (N.innerText = L[Q].n,       // set queued song index
         F.innerText = 'Loading...'); // set loading message
 }

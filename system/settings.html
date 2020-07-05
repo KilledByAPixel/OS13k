@@ -33,7 +33,7 @@ s = e=>parent.OS13k.SaveSettings
         F.innerHTML +=                        // add to html
         `<button style='border:5px solid${    // create button
             e[1] == t ? '#f00' : '#111'       // selected color
-            }' onmousedown=s(t='${ e[1] }')>` // set filter
+            }'onmousedown=s(t='${ e[1] }')>`  // set filter
             + e[0]                            // set button text
     )
 );
