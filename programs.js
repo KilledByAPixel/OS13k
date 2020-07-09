@@ -9,9 +9,9 @@ code     = 2**5, // show code button (cant show code if help is set)
 close    = 2**6, // show code button (cant show code if help is set)
 
 // system flags
-closeAll   = 2**7,        // close all open windows
-newUserProgram = 2**8,    // create new user program
-clearUserPrograms = 2**9, // remove all user programs
+closeAll   = 2**7,         // close all open windows
+newUserProgram = 2**8,     // create new user program
+deleteUserPrograms = 2**9, // remove all user programs
 
 // defaults
 defaultFlags = full|reload|resize,
@@ -20,7 +20,7 @@ defaultWidth = 720, defaultHeight = 405, // 16:9 aspect
 // program format
 //[src, icon, width, height, flags, name, help, folder]
 
-programs = 
+programStubs = 
 [
 [,'❌',,,closeAll,'Close All'],
 ['help.html','<b><span style=color:#0f0>?',380,400,sticky,,'Check here to see help, code, or edit user programs.\n\nHave fun! ✌️😄'],
@@ -80,10 +80,5 @@ programs =
     ['dweets/automaticBreakout.dweet.js','■'],
     ['dweets/colorZoom.dweet.js','❤️'],
     ['dweets/triFractal.dweet.js','🔺'],
-]],
-[,'😀',,,,'User Programs',,
-[
-    [,'📌',,,newUserProgram,'New User Program'],
-    [,'⚠️',,,clearUserPrograms,'Clear User Programs'],
-]],
+]]
 ]; // programs

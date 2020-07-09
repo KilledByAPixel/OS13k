@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?v153></script>
+<script src=programs.js?v154></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -236,21 +236,13 @@ const OS13kVersion = 68;
     localStorage.OS13kVersion = OS13kVersion;
 
     // load default programs if none found
-    if (typeof programs == 'undefined')
+    if (typeof programStubs == 'undefined')
     {
         alert('No programs found!')
         var sticky = 2**0, reload = 2**1, awake = 2**2, full = 2**3, resize= 2**4, code = 2**5,
-        closeAll = 2**7, newUserProgram = 2**8, clearUserPrograms = 2**9,
+        closeAll = 2**7, newUserProgram = 2**8, deleteUserPrograms = 2**9,
         defaultFlags = full|reload|resize, defaultWidth = 720, defaultHeight = 405,
-        programs = 
-        [
-            [,'❌',,,closeAll,'Close All'],
-            [,'😀',,,,'User Programs',,
-            [
-                [,'📌',,,newUserProgram,'New User Program'],
-                [,'⚠️',,,clearUserPrograms,'Clear User Programs'],
-            ]]
-        ];
+        programStubs = [[,'❌',,,closeAll,'Close All']];
     }
 } // debug stuff
 
@@ -382,8 +374,8 @@ class _OS13k
 // OS13k Audio
 
     // play seed sound
-    PlaySeed(seed, lengthScale=1, volume=1, randomness=.05, frequency, music)
-    { return this.PlaySamples(this.SeedSamples(...arguments), music); }
+    PlaySeed(seed, lengthScale=1, volume=1, randomness=.05, frequency, isMusic)
+    { return this.PlaySamples(this.SeedSamples(...arguments), isMusic); }
     
     // get seed samples
     SeedSamples(seed, lengthScale=1, volume=1, randomness=.05, frequency)
@@ -449,11 +441,11 @@ class _OS13k
     }
     
     // play audio sample data
-    PlaySamples = (samples, music, sampleRate=defaultSampleRate)=>
-        this.PlaySamplesArray([samples], music, sampleRate);
+    PlaySamples = (samples, isMusic, sampleRate=defaultSampleRate)=>
+        this.PlaySamplesArray([samples], isMusic, sampleRate);
     
-    // play array of audio sample data, connect analyser to gain if musicOrInstrument > 1
-    PlaySamplesArray(samplesArray, musicOrInstrument, sampleRate=defaultSampleRate)
+    // play array of audio sample data, connect analyser to gain if isMusic > 1
+    PlaySamplesArray(samplesArray, isMusic, sampleRate=defaultSampleRate)
     {
         // create buffer and source
         const buffer = audioContext.createBuffer(samplesArray.length, samplesArray[0].length, sampleRate),
@@ -464,11 +456,11 @@ class _OS13k
         source.buffer = buffer;
         
         // create custom gain node
-        source.connect(source.gain = audioContext.createGain());
-        source.gain.connect(musicOrInstrument ? gainMusic : gain);
+        source.connect(source.gain = audioContext.createGain()).
+            connect(isMusic ? gainMusic : gain);
         
         // connect analyser and start
-        musicOrInstrument && (musicOrInstrument > 1 ? source.gain : source).connect(musicAnalyser);
+        isMusic && (isMusic > 1 ? source.gain : source).connect(musicAnalyser);
         source.start();
         return source;
     }
@@ -541,18 +533,18 @@ class _OS13k
         // create shadertoy compatible pixel shader
         const pixelShader = x.createShader(xFRAGMENT_SHADER);
         const shaderProgramCode = 
-            '#version 300 es\n' +
-            'precision mediump float;' +
-            'uniform float iTime;' +
-            'uniform int iFrame;' +
-            'uniform vec4 iMouse;' +
-            'uniform vec3 iResolution;' +
-            'uniform sampler2D iChannel0;' +
-            'out vec4 OS13kcolor;\n' +
-            code +
-            '\nvoid main()' +
-            '{mainImage(OS13kcolor,gl_FragCoord.xy);' +
-            'OS13kcolor.a=1.;}';
+            `#version 300 es\n` +
+            `precision mediump float;` +
+            `uniform float iTime;` +
+            `uniform int iFrame;` +
+            `uniform vec4 iMouse;` +
+            `uniform vec3 iResolution;` +
+            `uniform sampler2D iChannel0;` +
+            `out vec4 OS13kcolor;\n` +
+            `${code}` +
+            `\nvoid main()` +
+            `{mainImage(OS13kcolor,gl_FragCoord.xy);` +
+            `OS13kcolor.a=1.;}`;
         x.shaderSource(pixelShader, shaderProgramCode);
         x.compileShader(pixelShader);
 
@@ -729,10 +721,6 @@ Start = ()=>
     settingsTrayIcon  = new OS13kTrayIcon();
     clockTrayIcon     = new OS13kTrayIcon();
     
-    // create analyser canvas
-    analyserCanvas = musicTrayIcon.appendChild(document.createElement('canvas'));
-    analyserCanvas.style = 'width:16;height:16;margin:2;pointer-events:none';
-    
     // listen for trophies from other windows
     onstorage = e=> CheckForTrophy(e.key);
 
@@ -748,23 +736,73 @@ Start = ()=>
     buttonClose.onmousedown      = ()=> activeWindow.Close();
 
     // create load program taskbar icon and add folders/programs
-    loadIcon = new OS13kTaskbarIcon( {icon:'💾', name:'Load Program'}, new OS13kProgramMenu(programs) );
-    loadIcon.windowOrMenu.Rebuild();
+    loadIcon = new OS13kTaskbarIcon( {icon:'💾', name:'Load Program'}, new OS13kProgramMenu(programStubs) );
+    RebuildMenu();
 
     // welcome message
     OS13k.Trophy('', '👋', 'Welcome to OS13k!');
 
-    // search local storage for new trophies (from other JS13k games)
+    // search local storage for new trophies (from other JS13k games)1
     for (const key in localStorage) CheckForTrophy(key);
 
     // try to update startup and kick off first update
     Update(UpdateStartup());
 },
 
+RebuildMenu = ()=>
+{
+    // combine old stubs for reference
+    const oldStubs = [];
+    const getOldStubs = stubs => stubs.map( stub => stub[7] ? getOldStubs(stub[7]) : oldStubs.push(stub));
+    getOldStubs(programStubs);
+
+    // remove user folder if it exists
+    loadIcon?.windowOrMenu.lastChild && (
+      loadIcon.windowOrMenu.removeChild(loadIcon.windowOrMenu.lastChild), 
+      programStubs.pop());
+
+    CreateUserFolder(programStubs, [,'😀',,,,'User Programs'], undefined, oldStubs);
+    loadIcon.windowOrMenu.Rebuild();
+},
+
+CreateUserFolder = (parentStubs, stub, userFolderName, oldStubs)=>
+{
+    const folderStubs = 
+    [
+        [,'📌',,,newUserProgram,'New User Program',,,,userFolderName],
+        [,'⚠️',,,deleteUserPrograms, userFolderName ? `Delete User Folder "${userFolderName}"` : 'Delete User Programs',,,,userFolderName]
+    ];
+    
+    // add subfolders
+    const folderNames = [];
+    userFolderName || programInfos.map(i=> i.code != undefined && i.userFolder && 
+        !folderNames.includes(i.userFolder) && 
+            CreateUserFolder(folderStubs,[,'📁',,,,i.userFolder], i.userFolder, oldStubs, folderNames.push(i.userFolder)));
+       
+    // add stubs for programs in this folder
+   programInfos.map(i=> i.code != undefined && i.userFolder == userFolderName &&
+
+        // add stubs to folder, check if it already existed first
+        folderStubs.push(
+            oldStubs.find(stub => stub[8] == i.id) ||
+            [,i.icon,i.width,i.height,defaultFlags|code,i.name,,,i.id,i.userFolder])
+        );
+
+    // set folder stubs and add to parent stubs
+    stub[7] = folderStubs;
+    parentStubs.push(stub);
+},
+
 // wait for startup to finish
 UpdateStartup = ()=> !loading & !finishedStartup && OS13k.Save(
-        self == top | startProgram?.sticky && startProgram?.Open?.(startProgram = 0),
-        finishedStartup = 1),
+
+    // create analyser canvas
+    musicTrayIcon.prepend(analyserCanvas = document.createElement('canvas')),
+    analyserCanvas.style = 'width:16;height:16;margin:2;pointer-events:none;display:none',
+
+    // load start program
+    self == top | startProgram?.sticky && startProgram?.Open?.(startProgram = 0),
+    finishedStartup = 1),
 
 // main update loop
 Update = (time)=>
@@ -788,12 +826,15 @@ Update = (time)=>
     loading || (document.body.style.opacity = Math.min(1,.02 + document.body.style.opacity*1));
 
     // update trophy count
-    trophyTrayIcon.innerHTML = trophies.length + ' 🏆';
+    trophyTrayIcon.innerHTML = trophies.length + '🏆';
     
     // update time
     clockTrayIcon.title = new Date();
     clockTrayIcon.innerHTML = clockTrayIcon.title.
         replace(/.* (\d+):(\d+).*/, (a,b,c)=> (b%12||12)+':'+c);
+    
+    // show popups after startup is finished and there was input
+    if (!finishedStartup || !hadInput) return;
     
     // get analyser data
     musicAnalyser.fftSize = 512;
@@ -821,9 +862,6 @@ Update = (time)=>
     
     // set analyser visibility
     analyserCanvas.style.display = time - lastMusicTime < analyserWaitTime ? '' : 'none';
-    
-    // show popups after startup is finished and there was input
-    if (!finishedStartup || !hadInput) return;
     
     // update popups, use copy to prevent skipping if removed
     let offsetY = 0;
@@ -901,49 +939,43 @@ let grabWindow, grabOffsetX, grabOffsetY, finishedStartup, nextUserProgramId = 0
 
 class OS13kProgramMenu extends HTMLElement
 {
-	constructor(infos, parentMenu)
+	constructor(stubs, parentMenu)
     {
 		super();
         
         // add to programs menu
         this.className    = 'programMenu';
         this.parentMenu   = parentMenu;
-        this.programInfos = infos;
-        
-        // add programs to menu
-        for(const info of infos)
-        {
-            // create program and menu
-            const program = info.program = new OS13kProgram(...info);  
-            program.programMenu = program.folder ? new OS13kProgramMenu(program.folder, this) : this;  
-                
-            // create user program info and add to info list after clear
-            program.flags & clearUserPrograms &&
-                programInfos.map(info=> info.code != undefined && infos.push(
-                    [,info.icon,info.width,info.height,defaultFlags|code,info.name,,,info.id]));
-        }
+        this.programStubs = stubs;
     }
     
     Rebuild(y = 0)
     {
+        // add programs to menu
+        for(const stub of this.programStubs)
+        {
+            // create program and menu
+            const program = stub[10] = stub[10] || new OS13kProgram(...stub);  
+            program.programMenu = program.folder ? new OS13kProgramMenu(program.folder, this) : this;
+        }
+
         // clear programs menu
         this.innerHTML = '';
         programsMenu.appendChild(this);
   
         // add programs to menu
-        this.programInfos.map(info=> this.appendChild(info.program));
+        this.programStubs.map(stub=> this.appendChild(stub[10]));
         
         // set position
         this.style.top  = y;
         this.style.left = this.parentMenu ?
-            this.parentMenu.getBoundingClientRect().right - 2 : 
-            programsMenu.style.left = 0;
+            this.parentMenu.getBoundingClientRect().right - 2 : programsMenu.style.left = 0;
 
         // add folders after programs so width is correct
-        this.programInfos.map(info=>
+        this.programStubs.map(stub=>
         {
             // rebuild child program menus
-            info.program.programMenu != this && info.program.programMenu.Rebuild(y);
+            stub[10].programMenu != this && stub[10].programMenu.Rebuild(y);
             
             // add program height as we move down list
             y += programHeight;
@@ -962,40 +994,38 @@ class OS13kProgramMenu extends HTMLElement
         this.style.visibility = 'visible';
     }
 
-    AddUserProgram(copyProgram)
+    NewUserProgram(copyProgram, userFolder)
     {
         // create new program
-        const program = new OS13kProgram(...
-            copyProgram ? 
+        const stub = copyProgram ? 
             [,copyProgram.icon, copyProgram.width, copyProgram.height, defaultFlags|code, 
-                copyProgram.name + '+', , ,++nextUserProgramId] :
-            [,'✋',,,defaultFlags|code,,,,++nextUserProgramId]);
+                copyProgram.name + '+', , ,++nextUserProgramId, copyProgram.userFolder] :
+            [,'✋',,,defaultFlags|code,,,,++nextUserProgramId, userFolder];
+        const program = stub[10] = new OS13kProgram(...stub);
         
         // add to menu program infos
-        this.programInfos.push({program});
-        
-        // set menu and rebuild menus
-        program.programMenu = this;
-        loadIcon.windowOrMenu.Rebuild();
-        
-        // set code, use default if none found
-        program.info.code = copyProgram ? copyProgram.info.code :
-        '// Auto detects HTML, Dweet, or Shadertoy! You can drop files here too. ✌️😄\n' +
-        'for(x.fillRect(0,0,i=s=2e3,s);i--;x.globalAlpha=.1)\n' +
-        'x.clearRect((S(i)*1e9-t*i/9)%s,i*9%s,i%9,i%9)';
+        this.programStubs.push(stub);
 
-        // copy program info, set position below original
-        copyProgram && (
+        // set code, copy if passed in, use default if none found
+        program.info.code = copyProgram ? (
             program.info.scale = copyProgram.info.scale,
             windowOpenX = copyProgram.info.x,
-            windowOpenY = copyProgram.info.y + titlebarHeight);
-            
-        // mark code as safe, open, and show code
+            windowOpenY = copyProgram.info.y + titlebarHeight,
+            copyProgram.info.code)
+            :
+            '// Auto detects HTML, Dweet, or Shadertoy! You can drop files here too. ✌️😄\n' +
+            'for(x.fillRect(0,0,i=s=2e3,s);i--;x.globalAlpha=.1)\n' +
+            'x.clearRect((S(i)*1e9-t*i/9)%s,i*9%s,i%9,i%9)';
+
+        // mark code as safe, open, and show code, prevent iframe focus
         program.stopFocus = 1;
         program.Open(program.userProgram = allCodeIsSafe = 1);
         program.window.ShowCode(1);
         program.window.codeText.focus();
         program.stopFocus = 0;
+        
+        // set menu and rebuild menus
+        RebuildMenu(program.programMenu = this);
         return program;
     }
 
@@ -1007,10 +1037,10 @@ customElements.define('m-', OS13kProgramMenu);
     
 class OS13kProgram extends HTMLElement
 {
-	constructor(src='', icon='💠', width=defaultWidth, height=defaultHeight, flags, name='', help='', folder, userProgramId)
+	constructor(src='', icon='💠', width=defaultWidth, height=defaultHeight, flags, name='', help='', folder, userProgramId, userFolder)
     {
-		super();
-        
+        super();
+
         // split source by . to get extension
         const srcParts = src.split('.');
         
@@ -1023,12 +1053,13 @@ class OS13kProgram extends HTMLElement
         this.isShader = srcParts[1] == 'shader';
 
         // set icon data
-        this.className = 'program';
-        this.src       = src;
-        this.width     = width;
-        this.height    = height;
-        this.folder    = folder;
-        this.id        = userProgramId || name;
+        this.className  = 'program';
+        this.src        = src;
+        this.width      = width;
+        this.height     = height;
+        this.folder     = folder;
+        this.id         = userProgramId || name;
+        this.userFolder = userFolder;
 
         // set the program name and id
         this.SetName(icon, name);
@@ -1067,13 +1098,9 @@ class OS13kProgram extends HTMLElement
 
     SetName(icon, name)
     {
-        // clear html
-        this.innerHTML = '';
-
-        // create div for icon to auto close html tags
-        const iconDisplay = this.appendChild(document.createElement('div'));
-        iconDisplay.style = 'pointer-events:none;width:45;text-shadow:1px 1px 3px#000;text-align:center';
-        iconDisplay.innerHTML = this.icon = icon;;
+        // icon
+        this.icon = icon;
+        this.innerHTML = '<span style="pointer-events:none;width:45;text-shadow:1px 1px 3px#000;text-align:center">' + icon;
         
         // name and folder
         this.innerHTML += `<div style=flex:1;padding-right:9;pointer-events:none>${
@@ -1121,7 +1148,19 @@ class OS13kProgram extends HTMLElement
         if (this.flags & newUserProgram)
         {
             // create user program with default code
-            this.programMenu.AddUserProgram();
+            this.programMenu.NewUserProgram(undefined, this.userFolder);
+        }
+        if (this.flags & deleteUserPrograms && confirm(this.name + '?'))
+        {
+            // close windows with matching folder
+            [...desktop.children].map(child=> (this.userFolder ?
+                child.program?.info.userFolder == this.userFolder : child.program?.info.code != undefined) && child.Close?.());
+            
+            // remove user program infos
+            programInfos = programInfos.filter(info=> info.code == undefined || this.userFolder && info.userFolder != this.userFolder);
+            
+            // rebuild menu and play sound
+            RebuildMenu(OS13k.Save(Sound(soundClose, 4)));
         }
         if (this.flags & closeAll)
         {
@@ -1134,25 +1173,11 @@ class OS13kProgram extends HTMLElement
 
             OS13k.Trophy('OS13k', '☕', 'Coffee Is For Closers', 'Closed All');
         }
-        if (this.flags & clearUserPrograms && confirm(this.name + '?'))
-        {
-            // remove from menu info and close windows
-            this.programMenu.programInfos = this.programMenu.programInfos.filter(info=>
-                !info.program.userProgram || (info.program?.window?.Close(), false));
-            Sound(soundClose, 4);
-            
-            // remove user program infos
-            programInfos = programInfos.filter(info=> info.code == undefined);
-            OS13k.Save();
-            
-            // rebuild menu
-            loadIcon.windowOrMenu.Rebuild();
-        }
     }
     
     SetActive() { this.Open(); }
     
-    Toggle() { activeWindow == this.window ? this.window.Close() : this.Open(); }
+    Toggle() { activeWindow && activeWindow == this.window ? this.window.Close() : this.Open(); }
     
     Load() 
     {
@@ -1180,7 +1205,8 @@ class OS13kProgram extends HTMLElement
             height: this.height,
             code: this.info.code,
             allowSleep: this.userProgram? this.window.allowSleep.checked : 1,
-            liveEdit: this.window.liveEdit.checked
+            liveEdit: this.window.liveEdit.checked,
+            userFolder: this.userFolder
         }
         
         // add to programs info and save
@@ -1219,33 +1245,13 @@ class OS13kWindow extends HTMLElement
         this.titlebar = this.shadowRoot.appendChild(document.createElement('div'));
         this.titlebar.id = 'titlebar';
         
-        // title bar name
-        this.name = this.titlebar.appendChild(document.createElement('div'));
-        this.name.id = 'name';
-
-        const SetName = ()=>
-        {
-            // clear html
-            this.name.innerHTML = '';
-
-            // create div for icon to auto close html tags
-            const icon = this.name.appendChild(document.createElement('div'));
-            icon.id = 'icon';
-            icon.innerHTML = program.icon;
-
-            // name
-            this.name.innerHTML += program.name;
-        }
-        SetName();
-       
-        // create title bar icons
+        // create title bar buttons
         const AddTitlebarIcon=(title, svg, shape='path')=>
         {
-            const icon = this.titlebar.appendChild(document.createElement('div'));
-            icon.id = title.split(' ')[0];
-            icon.title = title;
-            icon.innerHTML = 
-            `<svg viewBox='0 0 10 10'style=height:100%;width:28;pointer-events:none><${shape} stroke=#000 fill=none ${svg} />`;
+            this.titlebar.innerHTML += 
+            `<div id=${title.split(' ')[0]} title=${title}>` +
+            `<svg viewBox='0 0 10 10'style=height:100%;width:28;pointer-events:none><${
+                shape} stroke=#000 fill=none ${svg} />`;
         }
         program.resize && 
             AddTitlebarIcon('Grow', 'd="M2 5L8 5M5 8L5 2"',
@@ -1255,6 +1261,17 @@ class OS13kWindow extends HTMLElement
         program.code && AddTitlebarIcon('Code', 'd="M5 2L8 8L2 8L5 2L8 8"');
         program.reload && AddTitlebarIcon('Reload', 'cx=5 cy=5 r=3', 'circle');
             AddTitlebarIcon('Close', 'd="M2 2L8 8M8 2L2 8"');
+
+        // title bar name
+        this.titlebar.prepend(this.name = document.createElement('div'));
+        this.name.id = 'name';
+        const SetName = ()=>
+        {
+            // icon and name
+            this.name.innerHTML = `<span id=icon>${program.icon}`;
+            this.name.innerHTML += program.name;
+        }
+        SetName();
 
         // create content wrapper
         this.iframeWrapper = this.shadowRoot.appendChild(document.createElement('div'));
@@ -1273,53 +1290,49 @@ class OS13kWindow extends HTMLElement
         this.codeText.spellcheck = false;
 
         // init custom code options
-        const codeOptions = this.codeOptions = this.codeDisplay.appendChild(document.createElement('div'));
-        codeOptions.id = 'codeOptions';
-        program.userProgram || (codeOptions.style.display = 'none');
+        this.codeOptions = this.codeDisplay.appendChild(document.createElement('div'));
+        this.codeOptions.id = 'codeOptions';
+        this.codeOptions.style.display =  program.userProgram ? '' : 'none';
 
         // build code options html
-        codeOptions.innerHTML = 
-            '<span><button id=S>📷</button></span>' +
-            '<span>Icon <input style=width:35 id=I></span> ' +
-            '<span>Name <input id=N></span> ' +
-            '<span>Size <input style=width:50 type=number id=W>x<input style=width:50 type=number id=H></span>' + 
+        this.codeOptions.innerHTML = 
+            `<span><button id=S>📷</button></span>` +
+            `<span>Icon <input style=width:50 id=I></span> ` +
+            `<span>Name <input id=N></span> ` +
+            `<span>Folder <input id=F></span> ` +
+            `<span>Size <input style=width:50 type=number id=W>x<input style=width:50 type=number id=H></span>` + 
             `<span>Sleep <input type=checkbox id=P ${program.info.allowSleep != false ? 'checked' : ''}></span>` +
             `<span>Live Edit <input type=checkbox id=L ${program.info.liveEdit != false ? 'checked' : ''}></span>` +
-            '<span><button id=G>Save</button></span>' +
-            '<span><button id=C>Copy</button></span>' +
-            '<span><button id=D>Delete</button></span>' +
+            `<span><button id=G>Save</button></span>` +
+            `<span><button id=C>Copy</button></span>` +
+            `<span><button id=D>Delete</button></span>` +
             `<span><span id=Z>${program.info.code?.length}</span> Bytes` +
-            '<a id=A><canvas id=V style=display:none>';
+            `<a id=A><canvas id=V style=display:none>`;
 
         // get links to code options and create error text
         const iconInput = this.shadowRoot.getElementById('I'),
             nameInput = this.shadowRoot.getElementById('N'),
+            folderInput = this.shadowRoot.getElementById('F'),
             widthInput = this.shadowRoot.getElementById('W'),
             heightInput = this.shadowRoot.getElementById('H'),
             link = this.shadowRoot.getElementById('A'),
             canvas = this.shadowRoot.getElementById('V'),
-            canvasContext = canvas.getContext('2d'),
-            errorText = this.errorText = this.codeDisplay.appendChild(document.createElement('textarea'));
-        errorText.id = 'errorText';
-        errorText.readOnly = true;
+            canvasContext = canvas.getContext('2d');
+
+        // error text
+        this.errorText = this.codeDisplay.appendChild(document.createElement('textarea'));
+        this.errorText.id = 'errorText';
+        this.errorText.readOnly = true;
         
         // copy button
-        this.shadowRoot.getElementById('C').onmousedown = ()=> program.programMenu.AddUserProgram(program);
+        this.shadowRoot.getElementById('C').onmousedown = ()=> program.programMenu.NewUserProgram(program);
 
         // delete button
         this.shadowRoot.getElementById('D').onmousedown = ()=>
         {
-            // remove from menu info and close
-            program.programMenu.programInfos 
-                = program.programMenu.programInfos.filter(info=> info.program.info.id != program.id);
+            // close, remove, and rebuild (must close first)
             this.Close();
-            
-            // remove infos
-            programInfos = programInfos.filter(info=> info.id != program.id);
-
-            // close, save, and rebuild menu
-            OS13k.Save();
-            loadIcon.windowOrMenu.Rebuild();
+            RebuildMenu(OS13k.Save(programInfos = programInfos.filter(info=> info.id != program.id)));
         }
         
         // save button
@@ -1347,23 +1360,25 @@ class OS13kWindow extends HTMLElement
 
         // get elements by id
         this.codeSize = this.shadowRoot.getElementById('Z');
-        this.liveEdit = this.shadowRoot.getElementById('L'); 
-        this.allowSleep = this.shadowRoot.getElementById('P'); 
-        nameInput.value = program.name; 
+        this.liveEdit = this.shadowRoot.getElementById('L');
+        this.allowSleep = this.shadowRoot.getElementById('P');
         iconInput.value = program.icon;
-        widthInput.value = program.width; 
+        nameInput.value = program.name;
+        program.userFolder != undefined && (folderInput.value = program.userFolder);
+        widthInput.value = program.width;
         heightInput.value = program.height;
 
         // set new icon and name when changed
         iconInput.oninput =
         nameInput.oninput =
         this.liveEdit.oninput = e=>
-        {
-            program.SetName(OS13k.StripHTML(iconInput.value), nameInput.value);
-            program.Save();
-            SetName();
-            this.taskbarIcon.SetName();
-        }
+        program.Save(
+            SetName(this.taskbarIcon.
+            SetName(program.
+            SetName(OS13k.StripHTML(iconInput.value), nameInput.value))));
+
+        folderInput.oninput = e=>
+            RebuildMenu(program.Save(program.userFolder = OS13k.StripHTML(folderInput.value.trim())));
 
         // size options
         widthInput.onchange =
@@ -1473,7 +1488,7 @@ class OS13kWindow extends HTMLElement
                 const code = program.userProgram && !program.isShader? 
                     iframeText.replace(
                         /(for\s*\((?!\s+of\s+)(?!\s+in\s+)[^;]*;[^;]*;|while\s*\()\s*(\S)/g, (a, b, c)=> b && c ? b +
-                        `++OS13kL>1e5&&(e=>{throw'Timed out!'})()` +
+                        "++OS13kL>1e5&&(e=>{throw'Timed out!'})()" +
                         (c == ')' ? '' : ',') + c : a ) : iframeText;
 
                 // show error messages from user code (must be set again here because it got wiped out)
@@ -1484,28 +1499,28 @@ class OS13kWindow extends HTMLElement
                     'OS13k=parent.OS13k;x=c.getContext' +
                     (program.isShader ? // preserve buffer for user programs for screenshot
                         `('webgl2'${program.userProgram ? ',{preserveDrawingBuffer:true}' : ''});` +
-                        'X=Y=Z=W=0;' +
-                        'onmousemove=e=>e.buttons&&(X=e.x,Y=c.height-e.y);' +
-                        'onmousedown=e=>(X=Z=e.x,Y=W=c.height-e.y);' +
-                        'onmouseup=e=>Z=W=0;' +
-                        's=OS13k.CreateShader(c,`' + code + '`);' +
-                        'OS13kU=t=>' +
-                        'OS13k.RenderShader(c,s,t/1e3,frame++,X,Y,Z,W,c.width=innerWidth,c.height=innerHeight)'
+                        `X=Y=Z=W=0;` +
+                        `onmousemove=e=>e.buttons&&(X=e.x,Y=c.height-e.y);` +
+                        `onmousedown=e=>(X=Z=e.x,Y=W=c.height-e.y);` +
+                        `onmouseup=e=>Z=W=0;` +
+                        `s=OS13k.CreateShader(c,\`${ code }\`);` +
+                        `OS13kU=t=>` +
+                        `OS13k.RenderShader(c,s,t/1e3,frame++,X,Y,Z,W,c.width=innerWidth,c.height=innerHeight)`
                         :
-                        '`2d`;' +
-                        'zzfx=parent.zzfx;' +
-                        'S=Math.sin;C=Math.cos;T=Math.tan;' +
-                        'R=(r,g,b,a=1)=>`rgba(${0|r},${0|g},${0|b},${a})`;' +
-                        'u=t=>{' + code + '\n};' +
-                        'OS13kU=t=>t>OS13kF-2&&' + 
-                            'u(((t=frame++/60)*60|0==frame-1)&&t>0?t+1e-6:t,' +
-                            'OS13kL=0,' +
-                            'OS13kF=Math.max(OS13kF+100/6,t))') +
-                    ';(OS13kA=t=>(requestAnimationFrame(OS13kA),' +
-                        (program.awake || program.info.allowSleep == 0? '' : 
+                        `('2d');` +
+                        `zzfx=parent.zzfx;` +
+                        `S=Math.sin;C=Math.cos;T=Math.tan;` +
+                        `R=(r,g,b,a=1)=>\`rgba(\${0|r},\${0|g},\${0|b},\${a})\`;` +
+                        `u=t=>{${ code }\n};` +
+                        `OS13kU=t=>t>OS13kF-2&&` + 
+                            `u(((t=frame++/60)*60|0==frame-1)&&t>0?t+1e-6:t,` +
+                            `OS13kL=0,` +
+                            `OS13kF=Math.max(OS13kF+100/6,t))`) +
+                    `;(OS13kA=t=>(requestAnimationFrame(OS13kA),` +
+                        (program.awake || program.info.allowSleep == 0 ? '' : 
                             't<1e3|parent.document.activeElement==OS13kWindow&&') +
-                    'OS13kU(t)))' +
-                    '(frame=OS13kF=0)');
+                    `OS13kU(t)))` +
+                    `(frame=OS13kF=0)`);
             }
             catch (e)
             {
@@ -1533,7 +1548,7 @@ class OS13kWindow extends HTMLElement
             UpdateStartup();
 
             // listen for reload from iframe, prevent infnite recursion
-            program.userProgram && (iframe.onload = ()=> reloadCount++ && this.Reload(1, 0));
+            program.userProgram && (this.iframe.onload = ()=> reloadCount++ && this.Reload(1, 0));
 
             // release grab window since this one will be in front
             grabWindow && onmouseup();
@@ -1543,11 +1558,11 @@ class OS13kWindow extends HTMLElement
         this.iframe && this.iframeWrapper.removeChild(this.iframe);
 
         // create iframe
-        const iframe = this.iframe = this.iframeWrapper.appendChild(document.createElement('iframe')); 
-        const iframeContent = this.iframeContent = iframe.contentWindow;
+        this.iframe = this.iframeWrapper.appendChild(document.createElement('iframe')); 
+        const iframeContent = this.iframeContent = this.iframe.contentWindow;
         const program = this.program;
         let reloadCount = 0;
-        iframe.id = 'frame';
+        this.iframe.id = 'frame';
         
         // load src and force pages to be refreshed
         if (program.userProgram)
@@ -1565,8 +1580,8 @@ class OS13kWindow extends HTMLElement
         else
         {
             // load source
-            iframe.onload = ()=> loadFrame();
-            this.iframe.src = program.src + '?v66';
+            this.iframe.onload = ()=> loadFrame();
+            this.iframe.src = program.src + '?v67';
         }
     }
         
@@ -1815,11 +1830,7 @@ class OS13kTrayIcon extends HTMLElement
         // set program, title, and icon
         this.program = program;
         this.title = program.name;
-        
-        // create span for icon to add analyser
-        const icon = this.appendChild(document.createElement('span'));
-        icon.innerHTML = program.icon;
-        icon.style.pointerEvents = 'none';
+        this.innerHTML = program.icon;
     }
     
     Open() { this.program ? this.program.Toggle() : this.functionCall(); }
@@ -1942,7 +1953,7 @@ ondrop = e=>
 var zzfx = (...parameters)=> OS13k.PlaySamples(zzfxG(...parameters)),
 
  // generate zzfx samples
-zzfxG = (volume = 1, randomness = .05, frequency = 220, attack = 0, sustain = 0, release = .1, shape = 0, shapeCurve = 1, slide = 0, deltaSlide = 0, pitchJump = 0, pitchJumpTime = 0, repeatTime = 0, noise = 0, modulation = 0, bitCrush = 0, delay = 0, sustainVolume = 1, decay = 0, sampleRate = defaultSampleRate, b = [])=>
+zzfxG = (volume = 1, randomness = .05, frequency = 220, attack = 0, sustain = 0, release = .1, shape = 0, shapeCurve = 1, slide = 0, deltaSlide = 0, pitchJump = 0, pitchJumpTime = 0, repeatTime = 0, noise = 0, modulation = 0, bitCrush = 0, delay = 0, sustainVolume = 1, decay = 0, buffer = [], sampleRate = defaultSampleRate)=>
 {
     attack = 99 + attack * sampleRate;
     sustain *= sampleRate;
@@ -1950,75 +1961,76 @@ zzfxG = (volume = 1, randomness = .05, frequency = 220, attack = 0, sustain = 0,
     decay *= sampleRate;
     delay *= sampleRate;
     
-    for(
-        // init parameters and helper functions
-        let PI2 = Math.PI*2,
-        random = r=> 1 + r*2*Math.random() - r,
-        sign = v=> v>0? 1 : -1,
-        length = attack + decay + sustain + release + delay,
-        startSlide = slide *= 500 * PI2 / sampleRate**2,
-        startFrequency = frequency *= random(randomness) * PI2 / sampleRate,
-        modPhase = sign(modulation) * PI2/4,
-        t=0, tm=0, i=0, j=1, r=0, c=0, s=0;
+    // init parameters and helper functions
+    let PI2 = Math.PI*2,
+    random = r=> 1 + r*2*Math.random() - r,
+    sign = v=> v>0? 1 : -1,
+    length = attack + decay + sustain + release + delay,
+    startSlide = slide *= 500 * PI2 / sampleRate**2,
+    startFrequency = frequency *= random(randomness) * PI2 / sampleRate,
+    modPhase = sign(modulation) * PI2/4,
+    t=0, tm=0, i=0, j=1, r=0, c=0, s=0;
+
+    repeatTime *= sampleRate;
+    pitchJumpTime *= sampleRate;
+    pitchJump *= PI2 / sampleRate;
+    deltaSlide *= 500 * PI2 / sampleRate**3;
+    for(modulation *= PI2 / sampleRate;
     
-        // loop and generate waveform
-        i < length; b[i++] = s)
+        // loop and generate waveform, combine with buffer if passed in
+        i < length; buffer[i] = (buffer[i++] || 0) + s)
     {
-        if (++c>bitCrush*100)                            // bit crush
+        if (++c>bitCrush*100)                           // bit crush
         {
-            c = 0;                                       // reset bit crush
-            s = t * frequency *                          // frequency
-                Math.sin(tm * modulation * PI2 / sampleRate - modPhase); // modulation
+            c = 0;                                      // reset bit crush
+            s = t * frequency *                         // frequency
+                Math.sin(tm * modulation - modPhase);   // modulation
 
-            s = shape? shape>1? shape>2? shape>3?        // wave shape
-                Math.sin((s%PI2)**3) :                   // 4 noise
-                Math.max(Math.min(Math.tan(s), 1), -1):  // 3 tan
-                1-(2*s/PI2%2+2)%2:                       // 2 saw
-                1-4*Math.abs(Math.round(s/PI2)-s/PI2):   // 1 triangle
-                Math.sin(s);                             // 0 sin
-            s = sign(s)*(Math.abs(s)**shapeCurve);       // curve 0=square, 2=pointy
-
-            s *= volume * (                              // envelope
-                i < attack ? i/attack :                  // attack
-                i < attack + decay ?                     // decay
-                1-((i-attack)/decay)*(1-sustainVolume) : // decay falloff
-                i < attack + decay + sustain ?           // sustain
-                sustainVolume :                          // sustain volume
-                i < length - delay ?                     // release
-                (length - i - delay)/release *           // release falloff
-                sustainVolume :                          // release volume
+            s = shape? shape>1? shape>2? shape>3?       // wave shape
+                Math.sin((s%PI2)**3) :                  // 4 noise
+                OS13k.Clamp(Math.tan(s), -1, 1):        // 3 tan
+                1-(2*s/PI2%2+2)%2:                      // 2 saw
+                1-4*Math.abs(Math.round(s/PI2)-s/PI2):  // 1 triangle
+                Math.sin(s);                            // 0 sin
+            s = sign(s)*(Math.abs(s)**shapeCurve) *     // curve 0=square, 2=pointy
+                volume * (                              // envelope
+                    i < attack ? i/attack :                  // attack
+                    i < attack + decay ?                     // decay
+                    1-((i-attack)/decay)*(1-sustainVolume) : // decay falloff
+                    i < attack + decay + sustain ?           // sustain
+                    sustainVolume :                          // sustain volume
+                    i < length - delay ?                     // release
+                    (length - i - delay)/release *           // release falloff
+                    sustainVolume :                          // release volume
                 0);                                      // post release
 
             s = delay ?                                  // delay
                 s/2 + (delay > i ? 0 :
                 (i<length-delay? 1 : (i-length)/delay) * // release delay 
-                b[i - delay|0]/2) : s;                   // sample delay
+                buffer[i - delay|0]/2) : s;              // sample delay
         }
 
-        t += random(noise);                          // noise
-        tm += random(noise);                         // modulation noise
-        frequency += slide += deltaSlide             // frequency slide
-            * 500 * PI2 / sampleRate**3;             // apply sample rate
+        t += random(noise);                 // noise
+        tm += random(noise);                // modulation noise
+        frequency += slide += deltaSlide;   // frequency slide
 
-        if (j && ++j > pitchJumpTime * sampleRate)   // pitch jump
+        if (j && ++j > pitchJumpTime)       // pitch jump
         {
-            frequency += pitchJump                   // apply pitch jump
-                * PI2 / sampleRate;                  // apply sample rate
-            startFrequency += pitchJump              // also apply to start
-                * PI2 / sampleRate;                  // apply sample rate
-            j = 0;                                   // reset pitch jump time
+            frequency += pitchJump;         // apply pitch jump
+            startFrequency += pitchJump;    // also apply to start
+            j = 0;                          // reset pitch jump time
         }
 
-        if (repeatTime && ++r > repeatTime* sampleRate) // repeat
+        if (repeatTime && ++r > repeatTime) // repeat
         {
-            frequency = startFrequency;               // reset frequency
-            slide = startSlide;                       // reset slide
-            r = 1;                                    // reset repeat time
-            j = j || 1;                               // reset pitch jump time
+            frequency = startFrequency;     // reset frequency
+            slide = startSlide;             // reset slide
+            r = 1;                          // reset repeat time
+            j = j || 1;                     // reset pitch jump time
         }
     }
     
-    return b;
+    return buffer;
 },
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -2071,10 +2083,7 @@ zzfxM = (instruments, patterns, sequence, speed = 6, panning) => {
 
         // If we have a period then we need to play a note using the current
         // instrument.
-        if (period = channel[noteIndex++]) {
-          // Reset the attenuation and sample buffer offset so we can play a new
-          // note.
-          attenuation = sampleOffset = 0;
+        if (period = channel[noteIndex++])
 
           // Create a unique key for this sample (this will coerced to a string)
           //sampleCacheKey = [period,instrument];
@@ -2082,11 +2091,16 @@ zzfxM = (instruments, patterns, sequence, speed = 6, panning) => {
           // If we haven't done so already, build and cache the ZzFX sample for
           // the current period and instrument. Without caching the browser will
           // will hang.
-          sample = sampleCache[sampleCacheKey = [period,instrument]] || (
-            instrumentParams = [...instruments[instrument - 1]],
-            instrumentParams[2] *= 2 ** ((period - 12) / 12),
-            sampleCache[sampleCacheKey] = zzfxG(...instrumentParams));
-        }
+          sample = sampleCache[sampleCacheKey = [period,instrument,
+            
+                // Reset the attenuation and sample buffer offset so we can play a new
+                // note.
+                attenuation = sampleOffset = 0
+        
+            ]] || (
+                instrumentParams = [...instruments[instrument - 1]],
+                instrumentParams[2] = OS13k.Note(period - 12, instrumentParams[2]),
+                sampleCache[sampleCacheKey] = zzfxG(...instrumentParams));
 
         // Update the channel attenuation value. We'll use this to control the
         // volume when rendering the sample slice for this row.
@@ -2100,11 +2114,10 @@ zzfxM = (instruments, patterns, sequence, speed = 6, panning) => {
         // empty we need to prefill it with `0` values for periods of slience to
         // prevent the clicking and popping noises caused by `undefined` values
         // in some browsers.
-        for (bufferPos = bufferOffset; bufferPos < bufferOffset + tickRowSize; bufferPos++) {
-          sampleByte = sample && (sample[sampleOffset++] * (1 - attenuation)) || 0;
-          leftChannelBuffer[bufferPos] = (leftChannelBuffer[bufferPos] || 0) + sampleByte * (1 - pan);
-          rightChannelBuffer[bufferPos] = (rightChannelBuffer[bufferPos] || 0) + sampleByte * pan;
-        }
+        for (bufferPos = bufferOffset; bufferPos < bufferOffset + tickRowSize;
+             rightChannelBuffer[bufferPos] = (rightChannelBuffer[bufferPos++] || 0) + sampleByte * pan)
+          leftChannelBuffer[bufferPos] = (leftChannelBuffer[bufferPos] || 0) + 
+            (sampleByte = sample && (sample[sampleOffset++] * (1 - attenuation)) || 0) * (1 - pan);
       }
     });
 
