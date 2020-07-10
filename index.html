@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?v157></script>
+<script src=programs.js?v158></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -616,6 +616,49 @@ class _OS13k
         popup.speakLanguage = language;
         popup.style.visibility = 'hidden';
     }
+
+/////////////////////////////////////////////////////////////////////////////
+// OS13k Input
+
+    // create and update an input object for keyboard and mouse control
+    Input =window=>
+    {
+        let inputCopy;
+        if (window.document.OS13kInput)
+        {
+            // make copy of last frame input
+            inputCopy = {...window.document.OS13kInput};
+
+            // get direction from wasd or arrow keys
+            inputCopy.x = inputCopy.y = 0;
+            inputCopy.keydown[87] | inputCopy.keydown[38] && ++inputCopy.y; // up
+            inputCopy.keydown[83] | inputCopy.keydown[40] && --inputCopy.y; // down
+            inputCopy.keydown[68] | inputCopy.keydown[39] && ++inputCopy.x; // right
+            inputCopy.keydown[65] | inputCopy.keydown[37] && --inputCopy.x; // left
+        }
+
+        // create or clear input object
+        const input = window.document.OS13kInput =
+        {
+            x: 0, y: 0,
+            keypress: [], mousepress: [],
+            keydown:   window.document.OS13kInput?.keydown || [],
+            mousedown: window.document.OS13kInput?.mousedown || [],
+            mousex:    window.document.OS13kInput?.mousex || 0,
+            mousey:    window.document.OS13kInput?.mousey || 0
+        };
+
+        // input functions
+        window.onkeydown   = e=> e.repeat || (input.keydown[e.keyCode] = input.keypress[e.keyCode] = 1);
+        window.onkeyup     = e=> input.keydown[e.keyCode] = 0;
+        window.onmousedown = e=> (input.mousedown[e.button] = input.mousepress[e.button] = 1, e.button != 1);
+        window.onmouseup   = e=> input.mousedown[e.button] = 0;
+        window.onmousemove = e=> (input.mousex = e.x, input.mousey = e.y);
+        window.onblur      = e=> (input.keydown = [], input.mousedown = []);
+
+        // return last frame input
+        return inputCopy || input;
+    }
     
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Seralization
@@ -737,8 +780,7 @@ Start = ()=>
     buttonClose.onmousedown      = ()=> activeWindow.Close();
 
     // create load program taskbar icon and add folders/programs
-    loadIcon = new OS13kTaskbarIcon( {icon:'💾', name:'Load Program'}, new OS13kProgramMenu(programStubs) );
-    RebuildMenu();
+    RebuildMenu(loadIcon = new OS13kTaskbarIcon({icon:'💾', name:'Load Program'}, new OS13kProgramMenu(programStubs)));
 
     // welcome message
     OS13k.Trophy('', '👋', 'Welcome to OS13k!');
@@ -955,7 +997,7 @@ class OS13kProgramMenu extends HTMLElement
         for(const stub of this.programStubs)
         {
             // create program and menu
-            const program = stub[10] = stub[10] || new OS13kProgram(...stub);  
+            const program = stub[-1] = stub[-1] || new OS13kProgram(...stub);  
             program.programMenu = program.folder ? new OS13kProgramMenu(program.folder, this) : this;
         }
 
@@ -964,7 +1006,7 @@ class OS13kProgramMenu extends HTMLElement
         programsMenu.appendChild(this);
   
         // add programs to menu
-        this.programStubs.map(stub=> this.appendChild(stub[10]));
+        this.programStubs.map(stub=> this.appendChild(stub[-1]));
         
         // set position
         this.style.top  = y;
@@ -975,7 +1017,7 @@ class OS13kProgramMenu extends HTMLElement
         this.programStubs.map(stub=>
         {
             // rebuild child program menus
-            stub[10].programMenu != this && stub[10].programMenu.Rebuild(y);
+            stub[-1].programMenu != this && stub[-1].programMenu.Rebuild(y);
             
             // add program height as we move down list
             y += programHeight;
@@ -1001,7 +1043,7 @@ class OS13kProgramMenu extends HTMLElement
             [,copyProgram.icon, copyProgram.width, copyProgram.height, defaultFlags|code, 
                 copyProgram.name + '+', , ,++nextUserProgramId, copyProgram.userFolder] :
             [,'✋',,,defaultFlags|code,,,,++nextUserProgramId, userFolder];
-        const program = stub[10] = new OS13kProgram(...stub);
+        const program = stub[-1] = new OS13kProgram(...stub);
         
         // add to menu program infos
         this.programStubs.push(stub);
@@ -1583,7 +1625,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             this.iframe.onload = ()=> loadFrame();
-            this.iframe.src = program.src + '?v72';
+            this.iframe.src = program.src + '?v73';
         }
     }
         
@@ -2047,10 +2089,9 @@ zzfxM = (instruments, patterns, sequence, speed = 6, panning) => {
   let bufferStart = 0
   let bufferPos;
   let bufferOffset;
-  let sample;
+  let sampleBuffer;
   let sampleCache = {};
   let sampleCacheKey;
-  let sampleByte;
   let sampleOffset;
   let noteIndex;
   let pan;
@@ -2094,7 +2135,7 @@ zzfxM = (instruments, patterns, sequence, speed = 6, panning) => {
           // If we haven't done so already, build and cache the ZzFX sample for
           // the current period and instrument. Without caching the browser will
           // will hang.
-          sample = sampleCache[sampleCacheKey = [period,instrument,
+          sampleBuffer = sampleCache[sampleCacheKey = [period,instrument,
             
                 // Reset the attenuation and sample buffer offset so we can play a new
                 // note.
@@ -2117,10 +2158,12 @@ zzfxM = (instruments, patterns, sequence, speed = 6, panning) => {
         // empty we need to prefill it with `0` values for periods of slience to
         // prevent the clicking and popping noises caused by `undefined` values
         // in some browsers.
-        for (bufferPos = bufferOffset; bufferPos < bufferOffset + tickRowSize;
-             rightChannelBuffer[bufferPos] = (rightChannelBuffer[bufferPos++] || 0) + sampleByte * pan)
-          leftChannelBuffer[bufferPos] = (leftChannelBuffer[bufferPos] || 0) + 
-            (sampleByte = sample && (sample[sampleOffset++] * (1 - attenuation)) || 0) * (1 - pan);
+        for (bufferPos = bufferOffset; bufferPos < bufferOffset + tickRowSize;)
+        {
+            const sample = sampleBuffer && (sampleBuffer[sampleOffset++] * (1 - attenuation)) || 0;
+            leftChannelBuffer[bufferPos] = (leftChannelBuffer[bufferPos] || 0) + sample * (1 - pan);
+            rightChannelBuffer[bufferPos] = (rightChannelBuffer[bufferPos++] || 0) + sample * pan;
+        }
       }
     });
 

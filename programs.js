@@ -29,9 +29,10 @@ programStubs =
     ['system/settings.html','🎚️',470,190,sticky],
     ['system/trophyCase.html','🏆',,,full|resize|sticky],
     ['system/clock.dweet.js','🕰️',198,198,sticky|code|awake],
-    ['system/systemTest.html',,600,370,defaultFlags|code],
     [,'📁',,,,'Test',,
     [
+        ['system/systemTest.html',,600,370,defaultFlags|code],
+        ['system/inputTest.dweet.js','⌨️🖱️'],
         ['index.html','✌️😄',,,,'Meta OS13k'],
     ]],
 ]],
