@@ -762,7 +762,7 @@ RebuildMenu = ()=>
       loadIcon.windowOrMenu.removeChild(loadIcon.windowOrMenu.lastChild), 
       programStubs.pop());
 
-    CreateUserFolder(programStubs, [,'😀',,,,'User Programs'], undefined, oldStubs);
+    CreateUserFolder(programStubs, [,'😀',,,,'User Programs'], '', oldStubs);
     loadIcon.windowOrMenu.Rebuild();
 },
 
@@ -838,8 +838,7 @@ Update = (time)=>
     if (!finishedStartup || !hadInput) return;
     
     // get analyser data
-    musicAnalyser.fftSize = 512;
-    const frequencyData = new Uint8Array(512),
+    const frequencyData = new Uint8Array(musicAnalyser.fftSize = 512),
         context = analyserCanvas.getContext('2d');
     musicAnalyser.getByteFrequencyData(frequencyData);
     analyserCanvas.width = analyserCanvas.height = 32
