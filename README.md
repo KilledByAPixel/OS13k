@@ -109,6 +109,16 @@ Add an icon config to programs.js to register your program, and send me pull req
 - OS13k.Hash(string) - Returns numeric hash code for a struing
 - OS13k.Popup(html, speak) - Shows a popup with html body and optional speech and sound
 
+## Input System
+- OS13k provides an easy to use input system to help limit code duplication
+- Call OS13k.Input(window) to create an input object
+- the object format is {x, y, keypress, keydown, mousex, mousey, mousepress, mousedown}
+- x and y is a -1 to 1 direction from WASD or direction buttons
+- mousex and mousey is the mouse position
+- keypress and mousepress are arrays, an element is 1 if that key is pressed
+- keydown and mousedown are arrays, an element is 1 if that key is down
+- *See System/Test/InputTest for an example*
+
 ### Math Library
 - Some basic math functions are provided to help reduce code duplication
 - OS13k.Random(max=1, min=0) - Get a seeded random value clamped between min and max
