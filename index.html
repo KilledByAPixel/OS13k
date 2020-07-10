@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?v154></script>
+<script src=programs.js?v156></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -688,6 +688,7 @@ const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26,
     soundCode       = 16,
     soundReload     = 85,
     soundProgram    = 90,
+    soundSave = 6,
 
     // init web audio
     audioContext = new AudioContext, 
@@ -918,7 +919,7 @@ CheckForTrophy = (key, keyParts = key ? key.split(',') : [])=>
 StopSpeech = ()=> speechSynthesis && speechSynthesis.cancel(),
 
 // play system sound if enabled
-Sound = (seed, length)=> finishedStartup & hadInput & settings.o && OS13k.PlaySeed(seed, length);
+SystemSound = (seed, length)=> finishedStartup & hadInput & settings.o && OS13k.PlaySeed(seed, length);
 
 ///////////////////////////////////////////////////////////////////////////////
 // Global Variables
@@ -1115,7 +1116,7 @@ class OS13kProgram extends HTMLElement
         
         // set active
         this.className = 'program programActive';
-        activeProgram !=this && Sound(soundProgram, 0);
+        activeProgram !=this && SystemSound(soundProgram, 0);
         activeProgram = this;
     }
     
@@ -1160,7 +1161,7 @@ class OS13kProgram extends HTMLElement
             programInfos = programInfos.filter(info=> info.code == undefined || this.userFolder && info.userFolder != this.userFolder);
             
             // rebuild menu and play sound
-            RebuildMenu(OS13k.Save(Sound(soundClose, 4)));
+            RebuildMenu(OS13k.Save(SystemSound(soundClose, 4)));
         }
         if (this.flags & closeAll)
         {
@@ -1337,7 +1338,8 @@ class OS13kWindow extends HTMLElement
         
         // save button
         this.shadowRoot.getElementById('G').onmousedown = ()=>
-            link.click(link.href = URL.createObjectURL(new Blob([this.codeText.value], {type:'text/plain'})),
+            link.click(SystemSound(soundSave),
+            link.href = URL.createObjectURL(new Blob([this.codeText.value], {type:'text/plain'})),
             link.download = 'OS13k_File_' + program.name);
 
         // screenshot button
@@ -1348,6 +1350,7 @@ class OS13kWindow extends HTMLElement
             try {
                 link.click(
                     // copy to a white canvas before saving
+                    SystemSound(soundSave),
                     canvasContext.fillRect(0, 0, 
                         canvas.width  = this.iframeContent.c.width, 
                         canvas.height = this.iframeContent.c.height,
@@ -1581,7 +1584,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             this.iframe.onload = ()=> loadFrame();
-            this.iframe.src = program.src + '?v69';
+            this.iframe.src = program.src + '?v70';
         }
     }
         
@@ -1606,7 +1609,7 @@ class OS13kWindow extends HTMLElement
         {
             // set grab window and play sound
             grabWindow = this;
-            Sound(soundGrabStart)
+            SystemSound(soundGrabStart)
             
             // use grabbing cursor
             document.body.style.cursor = 'grabbing';
@@ -1641,7 +1644,7 @@ class OS13kWindow extends HTMLElement
     
         // update program info and play sound
         this.program.Save();
-        sound && Sound(sound);
+        sound && SystemSound(sound);
     }
     
     SetActive(active=1, clamp)
@@ -1678,7 +1681,7 @@ class OS13kWindow extends HTMLElement
             // deactivate old window and set this one active and play sound
             activeWindow && activeWindow.SetActive(0);
             activeWindow = this;
-            Sound(this.activeCount++ ? soundActive : soundOpen);
+            SystemSound(this.activeCount++ ? soundActive : soundOpen);
 
             // move z to top
             this.style.zIndex = ++topZ;
@@ -1703,7 +1706,7 @@ class OS13kWindow extends HTMLElement
 
         // reload code if it wasnt safe yet and set it is safe and play sound
         allCodeIsSafe || this.Reload(allCodeIsSafe = 1);
-        Sound(soundFullScreen);
+        SystemSound(soundFullScreen);
         
         // set full screen
         this.iframeContent.focus();
@@ -1719,7 +1722,7 @@ class OS13kWindow extends HTMLElement
     {
         // toggle showing code and play sound
         this.codeDisplay.style.display = (this.showCode = !this.showCode) ? 'inline' : '';
-        silent || Sound(this.program.help ? soundHelp : soundCode);
+        silent || SystemSound(this.program.help ? soundHelp : soundCode);
         
         // set active and clamp
         activeWindow.SetActive(1, 1);
@@ -1732,7 +1735,7 @@ class OS13kWindow extends HTMLElement
         // update program info and play sound
         this.program.userProgram && (this.program.info.code = this.codeText.value);
         this.program.Save();
-        silent || Sound(soundReload);
+        silent || SystemSound(soundReload);
         
         // set active and clamp
         activeWindow.SetActive(1, clamp);
@@ -1750,7 +1753,7 @@ class OS13kWindow extends HTMLElement
     {
         // remove start program if closed and play sound
         this.program.id == startProgramId && (startProgramId = '');
-        Sound(soundClose);
+        SystemSound(soundClose);
             
         // save info and set closed
         this.program.Save(0);
@@ -1799,7 +1802,7 @@ class OS13kTaskbarIcon extends HTMLElement
     
         // load icon cant be active taskbar item
         if (this == loadIcon)
-            return Sound(soundMenu, .5);
+            return SystemSound(soundMenu, .5);
         
         // set active style
         this.className = 'taskbarIcon ' + (active ? 'taskbarIconActive' : '');
@@ -1886,7 +1889,7 @@ onmousedown = e=>
             (e.target.SetActive ? e.target : loadIcon).SetActive();
 
             // get which menu to open
-            const targetMenu = e.target.menu ? (Sound(soundMenu, .5), menu) : programsMenu;
+            const targetMenu = e.target.menu ? (SystemSound(soundMenu, .5), menu) : programsMenu;
 
             // show context menu
             targetMenu.style.left = e.x;
@@ -1918,7 +1921,7 @@ onmousemove = e=>
 onmouseup = ()=>
     // set grab window active, no clamp, and set cursor to default, unset grab
     grabWindow && (grabWindow.program.Save(),
-    Sound(soundGrabEnd),
+    SystemSound(soundGrabEnd),
     grabWindow.SetActive(1, 0),
         document.body.style.cursor = desktop.style.pointerEvents = grabWindow = '');
 

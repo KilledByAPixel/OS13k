@@ -62,7 +62,7 @@ programStubs =
     ['music/visualizer.dweet.js','👁️',,,awake|full|resize|code],
     ['music/bach.dweet.js','🎼'],
     ['music/minBytes.html','<span style=color:#f00>𝓜',450,450],
-    ['music/smallSeeds.html','🦗',520,340,full,,'This is a special tool for devs.\nUse smaller seeds to save space.\nYou can also tab through the list.'],
+    ['music/smallSeeds.html','🦗',520,340,full|reload,,'This is a special tool for devs.\nUse smaller seeds to save space.\nYou can also tab through the list.'],
 ]],
 [,'🤖',,,,'Toys',,
 [
