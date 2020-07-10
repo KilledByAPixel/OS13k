@@ -1588,9 +1588,10 @@ class OS13kWindow extends HTMLElement
         }
     }
         
-    SetCode(code)
+    SetCode(code, setText)
     {
         // set code when changed
+        setText && (this.codeText.value = code);
         this.program.info.code = code;
         this.codeSize.innerHTML = code.length;
         this.program.Save();
@@ -1943,7 +1944,7 @@ ondrop = e=>
     {
         // read file, set code, and set active
         const reader = new FileReader();
-        reader.onload = f=> e.target.SetActive(1, 0, e.target.SetCode(f.target.result));
+        reader.onload = f=> e.target.SetActive(1, 0, e.target.SetCode(f.target.result, 1));
         reader.readAsText(e.dataTransfer.files[0], 'utf-8'); 
     }
     return false;
