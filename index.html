@@ -473,7 +473,7 @@ class _OS13k
     }
     
     GetAnalyser = ()=> analyserCanvas;
-    GetAnalyserData = e=> analyserData[e];
+    GetAnalyserData = e=> analyserData[e] ? analyserData[e] : 0;
     
     // get frequency of a note on a musical scale
     Note = (semitoneOffset=0, rootNoteFrequency=440, scaleNotes=12)=>
