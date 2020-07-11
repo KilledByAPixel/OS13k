@@ -184,7 +184,7 @@ span               { white-space:nowrap; }
     background:#111;
     color:#fff;
     font-size:16;
-    white-space:normal;
+    overflow:auto;
 }
 #codeText, #errorText, #codeOptions
 {
@@ -260,11 +260,11 @@ const OS13kVersion = 68;
 // @js_externs OS13k.PlayMusic, OS13k.GetAnalyser, OS13k.GetAnalyserData
 // @js_externs OS13k.Speak, OS13k.StopSpeech, OS13k.PlaySeed
 // @js_externs OS13k.SeedSamples, OS13k.SeedParameters
-// @js_externs OS13k.Settings, OS13k.SaveSettings
-// @js_externs OS13k.CreateShader, OS13k.RenderShader, source.gain
+// @js_externs OS13k.Settings, OS13k.SaveSettings, OS13k.Input
+// @js_externs OS13k.CreateShader, OS13k.RenderShader
 // @js_externs OS13k.KeyDirection, OS13k.StripHTML, OS13k.Popup
-// @js_externs localStorage.OS13k, OS13k, zzfxG
-// @js_externs iframeContent.OS13k, iframeContent.OS13kWindow
+// @js_externs localStorage.OS13k, OS13k, zzfxG, source.gain
+// @js_externs iframeContent, iframeContent.OS13k, iframeContent.OS13kWindow
 // @js_externs iframeContent.zzfx, iframeContent.zzfxG
 // @js_externs settings.v, settings.m, settings.s, settings.p, settings.o
 // @js_externs settings.c, settings.d, settings.t, settings.f
@@ -1346,17 +1346,17 @@ class OS13kWindow extends HTMLElement
 
         // build code options html
         this.codeOptions.innerHTML = 
-            `<span><button id=S>📷</button></span>` +
-            `<span>Icon <input style=width:50 id=I></span> ` +
-            `<span>Name <input id=N></span> ` +
-            `<span>Folder <input id=F></span> ` +
-            `<span>Size <input style=width:50 type=number id=W>x<input style=width:50 type=number id=H></span>` + 
-            `<span>Sleep <input type=checkbox id=P ${program.info.allowSleep != false ? 'checked' : ''}></span>` +
-            `<span>Live Edit <input type=checkbox id=L ${program.info.liveEdit != false ? 'checked' : ''}></span>` +
-            `<span><button id=G>Save</button></span>` +
-            `<span><button id=C>Copy</button></span>` +
-            `<span><button id=D>Delete</button></span>` +
-            `<span><span id=Z>${program.info.code && program.info.code.length}</span> Bytes` +
+            `&nbsp;<button id=S>📷</button>` +
+            `Icon <input style=width:50 id=I> ` +
+            `Name <input id=N> ` +
+            `Folder <input id=F><br>` +
+            `&nbsp;Size <input style=width:50 type=number id=W>x<input style=width:50 type=number id=H>` + 
+            `Sleep <input type=checkbox id=P ${program.info.allowSleep != false ? 'checked' : ''}>` +
+            `Live Edit <input type=checkbox id=L ${program.info.liveEdit != false ? 'checked' : ''}>` +
+            `<button id=G>Save</button>` +
+            `<button id=C>Copy</button>` +
+            `<button id=D>Delete</button>` +
+            `<span id=Z>${program.info.code && program.info.code.length}</span> Bytes` +
             `<a id=A><canvas id=V style=display:none>`;
 
         // get links to code options and create error text
@@ -1521,7 +1521,7 @@ class OS13kWindow extends HTMLElement
             codeIsSafe || (iframeDocument.body.style.background = '#111');
 
             // check for extensions
-            if (hasExtension && codeIsSafe)
+            if (hasExtension && codeIsSafe) try 
             {
                 // create canvas
                 this.WriteToFrame(
@@ -1545,7 +1545,7 @@ class OS13kWindow extends HTMLElement
                         (c == ')' ? '' : ',') + c : a ) : iframeText;
 
                 // show error messages from user code init
-                onerror = (message, source, line, col, e)=> this.SetErrorText(e, e.stack && [col, line]);
+                onerror = (message, source, line, col, e)=> {this.SetErrorText(e, e.stack && [col, line]); throw e};
 
                 // create dweet or shader program
                 iframeContent.eval(
@@ -1574,10 +1574,10 @@ class OS13kWindow extends HTMLElement
                                 `t<1e3|parent.document.activeElement==OS13kWindow&&`) +
                                 `OS13kU(t)))` +
                         `(frame=OS13kF=0)`);
-
-                // set error messages back to normal
-                onerror =e=> {throw e;}
             }
+            catch(e) { if (!program.userProgram) throw e; }
+
+            onerror =e=> {throw e;}
             
             // mouse down on iframe to load unsafe code, and call normal mousedown
             codeIsSafe || (iframeContent.onmousedown = e=> (this.Reload(allCodeIsSafe = 1), onmousedown(e)));
@@ -1631,7 +1631,10 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             this.iframe.onload = ()=> loadFrame();
-            this.iframe.src = program.src + '?v75';
+            this.iframe.src = program.src + '?v76';
+            
+            // load from template (for JS13k)
+            //loadFrame(this.WriteToFrame(document.getElementsByName(program.name)[0].innerHTML));
         }
     }
         
