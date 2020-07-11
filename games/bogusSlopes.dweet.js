@@ -1,6 +1,6 @@
-t||(T=U=V=F=0,W=[],Y=540,X=-700)
+i=OS13k.Input(window);
+(!t||i.keypress[82])&&(T=U=V=F=0,W=[],Y=540,X=-700)
 if(X>0)return
-i=OS13k.Input(window)
 x.fillStyle='#ddd9'
 x.fillRect(0,0,2e3,2e3)
 x.font='9em"'
