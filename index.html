@@ -227,7 +227,7 @@ span               { white-space:nowrap; }
 const OS13kVersion = 68;
 {
     // version check, clear local storage if older
-    if (localStorage.OS13kVersion && localStorage.OS13kVersion != OS13kVersion)
+    if (localStorage.OS13k && localStorage.OS13kVersion != OS13kVersion)
     {
         alert('OS13k version out of date! System reset in 3, 2, 1...');
         localStorage.clear();
@@ -1545,8 +1545,7 @@ class OS13kWindow extends HTMLElement
                         (c == ')' ? '' : ',') + c : a ) : iframeText;
 
                 // show error messages from user code init
-                onerror = (message, source, line, col, e)=> 
-                    {this.SetErrorText(e, e.stack && [col, line]); throw e};
+                onerror = (message, source, line, col, e)=> {this.SetErrorText(e, e.stack && [col, line]); throw e};
 
                 // create dweet or shader program
                 iframeContent.eval(
