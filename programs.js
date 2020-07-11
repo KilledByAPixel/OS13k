@@ -46,6 +46,7 @@ programStubs =
 ]],
 [,'🎮',,,,'Games',,
 [
+    ['games/bogusSlopes.dweet.js','🏂🏻'],
     ['games/lavaRush.html','🌋',640,400],
     ['games/swatch.html','🌈',320,340,reload],
     ['games/sn1ke.html','👀',400,280],
