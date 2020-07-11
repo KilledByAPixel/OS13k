@@ -1,2 +1,1 @@
-x.fillRect(0,0,c.width|=0,2e3)
-for(i=0;++i<32;x.fill())x.arc(960,540,1e4*OS13k.GetAnalyserData(x.beginPath(x.fillStyle=`hsl(${i*7-120},99%,50%,.1)`))[i]/(i+9),0,7)
+for(x.fillRect(0,0,2e3,2e3),x.fillStyle="#0003",t?x.lineWidth=9:h=[],x.strokeStyle="#fff",i=32;i--;x.beginPath(x.strokeStyle=`hsl(${-99-9*i} 99%${9+m/2}%)`,x.stroke()))for(m=199*OS13k.GetAnalyserData(i),j=5;j--;)x.arc(960,540,256+(j+1&2?1:-1)*m,a=2*((2&j)/2-8.5+i)*Math.PI/32,a);x.drawImage(c,-40,-20,2e3,1120)

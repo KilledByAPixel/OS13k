@@ -1,27 +1,6 @@
-<table><tr></tr><td>
-Text area with local storage
-<br>
-<textarea rows=5 cols=30 id=a style=resize:none oninput=localStorage.OS13kTest=a.value>
-Hello OS13k!
-</textarea>
-<br><button onClick=OS13k.Speak(a.value)>Test Speech</button>
+<table><tr></tr><td>Text area with local storage<br><textarea rows=5 cols=30 id=a style=resize:none oninput=localStorage.OS13kTest=a.value>Hello OS13k!</textarea><br><button onClick=OS13k.Speak(a.value)>Test Speech</button>
 <button onClick="s&&s.stop();s=parent.OS13k.PlaySeed(r=++r%1e4);seed.innerHTML=r">
-Test ZzFX</button> <span id=seed></span>
-<br>
-<br>Test WASD input direction
-<br><input id=move readonly>
-</td><td>
-Test Shader
-<br><canvas id=c style='border:1px solid'>
-</table>
-<br>
-Trophies
-<br><input id=game value=Game> Game
-<br><input id=trophy value=Trophy> Trophy
-<br><input id=icon> Icon
-<br><input id=message value=Message> Message
-<br>
-<button onClick=OS13k.Trophy(game.value,icon.value,trophy.value,message.value)>
+Test ZzFX</button> <span id=seed></span></td><td>Test Shader<br><canvas id=c style='border:1px solid'></table><br>Trophies<br><input id=game value=Game> Game<br><input id=trophy value=Trophy> Trophy<br><input id=icon> Icon<br><input id=message value=Message> Message<br><button onClick=OS13k.Trophy(game.value,icon.value,trophy.value,message.value)>
 Add Trophy</button>
 <button onClick='OS13k.Save(OS13k.ClearTrophies())'>Reset Popups</button>
-<button onClick=SystemReset()>System Reset</button><script>"use strict";const e=parent.OS13k;let o;Date.now(),a.value=localStorage.OS13kTest||a.value,onkeydown=o=>{const t=e.KeyDirection(o.keyCode);move.value=t.x+", "+t.y};const t=a=>{requestAnimationFrame(t),e.RenderShader(c,o,a/1e3)};o=e.CreateShader(c,"void mainImage(out vec4 c,vec2 p){for(int i;++i<35;)c.xy=mat2(-c.g,c.r,c)*c.gr+((0.5-p/iResolution.y)*(1.1+sin(iTime))-.6);}"),t()</script>
+<button onClick=SystemReset()>System Reset</button><script>const e=parent.OS13k;let t;Date.now();a.value=localStorage.OS13kTest||a.value;const i=a=>{requestAnimationFrame(i),e.RenderShader(c,t,a/1e3)};t=e.CreateShader(c,"void mainImage(out vec4 c,vec2 p){for(int i;++i<35;)c.xy=mat2(-c.g,c.r,c)*c.gr+((0.5-p/iResolution.y)*(1.1+sin(iTime))-.6);}"),i()</script>

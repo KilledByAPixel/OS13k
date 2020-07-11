@@ -7,7 +7,5 @@ Popups <input type=checkbox id=P oninput=s()>
 <br><br>Background
 <input id=C type=color oninput=s()>&nbsp;&nbsp;
 <input id=D type=color oninput=s()>&nbsp;&nbsp;
-<input id=T oninput=s()>
-<br><br>Filters
-<span id=F>
-<script>f=[["Default",""],["Gray","grayscale("],["Game Boy","sepia()hue-rotate(40deg)contrast(.8)brightness(.8"],["Ocean","invert()sepia()invert("],["Sepia","sepia("],["Fruity","saturate(9"]],O=parent.OS13k,i=O.Settings(),V.value=100*i.v,M.value=100*i.m,S.checked=i.s,P.checked=i.p,Y.checked=i.o,C.value=i.c,D.value=i.d,T.value=i.t,t=f.findIndex(e=>e[1]==i.f),t=t<0?0:t,s=e=>{F.innerHTML="",f.map((e,a)=>{F.innerHTML+=`<button style='border:5px solid #${a==t?"f00":"111"}' onmousedown="s(O.Speak('${e[0]}'),t=${a})">`+e[0]}),O.SaveSettings(V.value/100,M.value/100,S.checked,P.checked,Y.checked,D.value,C.value,T.value,f[t][1])},s()</script>
+<input id=T oninput=s()><br><br>Filters
+<span id=F><script>s=e=>parent.OS13k.SaveSettings(V.value/100,M.value/100,S.checked,P.checked,Y.checked,D.value,C.value,T.value,t,F.innerHTML="",[["Default",""],["Gray","grayscale("],["Game Boy","sepia()hue-rotate(40deg)contrast(.8)brightness(.8"],["Ocean","invert()sepia()invert("],["Sepia","sepia("],["Fruity","saturate(9"]].map(e=>F.innerHTML+=`<button style='border:5px solid${e[1]==t?"#f00":"#111"}'onmousedown=s(t='${e[1]}')>`+e[0])),s(i=parent.OS13k.Settings(),V.value=100*i.v,M.value=100*i.m,S.checked=i.s,P.checked=i.p,Y.checked=i.o,C.value=i.c,D.value=i.d,T.value=i.t,t=i.f)</script>
