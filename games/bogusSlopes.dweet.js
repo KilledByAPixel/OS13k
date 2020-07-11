@@ -10,7 +10,7 @@ x.scale(-1,1)
 F=Math.min(F+.2,19+T/1e4)
 x.fillStyle='#fff'
 W.push((t*60|0)%Math.max(9,19-T/1e4|0)?{t:'●',x:X,y:Y}:{t:[...'🌲🌳⭐'][Math.random()*2+(Math.random()<.1)|0],x:-2200,y:79+Math.random()*900})
-W=W.filter(w=>(x.fillText(w.t, w.x+=F, w.y),w.x<99&&(w.t=='●'||(Math.hypot(X-w.x,Y-w.y)>69?1:(OS13k.PlaySeed(w.t=='⭐'?169:121),U=w.t=='⭐'?-9:F=9,0)))))
+W=W.filter(w=>(x.fillText(w.t,w.x+=F*(w.t=='⭐'?.7:1),w.y),w.x<99&&(w.t=='●'||(Math.hypot(X-w.x,Y-w.y)>69?1:(OS13k.PlaySeed(w.t=='⭐'?169:121),U=w.t=='⭐'?-9:F=9,0)))))
 x.fillText('🏂🏻',X=Math.max(X+(U*=.98),-1800),Y=OS13k.Clamp(Y+(V=V*.95-i.y),99,1e3))
 x.scale(-1,1);
 x.textAlign='left'
