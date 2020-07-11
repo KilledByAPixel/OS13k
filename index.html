@@ -1923,7 +1923,10 @@ onmousedown = e=>
     if (grabWindow) return onmouseup(e);
     
     // get orignal target
-    const originalTarget = e.originalTarget || e.path[0];
+    let originalTarget = e.originalTarget || e.path[0];
+
+    // fix firefix issue, return if cant get orignal target
+    try {originalTarget.id;} catch { return true; }
     
     // check if not left mouse button
     if (e.button)
@@ -1989,7 +1992,7 @@ ondragover = ()=> false;
 // allow drag and drop code into editor
 ondrop = e=>
 {
-    if (e.target.program.userProgram && (e.originalTarget || e.path[0]).id == 'codeText')
+    if (e.dataTransfer.length && e.target.program.userProgram && (e.originalTarget || e.path[0]).id == 'codeText')
     {
         // read file, set code, and set active
         const reader = new FileReader();
