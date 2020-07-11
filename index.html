@@ -1521,7 +1521,7 @@ class OS13kWindow extends HTMLElement
             codeIsSafe || (iframeDocument.body.style.background = '#111');
 
             // check for extensions
-            if (hasExtension && codeIsSafe) try 
+            if (hasExtension && codeIsSafe) 
             {
                 // create canvas
                 this.WriteToFrame(
@@ -1545,7 +1545,8 @@ class OS13kWindow extends HTMLElement
                         (c == ')' ? '' : ',') + c : a ) : iframeText;
 
                 // show error messages from user code init
-                onerror = (message, source, line, col, e)=> {this.SetErrorText(e, e.stack && [col, line]); throw e};
+                onerror = (message, source, line, col, e)=> 
+                    {this.SetErrorText(e, e.stack && [col, line]); throw e};
 
                 // create dweet or shader program
                 iframeContent.eval(
@@ -1575,9 +1576,6 @@ class OS13kWindow extends HTMLElement
                                 `OS13kU(t)))` +
                         `(frame=OS13kF=0)`);
             }
-            catch(e) { if (!program.userProgram) throw e; }
-
-            onerror =e=> {throw e;}
             
             // mouse down on iframe to load unsafe code, and call normal mousedown
             codeIsSafe || (iframeContent.onmousedown = e=> (this.Reload(allCodeIsSafe = 1), onmousedown(e)));
