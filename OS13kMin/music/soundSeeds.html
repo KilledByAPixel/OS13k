@@ -1,6 +1,0 @@
-<style>body{background:#111;color:#fff;user-select:none;text-align:center}</style>
-Seed &nbsp;<input id=S value=0 onmousedown="p(S.value.replace(/'/g,''))"><br><br>
-<button onmousedown=p(S.value=Math.random()*1e6|0,E.checked&&s())>Random</button>
-<button onmousedown=s()>Save</button>
-<button onmousedown='confirm`Clear All?`&&b(a=[])'>Clear</button> &nbsp;
-Auto Save <input id=E type=checkbox><hr><div id=A><script>x=0,p=e=>{x&&x.stop(),x=OS13k.PlaySeed(...[e,,,,,1])},s=e=>b(e=(S.value+"").replace(/'/g,""),a.push(e),p(e)),b=e=>{localStorage.OS13kS=JSON.stringify(a),A.innerHTML="",a.map((e,a)=>{A.prepend(d=document.createElement("div")),d.innerHTML=`<button onmousedown=b(p(a[${a}]),a.splice(${a},1))>❌</button> <input onmousedown=p(a[${a}]) value='${e}' readonly>`})},b(a=localStorage.OS13kS?JSON.parse(localStorage.OS13kS):[])</script>
