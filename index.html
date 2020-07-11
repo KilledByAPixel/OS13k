@@ -268,6 +268,14 @@ const OS13kVersion = 68;
 // @js_externs iframeContent.zzfx, iframeContent.zzfxG
 // @js_externs settings.v, settings.m, settings.s, settings.p, settings.o
 // @js_externs settings.c, settings.d, settings.t, settings.f
+// @js_externs window.document.OS13kInput.x
+// @js_externs window.document.OS13kInput.y
+// @js_externs window.document.OS13kInput.keypress
+// @js_externs window.document.OS13kInput.mousepress
+// @js_externs window.document.OS13kInput.keydown
+// @js_externs window.document.OS13kInput.mousedown
+// @js_externs window.document.OS13kInput.mousex
+// @js_externs window.document.OS13kInput.mousey
 // @output_file_name OS13k.min.js
 // ==/ClosureCompiler==
 
@@ -300,26 +308,26 @@ class _OS13k
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Math
 
-    Clamp   = (a, min=0, max=1)=>  Math.min(Math.max(a, min), max);
-    Percent = (v, a, b)=>          b-a ? this.Clamp((v-a)/(b-a), 0, 1) : 0;
-    Lerp    = (p, a, b)=>          a + this.Clamp(p, 0, 1) * (b-a);
+    Clamp   (a, min=0, max=1) { return Math.min(Math.max(a, min), max); }
+    Percent (v, a, b)         { return b-a ? this.Clamp((v-a)/(b-a), 0, 1) : 0; }
+    Lerp    (p, a, b)         { return  a + this.Clamp(p, 0, 1) * (b-a); }
 
     // convert string to hash value like Java's hashCode()
-    Hash    = (s)=>                [...s].reduce((a,c)=> c.charCodeAt()+a*31|0, 0);
+    Hash    (s)               { return [...s].reduce((a,c)=> c.charCodeAt()+a*31|0, 0); }
     
     // seeded random numbers - Mersenne Twister
-    Random  = (max=1, min=0)=>
-    (
+    Random(max=1, min=0)
+    {
         // seeded random numbers - Mersenne Twister
-        this.randomSeed ^= this.randomSeed << 13 || 1,
-        this.randomSeed ^= this.randomSeed >> 17,
-        this.Percent(Math.abs(this.randomSeed ^= this.randomSeed << 5) % 1e9 / 1e9, min, max)
-    )
+        this.randomSeed ^= this.randomSeed << 13 || 1;
+        this.randomSeed ^= this.randomSeed >> 17;
+        return this.Percent(Math.abs(this.randomSeed ^= this.randomSeed << 5) % 1e9 / 1e9, min, max);
+    }
 
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Trophies
     
-    // award player with trophy, returns 0 if already owned
+    // award player with trophy
     Trophy(game='', icon='', name='', message='')
     {
         // replace commas and apostrophes
@@ -358,17 +366,17 @@ class _OS13k
             'ja');                             // language
         
         // save and reload trophy window
-        this.Save(trophyTrayIcon.program.window?.Reload());
+        this.Save(trophyTrayIcon.program.window && trophyTrayIcon.program.window.Reload());
     }
     
     // get message, 0 if no trophy
-    GetTrophy = (game, name)=> trophies.find(e=> e[0]==game & e[1]==name);
+    GetTrophy(game, name) { return rophies.find(e=> e[0]==game & e[1]==name); }
     
     // get trophy list
-    Trophies = ()=> trophies;
+    Trophies() { return trophies; }
     
     // get trophy list
-    ClearTrophies = ()=> trophies = [];
+    ClearTrophies() { trophies = []; }
     
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Audio
@@ -441,8 +449,8 @@ class _OS13k
     }
     
     // play audio sample data
-    PlaySamples = (samples, isMusic, sampleRate=defaultSampleRate)=>
-        this.PlaySamplesArray([samples], isMusic, sampleRate);
+    PlaySamples(samples, isMusic, sampleRate=defaultSampleRate)
+    { return this.PlaySamplesArray([samples], isMusic, sampleRate); }
     
     // play array of audio sample data, connect analyser to gain if isMusic > 1
     PlaySamplesArray(samplesArray, isMusic, sampleRate=defaultSampleRate)
@@ -472,12 +480,12 @@ class _OS13k
         catch(e) { console.log(e); }
     }
     
-    GetAnalyser = ()=> analyserCanvas;
-    GetAnalyserData = e=> analyserData[e] ? analyserData[e] : 0;
+    GetAnalyser() { return analyserCanvas; }
+    GetAnalyserData(e) { return analyserData[e] ? analyserData[e] : 0; }
     
     // get frequency of a note on a musical scale
-    Note = (semitoneOffset=0, rootNoteFrequency=440, scaleNotes=12)=>
-        rootNoteFrequency * 2**(semitoneOffset/scaleNotes);
+    Note(semitoneOffset=0, rootNoteFrequency=440, scaleNotes=12)
+    { return rootNoteFrequency * 2**(semitoneOffset/scaleNotes); }
 
     // speak text
     Speak(text, rate=1, pitch=1, volume=1, language='en', stopSpeech)
@@ -603,8 +611,8 @@ class _OS13k
 // OS13k Text
     
     // remove html tags from a string and clamp length
-    StripHTML = (string, maxLength)=>
-        (string+'').substring(0, maxLength || string.length).replace(/<.*>/g, '');
+    StripHTML(string, maxLength)
+    { return (string+'').substring(0, maxLength || string.length).replace(/<.*>/g, ''); }
     
     Popup(html, speak, language)
     {
@@ -621,7 +629,7 @@ class _OS13k
 // OS13k Input
 
     // create and update an input object for keyboard and mouse control
-    Input =window=>
+    Input(window)
     {
         let inputCopy;
         if (window.document.OS13kInput)
@@ -642,10 +650,10 @@ class _OS13k
         {
             x: 0, y: 0,
             keypress: [], mousepress: [],
-            keydown:   window.document.OS13kInput?.keydown || [],
-            mousedown: window.document.OS13kInput?.mousedown || [],
-            mousex:    window.document.OS13kInput?.mousex || 0,
-            mousey:    window.document.OS13kInput?.mousey || 0
+            keydown:   window.document.OS13kInput ? window.document.OS13kInput.keydown : [],
+            mousedown: window.document.OS13kInput ? window.document.OS13kInput.mousedown : [],
+            mousex:    window.document.OS13kInput ? window.document.OS13kInput.mousex : 0,
+            mousey:    window.document.OS13kInput ? window.document.OS13kInput.mousey : 0
         };
 
         // input functions
@@ -705,7 +713,7 @@ class _OS13k
         });
     }
     
-    Settings = ()=> settings;
+    Settings() { return settings; }
 }; // _OS13k
 var OS13k = new _OS13k;
 
@@ -800,7 +808,7 @@ RebuildMenu = ()=>
     getOldStubs(programStubs);
 
     // remove user folder if it exists
-    loadIcon?.windowOrMenu.lastChild && (
+    loadIcon && loadIcon.windowOrMenu.lastChild && (
       loadIcon.windowOrMenu.removeChild(loadIcon.windowOrMenu.lastChild), 
       programStubs.pop());
 
@@ -844,11 +852,11 @@ UpdateStartup = ()=> !loading & !finishedStartup && OS13k.Save(
     analyserCanvas.style = 'width:16;height:16;margin:2;pointer-events:none;display:none',
 
     // load start program
-    self == top | startProgram?.sticky && startProgram?.Open?.(startProgram = 0),
+    self == top && startProgram && startProgram.Open(startProgram = 0),
     finishedStartup = 1),
 
 // main update loop
-Update = (time)=>
+Update = time=>
 {
     // request new animation frame
     requestAnimationFrame(Update);
@@ -856,7 +864,7 @@ Update = (time)=>
     // check if iframe became new active element
     const activeElement = document.activeElement;
     const activeFrame = 
-        activeElement.shadowRoot?.activeElement == activeElement.iframe ? 
+        activeElement.shadowRoot && activeElement.shadowRoot.activeElement == activeElement.iframe ? 
         activeElement.iframe : 0;
             
     // if a new frame took focus, set window active and that we had input
@@ -1030,7 +1038,7 @@ class OS13kProgramMenu extends HTMLElement
         CloseMenus();
         
         // set parent active
-        this.parentMenu?.SetActive();
+        this.parentMenu && this.parentMenu.SetActive();
         
         // make visible
         this.style.visibility = 'visible';
@@ -1195,8 +1203,8 @@ class OS13kProgram extends HTMLElement
         if (this.flags & deleteUserPrograms && confirm(this.name + '?'))
         {
             // close windows with matching folder
-            [...desktop.children].map(child=> (this.userFolder ?
-                child.program?.info.userFolder == this.userFolder : child.program?.info.code != undefined) && child.Close?.());
+            [...desktop.children].map(child=> child.Close && (this.userFolder ?
+                child.program.info.userFolder == this.userFolder : child.program.info.code != undefined) && child.Close());
             
             // remove user program infos
             programInfos = programInfos.filter(info=> info.code == undefined || this.userFolder && info.userFolder != this.userFolder);
@@ -1207,7 +1215,7 @@ class OS13kProgram extends HTMLElement
         if (this.flags & closeAll)
         {
             // close all windows if no src or folder and play sound
-            [...desktop.children].map(child=> child.Close?.());
+            [...desktop.children].map(child=> child.Close && child.Close());
 
             // reset window open position
             windowOpenX = startOpenOffset;
@@ -1348,7 +1356,7 @@ class OS13kWindow extends HTMLElement
             `<span><button id=G>Save</button></span>` +
             `<span><button id=C>Copy</button></span>` +
             `<span><button id=D>Delete</button></span>` +
-            `<span><span id=Z>${program.info.code?.length}</span> Bytes` +
+            `<span><span id=Z>${program.info.code && program.info.code.length}</span> Bytes` +
             `<a id=A><canvas id=V style=display:none>`;
 
         // get links to code options and create error text
@@ -1462,14 +1470,14 @@ class OS13kWindow extends HTMLElement
         this.iframeContent.document.open();
 
         // set on error now to catch errors on load
-        this.iframeContent.onerror = (message, source, lineno, colno, e)=> this.SetErrorText(e);
+        this.iframeContent.onerror = (message, source, line, col, e)=> this.SetErrorText(e, e.stack && [col, line]);
         !this.program.userProgram || allCodeIsSafe ? this.iframeContent.document.write(code) : 0;
         this.iframeContent.document.close();
     }
 
-    SetErrorText(text)
+    SetErrorText(text, pos)
     {
-        this.errorText.value = text;
+        this.errorText.value = text + (pos ? ` (${pos[0] + ':' + (pos[1]-1)})` : '');
         this.errorText.style.display = text != undefined ? '' : 'none';
         return true;
     }
@@ -1492,7 +1500,8 @@ class OS13kWindow extends HTMLElement
             this.screenshot.disabled = !hasExtension || !codeIsSafe;
 
             // show error messages from user code
-            program.userProgram && (iframeContent.onerror = (message, source, lineno, colno, e)=> this.SetErrorText(e))
+            program.userProgram && (iframeContent.onerror = (message, source, line, col, e)=>
+                this.SetErrorText(e, e.stack && [col, line]))
 
             // get iframe content and document (will fail if cross site)       
             const iframeDocument = iframeContent.document;
@@ -1512,7 +1521,7 @@ class OS13kWindow extends HTMLElement
             codeIsSafe || (iframeDocument.body.style.background = '#111');
 
             // check for extensions
-            if (hasExtension && codeIsSafe) try
+            if (hasExtension && codeIsSafe)
             {
                 // create canvas
                 this.WriteToFrame(
@@ -1532,15 +1541,15 @@ class OS13kWindow extends HTMLElement
                 const code = program.userProgram && !program.isShader? 
                     iframeText.replace(
                         /(for\s*\((?!\s+of\s+)(?!\s+in\s+)[^;]*;[^;]*;|while\s*\()\s*(\S)/g, (a, b, c)=> b && c ? b +
-                        "++OS13kL>1e5&&(e=>{throw'Timed out!'})()" +
+                        '++OS13kL>1e5&&(e=>{throw"Timed out!"})()' +
                         (c == ')' ? '' : ',') + c : a ) : iframeText;
 
-                // show error messages from user code (must be set again here because it got wiped out)
-                iframeContent.onerror = (message, source, lineno, colno, e)=> this.SetErrorText(e);
+                // show error messages from user code init
+                onerror = (message, source, line, col, e)=> this.SetErrorText(e, e.stack && [col, line]);
 
                 // create dweet or shader program
                 iframeContent.eval(
-                    'OS13k=parent.OS13k;x=c.getContext' +
+                    `OS13k=parent.OS13k;x=c.getContext` +
                     (program.isShader ? // preserve buffer for user programs for screenshot
                         `('webgl2'${program.userProgram ? ',{preserveDrawingBuffer:true}' : ''});` +
                         `X=Y=Z=W=0;` +
@@ -1555,22 +1564,19 @@ class OS13kWindow extends HTMLElement
                         `zzfx=parent.zzfx;` +
                         `S=Math.sin;C=Math.cos;T=Math.tan;` +
                         `R=(r,g,b,a=1)=>\`rgba(\${0|r},\${0|g},\${0|b},\${a})\`;` +
-                        `u=t=>{${ code }\n};` +
+                        `u=t=>{\n${ code }\n};` +
                         `OS13kU=t=>t>OS13kF-2&&` + 
                             `u(((t=frame++/60)*60|0==frame-1)&&t>0?t+1e-6:t,` +
                             `OS13kL=0,` +
                             `OS13kF=Math.max(OS13kF+100/6,t))`) +
-                    `;(OS13kA=t=>(requestAnimationFrame(OS13kA),` +
-                        (program.awake || program.info.allowSleep == 0 ? '' : 
-                            't<1e3|parent.document.activeElement==OS13kWindow&&') +
-                    `OS13kU(t)))` +
-                    `(frame=OS13kF=0)`);
-            }
-            catch (e)
-            {
-                // set error text and throw error if not user code
-                this.SetErrorText(e && e.message ? e.message : e);
-                if (!program.userProgram) throw e;
+                        `;(OS13kA=t=>(requestAnimationFrame(OS13kA),` +
+                            (program.awake || program.info.allowSleep == 0 ? '' : 
+                                `t<1e3|parent.document.activeElement==OS13kWindow&&`) +
+                                `OS13kU(t)))` +
+                        `(frame=OS13kF=0)`);
+
+                // set error messages back to normal
+                onerror =e=> {throw e;}
             }
             
             // mouse down on iframe to load unsafe code, and call normal mousedown
@@ -1709,7 +1715,8 @@ class OS13kWindow extends HTMLElement
         finishedStartup && !this.program.sticky && OS13k.Save(startProgramId = this.program.id);
 
         // set focus to iframe using timeout to make it work cross browser
-        loading || this.program.stopFocus || document.activeElement != this && setTimeout(e=> this.iframeContent?.focus(lastActiveFrame = this.iframe));
+        loading || this.program.stopFocus || document.activeElement != this && 
+            setTimeout(e=> this.iframeContent && this.iframeContent.focus(lastActiveFrame = this.iframe));
 
         // clamp window to screen
         const rect = this.getBoundingClientRect();
@@ -1737,7 +1744,7 @@ class OS13kWindow extends HTMLElement
             SetButtonVisibility(buttonResetSize,  this.program.resize);
 
             // set taskbar icon active if it exists
-            this.taskbarIcon?.SetActive();
+            this.taskbarIcon && this.taskbarIcon.SetActive();
         }
     }
     
@@ -1850,7 +1857,7 @@ class OS13kTaskbarIcon extends HTMLElement
         this.className = 'taskbarIcon ' + (active ? 'taskbarIconActive' : '');
         
         // if active, unselect old taskbar icon and set this active
-        active && activeTaskbarIcon != this && (activeTaskbarIcon?.SetActive(0), activeTaskbarIcon = this);
+        active && activeTaskbarIcon != this && (activeTaskbarIcon && activeTaskbarIcon.SetActive(0), activeTaskbarIcon = this);
     }
     
 } // OS13kTaskbarIcon
@@ -1898,7 +1905,7 @@ onmousedown = e=>
         CloseMenus();
         
         // reactivate active window
-        activeWindow?.SetActive();
+        activeWindow && activeWindow.SetActive();
         
         // prevent main document from taking focus
         return false;
@@ -1944,7 +1951,7 @@ onmousedown = e=>
     }
 
     // open or reactivate window if no valid target
-    e.target.Open ? e.target.Open(originalTarget, e.x, e.y) : activeWindow?.SetActive();
+    e.target.Open ? e.target.Open(originalTarget, e.x, e.y) : activeWindow && activeWindow.SetActive();
     
     // allow event to contiue only if input
     return e.target == loadIcon || /input|textarea/.test(originalTarget.localName);
@@ -1957,7 +1964,7 @@ onmousemove = e=>
     grabWindow ? grabWindow.style.top = e.y - grabOffsetY : 0;
     
     // handle mouse move
-    e.target.Move?.();
+    e.target.Move && e.target.Move();
 }
 
 onmouseup = ()=>
