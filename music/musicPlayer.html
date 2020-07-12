@@ -71,7 +71,7 @@ B=k=>
     S.selectedIndex =                              // set selected index back
         OS13k.Clamp(                               // clamp to select length
             E ? L.findIndex(e=>e.k == E) : i,      // look for added song key 
-            E = 0, S.length - 1);                  // clamp to select length
+            S.length - 1, E = 0);                  // clamp to select length
     localStorage.OS13kM = JSON.stringify(K);       // save known song list
 }
 
@@ -133,7 +133,7 @@ J=k=> k.replace(/null|[[\],\d\.-]/g, '') || eval(k.replace(/null/g, undefined));
 W=k=> (k/60|0) + ((k = k%60|0) <=9 ? ':0' : ':') + k;
 
 // test song
-localStorage['OS13kMusic,OS13k Test Song'] = JSON.stringify(
+localStorage['OS13kMusic,OS13k Test'] = JSON.stringify(
 [
     [                                        // Instruments
       [,0,219,,,,,1.1,,-.1,-50,-.05,-.01,1], // #1 - Snare
