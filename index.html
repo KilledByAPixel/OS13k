@@ -224,7 +224,7 @@ span               { white-space:nowrap; }
 ///////////////////////////////////////////////////////////////////////////////
 // OS13k Debug (remove from minified)
 
-const OS13kVersion = 68;
+const OS13kVersion = 69;
 {
     // version check, clear local storage if older
     if (localStorage.OS13k && localStorage.OS13kVersion != OS13kVersion)
@@ -308,9 +308,9 @@ class _OS13k
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Math
 
-    Clamp   (a, min=0, max=1) { return Math.min(Math.max(a, min), max); }
-    Percent (v, a, b)         { return b-a ? this.Clamp((v-a)/(b-a), 0, 1) : 0; }
-    Lerp    (p, a, b)         { return  a + this.Clamp(p, 0, 1) * (b-a); }
+    Clamp   (a, min=0, max=1) { return a < min ? min : a > max ? max : a; }
+    Percent (v, a, b)         { return b-a ? this.Clamp((v-a)/(b-a)) : 0; }
+    Lerp    (p, a, b)         { return a + this.Clamp(p) * (b-a); }
 
     // convert string to hash value like Java's hashCode()
     Hash    (s)               { return [...s].reduce((a,c)=> c.charCodeAt()+a*31|0, 0); }
@@ -354,7 +354,7 @@ class _OS13k
         localStorage['OS13kTrophy,' + key] = message;
 
         // use game as name if there is no name
-        name || (name = game, game = '')
+        name || (name = game, game = '');
 
         // add trophy popup
         this.Popup(`<div class=trophyIcon>${   // popup html
@@ -362,7 +362,7 @@ class _OS13k
                 name }</b><br><i>${            // name
                 game }</i></div>` +            // game
                 message,                       // message
-            name,                              // speak
+            name + '. ' + game,                // speak
             'ja');                             // language
         
         // save and reload trophy window
@@ -370,13 +370,10 @@ class _OS13k
     }
     
     // get message, 0 if no trophy
-    GetTrophy(game, name) { return rophies.find(e=> e[0]==game & e[1]==name); }
+    GetTrophy(game, name) { return trophies.find(e=> e[0]==game & e[1]==name); }
     
     // get trophy list
     Trophies() { return trophies; }
-    
-    // get trophy list
-    ClearTrophies() { trophies = []; }
     
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Audio
@@ -464,8 +461,7 @@ class _OS13k
         source.buffer = buffer;
         
         // create custom gain node
-        source.connect(source.gain = audioContext.createGain()).
-            connect(isMusic ? gainMusic : gain);
+        source.connect(source.gain = audioContext.createGain()).connect(isMusic ? gainMusic : gain);
         
         // connect analyser and start
         isMusic && (isMusic > 1 ? source.gain : source).connect(musicAnalyser);
@@ -629,13 +625,13 @@ class _OS13k
 // OS13k Input
 
     // create and update an input object for keyboard and mouse control
-    Input(window)
+    Input(inputWindow)
     {
         let inputCopy;
-        if (window.document.OS13kInput)
+        if (inputWindow.document.OS13kInput)
         {
             // make copy of last frame input
-            inputCopy = {...window.document.OS13kInput};
+            inputCopy = {...inputWindow.document.OS13kInput};
 
             // get direction from wasd or arrow keys
             inputCopy.x = inputCopy.y = 0;
@@ -646,23 +642,23 @@ class _OS13k
         }
 
         // create or clear input object
-        const input = window.document.OS13kInput =
+        const input = inputWindow.document.OS13kInput =
         {
             x: 0, y: 0,
             keypress: [], mousepress: [],
-            keydown:   window.document.OS13kInput ? window.document.OS13kInput.keydown : [],
-            mousedown: window.document.OS13kInput ? window.document.OS13kInput.mousedown : [],
-            mousex:    window.document.OS13kInput ? window.document.OS13kInput.mousex : 0,
-            mousey:    window.document.OS13kInput ? window.document.OS13kInput.mousey : 0
+            keydown:   inputWindow.document.OS13kInput ? inputWindow.document.OS13kInput.keydown : [],
+            mousedown: inputWindow.document.OS13kInput ? inputWindow.document.OS13kInput.mousedown : [],
+            mousex:    inputWindow.document.OS13kInput ? inputWindow.document.OS13kInput.mousex : 0,
+            mousey:    inputWindow.document.OS13kInput ? inputWindow.document.OS13kInput.mousey : 0
         };
 
         // input functions
-        window.onkeydown   = e=> e.repeat || (input.keydown[e.keyCode] = input.keypress[e.keyCode] = 1);
-        window.onkeyup     = e=> input.keydown[e.keyCode] = 0;
-        window.onmousedown = e=> (input.mousedown[e.button] = input.mousepress[e.button] = 1, e.button != 1);
-        window.onmouseup   = e=> input.mousedown[e.button] = 0;
-        window.onmousemove = e=> (input.mousex = e.x, input.mousey = e.y);
-        window.onblur      = e=> (input.keydown = [], input.mousedown = []);
+        inputWindow.onkeydown   = e=> e.repeat || (input.keydown[e.keyCode] = input.keypress[e.keyCode] = 1);
+        inputWindow.onkeyup     = e=> input.keydown[e.keyCode] = 0;
+        inputWindow.onmousedown = e=> (input.mousedown[e.button] = input.mousepress[e.button] = 1, e.button != 1);
+        inputWindow.onmouseup   = e=> input.mousedown[e.button] = 0;
+        inputWindow.onmousemove = e=> (input.mousex = e.x, input.mousey = e.y);
+        inputWindow.onblur      = e=> (input.keydown = [], input.mousedown = []);
 
         // return last frame input
         return inputCopy || input;
@@ -674,13 +670,13 @@ class _OS13k
     Save()
     {
         // save data if finished startup
-        finishedStartup && (localStorage.OS13k = JSON.stringify({
-            t:trophies,
-            s:settings,
-            i:programInfos,
-            p:startProgramId,
-            n:nextUserProgramId
-        }));
+        finishedStartup && (localStorage.OS13k = JSON.stringify([
+            trophies,
+            settings,
+            programInfos,
+            startProgramId,
+            nextUserProgramId
+        ]));
         
         // volume
         gain.gain.value = settings.v;
@@ -751,14 +747,7 @@ Start = ()=>
 {
     // load OS13k data
     if (localStorage.OS13k)
-    {
-        const saveData    = JSON.parse(localStorage.OS13k);
-        trophies          = saveData.t;
-        settings          = saveData.s;
-        programInfos      = saveData.i;
-        startProgramId    = saveData.p;
-        nextUserProgramId = saveData.n;
-    }
+        [trophies, settings, programInfos, startProgramId, nextUserProgramId] = JSON.parse(localStorage.OS13k);
     
     // save and update settings
     OS13k.Save();
@@ -802,7 +791,7 @@ Start = ()=>
 
 RebuildMenu = ()=>
 {
-    // combine old stubs for reference
+    // combine old stubs for reference (only 1 level deep)
     const oldStubs = [];
     const getOldStubs = stubs => stubs.map( stub => stub[7] ? getOldStubs(stub[7]) : oldStubs.push(stub));
     getOldStubs(programStubs);
@@ -1188,7 +1177,6 @@ class OS13kProgram extends HTMLElement
                 (windowOpenX += titlebarHeight) > 400 && (windowOpenX =  windowOpenY = startOpenOffset),
                 (windowOpenY += titlebarHeight) > 300 && (windowOpenY =  windowOpenY = startOpenOffset + taskbarHeight));
             
-
             // open window
             this.window = new OS13kWindow(this, x, y);
 
@@ -1261,8 +1249,7 @@ class OS13kProgram extends HTMLElement
         
         // add to programs info and save
         const i = programInfos.findIndex(e=> e.id == this.id);
-        i < 0 ? programInfos.push(this.info) : programInfos[i] = this.info
-        OS13k.Save();
+        OS13k.Save(i < 0 ? programInfos.push(this.info) : programInfos[i] = this.info);
     }
     
 } // OS13kProgram
@@ -1421,8 +1408,7 @@ class OS13kWindow extends HTMLElement
         heightInput.value = program.height;
 
         // set new icon and name when changed
-        iconInput.oninput =
-        nameInput.oninput =
+        iconInput.oninput = nameInput.oninput =
         this.liveEdit.oninput = e=>
         program.Save(
             SetName(this.taskbarIcon.
@@ -1628,7 +1614,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             this.iframe.onload = ()=> loadFrame();
-            this.iframe.src = program.src + '?v77';
+            this.iframe.src = program.src + '?v78';
             
             // load from template (for JS13k)
             //loadFrame(this.WriteToFrame(document.getElementsByName(program.name)[0].innerHTML));
@@ -1759,10 +1745,8 @@ class OS13kWindow extends HTMLElement
         
         // set full screen
         this.iframeContent.focus();
-        this.iframeWrapper.webkitRequestFullScreen &&
-            this.iframeWrapper.webkitRequestFullScreen();
-        this.iframeWrapper.mozRequestFullScreen &&
-            this.iframeWrapper.mozRequestFullScreen();
+        this.iframeWrapper.webkitRequestFullScreen && this.iframeWrapper.webkitRequestFullScreen();
+        this.iframeWrapper.mozRequestFullScreen && this.iframeWrapper.mozRequestFullScreen();
         
         OS13k.Trophy('OS13k','🕹️','Pro Gamer','Went Full Screen');
     }
@@ -1818,7 +1802,7 @@ class OS13kWindow extends HTMLElement
 customElements.define('w-', OS13kWindow);
 
 ///////////////////////////////////////////////////////////////////////////////
-// OS13kTaskbarIcon - icon on taskbar that can be used as shortcut
+// OS13kTaskbarIcon - icon on taskbar for opened programs
 
 class OS13kTaskbarIcon extends HTMLElement
 {
@@ -1828,9 +1812,8 @@ class OS13kTaskbarIcon extends HTMLElement
         
         // create icon
         this.className = 'taskbarIcon';
-        this.program = program;
         this.menu = this.windowOrMenu = windowOrMenu;
-        this.SetName();
+        this.SetName(this.program = program);
         
         // add to taskbar
         taskbarSpace.before(this);
@@ -1885,19 +1868,15 @@ class OS13kTrayIcon extends HTMLElement
         this.innerHTML = program.icon;
     }
     
-    Open() { this.program ? this.program.Toggle() : this.functionCall(); }
+    Open() { this.program.Toggle(); }
 } // OS13kTrayIcon
 customElements.define('t-', OS13kTrayIcon);
 
 ///////////////////////////////////////////////////////////////////////////////
 // Mouse Input
 
-{
 onmousedown = e=>
 {
-    // set there has been user input
-    hadInput = 1;
-    
     // check if load icon is target while programs menu was visible
     if (e.target == loadIcon && e.target.windowOrMenu.style.visibility)
     {
@@ -1911,20 +1890,16 @@ onmousedown = e=>
         return false;
     }
     
-    // close menus on mouse down
-    CloseMenus();
-
-    // reset program menu position
-    programsMenu.style.left = 0;
-    programsMenu.style.top = taskbarHeight;
+    // close menus and reset program menu position, and set there has been input
+    CloseMenus(programsMenu.style.left = 0, hadInput = programsMenu.style.top = taskbarHeight);
 
     // prevent stuck grab (from tabbing to another window while grabbing)
     if (grabWindow) return onmouseup(e);
     
     // get orignal target
-    let originalTarget = e.originalTarget || e.path[0];
+    const originalTarget = e.originalTarget || e.path[0];
 
-    // fix firefix issue, return if cant get orignal target
+    // fix firefix issue, return if orignal target id is restricted, happens for code editor
     try {originalTarget.id;} catch { return true; }
     
     // check if not left mouse button
@@ -1964,7 +1939,7 @@ onmousemove = e=>
 {
     // update grab position
     grabWindow ? grabWindow.style.left = e.x - grabOffsetX : 0;
-    grabWindow ? grabWindow.style.top = e.y - grabOffsetY : 0;
+    grabWindow ? grabWindow.style.top  = e.y - grabOffsetY : 0;
     
     // handle mouse move
     e.target.Move && e.target.Move();
@@ -1980,26 +1955,23 @@ onmouseup = ()=>
 // prevent default right click context menu
 oncontextmenu = ()=> false;
 
-} // mouse input
-
 ///////////////////////////////////////////////////////////////////////////////
 // Drag and Drop
-
-// prevent default drop events
-ondragover = ()=> false;
 
 // allow drag and drop code into editor
 ondrop = e=>
 {
-    if (e.dataTransfer.length && e.target.program.userProgram && (e.originalTarget || e.path[0]).id == 'codeText')
-    {
-        // read file, set code, and set active
-        const reader = new FileReader();
-        reader.onload = f=> e.target.SetActive(1, 0, e.target.SetCode(f.target.result, 1));
+    const reader = new FileReader();
+    reader.onload = f=> e.target.SetActive(1, 0, e.target.SetCode(f.target.result, 1));
+
+    // read file, set code, and set active
+    e.dataTransfer.files.length && e.target.program.userProgram &&
         reader.readAsText(e.dataTransfer.files[0], 'utf-8'); 
-    }
     return false;
 }
+
+// prevent default drop events
+ondragover = ()=> false;
 
 ///////////////////////////////////////////////////////////////////////////////
 // ZzFXMicro - Zuper Zmall Zound Zynth
