@@ -1726,7 +1726,7 @@ class OS13kWindow extends HTMLElement
             SetButtonVisibility(buttonResetSize,  this.program.resize);
 
             // set taskbar icon active if it exists
-            this.taskbarIcon && this.taskbarIcon.SetActive();
+            this.taskbarIcon && this.taskbarIcon.SetActive(1,0);
         }
     }
     
@@ -1823,10 +1823,10 @@ class OS13kTaskbarIcon extends HTMLElement
     
     Open() { this.SetActive(); }
     
-    SetActive(active=1)
+    SetActive(active=1, clamp=1)
     {
         // set window active and clamp
-        active && this.windowOrMenu.SetActive(1, 1);
+        active && this.windowOrMenu.SetActive(1, clamp);
     
         // load icon cant be active taskbar item
         if (this == loadIcon)
