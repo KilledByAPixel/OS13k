@@ -123,7 +123,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 - Some basic math functions are provided to help reduce code duplication
 - OS13k.Random(max=1, min=0) - Get a seeded random value clamped between min and max
 - OS13k.randomSeed - You must set the seed before calling OS13k.Random
-- OS13k.Clamp(a, min=0, max=1) - Clamp value between min and max
+- OS13k.Clamp(a, max=1, min=0) - Clamp value between max and min
 - OS13k.Percent(v, a, b) - Get clamped percent between a and b
 - OS13k.Lerp(p, a, b) - Lerp clamped percent between a and b
 
