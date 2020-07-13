@@ -149,6 +149,7 @@ Add an icon config to programs.js to register your program, and send me pull req
  - Apps can register trophies for their games, the OS tracks which are unlocked
  - To unlock trophies use OS13k.Trophy(gameName, trophyName, icon, message)
  - You can pass in a value as the message, like a high score for example
+ - You can also get a trophy message with Get(gameName, trophyName), useful for storing data
  - "OS13kTrophy,gameName,trophyName,icon" is the unique local storage key for each trophy
  - *HTML tags and commas can not used in trophy data*
  - When a new trophy is unlocked or the message is changed a popup will automatically appear
