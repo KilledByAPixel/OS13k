@@ -1704,7 +1704,7 @@ class OS13kWindow extends HTMLElement
         // clamp window to screen
         const rect = this.getBoundingClientRect();
         clamp && (
-            this.style.left = OS13k.Clamp(rect.x, innerWidth - rect.width,
+            this.style.left = OS13k.Clamp(rect.x, innerWidth - rect.width, 0,
             this.style.top = OS13k.Clamp(rect.y, Math.max(taskbarHeight, innerHeight - rect.height), taskbarHeight)));
 
         if (activeWindow != this)
