@@ -1889,7 +1889,7 @@ onmousedown = e=>
     }
     
     // close menus and reset program menu position, and set there has been input
-    CloseMenus(programsMenu.style.left = 0, hadInput = programsMenu.style.top = taskbarHeight);
+    CloseMenus(programsMenu.style.left = 0, programsMenu.style.top = taskbarHeight, hadInput = 1);
 
     // prevent stuck grab (from tabbing to another window while grabbing)
     if (grabWindow) return onmouseup(e);
