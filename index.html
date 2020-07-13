@@ -1643,6 +1643,10 @@ class OS13kWindow extends HTMLElement
             this.style.left = OS13k.Clamp(rect.x, innerWidth - rect.width, 0,
             this.style.top = OS13k.Clamp(rect.y, Math.max(taskbarHeight, innerHeight - rect.height), taskbarHeight)));
 
+        // set focus to iframe using timeout
+        loading ||
+            setTimeout(e=> document.activeElement != this && this.iframeContent && this.iframeContent.focus(lastActiveFrame = this.iframe));
+
         if (activeWindow != this)
         {
             // deactivate old window and set this one active and play sound
@@ -1663,10 +1667,6 @@ class OS13kWindow extends HTMLElement
 
             // set taskbar icon active if it exists
             this.taskbarIcon && this.taskbarIcon.SetActive(1,0);
-
-            // set focus to iframe using timeout
-            loading ||
-                setTimeout(e=> document.activeElement != this && this.iframeContent && this.iframeContent.focus(lastActiveFrame = this.iframe));
             
             // save start program if finished startup and not sticky
             finishedStartup & !this.program.sticky && OS13k.Save(startProgramId = this.program.id);
