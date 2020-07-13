@@ -363,7 +363,11 @@ class _OS13k
     }
     
     // get message, 0 if no trophy
-    GetTrophy(game, name) { return trophies.find(e=> e[0]==game & e[1]==name); }
+    GetTrophy(game, name) 
+    { 
+        const trophy = trophies.find(e=> e[0]==game & e[1]==name); 
+        return trophy ? trophy[3] : 0; 
+    }
     
     // get trophy list
     Trophies() { return trophies; }
@@ -1550,7 +1554,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             this.iframe.onload = ()=> loadFrame();
-            this.iframe.src = program.src + '?v85';
+            this.iframe.src = program.src + '?v86';
             
             // load from template (for JS13k)
             //loadFrame(this.WriteToFrame(document.getElementsByName(program.name)[0].innerHTML));
