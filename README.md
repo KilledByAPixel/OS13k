@@ -1,5 +1,7 @@
 # Welcome to OS13k!
-OS13k is a tiny operating system designed for a JS13k community project. It includes native support for Shadertoys, Dweets, ZzFX sounds, music, trophies, fullscreen, touch control, and more.
+OS13k is a tiny operating system that fits in a 13 kb zip file.
+
+It includes native support for Shadertoys, Dweets, ZzFX sounds, music, trophies, mobile support, and much more.
 
 ![OS13k Image](/favicon.ico) 
 
