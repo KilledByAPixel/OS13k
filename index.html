@@ -217,7 +217,7 @@ span               { white-space:nowrap; }
 ///////////////////////////////////////////////////////////////////////////////
 // OS13k Debug (remove from minified)
 
-const OS13kVersion = 69;
+const OS13kVersion = 70;
 {
     // version check, clear local storage if older
     if (localStorage.OS13k && localStorage.OS13kVersion != OS13kVersion)
@@ -321,17 +321,17 @@ class _OS13k
 // OS13k Trophies
     
     // award player with trophy
-    Trophy(game='', icon='', name='', message='')
+    Trophy(icon, game, name, message)
     {
         // replace commas and apostrophes
-        const Clean = string=> this.StripHTML(string, maxWordLength).replace(/[,`]/g, '');
-        game    = Clean(game);
+        const Clean = string=> this.StripHTML(string||'', maxWordLength).replace(/[,`]/g, '');
         icon    = Clean(icon);
+        game    = Clean(game);
         name    = Clean(name);
         message = Clean(message);
         
         // build key
-        const key = game + `,${ icon },` + name;
+        const key = icon + ',' + game + ',' + name;
                 
         // find in trophy list
         const i = trophies.findIndex(e=> e[4] == key);
@@ -340,7 +340,7 @@ class _OS13k
         if (i >=0 && trophies[i][3] == message) return;
         
         // add or update trophy list
-        const trophyData = [game, name, icon, message, key];
+        const trophyData = [icon, game, name, message, key];
         i < 0 ? trophies.unshift( trophyData ) : trophies[i] = trophyData;
 
         // save trophy
@@ -365,7 +365,7 @@ class _OS13k
     // get message, 0 if no trophy
     GetTrophy(game, name) 
     { 
-        const trophy = trophies.find(e=> e[0]==game & e[1]==name); 
+        const trophy = trophies.find(e=> e[1]==game & e[2]==name); 
         return trophy ? trophy[3] : 0; 
     }
     
@@ -1149,7 +1149,7 @@ class OS13kProgram extends HTMLElement
             windowOpenX = startOpenOffset;
             windowOpenY = startOpenOffset + taskbarHeight;
 
-            OS13k.Trophy('OS13k', '☕', 'Coffee Is For Closers', 'Closed All');
+            OS13k.Trophy('☕','OS13k','Coffee Is For Closers','Closed All');
         }
     }
     
@@ -1554,7 +1554,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             this.iframe.onload = ()=> loadFrame();
-            this.iframe.src = program.src + '?v87';
+            this.iframe.src = program.src + '?v89';
             
             // load from template (for JS13k)
             //loadFrame(this.WriteToFrame(document.getElementsByName(program.name)[0].innerHTML));
@@ -1684,7 +1684,7 @@ class OS13kWindow extends HTMLElement
         this.iframeWrapper.webkitRequestFullScreen && this.iframeWrapper.webkitRequestFullScreen();
         this.iframeWrapper.mozRequestFullScreen && this.iframeWrapper.mozRequestFullScreen();
         
-        OS13k.Trophy('OS13k','🕹️','Pro Gamer','Went Full Screen');
+        OS13k.Trophy('🕹️','OS13k','Pro Gamer','Went Full Screen');
     }
     
     ShowCode(silent)
@@ -1696,7 +1696,7 @@ class OS13kWindow extends HTMLElement
         // set active and clamp
         activeWindow.SetActive(1, 1);
 
-        this.program.help || OS13k.Trophy('OS13k','👨‍💻','Hacker','Viewed Code');
+        this.program.help || OS13k.Trophy('👨‍💻','OS13k','Hacker','Viewed Code');
     }
     
     Reload(silent, clamp=1)
@@ -1707,7 +1707,7 @@ class OS13kWindow extends HTMLElement
         silent || SystemSound(soundReload);
         
         // set active and clamp
-        activeWindow.SetActive(1, clamp);
+        this.SetActive(1, clamp);
         
         // reload program or reload iframe and set invisible
         this.iframeContent &&
@@ -2126,7 +2126,7 @@ buttonClose.onmousedown      = ()=> activeWindow.Close();
 RebuildMenu(loadIcon = new OS13kTaskbarIcon({icon:'💾', name:'Load Program'}, new OS13kProgramMenu(programStubs)));
 
 // welcome message
-OS13k.Trophy('', '👋', 'Welcome to OS13k!');
+OS13k.Trophy('👋','','Welcome to OS13k!');
 
 // search local storage for new trophies (from other JS13k games)1
 for (const key in localStorage) CheckForTrophy(key);
