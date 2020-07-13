@@ -17,5 +17,5 @@ x.fillStyle=R()
 x.fillText(s=(T+=F)/1e3|0,9,99)
 x.textAlign='right'
 x.fillStyle=R(255,0,0,9-t)
-x.fillText(d=OS13k.GetTrophy('Bogus Slopes','High Score')|0,c.width-9,99)
+x.fillText(d=OS13k.GetTrophy('Bogus Slopes','High Score'),c.width-9,99)
 X>0&&(OS13k.PlaySeed(370,5),s>d&&OS13k.Trophy('Bogus Slopes','🏂🏻','High Score',s),s>99&&OS13k.Trophy('Bogus Slopes','⭐','100!'))
