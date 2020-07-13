@@ -147,14 +147,13 @@ Add an icon config to programs.js to register your program, and send me pull req
  # Trophies
  - Trophies are perhaps the most important part of OS13k and have many uses
  - Apps can register trophies for their games, the OS tracks which are unlocked
- - To unlock trophies use OS13k.Trophy(gameName, trophyName, icon, message)
+ - To unlock trophies use OS13k.Trophy(icon, gameName, trophyName, message)
  - You can pass in a value as the message, like a high score for example
- - You can also get a trophy message with Get(gameName, trophyName), useful for storing data
- - "OS13kTrophy,gameName,trophyName,icon" is the unique local storage key for each trophy
+ - "OS13kTrophy,icon,gameName,trophyName" is the unique local storage key for each trophy
  - *HTML tags and commas can not used in trophy data*
  - When a new trophy is unlocked or the message is changed a popup will automatically appear
  - Total trophy count is shown in the taskbar and the trophy case shows all unlocked trophies
- - *You can use tophies to unlock stuff!* Use OS13k.GetTrophy to check if player has a trophy
+ - *You can use tophies to store data!* Use OS13k.GetTrophy to get a trophy message
  - *Keep your trophy names and messages short, experiment with fun ideas and icons!*
 
  ### Trophy Functions
@@ -175,8 +174,8 @@ Add an icon config to programs.js to register your program, and send me pull req
  
  ### Any JS13k game can add trophies and music, even if not part of OS13k!
  - *To add a trophy or music track, just save a special key to localStorage!*
- - The smallest way to add a single trophy (like for winning) is localStorage['OS13kTrophy,GameName,Icon'] = ''
- - For more control use localStorage['OS13kTrophy,GameName,Icon,TrophyName'] = Message
+ - The smallest way to add a single trophy (like for winning) is localStorage['OS13kTrophy,Icon,GameName'] = ''
+ - For more control use localStorage['OS13kTrophy,Icon,GameName,TrophyName'] = Message
  - You can change the message to update the trophy, like a highscore for example
  - Music works the same way, use localStorage['OS13kMusic,SongName] = JSON.stringify(song)
  - OS13k automatically checks localStorage and display popups for new trophies and songs from other games
