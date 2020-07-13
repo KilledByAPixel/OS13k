@@ -28,6 +28,7 @@ programStubs =
 [
     ['system/settings.html','🎚️',470,190,sticky],
     ['system/trophyCase.html','🏆',,,full|resize|sticky],
+    ['system/stickyNote.html','✏️',300,263,sticky|reload,,'Ctrl+B - Bold\nCtrl+I - Italic\nCtrl+U - Underline\n\Reload to clear'],
     ['system/clock.dweet.js','🕰️',198,198,sticky|code|awake],
     [,'📁',,,,'Test',,
     [
@@ -39,7 +40,6 @@ programStubs =
 [,'🛠️',,,,'Apps',,
 [
     ['apps/console.html','<span style=color:#0f0;background:#000;font-family:monospace>JS>'],
-    ['apps/stickyNote.html','✍️',300,263,sticky|reload,,'Ctrl+B - Bold\nCtrl+I - Italic\nCtrl+U - Underline\n\Reload to clear'],
     ['apps/timer.html','⌛',400,139,sticky|reload],
     ['apps/photoBooth.html','📸',1400,550],
     ['apps/textEditor.html','📝'],
@@ -83,4 +83,4 @@ programStubs =
     ['dweets/colorZoom.dweet.js','❤️'],
     ['dweets/triFractal.dweet.js','🔺'],
 ]]
-]; // programs
+];

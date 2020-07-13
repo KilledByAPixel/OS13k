@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?v159></script>
+<script src=programs.js?v160></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -754,10 +754,11 @@ Start = ()=>
     gainMusic.connect(audioContext.destination);
     
     // create tray icons
-    musicTrayIcon     = new OS13kTrayIcon();
-    trophyTrayIcon    = new OS13kTrayIcon();
-    settingsTrayIcon  = new OS13kTrayIcon();
-    clockTrayIcon     = new OS13kTrayIcon();
+    musicTrayIcon      = new OS13kTrayIcon();
+    trophyTrayIcon     = new OS13kTrayIcon();
+    settingsTrayIcon   = new OS13kTrayIcon();
+    stickyNoteTrayIcon = new OS13kTrayIcon();
+    clockTrayIcon      = new OS13kTrayIcon();
     
     // listen for trophies from other windows
     onstorage = e=> CheckForTrophy(e.key);
@@ -965,7 +966,7 @@ let grabWindow, grabOffsetX, grabOffsetY, finishedStartup, nextUserProgramId = 0
     lastActiveFrame, topZ = 0, loading = 0, hadInput = 0,
     windowOpenX = startOpenOffset, windowOpenY = startOpenOffset + taskbarHeight,
     startProgram, startProgramId, programInfos = [], trophies = [],
-    trophyTrayIcon, settingsTrayIcon, clockTrayIcon, musicTrayIcon,
+    trophyTrayIcon, settingsTrayIcon, clockTrayIcon, musicTrayIcon, stickyNoteTrayIcon,
 
     // volume, music, speech, popups, color1, color2, text, filter
     settings = {v:.3, m:.3, s:1, p:1, o:1, c:'#222233', d:'#332222', t:'OS13k', f:''};
@@ -1119,10 +1120,11 @@ class OS13kProgram extends HTMLElement
         this.userProgram = this.info.code != undefined;
         
         // save special programs
-        name == 'Settings'     && settingsTrayIcon.SetProgram(this);
-        name == 'Trophy Case'  && trophyTrayIcon.SetProgram(this);
-        name == 'Clock'        && clockTrayIcon.SetProgram(this);
         name == 'Music Player' && musicTrayIcon.SetProgram(this);
+        name == 'Trophy Case'  && trophyTrayIcon.SetProgram(this);
+        name == 'Settings'     && settingsTrayIcon.SetProgram(this);
+        name == 'Sticky Note'  && stickyNoteTrayIcon.SetProgram(this);
+        name == 'Clock'        && clockTrayIcon.SetProgram(this);
         
         // open help if it has not been opened yet
         name == 'Help' && this.info.open == undefined && (startProgram = this);
@@ -1611,7 +1613,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             this.iframe.onload = ()=> loadFrame();
-            this.iframe.src = program.src + '?v80';
+            this.iframe.src = program.src + '?v81';
             
             // load from template (for JS13k)
             //loadFrame(this.WriteToFrame(document.getElementsByName(program.name)[0].innerHTML));
