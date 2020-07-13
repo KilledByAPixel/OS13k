@@ -740,53 +740,6 @@ const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26,
     gainMusic = audioContext.createGain(), 
     musicAnalyser = audioContext.createAnalyser(),
 
-Start = ()=>
-{
-    // load OS13k data
-    if (localStorage.OS13k)
-        [trophies, settings, programInfos, startProgramId, nextUserProgramId] = JSON.parse(localStorage.OS13k);
-    
-    // save and update settings
-    OS13k.Save();
-    
-    // setup audio
-    gain.connect(audioContext.destination);
-    gainMusic.connect(audioContext.destination);
-    
-    // create tray icons
-    trophyTrayIcon     = new OS13kTrayIcon();
-    musicTrayIcon      = new OS13kTrayIcon();
-    settingsTrayIcon   = new OS13kTrayIcon();
-    stickyNoteTrayIcon = new OS13kTrayIcon();
-    clockTrayIcon      = new OS13kTrayIcon();
-    
-    // listen for trophies from other windows
-    onstorage = e=> CheckForTrophy(e.key);
-
-    // stop spech if page is unloaded
-    onunload = e=> StopSpeech();
-
-    // set menu button functions
-    buttonFullScreen.onmousedown = ()=> activeWindow.FullScreen();
-    buttonHelp.onmousedown       =
-    buttonCode.onmousedown       = ()=> activeWindow.ShowCode();
-    buttonResetSize.onmousedown  = ()=> activeWindow.SetActive(1, 1, activeWindow.Resize(1, soundGrow));
-    buttonReload.onmousedown     = ()=> activeWindow.Reload();
-    buttonClose.onmousedown      = ()=> activeWindow.Close();
-
-    // create load program taskbar icon and add folders/programs
-    RebuildMenu(loadIcon = new OS13kTaskbarIcon({icon:'💾', name:'Load Program'}, new OS13kProgramMenu(programStubs)));
-
-    // welcome message
-    OS13k.Trophy('', '👋', 'Welcome to OS13k!');
-
-    // search local storage for new trophies (from other JS13k games)1
-    for (const key in localStorage) CheckForTrophy(key);
-
-    // try to update startup and kick off first update
-    Update(UpdateStartup());
-},
-
 RebuildMenu = ()=>
 {
     // combine old stubs for reference (only 1 level deep)
@@ -831,22 +784,21 @@ CreateUserFolder = (parentStubs, stub, userFolderName, oldStubs)=>
     parentStubs.push(stub);
 },
 
-// wait for startup to finish
-UpdateStartup = ()=> !loading & !finishedStartup && OS13k.Save(
-
-    // create analyser canvas
-    musicTrayIcon.prepend(analyserCanvas = document.createElement('canvas')),
-    analyserCanvas.style = 'width:16;height:16;margin:2;pointer-events:none;display:none',
-
-    // load start program
-    self == top && startProgram && startProgram.Open(startProgram = 0),
-    finishedStartup = 1),
-
 // main update loop
 Update = time=>
 {
     // request new animation frame
     requestAnimationFrame(Update);
+    
+    // update startup routine
+    loading || finishedStartup || OS13k.Save(
+
+        // create analyser canvas
+        musicTrayIcon.prepend(analyserCanvas = document.createElement('canvas')),
+        analyserCanvas.style = 'width:16;height:16;margin:2;pointer-events:none;display:none',
+
+        // load start program
+        self == top && startProgram && startProgram.Open(startProgram = 0), finishedStartup = 1);
         
     // check if iframe became new active element
     const activeElement = document.activeElement;
@@ -1574,10 +1526,7 @@ class OS13kWindow extends HTMLElement
             this.style.visibility = this.iframe.style.visibility = 'visible';
             
             // update loading
-            loading = loading && --loading
-            
-            // update startup routine
-            UpdateStartup();
+            loading = loading && --loading;
 
             // listen for reload from iframe, prevent infnite recursion
             program.userProgram && (this.iframe.onload = ()=> reloadCount++ && this.Reload(1, 0));
@@ -2156,7 +2105,49 @@ zzfxM = (instruments, patterns, sequence, speed = 6, panning) => {
 ///////////////////////////////////////////////////////////////////////////////
 // Start OS13k!
 
-Start();
+// load save data
+if (localStorage.OS13k)
+    [trophies, settings, programInfos, startProgramId, nextUserProgramId] = JSON.parse(localStorage.OS13k);
+
+// save and update settings
+OS13k.Save();
+
+// setup audio
+gain.connect(audioContext.destination);
+gainMusic.connect(audioContext.destination);
+
+// create tray icons
+trophyTrayIcon     = new OS13kTrayIcon();
+musicTrayIcon      = new OS13kTrayIcon();
+settingsTrayIcon   = new OS13kTrayIcon();
+stickyNoteTrayIcon = new OS13kTrayIcon();
+clockTrayIcon      = new OS13kTrayIcon();
+
+// set menu button functions
+buttonFullScreen.onmousedown = ()=> activeWindow.FullScreen();
+buttonHelp.onmousedown       =
+buttonCode.onmousedown       = ()=> activeWindow.ShowCode();
+buttonResetSize.onmousedown  = ()=> activeWindow.SetActive(1, 1, activeWindow.Resize(1, soundGrow));
+buttonReload.onmousedown     = ()=> activeWindow.Reload();
+buttonClose.onmousedown      = ()=> activeWindow.Close();
+
+// create load program taskbar icon and add folders/programs
+RebuildMenu(loadIcon = new OS13kTaskbarIcon({icon:'💾', name:'Load Program'}, new OS13kProgramMenu(programStubs)));
+
+// welcome message
+OS13k.Trophy('', '👋', 'Welcome to OS13k!');
+
+// search local storage for new trophies (from other JS13k games)1
+for (const key in localStorage) CheckForTrophy(key);
+
+// listen for trophies from other windows
+onstorage = e=> CheckForTrophy(e.key);
+
+// stop spech if page is unloaded
+onunload = e=> StopSpeech();
+
+// try to update startup and kick off first update
+Update();
 
 ///////////////////////////////////////////////////////////////////////////////
 // Mobile Support OPTIONAL
