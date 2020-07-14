@@ -356,8 +356,8 @@ class _OS13k
                 game }</i></div>` +            // game
                 message,                       // message
             name + '. ' + game,                // speak
-            'ja');                             // language
-        
+            'ja');                             // language 
+
         // save and reload trophy window
         this.Save(trophyTrayIcon.program.window && trophyTrayIcon.program.window.Reload());
     }
@@ -1554,7 +1554,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             this.iframe.onload = ()=> loadFrame();
-            this.iframe.src = program.src + '?v90';
+            this.iframe.src = program.src + '?v91';
             
             // load from template (for JS13k)
             //loadFrame(this.WriteToFrame(document.getElementsByName(program.name)[0].innerHTML));
@@ -1692,9 +1692,6 @@ class OS13kWindow extends HTMLElement
         // toggle showing code and play sound
         this.codeDisplay.style.display = (this.showCode = !this.showCode) ? 'inline' : '';
         silent || SystemSound(this.program.help ? soundHelp : soundCode);
-        
-        // set active and clamp
-        activeWindow.SetActive(1, 1);
 
         this.program.help || OS13k.Trophy('👨‍💻','OS13k','Hacker','Viewed Code');
     }
@@ -1705,9 +1702,6 @@ class OS13kWindow extends HTMLElement
         this.program.userProgram && (this.program.info.code = this.codeText.value);
         this.program.Save();
         silent || SystemSound(soundReload);
-        
-        // set active and clamp
-        this.SetActive(1, clamp);
         
         // reload program or reload iframe and set invisible
         this.iframeContent &&
