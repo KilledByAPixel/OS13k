@@ -1676,7 +1676,7 @@ class OS13kWindow extends HTMLElement
     FullScreen()
     {
         // reload code if it wasnt safe yet and set it is safe and play sound
-        allCodeIsSafe || this.Reload(allCodeIsSafe = 1);
+        (!this.program.userProgram | allCodeIsSafe) || this.Reload(allCodeIsSafe = 1);
         SystemSound(soundFullScreen);
         
         // set full screen
