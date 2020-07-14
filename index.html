@@ -1455,8 +1455,8 @@ class OS13kWindow extends HTMLElement
             {
                 // create canvas
                 this.WriteToFrame(
-                    `<canvas id=c width=1920 height=1080 style=width:100%;background:${
-                    program.isShader ? '#000' : '#fff' }>`);
+                    `<style>canvas{width:100%;background:${ 
+                        program.isShader ? '#000' : '#fff' }}</style><canvas id=c width=1920 height=1080>`);
 
                 // set body style
                 iframeDocument.body.style =
