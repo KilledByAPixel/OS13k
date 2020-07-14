@@ -815,7 +815,7 @@ Update = time=>
     trophyTrayIcon.innerHTML = trophies.length + '🏆';
     
     // update time
-    clockTrayIcon.title = new Date();
+    clockTrayIcon.title = Date();
     clockTrayIcon.innerHTML = clockTrayIcon.title.
         replace(/.* (\d+):(\d+).*/, (a,b,c)=> (b%12||12)+':'+c);
     
