@@ -1,0 +1,69 @@
+<body style=margin:0>
+<canvas id=C width=1920 height=1080 style=width:100%;height:100%></canvas>
+<br><span style=position:absolute;top:0;padding:9>
+f(x) = <input id=D value='Math.sin(x)'>
+<script>
+
+X=C.getContext('2d')
+//Math.sin(x)
+    
+a=b=10
+m=0
+    
+u=e=>
+{
+requestAnimationFrame(u);
+A=[]
+
+I=parent.OS13k.Input(window);
+a=parent.OS13k.Clamp(a+a*I.wheel/1e3,1e3,.1);
+
+try{eval('f=x=>'+D.value+'-0;');f(0)
+
+m=-1e9
+n=1e9
+for(i=0;i<1920;i++)
+{
+A[i]=f(a*i/960-a)
+A[i] > m && (m = A[i])
+A[i] < n && (n = A[i])
+}
+
+C.width|=0;
+X.strokeRect(960,0,0,2e3);
+X.strokeRect(0,540,2e3,0);
+
+
+
+X.lineWidth=9
+for(i=0;i<1920;i++)
+X.lineTo(i, OS13k.Lerp(OS13k.Percent(A[i],m,n),0,1080))
+X.stroke();
+
+X.beginPath();
+p=I.mousex/innerWidth*2-1;
+
+
+X.font='4em"'
+X.fillStyle='#f00'
+
+X.fillText(a.toPrecision(3),9,530)
+X.textAlign='right';
+X.fillText(b.toPrecision(3),950,50)
+X.fillText(-b.toPrecision(3),950,1070)
+X.fillText(-a.toPrecision(3),1900,530)
+
+Y=f(a*p)
+X.fillText('x = '+p.toPrecision(3),1900,70)
+X.fillText('y = '+Y.toPrecision(3),1900,130)
+
+X.fill(X.arc(960+p*960,OS13k.Lerp(OS13k.Percent(Y,m,n),0,1080),19,0,7))
+
+
+}catch(e){}
+
+}
+
+u();
+
+</script>

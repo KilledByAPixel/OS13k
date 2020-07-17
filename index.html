@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?v162></script>
+<script src=programs.js?v163></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -649,7 +649,8 @@ class _OS13k
             keydown:   inputWindow.document.OS13kInput ? inputWindow.document.OS13kInput.keydown : [],
             mousedown: inputWindow.document.OS13kInput ? inputWindow.document.OS13kInput.mousedown : [],
             mousex:    inputWindow.document.OS13kInput ? inputWindow.document.OS13kInput.mousex : 0,
-            mousey:    inputWindow.document.OS13kInput ? inputWindow.document.OS13kInput.mousey : 0
+            mousey:    inputWindow.document.OS13kInput ? inputWindow.document.OS13kInput.mousey : 0,
+            wheel : 0
         };
 
         // input functions
@@ -659,6 +660,7 @@ class _OS13k
         inputWindow.onmouseup   = e=> input.mousedown[e.button] = 0;
         inputWindow.onmousemove = e=> (input.mousex = e.x, input.mousey = e.y);
         inputWindow.onblur      = e=> (input.keydown = [], input.mousedown = []);
+        inputWindow.onwheel     = e=> input.wheel = e.deltaY;
 
         // return last frame input
         return inputCopy || input;
@@ -1560,7 +1562,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             this.iframe.onload = ()=> loadFrame();
-            this.iframe.src = program.src + '?v92';
+            this.iframe.src = program.src + '?v93';
             
             // load from template (for JS13k)
             //loadFrame(this.WriteToFrame(document.getElementsByName(program.name)[0].innerHTML));
