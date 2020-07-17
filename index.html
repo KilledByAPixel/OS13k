@@ -519,6 +519,9 @@ class _OS13k
             xTEXTURE_MIN_FILTER  = 10241,
             xLINEAR              = 9729;
 
+        if (!x)
+            return;
+
         // create a simple pass through vertex shader
         const vertexShader = x.createShader(xVERTEX_SHADER);
         x.shaderSource(vertexShader, '#version 300 es\nin vec4 c;void main(){gl_Position=c;}');
@@ -582,6 +585,9 @@ class _OS13k
             xTRIANGLE_FAN  = 6,
             xTEXTURE_2D    = 3553;
         
+        if (!x)
+            return;
+
         // set uniforms
         x.uniform3f(x.getUniformLocation(shaderProgram, 'iResolution'), canvas.width, canvas.height, 1);
         x.uniform1f(x.getUniformLocation(shaderProgram, 'iTime'), time);
