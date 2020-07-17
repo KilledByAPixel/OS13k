@@ -1,4 +1,6 @@
-<style>body{background:#111;color:#fff;user-select:none;text-align:center;overflow:hidden}</style><button onclick=a.click(x.drawImage(v,0,0),a.href=c.toDataURL`image/jpeg`)>📷</button>
-
-<button onclick="this.innerHTML=B?(M.stop(),a.href=window.URL.createObjectURL(new Blob(B,x)),D.disabled=B=0,'🎥'):(B=[],M=new MediaRecorder(S,x={type:'video/webm'}),M.ondataavailable=e=>B.push(e.data),M.start(9),'🛑')">🎥</button>
-<button id=D onclick=a.click(D.disabled=1) disabled>💾</button><p><video id=v style=width:100% autoplay src onerror="navigator.mediaDevices.getUserMedia({audio:1,video:{width:640,height:480}}).then(s=>S=v.srcObject=s);x=c.getContext`2d`"muted></video><a id=a download style=display:none><canvas id=c width=640 height=480><script>B=0</script>
+<body bgcolor=#000 style=margin:0>
+<video style=width:100%;height:100% id=V autoplay src onerror="navigator.mediaDevices.getUserMedia({audio:1,video:{width:R=640,height:480}}).then(s=>S=V.srcObject=s)"muted></video>
+<a id=A download style=display:none><canvas id=c  width=640 height=480></a>
+<div style=position:absolute;top:3;left:3>
+<button onclick=A.click(c.getContext`2d`.drawImage(V,0,0),A.href=c.toDataURL`image/jpeg`)>📷</button>
+<button onclick="this.innerHTML=(R=!R)?(M.stop(),A.click(A.href=window.URL.createObjectURL(new Blob(B,X))),'🎥'):(B=[],M=new MediaRecorder(S,X={type:'video/webm'}),M.ondataavailable=e=>B.push(e.data),M.start(9),'🛑')">🎥

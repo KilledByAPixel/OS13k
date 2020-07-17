@@ -1,13 +1,15 @@
 <body style=margin:0>
 <canvas id=C width=1920 height=1080 style=width:100%;height:100%></canvas>
 <br><span style=position:absolute;top:0;padding:9>
-f(x) = <input id=D value='Math.sin(x)'>
+f(x) = <input id=D>
 <script>
+
+D.focus();
 
 X=C.getContext('2d')
 //Math.sin(x)
     
-a=b=10
+a=10
 m=0
     
 u=e=>
@@ -18,7 +20,8 @@ A=[]
 I=parent.OS13k.Input(window);
 a=parent.OS13k.Clamp(a+a*I.wheel/1e3,1e3,.1);
 
-try{eval('f=x=>'+D.value+'-0;');f(0)
+if (D.value)
+try{eval('f=x=>'+D.value);f(0)
 
 m=-1e9
 n=1e9
@@ -33,6 +36,11 @@ C.width|=0;
 X.strokeRect(960,0,0,2e3);
 X.strokeRect(0,540,2e3,0);
 
+if (m==n)
+{
+m = m+1
+n = n-1
+}
 
 
 X.lineWidth=9
@@ -49,8 +57,8 @@ X.fillStyle='#f00'
 
 X.fillText(a.toPrecision(3),9,530)
 X.textAlign='right';
-X.fillText(b.toPrecision(3),950,50)
-X.fillText(-b.toPrecision(3),950,1070)
+X.fillText(m.toPrecision(3),950,50)
+X.fillText(n.toPrecision(3),950,1070)
 X.fillText(-a.toPrecision(3),1900,530)
 
 Y=f(a*p)
