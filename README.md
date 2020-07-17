@@ -13,7 +13,7 @@ It includes native support for Shadertoys, Dweets, ZzFX sounds, music, trophies,
 
 ## The Plan
 - The idea is to build a tiny OS to host a variety of games, music, and apps that fits in 13 kilobytes
-- The core of OS13k is around 7k zipped, and by using it's shared features we can pack a lot into 13k
+- The core of OS13k is around 10k zipped, and by using it's shared features we can pack a lot into 13k
 - Programs should be in the 100-500 byte range, what matters most is how well it zips with everything else
 - We plan to fit 10-20 programs [(probably not 26!)](http://js13kgames.com/entries/26-games-in-1) 😅
 - **A very important rule for JS13k is that all content must be new, so no old stuff!**
