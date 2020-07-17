@@ -89,6 +89,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 - ZzFXM music shoud only be played by the Music Player, you can add a new songs to the library
 - We can have music generators, synth instruments, and maybe even mini albums
 - The idea is that players can listen to music while playing with other games and apps
+- Other JS13k games can add their music to OS13k, and users can also paste in music
 - Music programs should continue playing if the frame loses focus, but reduced graphics if necessary to lower the load
 - OS13k.GetAnalyser() - returns a 32x32 music analyser canvas
 - OS13k.GetAnalyserData(i) - returns index into a 32 length array of frequency volumes normalized between 0-1
