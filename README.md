@@ -117,6 +117,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 - the object format is {x, y, keypress, keydown, mousex, mousey, mousepress, mousedown}
 - x and y is a -1 to 1 direction from WASD or direction buttons
 - mousex and mousey is the mouse position
+- wheel is the mouse wheel delta
 - keypress and mousepress are arrays, an element is 1 if that key is pressed
 - keydown and mousedown are arrays, an element is 1 if that key is down
 - *See System/Test/InputTest for an example*
