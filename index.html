@@ -1562,7 +1562,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             this.iframe.onload = ()=> loadFrame();
-            this.iframe.src = program.src + '?v95';
+            this.iframe.src = program.src + '?v96';
             
             // load from template (for JS13k)
             //loadFrame(this.WriteToFrame(document.getElementsByName(program.name)[0].innerHTML));
@@ -1930,11 +1930,10 @@ zzfxG = (volume = 1, randomness = .05, frequency = 220, attack = 0, sustain = 0,
     
     // init parameters and helper functions
     let PI2 = Math.PI*2,
-    random = r=> 1 + r*2*Math.random() - r,
     sign = v=> v>0? 1 : -1,
     length = OS13k.Clamp(attack + decay + sustain + release + delay, 9*sampleRate),
     startSlide = slide *= 500 * PI2 / sampleRate**2,
-    startFrequency = frequency *= random(randomness) * PI2 / sampleRate,
+    startFrequency = frequency *= (1 + randomness*2*Math.random() - randomness) * PI2 / sampleRate,
     modPhase = sign(modulation) * PI2/4,
     t=0, tm=0, i=0, j=1, r=0, c=0, s=0;
 
@@ -1977,8 +1976,11 @@ zzfxG = (volume = 1, randomness = .05, frequency = 220, attack = 0, sustain = 0,
                 buffer[i - delay|0]/2) : s;              // sample delay
         }
 
-        t += random(noise);                 // noise
-        tm += random(noise);                // modulation noise
+        t += 1 - noise + (Math.sin(i)+1)*1e9%2*noise;     // noise
+        tm += 1 - noise + (Math.sin(i)**2+1)*1e9%2*noise; // modulation noise
+
+        //t += random(noise);                 // noise
+        //tm += random(noise);                // modulation noise
         frequency += slide += deltaSlide;   // frequency slide
 
         if (j && ++j > pitchJumpTime)       // pitch jump
