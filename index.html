@@ -62,7 +62,7 @@ body
     border:2px solid;
     left:-2;
 }
-.taskbarIcon { width:50; height:40; text-shadow:1px 1px 3px#000; }
+.taskbarIcon { width:50; height:40; text-shadow:1px 1px 3px#000; overflow:hidden; }
 .programActive,
 .taskbarIconActive         { background:linear-gradient(#ff8,#fff); }
 .taskbarIcon:hover         { background:linear-gradient(#fff,#44f); }
@@ -1087,7 +1087,7 @@ class OS13kProgram extends HTMLElement
     {
         // icon
         this.icon = icon;
-        this.innerHTML = '<span style="pointer-events:none;width:45;text-shadow:1px 1px 3px#000;text-align:center">' + icon;
+        this.innerHTML = '<span style="pointer-events:none;width:45;text-shadow:1px 1px 3px#000;text-align:center;overflow:hidden">' + icon;
         
         // name and folder
         this.innerHTML += `<div style=flex:1;padding-right:9;pointer-events:none>${
@@ -1427,7 +1427,7 @@ class OS13kWindow extends HTMLElement
         {
             // get type of user code, html, shadertoy, or dweet
             program.userProgram && (program.info.code.trim()[0] != '<' ?
-                program.isDweet = !( program.isShader = program.info.code.search(/void\s+mainImage/) >= 0) :
+                program.isDweet = !(program.isShader = program.info.code.search(/void\s+mainImage/) >= 0) :
                 program.isDweet = program.isShader = 0);
             const hasExtension = program.isDweet | program.isShader;
 
