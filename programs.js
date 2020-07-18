@@ -39,10 +39,11 @@ programStubs =
 ]],
 [,'🛠️',,,,'Apps',,
 [
-    ['apps/console.html','<span style=color:#0f0;background:#000;font-family:monospace>JS>'],
     ['apps/timer.html','⌛',400,139,sticky|reload],
-    ['apps/camera.html','📸',1280,960],
     ['apps/calculator.html','🧮'],
+    ['apps/grapher.html','📈'],
+    ['apps/console.html','<span style=color:#0f0;background:#000;font-family:monospace>JS>'],
+    ['apps/camera.html','📸',1280,960],
     ['apps/textEditor.html','📝'],
 ]],
 [,'🎮',,,,'Games',,
