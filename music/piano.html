@@ -58,6 +58,7 @@ R = e=>
 
 // play note
 P = e=> e < 0 || A[e] ||         // is note valid and not playing
+parent.document.activeElement != OS13kWindow ||
 (
     // change button color
     b = eval('B' + e),           // get the button

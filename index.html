@@ -1415,7 +1415,7 @@ class OS13kWindow extends HTMLElement
 
     SetErrorText(text, pos)
     {
-        this.errorText.value = text + (pos ? ` (${pos[0] + ':' + (pos[1]-1)})` : '');
+        this.errorText.value = text + (pos ? ` (${(pos[1]-1) + ':' + pos[0]})` : '');
         this.errorText.style.display = text != undefined ? '' : 'none';
         return true;
     }
@@ -1562,7 +1562,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             this.iframe.onload = ()=> loadFrame();
-            this.iframe.src = program.src + '?v94';
+            this.iframe.src = program.src + '?v95';
             
             // load from template (for JS13k)
             //loadFrame(this.WriteToFrame(document.getElementsByName(program.name)[0].innerHTML));
