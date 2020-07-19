@@ -308,13 +308,12 @@ class _OS13k
     // convert string to hash value like Java's hashCode()
     Hash    (s)               { return [...s].reduce((a,c)=> c.charCodeAt()+a*31|0, 0); }
     
-    // seeded random numbers - Mersenne Twister
+    // seeded random numbers - Xorshift
     Random(max=1, min=0)
     {
-        // seeded random numbers - Mersenne Twister
         this.randomSeed ^= this.randomSeed << 13 || 1;
-        this.randomSeed ^= this.randomSeed >> 17;
-        return this.Percent(Math.abs(this.randomSeed ^= this.randomSeed << 5) % 1e9 / 1e9, min, max);
+        this.randomSeed ^= this.randomSeed >> 17; // note: >>> would use the full 32 bit range
+        return this.Lerp(Math.abs(this.randomSeed ^= this.randomSeed << 5) % 1e9 / 1e9, min, max);
     }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1931,7 +1930,7 @@ zzfxG = (volume = 1, randomness = .05, frequency = 220, attack = 0, sustain = 0,
     // init parameters and helper functions
     let PI2 = Math.PI*2,
     sign = v=> v>0? 1 : -1,
-    length = OS13k.Clamp(attack + decay + sustain + release + delay, 9*sampleRate),
+    length = OS13k.randomSeed = OS13k.Clamp(attack + decay + sustain + release + delay, 9*sampleRate),
     startSlide = slide *= 500 * PI2 / sampleRate**2,
     startFrequency = frequency *= (1 + randomness*2*Math.random() - randomness) * PI2 / sampleRate,
     modPhase = sign(modulation) * PI2/4,
@@ -1976,11 +1975,9 @@ zzfxG = (volume = 1, randomness = .05, frequency = 220, attack = 0, sustain = 0,
                 buffer[i - delay|0]/2) : s;              // sample delay
         }
 
-        t += 1 - noise + (Math.sin(i)+1)*1e9%2*noise;     // noise
-        tm += 1 - noise + (Math.sin(i)**2+1)*1e9%2*noise; // modulation noise
+        t += 1 + OS13k.Random(noise, -noise);  // noise
+        tm += 1 + OS13k.Random(noise, -noise); // modulation noise
 
-        //t += random(noise);                 // noise
-        //tm += random(noise);                // modulation noise
         frequency += slide += deltaSlide;   // frequency slide
 
         if (j && ++j > pitchJumpTime)       // pitch jump
