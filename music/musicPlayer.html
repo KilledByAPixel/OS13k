@@ -123,7 +123,7 @@ A=k=>
 }
 
 // remove song
-R=k=> confirm`⚠️ Delete?` &&                          // confirm to remove
+R=k=> confirm(`⚠️ Delete ${ L[S.selectedIndex].n }?`) &&     // confirm to remove
         B(localStorage[L[S.selectedIndex].k] = 0);    // remove and rebuild
 
 // check if music string is safe and use use eval to get code

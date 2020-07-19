@@ -766,7 +766,7 @@ CreateUserFolder = (parentStubs, stub, userFolderName, oldStubs)=>
     const folderStubs = 
     [
         [,'📌',,,newUserProgram,'New User Program',,,,userFolderName],
-        [,'⚠️',,,deleteUserPrograms, userFolderName ? `Delete User Folder "${userFolderName}"` : 'Delete User Programs',,,,userFolderName]
+        [,'⚠️',,,deleteUserPrograms, userFolderName ? `Delete User Folder ${userFolderName}` : 'Delete User Programs',,,,userFolderName]
     ];
     
     // add subfolders
@@ -1561,7 +1561,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             this.iframe.onload = ()=> loadFrame();
-            this.iframe.src = program.src + '?v103';
+            this.iframe.src = program.src + '?v104';
             
             // load from template (for JS13k)
             //loadFrame(this.WriteToFrame(document.getElementsByName(program.name)[0].innerHTML));
