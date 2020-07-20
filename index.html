@@ -904,7 +904,7 @@ CloseMenus = ()=>
 // try to give trophy if key is valid
 CheckForTrophy = (key, keyParts = key ? key.split(',') : [])=>
     keyParts.shift() == 'OS13kTrophy' &&
-        OS13k.Trophy(...keyParts, localStorage[key]),
+        (keyParts.length = 3, OS13k.Trophy(...keyParts, localStorage[key])),
 
 // stop any current or queued speech
 StopSpeech = ()=> speechSynthesis && speechSynthesis.cancel(),
