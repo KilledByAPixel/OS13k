@@ -1117,6 +1117,34 @@ class OS13kProgram extends HTMLElement
             // set window to be active and clamp
             this.window.SetActive(1, 1);
         }
+        else if (this.flags & newUserProgram)
+        {
+            // create user program with default code
+            this.programMenu.NewUserProgram(undefined, this.userFolder);
+        }
+        else if (this.flags & deleteUserPrograms && confirm(this.name + '?'))
+        {
+            // close windows with matching folder
+            [...desktop.children].map(child=> child.Close && (this.userFolder ?
+                child.program.info.userFolder == this.userFolder : child.program.info.code != undefined) && child.Close());
+            
+            // remove user program infos
+            programInfos = programInfos.filter(info=> info.code == undefined || this.userFolder && info.userFolder != this.userFolder);
+            
+            // rebuild menu and play sound
+            RebuildMenu(OS13k.Save(SystemSound(soundClose, 4)));
+        }
+        else if (this.flags & closeAll)
+        {
+            // close all windows if no src or folder and play sound
+            [...desktop.children].map(child=> child.Close && child.Close());
+
+            // reset window open position
+            windowOpenX = startOpenOffset;
+            windowOpenY = startOpenOffset + taskbarHeight;
+
+            OS13k.Trophy('☕','OS13k','Coffee Is For Closers','Closed All');
+        }
         else if (this.src || this.userProgram)
         {
             // get saved window position
@@ -1134,34 +1162,6 @@ class OS13kProgram extends HTMLElement
 
             // update info and save
             this.Save();
-        }
-        if (this.flags & newUserProgram)
-        {
-            // create user program with default code
-            this.programMenu.NewUserProgram(undefined, this.userFolder);
-        }
-        if (this.flags & deleteUserPrograms && confirm(this.name + '?'))
-        {
-            // close windows with matching folder
-            [...desktop.children].map(child=> child.Close && (this.userFolder ?
-                child.program.info.userFolder == this.userFolder : child.program.info.code != undefined) && child.Close());
-            
-            // remove user program infos
-            programInfos = programInfos.filter(info=> info.code == undefined || this.userFolder && info.userFolder != this.userFolder);
-            
-            // rebuild menu and play sound
-            RebuildMenu(OS13k.Save(SystemSound(soundClose, 4)));
-        }
-        if (this.flags & closeAll)
-        {
-            // close all windows if no src or folder and play sound
-            [...desktop.children].map(child=> child.Close && child.Close());
-
-            // reset window open position
-            windowOpenX = startOpenOffset;
-            windowOpenY = startOpenOffset + taskbarHeight;
-
-            OS13k.Trophy('☕','OS13k','Coffee Is For Closers','Closed All');
         }
     }
     
