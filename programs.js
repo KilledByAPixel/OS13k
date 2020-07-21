@@ -41,7 +41,7 @@ programStubs =
 [
     ['apps/timer.html','⌛',400,139,sticky|reload],
     ['apps/grapher.html','📈'],
-    ['apps/camera.html','📸',1280,960],
+    ['apps/camera.html','📸',640,480],
     ['apps/console.html','<span style=color:#0f0;background:#000;font-family:monospace>JS>']
 ]],
 [,'🎮',,,,'Games',,
