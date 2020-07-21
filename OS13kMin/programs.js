@@ -33,20 +33,10 @@ programStubs =
 ]],
 [,'🛠️',,,,'Apps',,
 [
+    ['music/musicPlayer.html','🎵',400,330,sticky],
+    ['music/visualizer.dweet.js','👁️',,,awake|full|resize|code],
     ['apps/timer.html','⌛',400,139,sticky|reload],
-    ['apps/grapher.html','📈'],
     ['apps/camera.html','📸',1280,960],
     ['apps/console.html','<span style=color:#0f0;background:#000;font-family:monospace>JS>']
 ]],
-[,'🎮',,,,'Games',,
-[
-    ['games/bogusSlopes.dweet.js','🏂🏻'],
-    ['games/dontFall.dweet.js','🙉'],
-]],
-[,'🎶',,,,'Music',,
-[
-    ['music/musicPlayer.html','🎵',400,330,sticky],
-    ['music/piano.html','🎹',520,510,reload],
-    ['music/visualizer.dweet.js','👁️',,,awake|full|resize|code],
-]]
 ];
