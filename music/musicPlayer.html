@@ -135,29 +135,24 @@ W=k=> (k/60|0) + ((k = k%60|0) <=9 ? ':0' : ':') + k;
 // test song
 localStorage['OS13kMusic,OS13k Test'] = JSON.stringify(
 [
-    [                                        // Instruments
-      [,0,219,,,,,1.1,,-.1,-50,-.05,-.01,1], // #1 - Snare
-      [2,0,84,,,.1,,.7,,,,.5,,6.7,1,.05]     // #2 - Kick drum
+    [                                        // instruments
+      [,0,219,,,,,1.1,,-.1,-50,-.05,-.01,1], // snare
+      [2,0,84,,,.1,,.7,,,,.5,,6.7,1,.05]     // kick
     ],
-    [                                        // Patterns
-      [             // Pattern 0
-        [           // Channel 0
-          1, 1, 0,  // Using instrument 1, play C-1
-          0, 0, 0,
-          1, 5, 32, // Using instrument 1, play E-1 with 50% attenuation
-          0, 0, 0
+    [                        // patterns
+        [                    // pattern 1
+            [                // channel 0
+                0, -1,       // instrument 0, left speaker
+                1, 0, 5.5, 0 // channel notes
+            ],
+            [                // channel 1
+                1, 1,        // instrument 1, right speaker
+                8, 8.3, 3, 0 // channel notes
+            ]
         ],
-        [           // Channel 1
-          2, 8, 0,  // Using instrument 2, play G-1
-          2, 8, 16, // Using instrument 2, play G-1 with 25% attenuation
-          1, 3, 0,  // Using instrument 3, play D-1
-          0, 0, 0
-        ]
-      ]
     ],
-    [0, 0, 0, 0],   // Sequence, Play pattern 0 four times
-    4,              // Playback speed 4
-    [-1, 1]         // Panning info. ch1=left ch2=right
+    [0, 0, 0, 0], // sequence, play pattern 0 four times
+    4             // playback, speed 4
 ]
 ); // test song
 

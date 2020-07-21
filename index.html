@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?v166></script>
+<script src=programs.js?v167></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -217,13 +217,18 @@ span               { white-space:nowrap; }
 ///////////////////////////////////////////////////////////////////////////////
 // OS13k Debug (remove from minified)
 
-const OS13kVersion = 70;
+const OS13kVersion = 71;
 {
     // version check, clear local storage if older
     if (localStorage.OS13k && localStorage.OS13kVersion != OS13kVersion)
     {
         alert('OS13k version out of date! System reset in 3, 2, 1...');
+
+        // save what we can
+        const save = localStorage.OS13kVersion == 70 ? localStorage.OS13k : 0;
         localStorage.clear();
+        if (save)
+          localStorage.OS13k = save;
     }
 
     localStorage.OS13kVersion = OS13kVersion;
@@ -1561,7 +1566,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             this.iframe.onload = ()=> loadFrame();
-            this.iframe.src = program.src + '?v104';
+            this.iframe.src = program.src + '?v106';
             
             // load from template (for JS13k)
             //loadFrame(this.WriteToFrame(document.getElementsByName(program.name)[0].innerHTML));
@@ -2002,96 +2007,68 @@ zzfxG = (volume = 1, randomness = .05, frequency = 220, attack = 0, sustain = 0,
 ///////////////////////////////////////////////////////////////////////////////
 //! ZzFXM (v1.0.0) | (C) Keith Clark | MIT | https://github.com/keithclark/ZzFXM
 
-zzfxM = (instruments, patterns, sequence, speed = 6, panning) => {
-  let SAMPLE_RATE = defaultSampleRate;
-  let BPM = 125;                             // beats per min - always 125
-  let ticksPerSecond = 1000 / (2500 / BPM);
-  let tickRowSize = SAMPLE_RATE / (ticksPerSecond / speed) | 0;
-  let bufferStart = 0
+zzfxM = (instruments, patterns, sequence, speed = 6) => {
+  const SAMPLE_RATE = defaultSampleRate;
+  const BPM = 125 ;
+  const tickRowSize = SAMPLE_RATE * speed / (BPM * .4) | 0;
+  const sampleCache = {};
+  const channelBuffers = [[],[]];
+  let bufferStart = 0;
   let bufferPos;
   let bufferOffset;
   let sampleBuffer;
-  let sampleCache = {};
-  let sampleCacheKey;
   let sampleOffset;
-  let noteIndex;
-  let pan;
-  let attenuation;
-  let instrument;
   let instrumentParams;
-  let period;
-  let leftChannelBuffer=[];
-  let rightChannelBuffer=[];
 
   sequence.map(patternIndex => {
 
-    // Walk over each channel of the pattern.
+    // for each channel of pattern
     patterns[patternIndex].map((channel, channelIndex) => {
 
-      // for each channel we need to reset the buffer offset so we can layer
-      // sample data.
-      bufferOffset = bufferStart;
+      // reset buffer offset so we can layer sample data
+      bufferOffset = bufferStart
 
-      // Determin the panning value for this channel. If no panning was provided
-      // we fallback to alternating each song channel between the left and right
-      // speakers (even channel indexes will come from the left speaker, odd
-      // from the right speaker)
+      // read channel data
+      for (let noteIndex = 2; noteIndex < channel.length; bufferOffset += tickRowSize) {
 
-      // OS13k - alternate left, center, right if no panning provided
-      pan = panning ? .5 + (panning[channelIndex] || 0) / 2 : channelIndex%2*2-1;
+        // play a note using the current instrument
+        const note = channel[noteIndex++] || 0
+        if (note) {
 
-      // Read the channel data.
-      for (noteIndex = 0; noteIndex < channel.length; bufferOffset += tickRowSize) {
+          // set instrument
+          const instrument = channel[sampleOffset = 0] | 0;
 
-        // If there's a new instrument, set it.
-        instrument = channel[noteIndex++] || instrument;
+          // create a unique key for this instrument & note
+          const sampleCacheKey = [instrument, note];
 
-        // If we have a period then we need to play a note using the current
-        // instrument.
-        if (period = channel[noteIndex++])
+          // build and cache the ZzFX sample if new
+          sampleBuffer = sampleCache[sampleCacheKey] || (
+            instrumentParams = [...instruments[instrument]],
+            instrumentParams[2] *= 2 ** ((note - 12) / 12),
+            sampleCache[sampleCacheKey] = zzfxG(...instrumentParams)
+          );
 
-          // Create a unique key for this sample (this will coerced to a string)
-          //sampleCacheKey = [period,instrument];
+          sampleBuffer = sampleCache[sampleCacheKey];
+        }
 
-          // If we haven't done so already, build and cache the ZzFX sample for
-          // the current period and instrument. Without caching the browser will
-          // will hang.
-          sampleBuffer = sampleCache[sampleCacheKey = [period,instrument,
-            
-                // Reset the attenuation and sample buffer offset so we can play a new
-                // note.
-                attenuation = sampleOffset = 0
-        
-            ]] || (
-                instrumentParams = [...instruments[instrument - 1]],
-                instrumentParams[2] = OS13k.Note(period - 12, instrumentParams[2]),
-                sampleCache[sampleCacheKey] = zzfxG(...instrumentParams));
+        // get note volume
+        const volume = 1 - note % 1;
 
-        // Update the channel attenuation value. We'll use this to control the
-        // volume when rendering the sample slice for this row.
-        attenuation = channel[noteIndex++] / 64 || attenuation;
-
-        // Fill the left and right audio buffers with data for this channel.
-        // If we have sample data (a new note or the remaining sample data from
-        // the previous row) then we attenuate it for the left channel using the
-        // channel panning value and again for the right channel. The values are
-        // then merged with the values already in the buffer. If the buffer is
-        // empty we need to prefill it with `0` values for periods of slience to
-        // prevent the clicking and popping noises caused by `undefined` values
-        // in some browsers.
-        for (bufferPos = bufferOffset; bufferPos < bufferOffset + tickRowSize;)
-        {
-            const sample = sampleBuffer && (sampleBuffer[sampleOffset++] * (1 - attenuation)) || 0;
-            leftChannelBuffer[bufferPos] = (leftChannelBuffer[bufferPos] || 0) + sample * (1 - pan);
-            rightChannelBuffer[bufferPos] = (rightChannelBuffer[bufferPos++] || 0) + sample * pan;
+        // fill the left and right audio buffers with sample data
+        for (bufferPos = bufferOffset; bufferPos < bufferOffset + tickRowSize; ++bufferPos) {
+          const sample = sampleBuffer[sampleOffset++] * volume || 0;
+          channelBuffers[0][bufferPos] = (channelIndex && channelBuffers[0][bufferPos]) - sample * channel[1] + sample;
+          channelBuffers[1][bufferPos] = (channelIndex && channelBuffers[1][bufferPos]) + sample * channel[1];
         }
       }
     });
 
+    // reset start of buffer
     bufferStart = bufferPos;
   });
 
-  return [leftChannelBuffer, rightChannelBuffer];
+  // return stereo channels
+  return channelBuffers;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
