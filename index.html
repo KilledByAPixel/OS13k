@@ -2018,6 +2018,7 @@ zzfxM = (instruments, patterns, sequence, speed = 6) => {
   let bufferOffset;
   let sampleBuffer;
   let sampleOffset;
+  let attenuation;
   let instrumentParams;
 
   sequence.map(patternIndex => {
@@ -2036,7 +2037,7 @@ zzfxM = (instruments, patterns, sequence, speed = 6) => {
         if (note) {
 
           // set instrument
-          const instrument = channel[sampleOffset = 0] | 0;
+          const instrument = channel[attenuation = sampleOffset = 0] | 0;
 
           // create a unique key for this instrument & note
           const sampleCacheKey = [instrument, note];
@@ -2051,12 +2052,12 @@ zzfxM = (instruments, patterns, sequence, speed = 6) => {
           sampleBuffer = sampleCache[sampleCacheKey];
         }
 
-        // get note volume
-        const volume = 1 - note % 1;
+        // set note attenuation
+        attenuation = note % 1 || attenuation;
 
         // fill the left and right audio buffers with sample data
         for (bufferPos = bufferOffset; bufferPos < bufferOffset + tickRowSize; ++bufferPos) {
-          const sample = sampleBuffer[sampleOffset++] * volume || 0;
+          const sample = sampleBuffer[sampleOffset++] * (1-attenuation) || 0;
           channelBuffers[0][bufferPos] = (channelIndex && channelBuffers[0][bufferPos]) - sample * channel[1] + sample;
           channelBuffers[1][bufferPos] = (channelIndex && channelBuffers[1][bufferPos]) + sample * channel[1];
         }
