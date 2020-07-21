@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?v168></script>
+<script src=programs.js?v169></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -1566,7 +1566,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             this.iframe.onload = ()=> loadFrame();
-            this.iframe.src = program.src + '?v107';
+            this.iframe.src = program.src + '?v108';
             
             // load from template (for JS13k)
             //loadFrame(this.WriteToFrame(document.getElementsByName(program.name)[0].innerHTML));
@@ -2032,7 +2032,7 @@ zzfxM = (instruments, patterns, sequence, speed = 6) => {
       for (let noteIndex = 2; noteIndex < channel.length; bufferOffset += tickRowSize) {
 
         // play a note using the current instrument
-        const note = channel[noteIndex++] || 0
+        const note = channel[noteIndex++] | 0;
         if (note) {
 
           // set instrument
