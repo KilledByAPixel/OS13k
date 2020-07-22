@@ -28,7 +28,7 @@ Loop <input type=checkbox id=O><br><canvas id=C style=width:350;height:29;image-
 
 <template name=Visualizer>for(x.fillRect(0,0,2e3,2e3),x.fillStyle="#0003",t?x.lineWidth=9:h=[],x.strokeStyle="#fff",i=32;i--;x.beginPath(x.strokeStyle=`hsl(${-99-9*i} 99%${9+m/2}%)`,x.stroke()))for(m=199*OS13k.GetAnalyserData(i),j=5;j--;)x.arc(960,540,256+(j+1&2?1:-1)*m,a=2*((2&j)/2-8.5+i)*Math.PI/32,a);x.drawImage(c,-40,-20,2e3,1120)</template>
 
-<template name="Don't Fall">for(t||(A=B=P=8,a=b=p=0),I=OS13k.Input(window),a=-I.x/2,k=I.y,b-=.006,A-=a,B-=b,r=.2-B/240,P-=r,B+=r,c.width=512,i=3e3;X=63&i,Y=i>>6,i--;x.fillRect(8*X,8*Y,8,8))y=Y/3+B+P,z=X/3+4*(y>>4),G=T(y+z^z-y),M=G>5,A^X|B^Y|!M||(OS13k.PlaySeed(96*G,p+k*k,.3),b=k?p/3:.2,p=k?0:p>1?1:p+G%2/12),y-=P/2,z+=A/3,g=T(y+z^z-y),m=t<32?12+g%8+Y-B:(G^g)+Y-B&31,x.fillStyle=`hsl(${M*G*30+m}deg 99%${50*M+m*(1-S(t/16)**3)/2}%`;x.font=16+16*p+"px a",x.fillText(k?"🙉":"🐵",8*A-8-8*p,8*B),B<48&&OS13k.Trophy([..."🐢🦒🦉🦇🦜🕊🐒🦅"][y=32-y>>5],"Dont Fall",16*y+"ft")</template>
+<template name="Don't Fall">for(t||(A=B=P=8,a=b=p=0),I=OS13k.Input(window),a=-I.x/2,k=I.y,b-=.006,A-=a,B-=b,r=.2-B/240,P-=r,B+=r,c.width=512,i=3e3;X=63&i,Y=i>>6,i--;x.fillRect(8*X,8*Y,8,8))y=Y/3+B+P,z=X/3+4*(y>>4),G=T(y+z^z-y),M=G>5,A^X|B^Y|!M||(OS13k.PlaySeed(96*G,p+k*k,.3),b=k?p/3:.2,p=k?0:p>1?1:p+G%2/12),y-=P/2,z+=A/3,g=T(y+z^z-y),m=t<32?12+g%8+Y-B:(G^g)+Y-B&31,x.fillStyle=`hsl(${M*G*30+m}deg 99%${50*M+m*(1-S(t/16)**3)/2}%`;x.font=16+16*p+"px a",x.fillText(k?"🙉":"🐵",8*A-8-8*p,8*B),B<48&&OS13k.Trophy([..."🐢🦒🦉🦇🦜🕊🐒🦅"][y=32-y>>5],"Don't Fall",16*y+"ft")</template>
 
 <template name="Bogus Slopes">i=OS13k.Input(window),(!t||i.keypress[32])&&(T=U=V=F=0,W=[],Y=540,X=-700),X>0||(x.fillStyle="#ddd8",x.fillRect(0,0,2e3,2e3),x.font='9em"',x.textAlign="center",x.textBaseline="middle",x.scale(-1,1),F=Math.min(F+.2,19+T/1e4),W.push((60*t|0)%Math.max(9,19-T/1e4|0)?{t:"●",x:X,y:Y,c:`hsl(${T} 99%${U<-1?50:100}%)`}:{t:[..."🌲🌳⭐"][2*Math.random()+(Math.random()<.1)|0],x:-2200,y:79+900*Math.random()}),W=W.filter(t=>(x.fillStyle=t.c||R(),x.fillText(t.t,t.x+=F*("⭐"==t.t?.7:1),t.y),t.x<99&&("●"==t.t||(Math.hypot(X-t.x,Y-t.y)>99?1:(OS13k.PlaySeed("⭐"==t.t?169:121),U="⭐"==t.t?-9:F=9,0))))),x.fillText("🏂🏻",X=Math.max(X+(U*=.98),-1800),Y=OS13k.Clamp(Y+(V=.95*V-i.y),1e3,99)),x.scale(-1,1),x.textAlign="left",x.fillStyle=R(),x.fillText(s=(T+=F)/1e3|0,9,99),x.textAlign="right",x.fillStyle=R(255,0,0,9-t),x.fillText(d=OS13k.GetTrophy("Bogus Slopes","High Score"),c.width-9,99),s>99&&OS13k.Trophy("⭐","Bogus Slopes","100!"),X>0&&(OS13k.PlaySeed(370,5),s>d&&OS13k.Trophy("🏂🏻","Bogus Slopes","High Score",s)))</template>
 
@@ -190,7 +190,7 @@ const OS13kVersion = 72;
 // 4. Verify that it works the same
 // 5. HTML Minifier http://minifycode.com/html-minifier/
 // 6. Google Closure https://closure-compiler.appspot.com/home
-// 7. Terser no extra compression https://xem.github.io/terser-online/
+// 7. JavaScript Minifier https://javascript-minifier.com/
 // 8. Zip
 // 9. Advzip "advzip -z -4 -i 1000 OS13kMin.zip"
 
@@ -459,8 +459,8 @@ class _OS13k
         const popup = pu_.appendChild(document.createElement('div'));
         popup.style = 'position:relative;z-index:10000;width:200;padding:8;pointer-events:none;white-space:normal;text-align:center;background:linear-gradient(#eee,#888);box-shadow:9px 9px 19px;border:2px solid;border-radius:9px;';
         popup.innerHTML = html;
-        popup.speak = speak;
-        popup.speakLanguage = language;
+        popup.S = speak;
+        popup.L = language;
         popup.style.visibility = 'hidden';
     }
 
@@ -704,8 +704,8 @@ Update = time=>
     [...pu_.children].map((popup,i)=>
     {
         // speak popup
-        popup.speak && OS13k.Speak(popup.speak, 1, 1, 1, popup.speakLanguage);
-        popup.speak = 0;
+        popup.S && OS13k.Speak(popup.S, 1, 1, 1, popup.L);
+        popup.S = 0;
         
         if (!S.p)
             pu_.removeChild(popup);
@@ -1296,7 +1296,7 @@ class OS13kWindow extends HTMLElement
                     (c == ')' ? '' : ',') + c : a ) : iframeText;
 
             // show error messages from user code init
-            onerror = (message, source, line, col, e)=> {this.SetErrorText(e, e.stack && [col, line]); throw e};
+            onerror = (message, source, line, col, e)=> {this.SetErrorText(e, e.stack && [col, line])};
 
             // create dweet program
             iframeContent.eval(
