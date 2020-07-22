@@ -118,6 +118,21 @@ body
     justify-content:center;
 }
 </style>
+<div id=background></div>
+<div id=desktop>
+<div id=taskbar>
+<div id=taskbarSpace style=flex:1></div>
+<div id=tray></div>
+</div>
+<div id=popups style=float:right></div>
+<div id=programsMenu style=position:absolute></div>
+<div id=menu>
+<button id=buttonFullScreen>Full Screen
+<button id=buttonCode>Code
+<button id=buttonHelp>Help
+<button id=buttonResetSize>Reset Size
+<button id=buttonReload>Reload
+<button id=buttonClose>Close
 <template id=T>
 <style>
 :host
@@ -130,9 +145,9 @@ body
     border-radius:6px;
     overflow:hidden;
 }
-input, button,span { margin:4; }
-textarea           { padding:9; }
-span               { white-space:nowrap; }
+input, button, span { margin:4; }
+textarea            { padding:9; }
+span                { white-space:nowrap; }
 .titlebar
 {
     height:34;
@@ -164,10 +179,6 @@ span               { white-space:nowrap; }
     border:none;
     visibility:hidden;
 }
-#codeDisplay
-{
-    display:none;
-}
 #codeText
 {
     height:199;
@@ -195,21 +206,6 @@ span               { white-space:nowrap; }
 }
 </style>
 </template>
-<div id=background></div>
-<div id=desktop>
-<div id=taskbar>
-<div id=taskbarSpace style=flex:1></div>
-<div id=tray></div>
-</div>
-<div id=popups style=float:right></div>
-<div id=programsMenu style=position:absolute></div>
-<div id=menu>
-<button id=buttonFullScreen>Full Screen
-<button id=buttonCode>Code
-<button id=buttonHelp>Help
-<button id=buttonResetSize>Reset Size
-<button id=buttonReload>Reload
-<button id=buttonClose>Close
 <script>
 
 'use strict';
@@ -1265,7 +1261,7 @@ class OS13kWindow extends HTMLElement
 
         // create code/help display
         this.codeDisplay = this.shadowRoot.appendChild(document.createElement('div'));
-        this.codeDisplay.id = 'codeDisplay';
+        this.codeDisplay.style.display = 'none';
 
         // create code/help display
         this.codeText = this.codeDisplay.appendChild(document.createElement('textarea'));
@@ -1693,7 +1689,7 @@ class OS13kWindow extends HTMLElement
     ShowCode(silent)
     {
         // toggle showing code and play sound
-        this.codeDisplay.style.display = (this.showCode = !this.showCode) ? 'inline' : '';
+        this.codeDisplay.style.display = (this.showCode = !this.showCode) ? 'inline' : 'none';
         silent || SystemSound(this.program.help ? soundHelp : soundCode);
 
         this.program.help || OS13k.Trophy('👨‍💻','OS13k','Hacker','Viewed Code');
