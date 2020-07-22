@@ -1,8 +1,7 @@
 <template name=Help>
 <h2><i>Welcome to OS13k!</i></h2>
-<p>OS13k is a tiny operating system designed for JS13k. It has native support for ZzFX, music, trophies, and dweets.</p>
-<p>Earn trophies and build your music library by playing other JS13k games!</p>
-<p><u><b>Please keep this project confidential for now.</b></u></p>
+<p>OS13k is a tiny operating system designed for JS13k.</p>
+<p>It has native support for ZzFX, music, trophies, shadertoys, and dweets. Check the GitHub for more info.</p>
 <p>✌️😄 ❤️ OS13k Team
 </template>
 
@@ -256,6 +255,21 @@ span               { white-space:nowrap; }
 'use strict';
 
 ///////////////////////////////////////////////////////////////////////////////
+// OS13k Debug (remove from minified)
+
+const OS13kVersion = 72;
+{
+    // version check, clear local storage if older
+    if (localStorage.OS13k && localStorage.OS13kVersion != OS13kVersion)
+    {
+        alert('OS13k version out of date! System reset in 3, 2, 1...');
+        localStorage.clear();
+    }
+
+    localStorage.OS13kVersion = OS13kVersion;
+} // debug stuff
+
+///////////////////////////////////////////////////////////////////////////////
 // Minification Stuff
 
 {
@@ -272,7 +286,7 @@ span               { white-space:nowrap; }
 // @js_externs OS13k.Settings, OS13k.SaveSettings, OS13k.Input
 // @js_externs OS13k.CreateShader, OS13k.RenderShader
 // @js_externs OS13k.KeyDirection, OS13k.StripHTML, OS13k.Popup
-// @js_externs localStorage.OS13k, OS13k, zzfxG, source.gain
+// @js_externs localStorage.OS13k, localStorage.OS13kVersion, OS13k, zzfxG, source.gain
 // @js_externs iframeContent, iframeContent.OS13k, iframeContent.OS13kWindow
 // @js_externs iframeContent.zzfx, iframeContent.zzfxG
 // @js_externs settings.v, settings.m, settings.s, settings.p, settings.o
@@ -338,13 +352,13 @@ programStubs =
 [
     [,'🏆',,,full|resize|sticky,'Trophy Case'],
     [,'✏️',300,263,sticky|reload,'Sticky Note','Ctrl+B - Bold\nCtrl+I - Italic\nCtrl+U - Underline\n\Reload to clear'],
-    [1,'🕰️',198,198,sticky|code|awake,'Clock'],
+    ['dweet','🕰️',198,198,sticky|code|awake,'Clock'],
     [,'🎚️',470,190,sticky,'Settings']
 ]],
 [,'🛠️',,,,'Apps',,
 [
     [,'🎵',400,330,sticky,'Music Player'],
-    [1,'👁️',,,awake|full|resize|code,'Visualizer'],
+    ['dweet','👁️',,,awake|full|resize|code,'Visualizer'],
     [,'⌛',400,139,sticky|reload,'Timer'],
     [,'📸',640,480,,'Camera'],
     [,'<span style=color:#0f0;background:#000;font-family:monospace>JS>',,,,'Console']
@@ -1091,8 +1105,8 @@ class OS13kProgram extends HTMLElement
         super();
 
         // check for special extensions
-        this.isDweet =  src == 1;
-        this.isShader = src == 2;
+        this.isDweet =  src == 'dweet';
+        this.isShader = src == 'shader';
 
         // set icon data
         this.className  = 'program';
@@ -2061,6 +2075,7 @@ zzfxM = (instruments, patterns, sequence, speed = 6) => {
   let bufferOffset;
   let sampleBuffer;
   let sampleOffset;
+  let attenuation;
   let instrumentParams;
 
   sequence.map(patternIndex => {
@@ -2079,7 +2094,7 @@ zzfxM = (instruments, patterns, sequence, speed = 6) => {
         if (note) {
 
           // set instrument
-          const instrument = channel[sampleOffset = 0] | 0;
+          const instrument = channel[attenuation = sampleOffset = 0] | 0;
 
           // create a unique key for this instrument & note
           const sampleCacheKey = [instrument, note];
@@ -2094,12 +2109,12 @@ zzfxM = (instruments, patterns, sequence, speed = 6) => {
           sampleBuffer = sampleCache[sampleCacheKey];
         }
 
-        // get note volume
-        const volume = 1 - note % 1;
+        // set note attenuation
+        attenuation = note < 0 || note % 1 || attenuation;
 
         // fill the left and right audio buffers with sample data
         for (bufferPos = bufferOffset; bufferPos < bufferOffset + tickRowSize; ++bufferPos) {
-          const sample = sampleBuffer[sampleOffset++] * volume || 0;
+          const sample = sampleBuffer[sampleOffset++] * (1-attenuation) || 0;
           channelBuffers[0][bufferPos] = (channelIndex && channelBuffers[0][bufferPos]) - sample * channel[1] + sample;
           channelBuffers[1][bufferPos] = (channelIndex && channelBuffers[1][bufferPos]) + sample * channel[1];
         }
@@ -2160,5 +2175,62 @@ onunload = e=> StopSpeech();
 
 // try to update startup and kick off first update
 Update();
+
+///////////////////////////////////////////////////////////////////////////////
+// Mobile Support OPTIONAL
+
+// save if user was touching
+let wasTouching;
+    
+if (typeof ontouchstart != 'undefined')
+{
+    // remove hovers, they get stuck on mobile
+    const RemoveHovers = e=>
+    {
+        [...e.styleSheets].map(sheet=> {
+        for(let i = sheet.rules.length; i--; )
+            sheet.rules[i].selectorText &&
+            sheet.rules[i].selectorText.match('hover') &&
+            sheet.deleteRule(i)});
+    }
+    RemoveHovers(document);
+                
+    // handle touch event
+    const ProcessTouch = e=>
+    {
+        // check if touching
+        const touching = e.touches.length;
+        if (touching)
+        {
+            // set event pos
+            e.x = e.touches[0].clientX;
+            e.y = e.touches[0].clientY;
+
+            // pass event to mousemove and give focus to main window
+            onmousemove(e);
+        }
+
+        // pass event to mouse down, prevent closing folders
+        touching & !wasTouching & !e.target.folder && e.target != loadIcon && onmousedown(e);
+
+        // pass event to mouse up
+        !touching & wasTouching && onmouseup(e);
+
+        // set was touching
+        wasTouching = touching;
+        
+        // remove hovers from active window
+        activeWindow && RemoveHovers(activeWindow.shadowRoot);
+        
+        // prevent default if not edit area
+        const originalTarget = e.originalTarget || e.path[0];
+        
+        // allow event to contiue only if input
+        return !e.cancelable || e.target == loadIcon || /input|textarea|button/.test(originalTarget.localName);
+    }
+    
+    // set touch events
+    ontouchstart = ontouchmove = ontouchend = ontouchcancel = ProcessTouch;
+};
 
 </script>
