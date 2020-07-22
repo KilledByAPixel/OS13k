@@ -261,9 +261,9 @@ const OS13kVersion = 71;
 // @js_externs OS13k.Settings, OS13k.SaveSettings, OS13k.Input
 // @js_externs OS13k.CreateShader, OS13k.RenderShader
 // @js_externs OS13k.KeyDirection, OS13k.StripHTML, OS13k.Popup
-// @js_externs localStorage.OS13k, OS13k, zzfxG, source.gain
+// @js_externs localStorage.OS13k, localStorage.OS13kVersion, OS13k, source.gain
 // @js_externs iframeContent, iframeContent.OS13k, iframeContent.OS13kWindow
-// @js_externs iframeContent.zzfx, iframeContent.zzfxG
+// @js_externs iframeContent.zzfx
 // @js_externs settings.v, settings.m, settings.s, settings.p, settings.o
 // @js_externs settings.c, settings.d, settings.t, settings.f
 // @js_externs window.document.OS13kInput.x
@@ -1332,7 +1332,7 @@ class OS13kWindow extends HTMLElement
         this.shadowRoot.getElementById('G').onmousedown = ()=>
             link.click(SystemSound(soundSave),
             link.href = URL.createObjectURL(new Blob([this.codeText.value], {type:'text/plain'})),
-            link.download = 'OS13k_File_' + program.name);
+            link.download = 'OS13k_' + program.name);
 
         // screenshot button
         this.screenshot = this.shadowRoot.getElementById('S');
@@ -1429,21 +1429,12 @@ class OS13kWindow extends HTMLElement
         // wait for frame to load
         const loadFrame = ()=>
         {
-            // get type of user code, html, shadertoy, or dweet
-            program.userProgram && (program.info.code.trim()[0] != '<' ?
-                program.isDweet = !(program.isShader = program.info.code.search(/void\s+mainImage/) >= 0) :
-                program.isDweet = program.isShader = 0);
-            const hasExtension = program.isDweet | program.isShader;
-
             // check if code is safe to execute
             const codeIsSafe = !this.program.userProgram | allCodeIsSafe;
 
             // only dweets and shadertoys can do screenshots
+            const hasExtension = program.isDweet | program.isShader;
             this.screenshot.disabled = !hasExtension | !codeIsSafe;
-
-            // show error messages from user code
-            program.userProgram && (iframeContent.onerror = (message, source, line, col, e)=>
-                this.SetErrorText(e, e.stack && [col, line]))
 
             // get iframe content and document (will fail if cross site)       
             const iframeDocument = iframeContent.document;
@@ -1457,7 +1448,6 @@ class OS13kWindow extends HTMLElement
             iframeContent.OS13k = OS13k;
             iframeContent.OS13kWindow = this;
             iframeContent.zzfx = zzfx;
-            iframeContent.zzfxG = zzfxG;
 
             // set to grey if code is not safe
             codeIsSafe || (iframeDocument.body.style.background = '#111');
@@ -1560,7 +1550,18 @@ class OS13kWindow extends HTMLElement
             this.codeText.oninput = e=> this.liveEdit.checked && this.SetCode(this.codeText.value);
 
             // write code to iframe and load it immediately
-            loadFrame(this.WriteToFrame(program.info.code));
+            this.WriteToFrame(program.info.code);
+           
+            // get type of user code, html, shadertoy, or dweet
+            program.info.code.trim()[0] != '<' ?
+                program.isDweet = !(program.isShader = program.info.code.search(/void\s+mainImage/) >= 0) :
+                program.isDweet = program.isShader = 0;
+
+            // show error messages from user code
+            iframeContent.onerror = (message, source, line, col, e)=>
+                this.SetErrorText(e, e.stack && [col, line]);
+
+            loadFrame();
         }
         else
         {
