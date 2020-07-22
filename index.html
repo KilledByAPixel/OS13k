@@ -2053,7 +2053,7 @@ zzfxM = (instruments, patterns, sequence, speed = 6) => {
         }
 
         // set note attenuation
-        attenuation = note % 1 || attenuation;
+        attenuation = note < 0 || note % 1 || attenuation;
 
         // fill the left and right audio buffers with sample data
         for (bufferPos = bufferOffset; bufferPos < bufferOffset + tickRowSize; ++bufferPos) {
