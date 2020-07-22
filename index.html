@@ -1047,6 +1047,9 @@ class OS13kProgram extends HTMLElement
         this.isDweet =  srcParts[1] == 'dweet';
         this.isShader = srcParts[1] == 'shader';
 
+        // set code only if help not shown or if has extension and not disabled
+        this.code = !(this.help = help) && (flags & code || ((this.isDweet | this.isShader) && flags == undefined));
+
         // set icon data
         this.className  = 'program';
         this.src        = src;
@@ -1055,20 +1058,10 @@ class OS13kProgram extends HTMLElement
         this.folder     = folder;
         this.id         = userProgramId || name;
         this.userFolder = userFolder;
+        this.flags      = flags = flags || defaultFlags;
 
         // set the program name and id
         this.SetName(icon, name);
-
-        // set code only if help not shown or if has extension and not disabled
-        this.code = !(this.help = help) && (flags & code || ((this.isDweet | this.isShader) && flags == undefined));
-        
-        // set flags
-        this.flags    = flags = flags || defaultFlags;
-        this.sticky   = flags & sticky;
-        this.reload   = flags & reload;
-        this.awake    = flags & awake;
-        this.full     = flags & full;
-        this.resize   = flags & resize;
         
         // load saved program data
         this.Load();
@@ -1084,7 +1077,7 @@ class OS13kProgram extends HTMLElement
         name == 'Help' & this.info.open == undefined && (startProgram = this);
         
         // check if sticky open or start program
-        this.sticky ? this.info.open && this.Open() : this.id == startProgramId && (startProgram = this);
+        this.flags & sticky ? this.info.open && this.Open() : this.id == startProgramId && (startProgram = this);
     }
 
     SetName(icon, name)
@@ -1187,9 +1180,9 @@ class OS13kProgram extends HTMLElement
         {
             open,
             id: this.id,
-            x: open | this.sticky ? parseInt(this.window.style.left) : 0,
+            x: open | this.flags & sticky ? parseInt(this.window.style.left) : 0,
             y: parseInt(this.window.style.top),
-            scale: open | this.sticky ? this.window.scale : 1,
+            scale: open | this.flags & sticky ? this.window.scale : 1,
 
             // user program info
             name: this.name,
@@ -1246,13 +1239,13 @@ class OS13kWindow extends HTMLElement
             `<svg viewBox='0 0 10 10'style=height:100%;width:28;pointer-events:none><${
                 shape} stroke=#000 fill=none ${svg} />`;
         }
-        program.resize && 
+        program.flags & resize && 
             AddTitlebarIcon('Grow', 'd="M2 5L8 5M5 8L5 2"', '0f0',
             AddTitlebarIcon('Shrink', 'd="M2 5L8 5"', '0ff'));
-        program.full && AddTitlebarIcon('Full Screen', 'x=1 y=2 width=8 height=6', 'fff', 'rect');
+        program.flags & full && AddTitlebarIcon('Full Screen', 'x=1 y=2 width=8 height=6', 'fff', 'rect');
         program.help && AddTitlebarIcon('Help', 'd="M5 8L8 2L2 2L5 8L8 2"', '0ff');
         program.code && AddTitlebarIcon('Code', 'd="M5 2L8 8L2 8L5 2L8 8"', 'f0f');
-        program.reload && AddTitlebarIcon('Reload', 'cx=5 cy=5 r=3', 'ff0', 'circle');
+        program.flags & reload && AddTitlebarIcon('Reload', 'cx=5 cy=5 r=3', 'ff0', 'circle');
             AddTitlebarIcon('Close', 'd="M2 2L8 8M8 2L2 8"', 'f00');
 
         // title bar name
@@ -1390,7 +1383,7 @@ class OS13kWindow extends HTMLElement
         this.allowSleep.oninput = e=> this.Reload(1, program.Save());
 
         // resize window size to fit inner width while preserving aspect
-        const width = program.resize ? 
+        const width = program.flags & resize ? 
             Math.min(program.width*(program.info.scale||1), innerWidth-6) :
             program.width;
             
@@ -1501,7 +1494,7 @@ class OS13kWindow extends HTMLElement
                             `OS13kL=0,` +
                             `OS13kF=Math.max(OS13kF+100/6,t))`) +
                         `;(OS13kA=t=>(requestAnimationFrame(OS13kA),` +
-                            (program.awake || program.info.allowSleep == 0 ? '' : 
+                            (program.flags & awake || program.info.allowSleep == 0 ? '' : 
                                 `t<1e3|parent.document.activeElement==OS13kWindow&&`) +
                                 `OS13kU(t)))` +
                         `(frame=OS13kF=0)`);
@@ -1549,7 +1542,7 @@ class OS13kWindow extends HTMLElement
             this.codeText.onkeydown = e=> !e.altKey || e.keyCode == 13 && this.SetCode(this.codeText.value);
             this.codeText.oninput = e=> this.liveEdit.checked && this.SetCode(this.codeText.value);
 
-            // write code to iframe and load it immediately
+            // write code to iframe
             this.WriteToFrame(program.info.code);
            
             // get type of user code, html, shadertoy, or dweet
@@ -1558,9 +1551,9 @@ class OS13kWindow extends HTMLElement
                 program.isDweet = program.isShader = 0;
 
             // show error messages from user code
-            iframeContent.onerror = (message, source, line, col, e)=>
-                this.SetErrorText(e, e.stack && [col, line]);
+            iframeContent.onerror = (message, source, line, col, e)=>this.SetErrorText(e, e.stack && [col, line]);
 
+            // load the iframe
             loadFrame();
         }
         else
@@ -1568,9 +1561,6 @@ class OS13kWindow extends HTMLElement
             // load source
             this.iframe.onload = ()=> loadFrame();
             this.iframe.src = program.src + '?v108';
-            
-            // load from template (for JS13k)
-            //loadFrame(this.WriteToFrame(document.getElementsByName(program.name)[0].innerHTML));
         }
     }
         
@@ -1643,8 +1633,8 @@ class OS13kWindow extends HTMLElement
         this.className = active? 'activeWindow' : '';
         this.titlebar.className = 'titlebar titlebar' + 
             (active? 'Active' : '') + 
-            (this.program.sticky ? 'Sticky' : this.program.userProgram ? 'User' : '');
-        this.iframeWrapper.style.filter = active || this.program.awake ? 
+            (this.program.flags & sticky ? 'Sticky' : this.program.userProgram ? 'User' : '');
+        this.iframeWrapper.style.filter = active || this.program.flags & awake ? 
             '' : 'saturate(.7)brightness(.7';
 
         // check if active
@@ -1672,17 +1662,17 @@ class OS13kWindow extends HTMLElement
 
             // show menu buttons
             const SetButtonVisibility = (button, visible)=> button.style.display = visible ? '' : 'none';
-            SetButtonVisibility(buttonFullScreen, this.program.full);
+            SetButtonVisibility(buttonFullScreen, this.program.flags & full);
             SetButtonVisibility(buttonCode,       this.program.code);
             SetButtonVisibility(buttonHelp,       this.program.help);
-            SetButtonVisibility(buttonReload,     this.program.reload);
-            SetButtonVisibility(buttonResetSize,  this.program.resize);
+            SetButtonVisibility(buttonReload,     this.program.flags & reload);
+            SetButtonVisibility(buttonResetSize,  this.program.flags & resize);
 
             // set taskbar icon active if it exists
             this.taskbarIcon && this.taskbarIcon.SetActive(1,0);
             
             // save start program if finished startup and not sticky
-            finishedStartup & !this.program.sticky && OS13k.Save(startProgramId = this.program.id);
+            finishedStartup & !(this.program.flags & sticky) && OS13k.Save(startProgramId = this.program.id);
         }
     }
     
