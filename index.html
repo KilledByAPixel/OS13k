@@ -280,7 +280,7 @@ const OS13kVersion = 71;
 // 4. Verify that it works the same
 // 5. HTML Minifier http://minifycode.com/html-minifier/
 // 6. Google Closure https://closure-compiler.appspot.com/home
-// 7. Terser no extra compression https://xem.github.io/terser-online/
+// 7. JavaScript Minifier https://javascript-minifier.com/
 // 8. Zip
 // 9. Advzip "advzip -z -4 -i 1000 OS13kMin.zip"
 
@@ -380,8 +380,7 @@ class _OS13k
     { return this.PlaySamples(this.SeedSamples(...arguments), isMusic); }
     
     // get seed samples
-    SeedSamples(seed, lengthScale=1, volume=1, randomness=.05, frequency)
-    { return zzfxG(...this.SeedParameters(...arguments)); }
+    SeedSamples() { return zzfxG(...this.SeedParameters(...arguments)); }
     
     // get zzfx sound parameters from seed
     SeedParameters(seed, lengthScale=1, volume=1, randomness=.05, frequency)
