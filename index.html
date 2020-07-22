@@ -380,7 +380,8 @@ class _OS13k
     { return this.PlaySamples(this.SeedSamples(...arguments), isMusic); }
     
     // get seed samples
-    SeedSamples() { return zzfxG(...this.SeedParameters(...arguments)); }
+    SeedSamples(seed, lengthScale=1, volume=1, randomness=.05, frequency)
+    { return zzfxG(...this.SeedParameters(...arguments)); }
     
     // get zzfx sound parameters from seed
     SeedParameters(seed, lengthScale=1, volume=1, randomness=.05, frequency)
