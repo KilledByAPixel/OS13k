@@ -96,12 +96,12 @@ E = e=> R             // rebild cache
     B.innerHTML = '', // clear HTML
 
     // create buttons
-    [...`🎹🎷🎻∿`].map((i,j)=>      // instruments
+    [...`🎹🎷🎻∿`].map((i,j)=>                         // instruments
         B.innerHTML +=                                   // add to HTML
         `<button style='border:5px solid${               // button and border
             T-j ? "#111" : "#f00" }'onmousedown=T-(T=${j // border color
             })&&E()>${                                   // rebuild if newly selected
-            i}</button> `),                              // button text
+            i}</button>`),                               // button text
             
     // set seed boder
     S.style.border = `5px solid${                     // set border
@@ -114,12 +114,11 @@ for( T = i = 0; i < 36;                          // init selected sound & iterat
     onunload = onblur = e=> A.map((e,i)=> X(i))) // stop all sounds if focus lost or unloaded
         document.body.innerHTML +=                                      // add to html
             `<div id=B${ z = 24 - (i/12|0)*12 + i%12                    // reorder keys
-            } 
-            style=display:inline-block;margin:2;background:${           // style
+            } style="display:inline-block;outline:3px solid #000;background:${         // style
             (w = '02579'.indexOf( i%12 - 1 ) < 0) ?                     // b or w
             '#fff;width:54;height:129;color:#000' :                     // white
             '#000;position:absolute;margin-left:-14;width:27;height:70' // black
-            } onmouseover=event.buttons&&P(${ z                         // mouse over
+            }"onmouseover=event.buttons&&P(${ z                         // mouse over
             }) onmousedown=P(${ z                                       // mouse down
             }) onmouseup=X(${ z                                         // mouse up
             }) onmouseout=X(${ z                                        // mouse out
