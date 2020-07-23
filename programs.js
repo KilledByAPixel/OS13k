@@ -22,7 +22,7 @@ defaultWidth = 720, defaultHeight = 405, // 16:9 aspect
 programStubs = 
 [
 [,'❌',,,closeAll,'Close All'],
-['help.html','<b><span style=color:#0f0>?',380,400,reload|resize,,'Check here to see help, code, or edit user programs.\n\nHave fun! ✌️😄'],
+['help.html','<b><span style=color:#0f0>?',380,400,resize,,'Check here to see help, code, or edit user programs.\n\nHave fun! ✌️😄'],
 [,'⚙️',,,,'System',,
 [
     ['system/trophyCase.html','🏆',,,full|resize|sticky],
