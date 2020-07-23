@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?v170></script>
+<script src=programs.js?v200></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -312,7 +312,7 @@ class _OS13k
     // seeded random numbers - Xorshift
     Random(max=1, min=0)
     {
-        this.randomSeed ^= this.randomSeed << 13 || 1;
+        this.randomSeed ^= this.randomSeed << 13;
         this.randomSeed ^= this.randomSeed >> 17; // note: >>> would use the full 32 bit range
         return this.Lerp(Math.abs(this.randomSeed ^= this.randomSeed << 5) % 1e9 / 1e9, min, max);
     }
@@ -386,6 +386,10 @@ class _OS13k
     // get zzfx sound parameters from seed
     SeedParameters(seed, lengthScale=1, volume=1, randomness=.05, frequency)
     {
+        // use default params if no seed
+        if (!seed)
+            return [volume, randomness, frequency, 0, lengthScale];
+
         // check if seed is a number
         if (parseFloat(seed = (seed+'').trim()) != seed)
         {
@@ -1556,7 +1560,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             this.iframe.onload = ()=> loadFrame();
-            this.iframe.src = program.src + '?v110';
+            this.iframe.src = program.src + '?v200';
         }
     }
         

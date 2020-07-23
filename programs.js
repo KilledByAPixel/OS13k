@@ -27,7 +27,7 @@ programStubs =
 [,'⚙️',,,,'System',,
 [
     ['system/trophyCase.html','🏆',,,full|resize|sticky],
-    ['system/stickyNote.html','✏️',300,263,sticky|reload,,'Ctrl+B - Bold\nCtrl+I - Italic\nCtrl+U - Underline\n\Reload to clear'],
+    ['system/stickyNote.html','✏️',300,263,sticky|reload,,'Ctrl+B = Bold\nCtrl+I = Italic\nCtrl+U = Underline\n\Reload = Clear'],
     ['system/clock.dweet.js','🕰️',198,198,sticky|code|awake],
     ['system/settings.html','🎚️',470,190,sticky],
     [,'📁',,,,'Test',,
@@ -63,7 +63,7 @@ programStubs =
     ['music/piano.html','🎹',520,510,reload],
     ['music/soundSeeds.html','🌱',350,480,close|resize|reload],
     ['music/visualizer.dweet.js','👁️',,,awake|full|resize|code],
-    ['music/byteBeatPlayer.html','🦈',370,170,reload],
+    ['music/byteBeatPlayer.html','🦈',370,99,reload],
     ['music/bach.dweet.js','🎼'],
     ['music/minBytes.html','<span style=color:#f00>𝓜',450,450],
     ['music/smallSeeds.html','🦗',520,340,full|reload,,'This is a special tool for devs.\nUse smaller seeds to save space.\nYou can also tab through the list.'],
