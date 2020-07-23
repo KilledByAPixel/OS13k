@@ -46,14 +46,14 @@ body
     white-space:nowrap;
     background:#000;
 }
-#m_
+#M
 {
     display:flex;
     flex-direction:column;
     background:#000;
 }
-.pm_ { background:linear-gradient(#fff,#888); }
-#m_, .pm_
+.PM { background:linear-gradient(#fff,#888); }
+#M, .PM
 {
     visibility:hidden;
     position:absolute;
@@ -81,15 +81,15 @@ body
     justify-content:center;
 }
 </style>
-<div class=F id=b_ style=position:absolute;width:100%;height:100%;color:#0002;font-family:impact;font-size:30vw;font-weight:900;position:absolute></div>
-<div id=d_>
+<div class=F id=B style=position:absolute;width:100%;height:100%;color:#0002;font-family:impact;font-size:30vw;font-weight:900;position:absolute></div>
+<div id=D>
 <div class=F style="position:absolute;z-index:10000;width:100%;background:linear-gradient(#888,#333);box-shadow:0px 1px 9px;border:2px solid;left:-2">
-<div id=s_ style=flex:1></div>
-<div class=F id=t_ style="margin:2;padding-left:9;padding-right:9;color:#fff;background:linear-gradient(#000,#333);border:1px solid;border-radius:6px;text-shadow:1px 1px 3px#000"></div>
+<div id=FS style=flex:1></div>
+<div class=F id=F style="margin:2;padding-left:9;padding-right:9;color:#fff;background:linear-gradient(#000,#333);border:1px solid;border-radius:6px;text-shadow:1px 1px 3px#000"></div>
 </div>
-<div id=pu_ style=float:right></div>
-<div id=pm_ style=position:absolute></div>
-<div id=m_>
+<div id=PU style=float:right></div>
+<div id=PM style=position:absolute></div>
+<div id=M>
 <button id=BF>Full Screen
 <button id=BC>Code
 <button id=BH>Help
@@ -170,7 +170,7 @@ const OS13kVersion = 71;
 // @js_externs OS13k.KeyDirection, OS13k.StripHTML, OS13k.Popup
 // @js_externs localStorage.OS13k, localStorage.OS13kVersion, OS13k, source.gain
 // @js_externs iframeContent, iframeContent.OS13k, iframeContent.OS13kWindow
-// @js_externs iframeContent.zzfx, zzfx, zzfxG
+// @js_externs iframeContent.zzfx, zzfx, zzfxG, zzfxM
 // @js_externs S.v, S.m, S.s, S.p, S.o
 // @js_externs S.c, S.d, S.t, S.f
 // @js_externs window.document.OS13kInput.x
@@ -464,7 +464,7 @@ class _OS13k
     Popup(html, speak, language)
     {
         // create popup
-        const popup = pu_.appendChild(document.createElement('div'));
+        const popup = PU.appendChild(document.createElement('div'));
         popup.style = 'position:relative;z-index:10000;width:200;padding:8;pointer-events:none;white-space:normal;text-align:center;background:linear-gradient(#eee,#888);box-shadow:9px 9px 19px;border:2px solid;border-radius:9px;';
         popup.innerHTML = html;
         popup.S = speak;
@@ -540,14 +540,11 @@ class _OS13k
         S.s && S.v || StopSpeech();
         
         // background
-        b_.style.background = `linear-gradient(${S.c},${S.d})`;
-        b_.innerText = S.t;
-        
-        // filter
-        b_.style.filter = d_.style.filter = S.f;
+        B.style.background = `linear-gradient(${S.c},${S.d})`;
+        B.innerText = S.t;
     }
     
-    SaveSettings(volume, musicVolume, speech, popups, systemSounds, color1, color2, text, filter)
+    SaveSettings(volume, musicVolume, speech, popups, systemSounds, color1, color2, text)
     {
         // set settings and save
         this.Save(S = {
@@ -558,8 +555,7 @@ class _OS13k
             o:systemSounds,
             c:color1,
             d:color2,
-            t:text,
-            f:filter
+            t:text
         });
     }
     
@@ -709,14 +705,14 @@ Update = time=>
     
     // update popups, use copy to prevent skipping if removed
     let offsetY = 0;
-    [...pu_.children].map((popup,i)=>
+    [...PU.children].map((popup,i)=>
     {
         // speak popup
         popup.S && OS13k.Speak(popup.S, 1, 1, 1, popup.L);
         popup.S = 0;
         
         if (!S.p)
-            pu_.removeChild(popup);
+            PU.removeChild(popup);
         else if (!document.fullscreenElement)
         {
             // move popup up, set to bottom if it was invisible
@@ -733,7 +729,7 @@ Update = time=>
                 {
                     // remove when invisible and adjust for height
                     offsetY += popup.getBoundingClientRect().height;
-                    pu_.removeChild(popup);
+                    PU.removeChild(popup);
                 }
             }
 
@@ -747,7 +743,7 @@ Update = time=>
 CloseMenus = ()=>
 {
     // hide all menus
-    [...pm_.children].map(e=>e.style.visibility = m_.style.visibility = '');
+    [...PM.children].map(e=>e.style.visibility = M.style.visibility = '');
     
     // unselect active program
     activeProgram && (activeProgram.className = 'P');
@@ -775,8 +771,8 @@ let grabWindow, grabOffsetX, grabOffsetY, finishedStartup, nextUserProgramId = 0
     startProgram, startProgramId, programInfos = [], trophies = [],
     trophyTrayIcon, settingsTrayIcon, clockTrayIcon, musicTrayIcon, stickyNoteTrayIcon,
 
-    // volume, music, speech, popups, color1, color2, text, filter
-    S = {v:.3, m:.3, s:1, p:1, o:1, c:'#222233', d:'#332222', t:'OS13k', f:''};
+    // volume, music, speech, popups, color1, color2, text
+    S = {v:.3, m:.3, s:1, p:1, o:1, c:'#222233', d:'#332222', t:'OS13k'};
 
 ///////////////////////////////////////////////////////////////////////////////
 // OS13kProgramMenu - holds a list of programs
@@ -788,7 +784,7 @@ class OS13kProgramMenu extends HTMLElement
 		super();
         
         // add to programs menu
-        this.className    = 'pm_';
+        this.className    = 'PM';
         this.parentMenu   = parentMenu;
         this.programStubs = stubs;
     }
@@ -805,15 +801,14 @@ class OS13kProgramMenu extends HTMLElement
 
         // clear programs menu
         this.innerHTML = '';
-        pm_.appendChild(this);
+        PM.appendChild(this);
   
         // add programs to menu
         this.programStubs.map(stub=> this.appendChild(stub[-1]));
         
         // set position
         this.style.top  = y;
-        this.style.left = this.parentMenu ?
-            this.parentMenu.getBoundingClientRect().right : pm_.style.left = 0;
+        this.style.left = this.parentMenu && this.parentMenu.getBoundingClientRect().right;
 
         // add folders after programs so width is correct
         this.programStubs.map(stub=>
@@ -889,6 +884,7 @@ class OS13kProgram extends HTMLElement
         this.C = !(this.help = help) && (flags & code || (this.isDweet && flags == undefined));
 
         // set icon data
+        // some variables use single letters for minification
         this.className  = 'P';
         this.W          = width;
         this.H          = height;
@@ -955,7 +951,7 @@ class OS13kProgram extends HTMLElement
         else if (this.F & deleteUserPrograms && confirm(this.N + '?'))
         {
             // close windows with matching folder
-            [...d_.children].map(child=> child.Close && (this.U ?
+            [...D.children].map(child=> child.Close && (this.U ?
                 child.program.i.U == this.U : child.program.i.C != undefined) && child.Close());
             
             // remove user program infos
@@ -967,7 +963,7 @@ class OS13kProgram extends HTMLElement
         else if (this.F & closeAll)
         {
             // close all windows if no src or folder and play sound
-            [...d_.children].map(child=> child.Close && child.Close());
+            [...D.children].map(child=> child.Close && child.Close());
 
             // reset window open position
             windowOpenX = startOpenOffset;
@@ -1008,6 +1004,7 @@ class OS13kProgram extends HTMLElement
     }
 
     // save program info and reset settings when closed if non sticky
+    // some variables use single letters for minification
     Save(O = 1)
     {
         // build save info
@@ -1048,7 +1045,7 @@ class OS13kWindow extends HTMLElement
 		super();
 
         // add to desktop
-        d_.appendChild(this);
+        D.appendChild(this);
         
         // save settings
         this.program = program;
@@ -1374,7 +1371,7 @@ class OS13kWindow extends HTMLElement
             document.body.style.cursor = 'grabbing';
             
             // prevent anything from getting focus white grabbing
-            d_.style.pointerEvents = 'none';
+            D.style.pointerEvents = 'none';
 
             // save grab offset
             grabOffsetX = x - parseInt(this.style.left);
@@ -1527,7 +1524,7 @@ class OS13kTaskbarIcon extends HTMLElement
         this.SetName(this.program = program);
         
         // add to taskbar
-        s_.before(this);
+        FS.before(this);
     }
 
     SetName()
@@ -1568,7 +1565,7 @@ class OS13kTrayIcon extends HTMLElement
         
         // create tray icon and add it
         this.className = 'R';
-        t_.appendChild(this);
+        F.appendChild(this);
     }
     
     SetProgram(program)
@@ -1602,7 +1599,7 @@ onmousedown = e=>
     }
     
     // close menus and reset program menu position, and set there has been input
-    CloseMenus(pm_.style.left = 0, pm_.style.top = taskbarHeight, hadInput = 1);
+    CloseMenus(PM.style.left = 0, PM.style.top = taskbarHeight, hadInput = 1);
 
     // prevent stuck grab (from tabbing to another window while grabbing)
     if (grabWindow) return onmouseup(e);
@@ -1629,7 +1626,7 @@ onmousedown = e=>
             (e.target.SetActive ? e.target : loadIcon).SetActive();
 
             // get which menu to open
-            const targetMenu = e.target.menu ? (SystemSound(soundMenu, .5), m_) : pm_;
+            const targetMenu = e.target.menu ? (SystemSound(soundMenu, .5), M) : PM;
 
             // show context menu
             targetMenu.style.left = e.x;
@@ -1663,7 +1660,7 @@ onmouseup = ()=>
     grabWindow && (grabWindow.program.Save(),
     SystemSound(soundGrabEnd),
     grabWindow.SetActive(1, 0),
-        document.body.style.cursor = d_.style.pointerEvents = grabWindow = '');
+        document.body.style.cursor = D.style.pointerEvents = grabWindow = '');
 
 // prevent default right click context menu
 oncontextmenu = ()=> false;
@@ -1853,7 +1850,7 @@ BR.onmousedown = ()=> activeWindow.Reload();
 BL.onmousedown = ()=> activeWindow.Close();
 
 // create load program taskbar icon and add folders/programs
-RebuildMenu(loadIcon = new OS13kTaskbarIcon({I:'💾', N:'Load Program'}, new OS13kProgramMenu(programStubs)));
+RebuildMenu(loadIcon = new OS13kTaskbarIcon({I:'💾', N:'Load'}, new OS13kProgramMenu(programStubs)));
 
 // welcome message
 OS13k.Trophy('👋','','Welcome to OS13k!');
