@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?v205></script>
+<script src=programs.js?v206></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -724,7 +724,7 @@ var OS13k = new _OS13k;
 // OS13k System Functions and Consts - handles non client facing features of OS13k
 
 const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26, 
-      startOpenOffset = 9, popupTime = 3, defaultVolume = .3, 
+      startOpenOffset = 99, popupTime = 3, defaultVolume = .3, 
       maxWordLength = 32, defaultSampleRate = 44100, analyserWaitTime = 1e4,
 
     // system sounds
@@ -1559,7 +1559,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             this.iframe.onload = ()=> loadFrame();
-            this.iframe.src = program.src + '?v205';
+            this.iframe.src = program.src + '?v206';
         }
     }
         

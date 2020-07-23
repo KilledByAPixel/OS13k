@@ -6,12 +6,11 @@ awake    = 2**2, // prevent sleep and dim when not active
 full     = 2**3, // show full screen button
 resize   = 2**4, // show resize buttons (apect ratio maintained)
 code     = 2**5, // show code button (cant show code if help is set)
-close    = 2**6, // show code button (cant show code if help is set)
 
 // system flags
-closeAll   = 2**7,         // close all open windows
-newUserProgram = 2**8,     // create new user program
-deleteUserPrograms = 2**9, // remove all user programs
+closeAll   = 2**6,         // close all open windows
+newUserProgram = 2**7,     // create new user program
+deleteUserPrograms = 2**8, // remove all user programs
 
 // defaults
 defaultFlags = full|reload|resize,
@@ -23,7 +22,7 @@ defaultWidth = 720, defaultHeight = 405, // 16:9 aspect
 programStubs = 
 [
 [,'❌',,,closeAll,'Close All'],
-['help.html','<b><span style=color:#0f0>?',380,400,close,,'Check here to see help, code, or edit user programs.\n\nHave fun! ✌️😄'],
+['help.html','<b><span style=color:#0f0>?',380,400,reload|resize,,'Check here to see help, code, or edit user programs.\n\nHave fun! ✌️😄'],
 [,'⚙️',,,,'System',,
 [
     ['system/trophyCase.html','🏆',,,full|resize|sticky],
@@ -39,7 +38,7 @@ programStubs =
 ]],
 [,'🛠️',,,,'Apps',,
 [
-    ['apps/timer.html','⌛',400,139,sticky|reload],
+    ['apps/timer.html','⌛',400,139,reload],
     ['apps/grapher.html','📈'],
     ['apps/camera.html','📸',640,480],
     ['apps/console.html','<span style=color:#0f0;background:#000;font-family:monospace>JS>']
@@ -61,7 +60,7 @@ programStubs =
 [
     ['music/musicPlayer.html','🎵',400,330],
     ['music/piano.html','🎹',520,510,reload],
-    ['music/soundSeeds.html','🌱',350,480,close|resize|reload],
+    ['music/soundSeeds.html','🌱',350,480,resize|reload],
     ['music/visualizer.dweet.js','👁️',,,awake|full|resize|code],
     ['music/byteBeatPlayer.html','🦈',300,89,reload],
     ['music/bach.dweet.js','🎼'],
