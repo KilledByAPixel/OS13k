@@ -50,7 +50,7 @@ R = e=>
             ]))
         :
         D[i] = OS13k.SeedSamples(         // get seed samples
-            S.value, 1, V.value/99, 0, f) // seed parameters
+            S.value, 9, V.value/99, 0, f) // seed parameters
     )
         f = parent.OS13k.Note(i*12-45),   // root frequency C
         D[i] = [];                        // clear samples
@@ -58,7 +58,6 @@ R = e=>
 
 // play note
 P = e=> e < 0 || A[e] ||         // is note valid and not playing
-parent.document.activeElement != OS13kWindow || // window has focus
 (
     // change button color
     b = eval('B' + e),           // get the button
