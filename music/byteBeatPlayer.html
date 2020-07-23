@@ -7,7 +7,7 @@ P=e=>
     s = [];
     try {
         eval('f=t=>' + I.value);
-        for(i=0; i<l; s[i] = OS13k.Clamp(f(i++)*2-1)/2);
+        for(i=0; i<l; s[i] = OS13k.Clamp(f(i++)) - .5);
         A = OS13k.PlaySamples(s, 1);
     } catch(e) {}
 }
