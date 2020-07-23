@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?v203></script>
+<script src=programs.js?v204></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -965,8 +965,7 @@ class OS13kProgramMenu extends HTMLElement
         
         // set position
         this.style.top  = y;
-        this.style.left = this.parentMenu ?
-            this.parentMenu.getBoundingClientRect().right : programsMenu.style.left = 0;
+        this.style.left = this.parentMenu && this.parentMenu.getBoundingClientRect().right;
 
         // add folders after programs so width is correct
         this.programStubs.map(stub=>
@@ -1560,7 +1559,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             this.iframe.onload = ()=> loadFrame();
-            this.iframe.src = program.src + '?v203';
+            this.iframe.src = program.src + '?v204';
         }
     }
         
