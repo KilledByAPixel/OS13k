@@ -852,6 +852,7 @@ class OS13kProgramMenu extends HTMLElement
             windowOpenY = copyProgram.I.y + titlebarHeight,
             copyProgram.I.C)
             :
+            '// Auto detects HTML or Dweet. Have fun! ✌️😄\n' +
             'for(x.fillRect(0,0,i=s=2e3,s);i--;x.globalAlpha=.1)\n' +
             'x.clearRect((S(i)*1e9-t*i/9)%s,i*9%s,i%9,i%9)';
 
@@ -1305,7 +1306,7 @@ class OS13kWindow extends HTMLElement
 
             // create dweet program
             iframeContent.eval(
-                'OS13k=parent.OS13k;x=c.getContext`2d`;' +
+                `OS13k=parent.OS13k;x=c.getContext('2d');` +
                     `zzfx=parent.zzfx;` +
                     `S=Math.sin;C=Math.cos;T=Math.tan;` +
                     `R=(r,g,b,a=1)=>\`rgba(\${0|r},\${0|g},\${0|b},\${a})\`;` +
@@ -1316,7 +1317,7 @@ class OS13kWindow extends HTMLElement
                         `OS13kF=Math.max(OS13kF+100/6,t));` +
                     `(OS13kA=t=>(requestAnimationFrame(OS13kA),` +
                         (program.F & awake || program.i.allowSleep == 0 ? '' : 
-                            `t<1e3|parent.document.activeElement==OS13kWindow&&`) +
+                            't<1e3|parent.document.activeElement==OS13kWindow&&') +
                             `OS13kU(t)))` +
                     `(frame=OS13kF=0)`);
         }
