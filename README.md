@@ -8,6 +8,7 @@ It includes native support for Shadertoys, Dweets, ZzFX sounds, music, trophies,
 ## Please keep this project confidential!
 
 # [Live Demo](https://killedbyapixel.github.io/OS13k)
+# [JS13k Build](https://killedbyapixel.github.io/OS13k/JS13k)
 # [Discord](https://discord.gg/n8vxUcZ)
 # [Trello Board](https://trello.com/b/1PNeOZfM/os13k) (ask for an invite)
 
