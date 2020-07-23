@@ -1,16 +1,15 @@
-<style>body{background:#111;color:#fff;user-select:none;text-align:center}</style>Function <input id=I value='t&t>>7'><p>Length <input style=width:79 id=L type=number value=30 min=1 max=120> <button onmousedown=P()>Play</button> <button onmousedown=S()>Stop</button><p><script>
+<style>body{background:#111;color:#fff;user-select:none;text-align:center}</style>ƒ(t) <input id=I value='t&t>>7'><p>📐 <input style=width:99 id=L type=number value=30 min=1 max=120> <button onmousedown=P()>►</button> <button onmousedown=A&&A.stop()>◼</button><p><script>
 A=0;
-S=e=>A&&A.stop();
 P=e=>
 {
-S(s=[]);
-L.value = OS13k.Clamp(L.value, 120);
-l = L.value * 44100;
-try{
-eval('f=t=>'+I.value);
-for(t=0;t<l;)s[t] = OS13k.Clamp(f(t++)*2-1, 1)/2;
-A=OS13k.PlaySamples(s, 1, 44100);
-}catch(e){}
+    A&&A.stop();
+    l = (L.value = OS13k.Clamp(L.value, 120)) * 44100;
+    s = [];
+    try {
+        eval('f=t=>' + I.value);
+        for(i=0; i<l; s[i] = OS13k.Clamp(f(i++)*2-1)/2);
+        A = OS13k.PlaySamples(s, 1);
+    } catch(e) {}
 }
-onunload=_=>S();
+onunload=e=>A&&A.stop();
 </script>

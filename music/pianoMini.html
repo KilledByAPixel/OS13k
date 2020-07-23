@@ -1,16 +1,12 @@
-<style>body{background:#111;color:#fff;user-select:none;text-align:center}</style><span id=B></span><input type=radio name=I checked onmousedown=R(0)>🎹 <input type=radio name=I onmousedown=R(1)>🎷 <input type=radio name=I onmousedown=R(2)>🎻 <input type=radio name=I onmousedown=R(3) id=E>🌱 <input style=width:99 oninput=R(3) onfocus=R(E.checked=3) id=S placeholder=Seed><p>🔊 <input type=range style=width:199 id=V><script>
+<style>body{background:#111;color:#fff;user-select:none;text-align:center}</style><span id=B></span>🌱 <input onchange="P(0,R());setTimeout(e=>X(0),500)" style=width:240 id=S><p>🔊 <input onchange="P(0,R());setTimeout(e=>X(0),500)" style=width:99 type=range id=V> 📐 <input onchange="P(0,R());setTimeout(e=>X(0),500)" style=width:99 type=range id=L><script>
 
 // globals
-// B = instrument button container
 // S = seed
-// O = octave
-// Y = key
-// V = Gain
-// N = noise
-// H = shape
-// C = crush
-// T = instrument type
+// V = volume
+// L = length
 // A = active sounds
+
+OS13k = parent.OS13k;
 
 //////////////////////////////////////////////////////////////
 // sound
@@ -18,31 +14,12 @@
 // build cached samples
 R = e=>
 {
-    T=e;
-    onblur(D = []);                       // cancel all sounds and init sample cache
-    for(i=6;--i;                          // loop for each octave
-        T-3 ?                             // check if instrument
-        [                                 // instruments
-            [...`1248`],                  // organ
-            [...`3579`],                  // oboe
-            [...`123`]                    // string
-        ][ T ].map(e=>                    // get instrument
-            parent.zzfxG(...[             // generate zzfx samples
-                1/(1+Math.log2(e)),       // scale volume
-                0,                        // no randomness
-                e*f,,                     // frequency
-                2,                        // sustain
-                .5,,,,,,,,,,,,            // release
-                .7,                       // sustain volume
-                .1,                       // decay
-                D[i]                      // add to buffer
-            ]))
-        :
-        D[i] = OS13k.SeedSamples(         // get seed samples
-            S.value, 1, 9, 0, f)          // seed parameters
-    )
-        f = parent.OS13k.Note(i*12-45),   // root frequency C
-        D[i] = [];                        // clear samples
+    onblur(D = []);                      // cancel all sounds and init sample cache
+    for(i=5;--i;                         // loop for each octave
+        D[i] = OS13k.SeedSamples(        // get seed samples
+            S.value, .5+L.value/5, 1, 0, // seed parameters
+                OS13k.Note(i*12-33))     // root frequency C
+    );
 }
 
 // play note
@@ -61,35 +38,31 @@ P = e=> e < 0 || A[e] ||         // is note valid and not playing
 // cancel note
 X = e=> A[e] &&                                                     // is note playing
 (                                    
-    A[e].gain.gain.linearRampToValueAtTime(V.value / 99, t = A[e].context.currentTime + .02), // set gain to 1
+    A[e].gain.gain.linearRampToValueAtTime(V.value / 50, t = A[e].context.currentTime + .02), // set gain
     A[e].gain.gain.linearRampToValueAtTime(A[e] = 0, t + .1)        // ramp gain to 0 and remove sound
 );
 
 //////////////////////////////////////////////////////////////
 // init
 
-A = []
 onunload = onblur = e=> A.map((e,i)=> X(i));
-R(T = 0);
+R(A = []);
 
 //////////////////////////////////////////////////////////////
 // keyboard controls
 
+// keyboard key to piano key
+K = e=>
+    (k = 'ZSXDCVGBHNJM,L.;/Q2W3ER5T6Y7UI9O0P[=]' // map key to note
+    .indexOf(e.key?.toUpperCase()),              // find the key and check for invalid key
+    k - 5 * (k > 16));                           // remap second row of keys
+
 // play note on key down
 onkeydown = e=>
     document.activeElement == S || // not when editing seed
-    P(
-    (k = 'ZSXDCVGBHNJM,L.;/Q2W3ER5T6Y7UI9O0P[=]' // map key to note
-    .indexOf(e.key?.toUpperCase()),              // find the key and check for invalid key
-    k - 5 * (k > 16))                            // remap second row of keys
-); 
+        P(K(e));                   // play note
 
 // release note on key up
-onkeyup = e=> X(
-    (k = 'ZSXDCVGBHNJM,L.;/Q2W3ER5T6Y7UI9O0P[=]' // map key to note
-    .indexOf(e.key?.toUpperCase()),              // find the key and check for invalid key
-    k - 5 * (k > 16))                            // remap second row of keys
-
-);
+onkeyup = e=> X(K(e));
 
 </script>

@@ -61,9 +61,10 @@ programStubs =
 [
     ['music/musicPlayer.html','🎵',400,330],
     ['music/piano.html','🎹',520,510,reload],
+    ['music/pianoMini.html','🎹',520,510,reload],
     ['music/soundSeeds.html','🌱',350,480,close|resize|reload],
     ['music/visualizer.dweet.js','👁️',,,awake|full|resize|code],
-    ['music/byteBeatPlayer.html','🦈',370,99,reload],
+    ['music/byteBeatPlayer.html','🦈',300,89,reload],
     ['music/bach.dweet.js','🎼'],
     ['music/minBytes.html','<span style=color:#f00>𝓜',450,450],
     ['music/smallSeeds.html','🦗',520,340,full|reload,,'This is a special tool for devs.\nUse smaller seeds to save space.\nYou can also tab through the list.'],
