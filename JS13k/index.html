@@ -1260,7 +1260,6 @@ class OS13kWindow extends HTMLElement
         {
             // load from template (for JS13k)
             this.WriteToFrame(document.getElementsByName(program.N)[0].innerHTML);
-            this.codeText.value = program.help || document.getElementsByName(program.N)[0].innerHTML;
         }
 
         // check if code is safe to execute
@@ -1270,6 +1269,9 @@ class OS13kWindow extends HTMLElement
         const iframeDocument = iframeContent.document;
         const iframeText = program.userProgram ? program.i.C :
             program.help || (program.isDweet ? iframeDocument.body.innerText : iframeDocument.body.innerHTML);
+        
+        // set code/help display if not user program
+        program.userProgram || (this.codeText.value = iframeText);
 
         // pass OS13k constants to iframe
         iframeContent.OS13k = OS13k;
