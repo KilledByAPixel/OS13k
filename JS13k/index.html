@@ -31,7 +31,7 @@ Loop <input type=checkbox id=O><br><canvas id=C style=width:350;height:29;image-
 
 <template name=Ziano><style>body{background:#111;color:#fff;user-select:none;text-align:center}</style><span id=B></span>🌱 <input onchange=B() style=width:240 id=S><p>🔊 <input onchange=B() style=width:99 type=range id=V> 📐 <input onchange=B() style=width:99 type=range id=L><script>OS13k=parent.OS13k,B=e=>P(0,R(),setTimeout(e=>X(0),500)),R=e=>{for(onblur(D=[]),i=5;--i;D[i]=OS13k.SeedSamples(S.value,.5+L.value/5,1,0,OS13k.Note(12*i-33)));},P=e=>e<0||A[e]||((A[e]=OS13k.PlaySamples(D[2+e/12|0],2)).detune.value=e%12*100,A[e].gain.gain.value=V.value/50),X=e=>A[e]&&(A[e].gain.gain.linearRampToValueAtTime(V.value/50,t=A[e].context.currentTime+.02),A[e].gain.gain.linearRampToValueAtTime(A[e]=0,t+.1)),onunload=onblur=e=>A.map((e,a)=>X(a)),R(A=[]),K=e=>(k="ZSXDCVGBHNJM,L.;/Q2W3ER5T6Y7UI9O0P[=]".indexOf(e.key?.toUpperCase()),k-5*(k>16)),onkeydown=e=>document.activeElement==S||P(K(e)),onkeyup=e=>X(K(e))</script></template>
 
-<template name="Byte Beat Player"><style>body{background:#111;color:#fff;user-select:none;text-align:center}</style>ƒ(t) <input id=I value='t&t>>7'><p>📐 <input style=width:99 id=L type=number value=30 min=1 max=120> <button onmousedown=P()>►</button> <button onmousedown=A&&A.stop()>◼</button><p><script>A=0,P=e=>{A&&A.stop(),l=44100*(L.value=OS13k.Clamp(L.value,120)),s=[];try{for(eval("f=t=>"+I.value),i=0;i<l;s[i]=OS13k.Clamp(f(i++))-.5);A=OS13k.PlaySamples(s,1)}catch(e){}},onunload=l=>A&&A.stop()</script></template>
+<template name="Byte Beat Player"><style>body{background:#111;color:#fff;user-select:none;text-align:center}</style>ƒ(t) <input id=I value='t&t>>7'><p>📐 <input style=width:99 id=L type=number value=30 min=1 max=120> <button onmousedown=P()>►</button> <button onmousedown=A&&A.stop()>◼</button><script>A=0,P=e=>{A&&A.stop(),l=44100*(L.value=OS13k.Clamp(L.value,120)),s=[];try{for(eval("f=t=>"+I.value),i=0;i<l;s[i]=OS13k.Clamp(f(i++))-.5);A=OS13k.PlaySamples(s,1)}catch(e){}},onunload=l=>A&&A.stop()</script></template>
 
 <meta charset=utf-8>
 <style>
@@ -239,9 +239,9 @@ programStubs =
 ['🎶',,,,'Music',,
 [
     ['🎵',400,330,,'Music Player'],
-    ['👁️',,,awake|full|resize|code|dweet,'Visualizer'],
+    ['👨‍💻',300,89,reload,'Byte Beat Player'],
     ['🎹',350,99,reload,'Ziano','Keyboard = Play Piano Note'],
-    ['🦈',300,89,reload,'Byte Beat Player'],
+    ['👁️',,,awake|full|resize|code|dweet,'Visualizer'],
 ]],
 ];
 
