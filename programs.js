@@ -26,10 +26,10 @@ programStubs =
 ['help.html','<b><span style=color:#0f0>?',380,400,sticky,,'Check here to see help, code, or edit user programs.\n\nHave fun! ✌️😄'],
 [,'⚙️',,,,'System',,
 [
-    ['system/settings.html','🎚️',470,190,sticky],
     ['system/trophyCase.html','🏆',,,full|resize|sticky],
     ['system/stickyNote.html','✏️',300,263,sticky|reload,,'Ctrl+B - Bold\nCtrl+I - Italic\nCtrl+U - Underline\n\Reload to clear'],
     ['system/clock.dweet.js','🕰️',198,198,sticky|code|awake],
+    ['system/settings.html','🎚️',470,190,sticky],
     [,'📁',,,,'Test',,
     [
         ['system/systemTest.html',,600,370,defaultFlags|code],
@@ -59,10 +59,11 @@ programStubs =
 ]],
 [,'🎶',,,,'Music',,
 [
-    ['music/musicPlayer.html','🎵',400,330,sticky],
+    ['music/musicPlayer.html','🎵',400,330],
     ['music/piano.html','🎹',520,510,reload],
     ['music/soundSeeds.html','🌱',350,480,close|resize|reload],
     ['music/visualizer.dweet.js','👁️',,,awake|full|resize|code],
+    ['music/byteBeatPlayer.html','🦈',370,170,reload],
     ['music/bach.dweet.js','🎼'],
     ['music/minBytes.html','<span style=color:#f00>𝓜',450,450],
     ['music/smallSeeds.html','🦗',520,340,full|reload,,'This is a special tool for devs.\nUse smaller seeds to save space.\nYou can also tab through the list.'],
