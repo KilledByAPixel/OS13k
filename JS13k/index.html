@@ -169,7 +169,7 @@ const OS13kVersion = 72;
 // @js_externs OS13k.KeyDirection, OS13k.StripHTML, OS13k.Popup
 // @js_externs localStorage.OS13k, localStorage.OS13kVersion, OS13k, source.gain
 // @js_externs iframeContent, iframeContent.OS13k, iframeContent.OS13kWindow
-// @js_externs iframeContent.zzfx
+// @js_externs iframeContent.zzfx, zzfx, zzfxG
 // @js_externs S.v, S.m, S.s, S.p, S.o
 // @js_externs S.c, S.d, S.t, S.f
 // @js_externs window.document.OS13kInput.x
@@ -805,7 +805,7 @@ class OS13kProgramMenu extends HTMLElement
         // set position
         this.style.top  = y;
         this.style.left = this.parentMenu ?
-            this.parentMenu.getBoundingClientRect().right - 2 : pm_.style.left = 0;
+            this.parentMenu.getBoundingClientRect().right : pm_.style.left = 0;
 
         // add folders after programs so width is correct
         this.programStubs.map(stub=>
