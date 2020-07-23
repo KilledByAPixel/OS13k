@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?v204></script>
+<script src=programs.js?v205></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -259,7 +259,7 @@ const OS13kVersion = 71;
 // @js_externs OS13k.KeyDirection, OS13k.StripHTML, OS13k.Popup
 // @js_externs localStorage.OS13k, localStorage.OS13kVersion, OS13k, source.gain
 // @js_externs iframeContent, iframeContent.OS13k, iframeContent.OS13kWindow
-// @js_externs iframeContent.zzfx, zzfx, zzfxG
+// @js_externs iframeContent.zzfx, zzfx, zzfxG, zzfxM
 // @js_externs settings.v, settings.m, settings.s, settings.p, settings.o
 // @js_externs settings.c, settings.d, settings.t, settings.f
 // @js_externs window.document.OS13kInput.x
@@ -1559,7 +1559,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             this.iframe.onload = ()=> loadFrame();
-            this.iframe.src = program.src + '?v204';
+            this.iframe.src = program.src + '?v205';
         }
     }
         
@@ -2092,7 +2092,7 @@ buttonReload.onmousedown     = ()=> activeWindow.Reload();
 buttonClose.onmousedown      = ()=> activeWindow.Close();
 
 // create load program taskbar icon and add folders/programs
-RebuildMenu(loadIcon = new OS13kTaskbarIcon({icon:'💾', name:'Load Program'}, new OS13kProgramMenu(programStubs)));
+RebuildMenu(loadIcon = new OS13kTaskbarIcon({icon:'💾', name:'Load'}, new OS13kProgramMenu(programStubs)));
 
 // welcome message
 OS13k.Trophy('👋','','Welcome to OS13k!');
