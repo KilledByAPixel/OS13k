@@ -208,7 +208,7 @@ code     = 2**5, // show code button (cant show code if help is set)
 dweet    = 2**6, 
 
 // system flags
-closeAll   = 2**5,         // close all open windows
+closeAll   = 2**7,         // close all open windows
 newUserProgram = 2**8,     // create new user program
 deleteUserPrograms = 2**9, // remove all user programs
 
@@ -1465,8 +1465,8 @@ class OS13kWindow extends HTMLElement
         
         // set full screen
         this.iframeContent.focus();
-        this.iframeWrapper.webkitRequestFullScreen && this.iframeWrapper.webkitRequestFullScreen();
-        this.iframeWrapper.mozRequestFullScreen && this.iframeWrapper.mozRequestFullScreen();
+        this.iframeWrapper.webkitRequestFullScreen ? this.iframeWrapper.webkitRequestFullScreen() :
+            this.iframeWrapper.mozRequestFullScreen ? this.iframeWrapper.mozRequestFullScreen() : 0;
     }
     
     ShowCode(silent)
@@ -1759,7 +1759,7 @@ zzfxG = (volume = 1, randomness = .05, frequency = 220, attack = 0, sustain = 0,
 
 zzfxM = (instruments, patterns, sequence, speed = 6) => {
   const SAMPLE_RATE = defaultSampleRate;
-  const BPM = 125 ;
+  const BPM = 125;
   const tickRowSize = SAMPLE_RATE * speed / (BPM * .4) | 0;
   const sampleCache = {};
   const channelBuffers = [[],[]];
