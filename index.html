@@ -126,13 +126,7 @@ body
 </div>
 <div id=popups style=float:right></div>
 <div id=programsMenu style=position:absolute></div>
-<div id=menu>
-<button id=buttonFullScreen>Full Screen
-<button id=buttonCode>Code
-<button id=buttonHelp>Help
-<button id=buttonResetSize>Reset Size
-<button id=buttonReload>Reload
-<button id=buttonClose>Close
+<div id=menu></div>
 <template id=T>
 <style>
 :host
@@ -1660,15 +1654,22 @@ class OS13kWindow extends HTMLElement
             this.style.zIndex = ++topZ;
 
             // show menu buttons
-            const SetButtonVisibility = (button, visible)=> button.style.display = visible ? '' : 'none';
-            SetButtonVisibility(buttonFullScreen, this.program.flags & full);
-            SetButtonVisibility(buttonCode,       this.program.code);
-            SetButtonVisibility(buttonHelp,       this.program.help);
-            SetButtonVisibility(buttonReload,     this.program.flags & reload);
-            SetButtonVisibility(buttonResetSize,  this.program.flags & resize);
+            const MenuButton = (text, onmousedown)=>
+            {
+                const button = menu.appendChild(document.createElement('button'));
+                button.innerText = text;
+                button.onmousedown = onmousedown;
+            }
+            menu.innerHTML = '';
+            this.program.flags & full &&   MenuButton('Full Screen', ()=> this.FullScreen());
+            this.program.code &&           MenuButton('Code',        ()=> this.ShowCode());
+            this.program.help &&           MenuButton('Help',        ()=> this.ShowCode());
+            this.program.flags & resize && MenuButton('Reset Size',  ()=> this.SetActive(1, 1, this.Resize(1, soundGrow)));
+            this.program.flags & reload && MenuButton('Reload',      ()=> this.Reload());
+            MenuButton('Close', ()=> this.Close());
 
             // set taskbar icon active if it exists
-            this.taskbarIcon && this.taskbarIcon.SetActive(1,0);
+            this.taskbarIcon && this.taskbarIcon.SetActive(1, 0);
             
             // save start program if finished startup and not sticky
             finishedStartup & !(this.program.flags & sticky) && OS13k.Save(startProgramId = this.program.id);
@@ -1683,8 +1684,8 @@ class OS13kWindow extends HTMLElement
         
         // set full screen
         this.iframeContent.focus();
-        this.iframeWrapper.webkitRequestFullScreen && this.iframeWrapper.webkitRequestFullScreen();
-        this.iframeWrapper.mozRequestFullScreen && this.iframeWrapper.mozRequestFullScreen();
+        this.iframeWrapper.webkitRequestFullScreen ? this.iframeWrapper.webkitRequestFullScreen() :
+            this.iframeWrapper.mozRequestFullScreen ? this.iframeWrapper.mozRequestFullScreen() : 0;
         
         OS13k.Trophy('🕹️','OS13k','Pro Gamer','Went Full Screen');
     }
@@ -1999,7 +2000,7 @@ zzfxG = (volume = 1, randomness = .05, frequency = 220, attack = 0, sustain = 0,
 
 zzfxM = (instruments, patterns, sequence, speed = 6) => {
   const SAMPLE_RATE = defaultSampleRate;
-  const BPM = 125 ;
+  const BPM = 125;
   const tickRowSize = SAMPLE_RATE * speed / (BPM * .4) | 0;
   const sampleCache = {};
   const channelBuffers = [[],[]];
@@ -2082,14 +2083,6 @@ musicTrayIcon      = new OS13kTrayIcon();
 settingsTrayIcon   = new OS13kTrayIcon();
 stickyNoteTrayIcon = new OS13kTrayIcon();
 clockTrayIcon      = new OS13kTrayIcon();
-
-// set menu button functions
-buttonFullScreen.onmousedown = ()=> activeWindow.FullScreen();
-buttonHelp.onmousedown       =
-buttonCode.onmousedown       = ()=> activeWindow.ShowCode();
-buttonResetSize.onmousedown  = ()=> activeWindow.SetActive(1, 1, activeWindow.Resize(1, soundGrow));
-buttonReload.onmousedown     = ()=> activeWindow.Reload();
-buttonClose.onmousedown      = ()=> activeWindow.Close();
 
 // create load program taskbar icon and add folders/programs
 RebuildMenu(loadIcon = new OS13kTaskbarIcon({icon:'💾', name:'Load'}, new OS13kProgramMenu(programStubs)));
