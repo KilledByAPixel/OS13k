@@ -89,13 +89,7 @@ body
 </div>
 <div id=PU style=float:right></div>
 <div id=PM style=position:absolute></div>
-<div id=M>
-<button id=BF>Full Screen
-<button id=BC>Code
-<button id=BH>Help
-<button id=BS>Reset Size
-<button id=BR>Reload
-<button id=BL>Close
+<div id=M></div>
 <template id=T>
 <style>
 :host
@@ -1442,15 +1436,22 @@ class OS13kWindow extends HTMLElement
             this.style.zIndex = ++topZ;
 
             // show menu buttons
-            const SetButtonVisibility = (button, visible)=> button.style.display = visible ? '' : 'none';
-            SetButtonVisibility(BF, this.program.F & full);
-            SetButtonVisibility(BC, this.program.C);
-            SetButtonVisibility(BH, this.program.help);
-            SetButtonVisibility(BR, this.program.F & reload);
-            SetButtonVisibility(BS, this.program.F & resize);
+            const MenuButton = (text, onmousedown)=>
+            {
+                const button = M.appendChild(document.createElement('button'));
+                button.innerText = text;
+                button.onmousedown = onmousedown;
+            }
+            M.innerHTML = '';
+            this.program.F & full &&   MenuButton('Full Screen', ()=> this.FullScreen());
+            this.program.C &&          MenuButton('Code',        ()=> this.ShowCode());
+            this.program.help &&       MenuButton('Help',        ()=> this.ShowCode());
+            this.program.F & resize && MenuButton('Reset Size',  ()=> this.SetActive(1, 1, this.Resize(1, soundGrow)));
+            this.program.F & reload && MenuButton('Reload',      ()=> this.Reload());
+            MenuButton('Close', ()=> this.Close());
 
             // set taskbar icon active if it exists
-            this.taskbarIcon && this.taskbarIcon.SetActive(1,0);
+            this.taskbarIcon && this.taskbarIcon.SetActive(1, 0);
             
             // save start program if finished startup and not sticky
             finishedStartup & !(this.program.F & sticky) && OS13k.Save(startProgramId = this.program.D);
@@ -1842,14 +1843,6 @@ musicTrayIcon      = new OS13kTrayIcon();
 settingsTrayIcon   = new OS13kTrayIcon();
 stickyNoteTrayIcon = new OS13kTrayIcon();
 clockTrayIcon      = new OS13kTrayIcon();
-
-// set menu button functions
-BF.onmousedown = ()=> activeWindow.FullScreen();
-BH.onmousedown =
-BC.onmousedown = ()=> activeWindow.ShowCode();
-BS.onmousedown = ()=> activeWindow.SetActive(1, 1, activeWindow.Resize(1, soundGrow));
-BR.onmousedown = ()=> activeWindow.Reload();
-BL.onmousedown = ()=> activeWindow.Close();
 
 // create load program taskbar icon and add folders/programs
 RebuildMenu(loadIcon = new OS13kTaskbarIcon({I:'💾', N:'Load'}, new OS13kProgramMenu(programStubs)));
