@@ -1,4 +1,4 @@
-<style>body{background:#111;color:#fff;user-select:none;text-align:center}</style><span id=B></span>🌱 <input onchange=B() style=width:240 id=S placeholder='ZzFX or Seed'><p>🔊 <input onchange=B() style=width:99 type=range id=V> 📐 <input onchange=B() style=width:99 type=range id=L><script>
+<style>body{background:#111;color:#fff;user-select:none;text-align:center}</style><span id=B></span>🌱 <input oninput=P(0,R()) style=width:240 id=S placeholder='ZzFX or Seed'><p>🔊 <input onchange=R() style=width:99 type=range id=V> 🐇 <input onchange=R() style=width:99 type=range id=L> 🐢<script>
 
 // globals
 // S = seed
@@ -11,16 +11,13 @@ OS13k = parent.OS13k;
 //////////////////////////////////////////////////////////////
 // sound
 
-// set seed
-B=e=>P(0,R(),setTimeout(e=>X(0),500));
-
 // build cached samples
 R = e=>
 {
     onblur(D = []);                      // cancel all sounds and init sample cache
     for(i=5;--i;                         // loop for each octave
         D[i] = OS13k.SeedSamples(        // get seed samples
-            S.value, 1+L.value/5, 1, 0,  // seed parameters
+            S.value, .1+L.value/9, 1, 0, // seed parameters
                 OS13k.Note(i*12-33))     // root frequency C
     );
 }
