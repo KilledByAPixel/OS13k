@@ -1,6 +1,6 @@
 <style>body{background:#111;color:#fff;user-select:none}</style><center>
-BPM <input id=T type=number min=60 max=300 value=125>
-Loop <input id=L type=number min=1 max=32 value=8>
+BPM <input id=T type=number value=125>
+Loop <input id=L type=number value=8>
 <button onmousedown=P()>Play</button> <button onmousedown=S()>Stop</button> <button>Save</button> <button>Load</button>
 <hr><div id=B>
 <script>
@@ -28,39 +28,25 @@ OS13k = parent.OS13k;
 
 A = Z = 0; // last sound played
 
-M =          // music
+M =       // music
 [
     [],   // instruments
     [[]], // patterns
-    ,     // sequence, last sound played
-    6     // playback speed
+    []   // sequence, last sound played
 ];
 
 // play music
 P = e=>
 {
     S();
-    m = [...M];
-
-    // add 0's until end
-    l = 0;
-    for(y=2; y < 130; ++y)
-    for(x=0; x<4; ++x)
-        (m[1][0][x][y] = m[1][0][x][y] || 0) && (l=y);
-
-    for(x=0; x<4; ++x)
-        m[1][0][x].length = l+1;
-
-    m[2] = [];
-    for(i=0; i<L.value; ++i)
-        m[2][i] = 0;
-
-    A = OS13k.PlayMusic(m);
+    M[3] = T.value = OS13k.Clamp(T.value, 1e3, 60);
+    M[2].length = L.value = OS13k.Clamp(L.value, 64, 1);
+    M[2].fill(0);
+    A = OS13k.PlayMusic(M);
 }
 
 // stop music
-S = e=> A && A.stop();
-onunload = onblur = S;
+onunload = onblur = S = e=> A && A.stop();
 
 // set instrument
 I = (s, x)=> M[0][x] = OS13k.SeedParameters(s, 1, 1, 0, OS13k.Note());
