@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?v208></script>
+<script src=programs.js?v210></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -1560,7 +1560,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             this.iframe.onload = ()=> loadFrame();
-            this.iframe.src = program.src + '?v208';
+            this.iframe.src = program.src + '?v210';
         }
     }
         
@@ -2034,9 +2034,9 @@ zzfxM = (instruments, patterns, sequence, BPM = 125) => {
 
                 // add note data to channel
                 channels[channelIndex][n+i-2] = 
-                    [instrument = patternChannel[0] || 0, patternChannel[1] || 0, note = patternChannel[i] || 0];
+                    [instrument = patternChannel[0] || 0, patternChannel[1] || 0, note = patternChannel[i] || 0, notePitch = note | 0];
 
-                if (!sampleCache[[instrument, notePitch = note | 0]])
+                if (!sampleCache[[instrument, notePitch]])
                 {
                     // get instrument parmenters
                     x = [...instruments[instrument]];
@@ -2060,23 +2060,23 @@ zzfxM = (instruments, patterns, sequence, BPM = 125) => {
     channels.map(channel=>channel.map((noteData, noteIndex) => {
 
         // get sample buffer from cache
-        sampleBuffer = sampleCache[[instrument = noteData[0], notePitch = noteData[2] | 0]];
+        sampleBuffer = sampleCache[[instrument = noteData[0], notePitch = noteData[3]]];
 
-        // for each tick this sample covers
+        // for each beat this sample covers
         for(i = stop = attenuation = 0; notePitch > 0 & i < sampleBuffer.length / beatLength; ++i)
         {
-            // get offset for this note
-            k = noteIndex * beatLength + i * beatLength;
-
-            // get note at this point
+            // get note data at this point
             if (n = channel[noteIndex + i])
             {
                 // stop if different instrument or pitch
-                stop | (n[2] & (n[2]|0) != notePitch) | n[0] != instrument ? stop = 1 :
+                stop | n[0] != instrument | n[3] & n[3] != notePitch ? stop = 1 :
                     attenuation = n[2]%1; // update attenuation
             }
 
-            // fill buffer with samples for this tick (most cpu intensive part)
+            // get offset for this note
+            k = noteIndex * beatLength + i * beatLength;
+
+            // fill buffer with samples for this beat (most cpu intensive part)
             for(j = 0; attenuation < 1 & j < beatLength; 
 
                 // quickly fade off attenuation if stopping note, prevents clicking
