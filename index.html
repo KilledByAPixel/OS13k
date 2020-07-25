@@ -2036,7 +2036,7 @@ zzfxM = (instruments, patterns, sequence, BPM = 125) => {
                 channels[channelIndex][n+i-2] = 
                     [instrument = patternChannel[0] || 0, patternChannel[1] || 0, note = patternChannel[i] || 0, notePitch = note | 0];
 
-                if (!sampleCache[[instrument, notePitch]])
+                if (notePitch > 0 && !sampleCache[[instrument, notePitch]])
                 {
                     // get instrument parmenters
                     x = [...instruments[instrument]];
@@ -2060,16 +2060,16 @@ zzfxM = (instruments, patterns, sequence, BPM = 125) => {
     channels.map(channel=>channel.map((noteData, noteIndex) => {
 
         // get sample buffer from cache
-        sampleBuffer = sampleCache[[instrument = noteData[0], notePitch = noteData[3]]];
+        sampleBuffer = sampleCache[[noteData[0], noteData[3]]];
 
         // for each beat this sample covers
-        for(i = stop = attenuation = 0; notePitch > 0 & i < sampleBuffer.length / beatLength; ++i)
+        for(i = stop = attenuation = 0; noteData[3] > 0 && i < sampleBuffer.length / beatLength; ++i)
         {
             // get note data at this point
             if (n = channel[noteIndex + i])
             {
                 // stop if different instrument or pitch
-                stop | n[0] != instrument | n[3] & n[3] != notePitch ? stop = 1 :
+                stop | n[0] != noteData[0] | n[3] & n[3] != noteData[3] ? stop = 1 :
                     attenuation = n[2]%1; // update attenuation
             }
 
