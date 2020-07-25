@@ -134,7 +134,7 @@ span                { white-space:nowrap; }
 ///////////////////////////////////////////////////////////////////////////////
 // OS13k Debug (remove from minified)
 
-const OS13kVersion = 72;
+const OS13kVersion = 73;
 {
     // version check, clear local storage if older
     if (localStorage.OS13k && localStorage.OS13kVersion != OS13kVersion)
@@ -1794,9 +1794,9 @@ zzfxM = (instruments, patterns, sequence, BPM = 125) => {
 
                 // add note data to channel
                 channels[channelIndex][n+i-2] = 
-                    [instrument = patternChannel[0] || 0, patternChannel[1] || 0, note = patternChannel[i] || 0];
+                    [instrument = patternChannel[0] || 0, patternChannel[1] || 0, note = patternChannel[i] || 0, notePitch = note | 0];
 
-                if (!sampleCache[[instrument, notePitch = note | 0]])
+                if (notePitch > 0 && !sampleCache[[instrument, notePitch]])
                 {
                     // get instrument parmenters
                     x = [...instruments[instrument]];
@@ -1820,23 +1820,23 @@ zzfxM = (instruments, patterns, sequence, BPM = 125) => {
     channels.map(channel=>channel.map((noteData, noteIndex) => {
 
         // get sample buffer from cache
-        sampleBuffer = sampleCache[[instrument = noteData[0], notePitch = noteData[2] | 0]];
+        sampleBuffer = sampleCache[[noteData[0], noteData[3]]];
 
-        // for each tick this sample covers
-        for(i = stop = attenuation = 0; notePitch > 0 & i < sampleBuffer.length / beatLength; ++i)
+        // for each beat this sample covers
+        for(i = stop = attenuation = 0; noteData[3] > 0 && i < sampleBuffer.length / beatLength; ++i)
         {
-            // get offset for this note
-            k = noteIndex * beatLength + i * beatLength;
-
-            // get note at this point
+            // get note data at this point
             if (n = channel[noteIndex + i])
             {
                 // stop if different instrument or pitch
-                stop | (n[2] & (n[2]|0) != notePitch) | n[0] != instrument ? stop = 1 :
+                stop | n[0] != noteData[0] | n[3] & n[3] != noteData[3] ? stop = 1 :
                     attenuation = n[2]%1; // update attenuation
             }
 
-            // fill buffer with samples for this tick (most cpu intensive part)
+            // get offset for this note
+            k = noteIndex * beatLength + i * beatLength;
+
+            // fill buffer with samples for this beat (most cpu intensive part)
             for(j = 0; attenuation < 1 & j < beatLength; 
 
                 // quickly fade off attenuation if stopping note, prevents clicking
