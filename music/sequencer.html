@@ -1,0 +1,124 @@
+<style>body{background:#111;color:#fff;user-select:none}</style><center>
+BPM <input id=T type=number min=60 max=300 value=125>
+Loop <input id=L type=number min=1 max=32 value=8>
+<button onmousedown=P()>Play</button> <button onmousedown=S()>Stop</button> <button>Save</button> <button>Load</button>
+<hr><div id=B>
+<script>
+/*
+
+one input for notes
+keyboard to play note
+up down to set octave
+left right to set volume
+show note and volume
+delete to clear
+space to add stop
+play note on input
+
+color changed notes
+- color by frequency and volume
+show play head
+
+play/stop
+save/load
+
+*/
+
+OS13k = parent.OS13k;
+
+A = Z = 0; // last sound played
+
+M =          // music
+[
+    [],   // instruments
+    [[]], // patterns
+    ,     // sequence, last sound played
+    6     // playback speed
+];
+
+// play music
+P = e=>
+{
+    S();
+    m = [...M];
+
+    // add 0's until end
+    l = 0;
+    for(y=2; y < 130; ++y)
+    for(x=0; x<4; ++x)
+        (m[1][0][x][y] = m[1][0][x][y] || 0) && (l=y);
+
+    for(x=0; x<4; ++x)
+        m[1][0][x].length = l+1;
+
+    m[2] = [];
+    for(i=0; i<L.value; ++i)
+        m[2][i] = 0;
+
+    A = OS13k.PlayMusic(m);
+}
+
+// stop music
+S = e=> A && A.stop();
+onunload = onblur = S;
+
+// set instrument
+I = (s, x)=> M[0][x] = OS13k.SeedParameters(s, 1, 1, 0, OS13k.Note());
+
+// set note
+N = (e, x, y)=>
+{
+
+    v = -2;
+    if (e.keyCode == 8)
+        v = 0;
+    else if (e.keyCode == 32)
+        v = -1;
+    else if (OS13k.PianoKey(e) >= 0 )
+        v = 1 + OS13k.PianoKey(e);
+
+    if (v > -2)
+        e.target.value = v ? v > 0 ? ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'][(v-1)%12] + ' - ' + ((v-1)/12|0) : 'Stop' : '';
+
+    M[1][0][x][y] = v > 0 ? v + 2 : v;
+
+    p = [...M[0][x]];
+    p[2] = OS13k.Note(v - 10, p[2]);
+
+    Z && Z.stop();
+    if (v > 0)
+        Z = zzfx(...p);
+
+    return false;
+}
+
+//////////////////////////////////////////////////////////////
+// init
+
+o = '<table>';
+for(y=0; y<130; ++y)
+{
+    o += '<tr>';
+    for(x=0; x<5; ++x)
+    {
+        o += '<td style=white-space:nowrap>';
+        if (x>3)
+            o += y ? y-1 ? y-1 : '🎧' : '🌱';
+        else if (y==0)
+        {
+            o += `<input style=width:100% onchange=I(event.target.value,${x}) placeholder='ZzFX or Seed'>`;
+            I('', x);
+            M[1][0][x] = [x, 0];
+        }
+        else if (y==1)
+            o += `<input style=width:100% onchange=M[1][0][${x}][1]=event.target.value/50-1 type=range title=Pan>`;
+        else
+            o += `<input style=width:100% onkeydown='return N(event,${x},${y})'>`;
+        o += '</td>';
+    }
+    o += '</tr>';
+}
+
+B.innerHTML = o;
+
+</script>

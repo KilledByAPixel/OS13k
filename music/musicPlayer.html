@@ -17,8 +17,8 @@ Loop <input type=checkbox id=O><br>
 OS13k = parent.OS13k; // get OS13k
 X =     // current playing sound
 E =     // added song key
-T = 0;  // current song time
-Q = -1; // pending song to play
+D = T = 0;  // current song time
+Y = Q = -1; // pending song to play
 
 // html constants
 // N = song name
@@ -29,29 +29,37 @@ Q = -1; // pending song to play
 // O = loop
 
 // update loop
-U=k=>
+U=t=>
 {
-    // play queued song
-    Q < 0 || (                        // check if there is a queued song
-        l = L[Q],                     // get song from list
-        T = 0,                        // reset time
-        Q = -1,                       // reset song to play
-        (X = OS13k.PlayMusic(l.d)) || // play the music
-            alert`⚠️ Error!`);        // song failed to play
+    requestAnimationFrame(U);
 
-    // copy analyzer canvas
-    C.getContext`2d`.drawImage(OS13k.GetAnalyser(), 0, 0, C.width = 32, C.height = 32);
+    if (!--Y && Q >=0)                         // check if there is a queued song
+    {         
+        l = L[Q];                              // get song from list
+        T = 0;                                 // reset time
+        Q = -1;                                // reset song to play
+        (X = OS13k.PlayMusic(l.d)) ?           // play the music
+            X.gain.gain.value = V.value / 99 : // set music volume
+            alert`⚠️ Error!`;                  // song failed to play
+    }
+    else if (Y<-1)
+    {
+        // copy analyzer canvas
+        C.getContext`2d`.drawImage(OS13k.GetAnalyser(), 0, 0, C.width = 32, C.height = 32);
 
-    // update song info
-    F.innerText = X ? (                              // check if song playing
-        X.gain.gain.value = V.value / 100,           // set music volume
-        d = X.buffer.duration,                       // get buffer duration
-        T += .05,                                    // update time
-        X.loop = O.checked ?                         // set loop
-            T %= d :                                 // wrap time if looping
-            T > d && X.stop(X = 0),                  // stop song if ended
-        W(T) + '/' + W(d))                           // display song time
-        : (N.innerText = 'OS13k Music Player', '');  // reset name if not playing  
+        // update song info
+        F.innerText = X ? (                              // check if song playing
+            X.gain.gain.value = V.value / 99,            // set music volume
+            d = X.buffer.duration,                       // get buffer duration
+            T += (t-D)/1e3,                              // update time
+            X.loop = O.checked ?                         // set loop
+                T %= d :                                 // wrap time if looping
+                T > d && X.stop(X = 0),                  // stop song if ended
+            W(T) + '/' + W(d))                           // display song time
+            : (N.innerText = 'OS13k Music Player', '');  // reset name if not playing  
+    }
+
+    D = t;
 }
 
 // build song list
@@ -99,7 +107,8 @@ I=k=> // key
 // play song
 P=k=>
 {
-    X && X.stop(X = 0);              // stop song if playing
+    X && X.stop();                   // stop song if playing
+    Y = 2;                           // wait to start so display can update
     (Q = S.selectedIndex) < 0 ||     // set queued song index and check if no selection
         (N.innerText = L[Q].n,       // set queued song index
         F.innerText = 'Loading...'); // set loading message
@@ -147,7 +156,7 @@ localStorage['OS13kMusic,OS13k Test'] = JSON.stringify(
             ],
             [                // channel 1
                 1, 1,        // instrument 1, right speaker
-                8, 8.3, 3, 0 // channel notes
+                8, 8, 0, 3   // channel notes
             ]
         ],
     ],
@@ -163,6 +172,6 @@ K = localStorage.OS13kM ? JSON.parse(localStorage.OS13kM) : []
 B(onunload=_=> X && X.stop());
 
 // set update interval
-setInterval(U, 16);
+U();
 
 </script>

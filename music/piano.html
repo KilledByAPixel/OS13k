@@ -131,18 +131,12 @@ E(A = []);
 //////////////////////////////////////////////////////////////
 // keyboard controls
 
-// keyboard key to piano key
-K = e=>
-    (k = 'ZSXDCVGBHNJM,L.;/Q2W3ER5T6Y7UI9O0P[=]' // map key to note
-    .indexOf(e.key?.toUpperCase()),              // find the key and check for invalid key
-    k - 5 * (k > 16));                           // remap second row of keys
-
 // play note on key down
 onkeydown = e=>
     document.activeElement == S || // not when editing seed
-        P(K(e));                   // play note
+        P(OS13k.PianoKey(e));                   // play note
 
 // release note on key up
-onkeyup = e=> X(K(e));
+onkeyup = e=> X(OS13k.PianoKey(e));
 
 </script>

@@ -1,4 +1,4 @@
-<style>body{background:#111;color:#fff;user-select:none;text-align:center}</style><span id=B></span>🌱 <input onchange="P(0,R());setTimeout(e=>X(0),500)" style=width:240 id=S><p>🔊 <input onchange="P(0,R());setTimeout(e=>X(0),500)" style=width:99 type=range id=V> 📐 <input onchange="P(0,R());setTimeout(e=>X(0),500)" style=width:99 type=range id=L><script>
+<style>body{background:#111;color:#fff;user-select:none;text-align:center}</style><span id=B></span>🌱 <input onchange=B() style=width:240 id=S placeholder='ZzFX or Seed'><p>🔊 <input onchange=B() style=width:99 type=range id=V> 📐 <input onchange=B() style=width:99 type=range id=L><script>
 
 // globals
 // S = seed
@@ -11,13 +11,16 @@ OS13k = parent.OS13k;
 //////////////////////////////////////////////////////////////
 // sound
 
+// set seed
+B=e=>P(0,R(),setTimeout(e=>X(0),500));
+
 // build cached samples
 R = e=>
 {
     onblur(D = []);                      // cancel all sounds and init sample cache
     for(i=5;--i;                         // loop for each octave
         D[i] = OS13k.SeedSamples(        // get seed samples
-            S.value, .5+L.value/5, 1, 0, // seed parameters
+            S.value, 1+L.value/5, 1, 0,  // seed parameters
                 OS13k.Note(i*12-33))     // root frequency C
     );
 }
@@ -51,18 +54,12 @@ R(A = []);
 //////////////////////////////////////////////////////////////
 // keyboard controls
 
-// keyboard key to piano key
-K = e=>
-    (k = 'ZSXDCVGBHNJM,L.;/Q2W3ER5T6Y7UI9O0P[=]' // map key to note
-    .indexOf(e.key?.toUpperCase()),              // find the key and check for invalid key
-    k - 5 * (k > 16));                           // remap second row of keys
-
 // play note on key down
 onkeydown = e=>
     document.activeElement == S || // not when editing seed
-        P(K(e));                   // play note
+        P(OS13k.PianoKey(e));                   // play note
 
 // release note on key up
-onkeyup = e=> X(K(e));
+onkeyup = e=> X(OS13k.PianoKey(e));
 
 </script>
