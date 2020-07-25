@@ -58,9 +58,9 @@ programStubs =
 ]],
 [,'🎶',,,,'Music',,
 [
-    ['music/musicPlayer.html','🎵',400,330,defaultFlags|sticky],
+    ['music/musicPlayer.html','🎵',400,330,sticky],
     ['music/piano.html','🎹',520,510,reload],
-    ['music/sequencer.html','🥁',,,,,'Keyboard = Set note\nRight/Left = Volume\nUp/Down = Octave'],
+    ['music/sequencer.html','🥁',,,,,'Keyboard = Set note\nRight/Left = Volume\nUp/Down = Octave\nSpace = Stop\nEnter = End'],
     ['music/soundSeeds.html','🌱',350,480,resize|reload],
     ['music/visualizer.dweet.js','👁️',,,awake|full|resize|code],
     ['music/byteBeatPlayer.html','🦈',300,89,reload],
