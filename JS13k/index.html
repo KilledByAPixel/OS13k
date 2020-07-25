@@ -1843,7 +1843,7 @@ zzfxM = (instruments, patterns, sequence, BPM = 125) => {
                 stop ? attenuation += .01 : 0) {
 
                 // copy sample to stereo buffers with panning
-                x = (1-attenuation) * sampleBuffer[i*beatLength + j++] || 0;
+                x = (1-attenuation) * sampleBuffer[i*beatLength + j++] / 2 || 0;
                 channelBuffers[0][k]   -= x - x * noteData[1];
                 channelBuffers[1][k++] += x + x * noteData[1];
             }
