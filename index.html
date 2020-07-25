@@ -2063,24 +2063,26 @@ zzfxM = (instruments, patterns, sequence, BPM = 125) => {
         sampleBuffer = sampleCache[[noteData[0], noteData[3]]];
 
         // for each beat this sample covers
-        for(i = stop = attenuation = 0; noteData[3] > 0 && i < sampleBuffer.length / beatLength; ++i)
+        for(i = stop = attenuation = 0; !stop & noteData[3] > 0 && i < sampleBuffer.length / beatLength; ++i)
         {
-            // get note data at this point
-            if (n = channel[noteIndex + i])
+            // set attenuation
+            channel[noteIndex + i] && channel[noteIndex + i][2] ? attenuation = channel[noteIndex + i][2]%1 : 0;
+
+            // check next note
+            if (n = channel[noteIndex + i + 1])
             {
                 // stop if different instrument or pitch
-                stop | n[0] != noteData[0] | n[3] && n[3] != noteData[3] ? stop = 1 :
-                    attenuation = n[2]%1; // update attenuation
+                stop |= n[0] != noteData[0] | n[3] && n[3] != noteData[3];
             }
 
             // get offset for this note
             k = noteIndex * beatLength + i * beatLength;
 
             // fill buffer with samples for this beat (most cpu intensive part)
-            for(j = 0; attenuation < 1 & j < beatLength; 
+            for(j = 0; j < beatLength & attenuation < 1; 
 
-                // quickly fade off attenuation if stopping note, prevents clicking
-                stop ? attenuation += .01 : 0) {
+                // fade off attenuation at end of beat if stopping note, prevents clicking
+                stop & j > beatLength - 99 ? attenuation += .01 : 0) {
 
                 // copy sample to stereo buffers with panning
                 x = (1-attenuation) * sampleBuffer[i*beatLength + j++] / 2 || 0;
