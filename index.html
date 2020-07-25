@@ -2069,7 +2069,7 @@ zzfxM = (instruments, patterns, sequence, BPM = 125) => {
             if (n = channel[noteIndex + i])
             {
                 // stop if different instrument or pitch
-                stop | n[0] != noteData[0] | n[3] & n[3] != noteData[3] ? stop = 1 :
+                stop | n[0] != noteData[0] | n[3] && n[3] != noteData[3] ? stop = 1 :
                     attenuation = n[2]%1; // update attenuation
             }
 
