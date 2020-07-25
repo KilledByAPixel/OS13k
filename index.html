@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?v207></script>
+<script src=programs.js?v208></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -207,7 +207,7 @@ span                { white-space:nowrap; }
 ///////////////////////////////////////////////////////////////////////////////
 // OS13k Debug (remove from minified)
 
-const OS13kVersion = 71;
+const OS13kVersion = 72;
 {
     // version check, clear local storage if older
     if (localStorage.OS13k && localStorage.OS13kVersion != OS13kVersion)
@@ -215,7 +215,7 @@ const OS13kVersion = 71;
         alert('OS13k version out of date! System reset in 3, 2, 1...');
 
         // save what we can
-        const save = localStorage.OS13kVersion == 70 ? localStorage.OS13k : 0;
+        const save = localStorage.OS13kVersion >= 70 ? localStorage.OS13k : 0;
         localStorage.clear();
         if (save)
           localStorage.OS13k = save;
@@ -1560,7 +1560,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             this.iframe.onload = ()=> loadFrame();
-            this.iframe.src = program.src + '?v207';
+            this.iframe.src = program.src + '?v208';
         }
     }
         
@@ -2005,10 +2005,8 @@ zzfxG = (volume = 1, randomness = .05, frequency = 220, attack = 0, sustain = 0,
 ///////////////////////////////////////////////////////////////////////////////
 //! ZzFXM (v1.0.0) | (C) Keith Clark | MIT | https://github.com/keithclark/ZzFXM
 
-zzfxM = (instruments, patterns, sequence, speed = 6) => {
-    const SAMPLE_RATE = defaultSampleRate;
-    const BPM = 125;
-    const tickLength = SAMPLE_RATE * speed / (BPM * .4) | 0;
+zzfxM = (instruments, patterns, sequence, BPM = 125) => {
+    const beatLength = defaultSampleRate / BPM * 60 >> 2;
     const sampleCache = {};
     const channelBuffers = [[]];
     const channels = [];
@@ -2055,7 +2053,7 @@ zzfxM = (instruments, patterns, sequence, speed = 6) => {
     });
 
     // set song sample length and fill with with 0's
-    channelBuffers[0].length = n * tickLength + k;
+    channelBuffers[0].length = n * beatLength + k;
     channelBuffers[1] = [...channelBuffers[0].fill(0)];
 
     // render song
@@ -2065,10 +2063,10 @@ zzfxM = (instruments, patterns, sequence, speed = 6) => {
         sampleBuffer = sampleCache[[instrument = noteData[0], notePitch = noteData[2] | 0]];
 
         // for each tick this sample covers
-        for(i = stop = attenuation = 0; notePitch > 0 & i < sampleBuffer.length / tickLength; ++i)
+        for(i = stop = attenuation = 0; notePitch > 0 & i < sampleBuffer.length / beatLength; ++i)
         {
             // get offset for this note
-            k = noteIndex * tickLength + i * tickLength;
+            k = noteIndex * beatLength + i * beatLength;
 
             // get note at this point
             if (n = channel[noteIndex + i])
@@ -2079,13 +2077,13 @@ zzfxM = (instruments, patterns, sequence, speed = 6) => {
             }
 
             // fill buffer with samples for this tick (most cpu intensive part)
-            for(j = 0; attenuation < 1 & j < tickLength; 
+            for(j = 0; attenuation < 1 & j < beatLength; 
 
                 // quickly fade off attenuation if stopping note, prevents clicking
                 stop ? attenuation += .01 : 0) {
 
                 // copy sample to stereo buffers with panning
-                x = (1-attenuation) * sampleBuffer[i*tickLength + j++] || 0;
+                x = (1-attenuation) * sampleBuffer[i*beatLength + j++] || 0;
                 channelBuffers[0][k]   -= x - x * noteData[1];
                 channelBuffers[1][k++] += x + x * noteData[1];
             }
