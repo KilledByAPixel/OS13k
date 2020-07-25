@@ -21,7 +21,7 @@ Popups <input type=checkbox id=P oninput=s()>
 <button onmousedown=X&&X.stop(X=0)>Stop</button>
 <button onmousedown=A()>Load</button>
 <button onmousedown=R()>Delete</button><br><br>Volume <input type=range id=V>
-Loop <input type=checkbox id=O><br><canvas id=C style=width:350;height:29;image-rendering:-moz-crisp-edges;image-rendering:pixelated></canvas><br><select id=S size=9 style=width:350;background:#000;color:#fff><script>OS13k=parent.OS13k,X=E=D=T=0,Y=Q=-1,U=e=>{requestAnimationFrame(U),!--Y&&Q>=0?(l=L[Q],T=0,Q=-1,(X=OS13k.PlayMusic(l.d))?X.gain.gain.value=V.value/99:alert`⚠️ Error!`):Y<-1&&(C.getContext`2d`.drawImage(OS13k.GetAnalyser(),0,0,C.width=32,C.height=32),F.innerText=X?(X.gain.gain.value=V.value/99,d=X.buffer.duration,T+=(e-D)/1e3,X.loop=O.checked?T%=d:T>d&&X.stop(X=0),W(T)+"/"+W(d)):(N.innerText="OS13k Music Player","")),D=e},B=e=>{for(e in i=S.selectedIndex,S.innerHTML="",Z=0,L=[],localStorage)I(e);L.sort((e,n)=>e.n.localeCompare(n.n)).map(e=>S.innerHTML+=`<option>${e.n}</option>`),S.selectedIndex=OS13k.Clamp(E?L.findIndex(e=>e.k==E):i,S.length-1,E=0),localStorage.OS13kM=JSON.stringify(K)},I=e=>{if(p=e.split`,`,f=p.shift(),"OS13kMusic"==f.substring(0,10)){n=p[0]?p[0]:"Untitled","U"==f.substring(10,11)?Z=Math.max(Z,f.substring(11)):K.indexOf(e)<0&&(OS13k.Popup("🎵 New Music<br><b>"+n,n),K.push(e));try{(d=J(localStorage[e]))&&L.push({d:d,k:e,n:n})}catch(e){console.log(e)}}},P=e=>{X&&X.stop(),Y=2,(Q=S.selectedIndex)<0||(N.innerText=L[Q].n,F.innerText="Loading...")},A=e=>{try{parent.zzfxM(...J(d=prompt`ZzFXM Data`)),B(localStorage[E=`OS13kMusicU${Z+1},`+prompt`Name`.replace(/,/g,"")]=d)}catch(e){alert`⚠️ Error!`,console.log(e)}},R=e=>confirm(`⚠️ Delete ${L[S.selectedIndex].n}?`)&&B(localStorage[L[S.selectedIndex].k]=0),J=k=>k.replace(/null|[[\],\d\.-]/g,"")||eval(k.replace(/null/g,void 0)),W=e=>(e/60|0)+((e=e%60|0)<=9?":0":":")+e,localStorage["OS13kMusic,OS13k Test"]=JSON.stringify([[[,0,219,,,,,1.1,,-.1,-50,-.05,-.01,1],[2,0,84,,,.1,,.7,,,,.5,,6.7,1,.05]],[[[0,-1,1,0,5.5,0],[1,1,8,8,0,3]]],[0,0,0,0],4]),K=localStorage.OS13kM?JSON.parse(localStorage.OS13kM):[],B(onunload=e=>X&&X.stop()),U()</script></template>
+Loop <input type=checkbox id=O><br><canvas id=C style=width:350;height:29;image-rendering:-moz-crisp-edges;image-rendering:pixelated></canvas><br><select id=S size=9 style=width:350;background:#000;color:#fff><script>OS13k=parent.OS13k,X=E=D=T=0,Y=Q=-1,U=e=>{requestAnimationFrame(U),!--Y&&Q>=0?(l=L[Q],T=0,Q=-1,(X=OS13k.PlayMusic(l.d))?X.gain.gain.value=V.value/99:alert`⚠️ Error!`):Y<-1&&(C.getContext`2d`.drawImage(OS13k.GetAnalyser(),0,0,C.width=32,C.height=32),F.innerText=X?(X.gain.gain.value=V.value/99,d=X.buffer.duration,T+=(e-D)/1e3,X.loop=O.checked?T%=d:T>d&&X.stop(X=0),W(T)+"/"+W(d)):(N.innerText="OS13k Music Player","")),D=e},B=e=>{for(e in i=S.selectedIndex,S.innerHTML="",Z=0,L=[],localStorage)I(e);L.sort((e,n)=>e.n.localeCompare(n.n)).map(e=>S.innerHTML+=`<option>${e.n}</option>`),S.selectedIndex=OS13k.Clamp(E?L.findIndex(e=>e.k==E):i,S.length-1,E=0),localStorage.OS13kM=JSON.stringify(K)},I=e=>{if(p=e.split`,`,f=p.shift(),"OS13kMusic"==f.substring(0,10)){n=p[0]?p[0]:"Untitled","U"==f.substring(10,11)?Z=Math.max(Z,f.substring(11)):K.indexOf(e)<0&&(OS13k.Popup("🎵 New Music<br><b>"+n,n),K.push(e));try{(d=J(localStorage[e]))&&L.push({d:d,k:e,n:n})}catch(e){console.log(e)}}},P=e=>{X&&X.stop(),Y=2,(Q=S.selectedIndex)<0||(N.innerText=L[Q].n,F.innerText="Loading...")},A=e=>{try{parent.zzfxM(...J(d=prompt`ZzFXM Data`)),B(localStorage[E=`OS13kMusicU${Z+1},`+prompt`Name`.replace(/,/g,"")]=d)}catch(e){alert`⚠️ Error!`,console.log(e)}},R=e=>confirm(`⚠️ Delete ${L[S.selectedIndex].n}?`)&&B(localStorage[L[S.selectedIndex].k]=0),J=k=>k.replace(/null|[[\],\d\.-]/g,"")||eval(k.replace(/null/g,void 0)),W=e=>(e/60|0)+((e=e%60|0)<=9?":0":":")+e,localStorage["OS13kMusic,OS13k Test"]=JSON.stringify([[[,0,219,,,,,1.1,,-.1,-50,-.05,-.01,1],[2,0,84,,,.1,,.7,,,,.5,,6.7,1,.05]],[[[0,-1,1,0,5,0],[1,1,8,8,0,3]]],[0,0,0,0],90]),K=localStorage.OS13kM?JSON.parse(localStorage.OS13kM):[],B(onunload=e=>X&&X.stop()),U()</script></template>
 
 <template name=Visualizer>for(x.fillRect(0,0,2e3,2e3),x.fillStyle="#0003",t?x.lineWidth=9:h=[],x.strokeStyle="#fff",i=32;i--;x.beginPath(x.strokeStyle=`hsl(${-99-i*360/32} 99%${9+m/2}%)`,x.stroke()))for(m=199*OS13k.GetAnalyserData(i),j=5;j--;)x.arc(960,540,256+(j+1&2?1:-1)*m,a=2*((2&j)/2-8.5+i)*Math.PI/32,a);x.drawImage(c,-40,-20,2e3,1120)</template>
 
@@ -134,7 +134,7 @@ span                { white-space:nowrap; }
 ///////////////////////////////////////////////////////////////////////////////
 // OS13k Debug (remove from minified)
 
-const OS13kVersion = 71;
+const OS13kVersion = 72;
 {
     // version check, clear local storage if older
     if (localStorage.OS13k && localStorage.OS13kVersion != OS13kVersion)
@@ -1762,14 +1762,11 @@ zzfxG = (volume = 1, randomness = .05, frequency = 220, attack = 0, sustain = 0,
     return buffer;
 },
 
-
 ///////////////////////////////////////////////////////////////////////////////
 //! ZzFXM (v1.0.0) | (C) Keith Clark | MIT | https://github.com/keithclark/ZzFXM
 
-zzfxM = (instruments, patterns, sequence, speed = 6) => {
-    const SAMPLE_RATE = defaultSampleRate;
-    const BPM = 125;
-    const tickLength = SAMPLE_RATE * speed / (BPM * .4) | 0;
+zzfxM = (instruments, patterns, sequence, BPM = 125) => {
+    const beatLength = defaultSampleRate / BPM * 60 >> 2;
     const sampleCache = {};
     const channelBuffers = [[]];
     const channels = [];
@@ -1816,7 +1813,7 @@ zzfxM = (instruments, patterns, sequence, speed = 6) => {
     });
 
     // set song sample length and fill with with 0's
-    channelBuffers[0].length = n * tickLength + k;
+    channelBuffers[0].length = n * beatLength + k;
     channelBuffers[1] = [...channelBuffers[0].fill(0)];
 
     // render song
@@ -1826,10 +1823,10 @@ zzfxM = (instruments, patterns, sequence, speed = 6) => {
         sampleBuffer = sampleCache[[instrument = noteData[0], notePitch = noteData[2] | 0]];
 
         // for each tick this sample covers
-        for(i = stop = attenuation = 0; notePitch > 0 & i < sampleBuffer.length / tickLength; ++i)
+        for(i = stop = attenuation = 0; notePitch > 0 & i < sampleBuffer.length / beatLength; ++i)
         {
             // get offset for this note
-            k = noteIndex * tickLength + i * tickLength;
+            k = noteIndex * beatLength + i * beatLength;
 
             // get note at this point
             if (n = channel[noteIndex + i])
@@ -1840,13 +1837,13 @@ zzfxM = (instruments, patterns, sequence, speed = 6) => {
             }
 
             // fill buffer with samples for this tick (most cpu intensive part)
-            for(j = 0; attenuation < 1 & j < tickLength; 
+            for(j = 0; attenuation < 1 & j < beatLength; 
 
                 // quickly fade off attenuation if stopping note, prevents clicking
                 stop ? attenuation += .01 : 0) {
 
                 // copy sample to stereo buffers with panning
-                x = (1-attenuation) * sampleBuffer[i*tickLength + j++] || 0;
+                x = (1-attenuation) * sampleBuffer[i*beatLength + j++] || 0;
                 channelBuffers[0][k]   -= x - x * noteData[1];
                 channelBuffers[1][k++] += x + x * noteData[1];
             }
