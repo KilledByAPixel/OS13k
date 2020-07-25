@@ -1762,6 +1762,7 @@ zzfxG = (volume = 1, randomness = .05, frequency = 220, attack = 0, sustain = 0,
     return buffer;
 },
 
+
 ///////////////////////////////////////////////////////////////////////////////
 //! ZzFXM (v1.0.0) | (C) Keith Clark | MIT | https://github.com/keithclark/ZzFXM
 
@@ -1794,9 +1795,11 @@ zzfxM = (instruments, patterns, sequence, speed = 6) => {
                 // update longest channel
                 j = Math.max(j, i-1);
 
-                // check if this instrument / note combo is cached
-                note = patternChannel[i] || 0;
-                if (!sampleCache[[instrument = patternChannel[0] || 0, notePitch = note | 0]])
+                // add note data to channel
+                channels[channelIndex][n+i-2] = 
+                    [instrument = patternChannel[0] || 0, patternChannel[1] || 0, note = patternChannel[i] || 0];
+
+                if (!sampleCache[[instrument, notePitch = note | 0]])
                 {
                     // get instrument parmenters
                     x = [...instruments[instrument]];
@@ -1805,9 +1808,6 @@ zzfxM = (instruments, patterns, sequence, speed = 6) => {
                     // add to cache and track longest sample (to add extra 0's to end)
                     k = Math.max(k, (sampleCache[[instrument, notePitch]] = zzfxG(...x)).length);
                 }
-
-                // add note data to channel
-                channels[channelIndex][n+i-2] = [instrument, patternChannel[1] || 0, note];
             }   
         });
 
