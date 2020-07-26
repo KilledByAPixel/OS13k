@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?v214></script>
+<script src=programs.js?v216></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -244,13 +244,13 @@ const OS13kVersion = 76;
 // @js_externs OS13k.Clamp, OS13k.Percent, OS13k.Lerp, OS13k.Hash
 // @js_externs OS13k.Random, OS13k.randomSeed, iframeContent.OS13kReload
 // @js_externs OS13k.Trophies, OS13k.Trophy, OS13k.GetTrophy
-// @js_externs OS13k.PlaySamples, OS13k.Note
+// @js_externs OS13k.PlaySamples, OS13k.Note, OS13k.PianoKey
 // @js_externs OS13k.PlayMusic, OS13k.GetAnalyser, OS13k.GetAnalyserData
 // @js_externs OS13k.Speak, OS13k.StopSpeech, OS13k.PlaySeed
 // @js_externs OS13k.SeedSamples, OS13k.SeedParameters
 // @js_externs OS13k.Settings, OS13k.SaveSettings, OS13k.Input
 // @js_externs OS13k.CreateShader, OS13k.RenderShader
-// @js_externs OS13k.KeyDirection, OS13k.StripHTML, OS13k.Popup
+// @js_externs OS13k.KeyDirection, OS13k.StripHTML, OS13k.SafeEval, OS13k.Popup
 // @js_externs localStorage.OS13k, localStorage.OS13kVersion, OS13k, source.gain
 // @js_externs iframeContent, iframeContent.OS13k, iframeContent.OS13kWindow
 // @js_externs iframeContent.zzfx, zzfx, zzfxG, zzfxM
@@ -615,6 +615,10 @@ class _OS13k
     StripHTML(string, maxLength)
     { return (string+'').substring(0, maxLength || string.length).replace(/<.*>/g, ''); }
     
+    // check if string is safe to eval and replace null with undefined
+    SafeEval(string)
+    { return string.replace(/null|[[\],\d\.-]/g, '') || eval(string.replace(/null/g, undefined)); }
+
     Popup(html, speak, language)
     {
         // create popup
@@ -1560,7 +1564,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             this.iframe.onload = ()=> loadFrame();
-            this.iframe.src = program.src + '?v214';
+            this.iframe.src = program.src + '?v216';
         }
     }
         
@@ -2012,7 +2016,7 @@ zzfxM = (instruments, patterns, sequence, BPM = 125) => {
     const channels = [];
 
     // build song
-    let n = 0, k = 0, instrument, note, notePitch, i, j, stop, attenuation, sampleBuffer, x;
+    let n = 0, k = 0, instrument, note, notePitch, x, i, j, stop, attenuation, sampleBuffer;
 
     // for each pattern in sequence
     sequence.map(patternIndex => {
@@ -2068,12 +2072,9 @@ zzfxM = (instruments, patterns, sequence, BPM = 125) => {
             // set attenuation
             channel[noteIndex + i] && channel[noteIndex + i][2] ? attenuation = channel[noteIndex + i][2]%1 : 0;
 
-            // check next note
+            // check next note, stop if different instrument or pitch
             if (n = channel[noteIndex + i + 1])
-            {
-                // stop if different instrument or pitch
                 stop |= n[0] != noteData[0] | n[3] && n[3] != noteData[3];
-            }
 
             // get offset for this note
             k = noteIndex * beatLength + i * beatLength;
