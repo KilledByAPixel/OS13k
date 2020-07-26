@@ -21,7 +21,7 @@ Popups <input type=checkbox id=P oninput=s()>
 <button onmousedown=X&&X.stop(X=0)>Stop</button>
 <button onmousedown=A()>Load</button>
 <button onmousedown=R()>Delete</button><br><br>Volume <input type=range id=V>
-Loop <input type=checkbox id=O><br><canvas id=C style=width:350;height:29;image-rendering:-moz-crisp-edges;image-rendering:pixelated></canvas><br><select id=S size=9 style=width:350;background:#000;color:#fff><script>OS13k=parent.OS13k,X=E=D=T=0,Y=Q=-1,U=e=>{requestAnimationFrame(U),!--Y&&Q>=0?(l=L[Q],T=0,Q=-1,(X=OS13k.PlayMusic(l.d))?X.gain.gain.value=V.value/99:alert`⚠️ Error!`):Y<-1&&(C.getContext`2d`.drawImage(OS13k.GetAnalyser(),0,0,C.width=32,C.height=32),F.innerText=X?(X.gain.gain.value=V.value/99,d=X.buffer.duration,T+=(e-D)/1e3,X.loop=O.checked?T%=d:T>d&&X.stop(X=0),W(T)+"/"+W(d)):(N.innerText="OS13k Music Player","")),D=e},B=e=>{for(e in i=S.selectedIndex,S.innerHTML="",Z=0,L=[],localStorage)I(e);L.sort((e,n)=>e.n.localeCompare(n.n)).map(e=>S.innerHTML+=`<option>${e.n}</option>`),S.selectedIndex=OS13k.Clamp(E?L.findIndex(e=>e.k==E):i,S.length-1,E=0),localStorage.OS13kM=JSON.stringify(K)},I=e=>{if(p=e.split`,`,f=p.shift(),"OS13kMusic"==f.substring(0,10)){n=p[0]?p[0]:"Untitled","U"==f.substring(10,11)?Z=Math.max(Z,f.substring(11)):K.indexOf(e)<0&&(OS13k.Popup("🎵 New Music<br><b>"+n,n),K.push(e));try{(d=J(localStorage[e]))&&L.push({d:d,k:e,n:n})}catch(e){console.log(e)}}},P=e=>{X&&X.stop(),Y=2,(Q=S.selectedIndex)<0||(N.innerText=L[Q].n,F.innerText="Loading...")},A=e=>{try{parent.zzfxM(...J(d=prompt`ZzFXM Data`)),B(localStorage[E=`OS13kMusicU${Z+1},`+prompt`Name`.replace(/,/g,"")]=d)}catch(e){alert`⚠️ Error!`,console.log(e)}},R=e=>confirm(`⚠️ Delete ${L[S.selectedIndex].n}?`)&&B(localStorage[L[S.selectedIndex].k]=0),J=k=>k.replace(/null|[[\],\d\.-]/g,"")||eval(k.replace(/null/g,void 0)),W=e=>(e/60|0)+((e=e%60|0)<=9?":0":":")+e,localStorage["OS13kMusic,OS13k Test"]=JSON.stringify([[[,0,219,,,,,1.1,,-.1,-50,-.05,-.01,1],[2,0,84,,,.1,,.7,,,,.5,,6.7,1,.05]],[[[0,-1,1,0,5,0],[1,1,8,8,0,3]]],[0,0,0,0],90]),K=localStorage.OS13kM?JSON.parse(localStorage.OS13kM):[],B(onunload=e=>X&&X.stop()),U()</script></template>
+Loop <input type=checkbox id=O><br><canvas id=C style=width:350;height:29;image-rendering:-moz-crisp-edges;image-rendering:pixelated></canvas><br><select id=S size=9 style=width:350;background:#000;color:#fff><script>OS13k=parent.OS13k,X=E=D=T=0,Y=Q=-1,U=e=>{requestAnimationFrame(U),!--Y&&Q>=0?(l=L[Q],T=0,Q=-1,(X=OS13k.PlayMusic(l.d))?X.gain.gain.value=V.value/99:alert`⚠️ Error!`):Y<-1&&(C.getContext`2d`.drawImage(OS13k.GetAnalyser(),0,0,C.width=32,C.height=32),F.innerText=X?(X.gain.gain.value=V.value/99,d=X.buffer.duration,T+=(e-D)/1e3,X.loop=O.checked?T%=d:T>d&&X.stop(X=0),W(T)+"/"+W(d)):(N.innerText="OS13k Music Player","")),D=e},B=e=>{for(e in i=S.selectedIndex,S.innerHTML="",Z=0,L=[],localStorage)I(e);L.sort((e,n)=>e.n.localeCompare(n.n)).map(e=>S.innerHTML+=`<option>${e.n}</option>`),S.selectedIndex=OS13k.Clamp(E?L.findIndex(e=>e.k==E):i,S.length-1,E=0),localStorage.OS13kM=JSON.stringify(K)},I=e=>{if(p=e.split`,`,f=p.shift(),"OS13kMusic"==f.substring(0,10)){n=p[0]?p[0]:"Untitled","U"==f.substring(10,11)?Z=Math.max(Z,f.substring(11)):K.indexOf(e)<0&&(OS13k.Popup("🎵 New Music<br><b>"+n,n),K.push(e));try{(d=OS13k.SafeEval(localStorage[e]))&&L.push({d:d,k:e,n:n})}catch(e){console.log(e)}}},P=e=>{X&&X.stop(),Y=2,(Q=S.selectedIndex)<0||(N.innerText=L[Q].n,F.innerText="Loading...")},A=e=>{try{parent.zzfxM(...OS13k.SafeEval(d=prompt`ZzFXM Data`)),B(localStorage[E=`OS13kMusicU${Z+1},`+prompt`Name`.replace(/,/g,"")]=d)}catch(e){alert`⚠️ Error!`,console.log(e)}},R=e=>confirm(`⚠️ Delete ${L[S.selectedIndex].n}?`)&&B(localStorage[L[S.selectedIndex].k]=0),W=e=>(e/60|0)+((e=e%60|0)<=9?":0":":")+e,localStorage["OS13kMusic,OS13k Test"]=JSON.stringify([[[,0,219,,,,,1.1,,-.1,-50,-.05,-.01,1],[2,0,84,,,.1,,.7,,,,.5,,6.7,1,.05]],[[[0,-1,1,0,5,0],[1,1,8,8,0,3]]],[0,0,0,0],90]),K=localStorage.OS13kM?JSON.parse(localStorage.OS13kM):[],B(onunload=e=>X&&X.stop()),U()</script></template>
 
 <template name=Visualizer>for(x.fillRect(0,0,2e3,2e3),x.fillStyle="#0003",t?x.lineWidth=9:h=[],x.strokeStyle="#fff",i=32;i--;x.beginPath(x.strokeStyle=`hsl(${-99-i*360/32} 99%${9+m/2}%)`,x.stroke()))for(m=199*OS13k.GetAnalyserData(i),j=5;j--;)x.arc(960,540,256+(j+1&2?1:-1)*m,a=2*((2&j)/2-8.5+i)*Math.PI/32,a);x.drawImage(c,-40,-20,2e3,1120)</template>
 
@@ -29,7 +29,7 @@ Loop <input type=checkbox id=O><br><canvas id=C style=width:350;height:29;image-
 
 <template name="Bogus Slopes">i=OS13k.Input(window),(!t||i.keypress[32])&&(T=U=V=F=0,W=[],Y=540,X=-700),X>0||(x.fillStyle="#ddd8",x.fillRect(0,0,2e3,2e3),x.font='9em"',x.textAlign="center",x.textBaseline="middle",x.scale(-1,1),F=Math.min(F+.2,19+T/1e4),W.push((60*t|0)%Math.max(9,19-T/1e4|0)?{t:"●",x:X,y:Y,c:`hsl(${T} 99%${U<-1?50:100}%)`}:{t:[..."🌲🌳⭐"][2*Math.random()+(Math.random()<.1)|0],x:-2200,y:79+900*Math.random()}),W=W.filter(t=>(x.fillStyle=t.c||R(),x.fillText(t.t,t.x+=F*("⭐"==t.t?.7:1),t.y),t.x<99&&("●"==t.t||(Math.hypot(X-t.x,Y-t.y)>99?1:(OS13k.PlaySeed("⭐"==t.t?169:121),U="⭐"==t.t?-9:F=9,0))))),x.fillText("🏂🏻",X=Math.max(X+(U*=.98),-1800),Y=OS13k.Clamp(Y+(V=.95*V-i.y),1e3,99)),x.scale(-1,1),x.textAlign="left",x.fillStyle=R(),x.fillText(s=(T+=F)/1e3|0,9,99),x.textAlign="right",x.fillStyle=R(255,0,0,9-t),x.fillText(d=OS13k.GetTrophy("Bogus Slopes","High Score"),c.width-9,99),s>99&&OS13k.Trophy("⭐","Bogus Slopes","100!"),X>0&&(OS13k.PlaySeed(370,5),s>d&&OS13k.Trophy("🏂🏻","Bogus Slopes","High Score",s)))</template>
 
-<template name=Ziano><style>body{background:#111;color:#fff;user-select:none;text-align:center}</style><span id=B></span>🌱 <input onchange=B() style=width:240 id=S placeholder='ZzFX or Seed'><p>🔊 <input onchange=B() style=width:99 type=range id=V> 📐 <input onchange=B() style=width:99 type=range id=L><script>OS13k=parent.OS13k,B=e=>P(0,R(),setTimeout(e=>X(0),500)),R=e=>{for(onblur(D=[]),i=5;--i;D[i]=OS13k.SeedSamples(S.value,1+L.value/5,1,0,OS13k.Note(12*i-33)));},P=e=>e<0||A[e]||((A[e]=OS13k.PlaySamples(D[2+e/12|0],2)).detune.value=e%12*100,A[e].gain.gain.value=V.value/50),X=e=>A[e]&&(A[e].gain.gain.linearRampToValueAtTime(V.value/50,t=A[e].context.currentTime+.02),A[e].gain.gain.linearRampToValueAtTime(A[e]=0,t+.1)),onunload=onblur=e=>A.map((e,a)=>X(a)),R(A=[]),onkeydown=e=>document.activeElement==S||P(OS13k.PianoKey(e)),onkeyup=e=>X(OS13k.PianoKey(e))</script></template>
+<template name=Ziano><style>body{background:#111;color:#fff;user-select:none;text-align:center}</style><span id=B></span>🌱 <input oninput=P(0,R()) style=width:240 id=S placeholder='ZzFX or Seed'><p>🔊 <input onchange=R() style=width:99 type=range id=V> 🐇 <input onchange=R() style=width:99 type=range id=L> 🐢<script>OS13k=parent.OS13k,R=e=>{for(onblur(D=[]),i=5;--i;D[i]=OS13k.SeedSamples(S.value,.1+L.value/9,1,0,OS13k.Note(12*i-33)));},P=e=>e<0||A[e]||((A[e]=OS13k.PlaySamples(D[2+e/12|0],2)).detune.value=e%12*100,A[e].gain.gain.value=V.value/50),X=e=>A[e]&&(A[e].gain.gain.linearRampToValueAtTime(V.value/50,t=A[e].context.currentTime+.02),A[e].gain.gain.linearRampToValueAtTime(A[e]=0,t+.1)),onunload=onblur=e=>A.map((e,a)=>X(a)),R(A=[]),onkeydown=e=>document.activeElement==S||P(OS13k.PianoKey(e)),onkeyup=e=>X(OS13k.PianoKey(e))</script></template>
 
 <template name="Byte Beat Player"><style>body{background:#111;color:#fff;user-select:none;text-align:center}</style>ƒ(t) <input id=I value='t&t>>7'><p>📐 <input style=width:99 id=L type=number value=30 min=1 max=120> <button onmousedown=P()>►</button> <button onmousedown=A&&A.stop()>◼</button><script>A=0,P=e=>{A&&A.stop(),l=44100*(L.value=OS13k.Clamp(L.value,120)),s=[];try{for(eval("f=t=>"+I.value),i=0;i<l;s[i]=OS13k.Clamp(f(i++))-.5);A=OS13k.PlaySamples(s,1)}catch(e){}},onunload=l=>A&&A.stop()</script></template>
 
@@ -156,12 +156,12 @@ const OS13kVersion = 76;
 // @js_externs OS13k.Clamp, OS13k.Percent, OS13k.Lerp, OS13k.Hash
 // @js_externs OS13k.Random, OS13k.randomSeed, iframeContent.OS13kReload
 // @js_externs OS13k.Trophies, OS13k.Trophy, OS13k.GetTrophy
-// @js_externs OS13k.PlaySamples, OS13k.Note
+// @js_externs OS13k.PlaySamples, OS13k.Note, OS13k.PianoKey
 // @js_externs OS13k.PlayMusic, OS13k.GetAnalyser, OS13k.GetAnalyserData
 // @js_externs OS13k.Speak, OS13k.StopSpeech, OS13k.PlaySeed
 // @js_externs OS13k.SeedSamples, OS13k.SeedParameters
 // @js_externs OS13k.Settings, OS13k.SaveSettings, OS13k.Input
-// @js_externs OS13k.KeyDirection, OS13k.StripHTML, OS13k.Popup
+// @js_externs OS13k.KeyDirection, OS13k.StripHTML, OS13k.SafeEval, OS13k.Popup
 // @js_externs localStorage.OS13k, localStorage.OS13kVersion, OS13k, source.gain
 // @js_externs iframeContent, iframeContent.OS13k, iframeContent.OS13kWindow
 // @js_externs iframeContent.zzfx, zzfx, zzfxG, zzfxM
@@ -231,7 +231,7 @@ programStubs =
 ]],
 ['🎶',,,,'Music',,
 [
-    ['🎵',400,330,defaultFlags|sticky,'Music Player'],
+    ['🎵',400,330,sticky,'Music Player'],
     ['👨‍💻',300,89,reload,'Byte Beat Player'],
     ['🎹',350,99,reload,'Ziano','Keyboard = Play Piano Note'],
     ['👁️',,,awake|full|resize|code|dweet,'Visualizer'],
@@ -333,7 +333,7 @@ class _OS13k
     {
         // use default params if no seed
         if (!seed)
-            return [volume, randomness, frequency, 0, lengthScale];
+            return [volume, randomness, frequency || this.Note(-9), 0, lengthScale];
 
         // check if seed is a number
         if (parseFloat(seed = (seed+'').trim()) != seed)
@@ -460,6 +460,10 @@ class _OS13k
     // remove html tags from a string and clamp length
     StripHTML(string, maxLength)
     { return (string+'').substring(0, maxLength || string.length).replace(/<.*>/g, ''); }
+    
+    // check if string is safe to eval and replace null with undefined
+    SafeEval(string)
+    { return string.replace(/null|[[\],\d\.-]/g, '') || eval(string.replace(/null/g, undefined)); }
     
     Popup(html, speak, language)
     {
@@ -1823,24 +1827,26 @@ zzfxM = (instruments, patterns, sequence, BPM = 125) => {
         sampleBuffer = sampleCache[[noteData[0], noteData[3]]];
 
         // for each beat this sample covers
-        for(i = stop = attenuation = 0; noteData[3] > 0 && i < sampleBuffer.length / beatLength; ++i)
+        for(i = stop = attenuation = 0; !stop & noteData[3] > 0 && i < sampleBuffer.length / beatLength; ++i)
         {
-            // get note data at this point
-            if (n = channel[noteIndex + i])
+            // set attenuation
+            channel[noteIndex + i] && channel[noteIndex + i][2] ? attenuation = channel[noteIndex + i][2]%1 : 0;
+
+            // check next note
+            if (n = channel[noteIndex + i + 1])
             {
                 // stop if different instrument or pitch
-                stop | n[0] != noteData[0] | n[3] && n[3] != noteData[3] ? stop = 1 :
-                    attenuation = n[2]%1; // update attenuation
+                stop |= n[0] != noteData[0] | n[3] && n[3] != noteData[3];
             }
 
             // get offset for this note
             k = noteIndex * beatLength + i * beatLength;
 
             // fill buffer with samples for this beat (most cpu intensive part)
-            for(j = 0; attenuation < 1 & j < beatLength; 
+            for(j = 0; j < beatLength & attenuation < 1; 
 
-                // quickly fade off attenuation if stopping note, prevents clicking
-                stop ? attenuation += .01 : 0) {
+                // fade off attenuation at end of beat if stopping note, prevents clicking
+                stop & j > beatLength - 99 ? attenuation += .01 : 0) {
 
                 // copy sample to stereo buffers with panning
                 x = (1-attenuation) * sampleBuffer[i*beatLength + j++] / 2 || 0;
