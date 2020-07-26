@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?v217></script>
+<script src=programs.js?v218></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -250,7 +250,7 @@ const OS13kVersion = 76;
 // @js_externs OS13k.SeedSamples, OS13k.SeedParameters
 // @js_externs OS13k.Settings, OS13k.SaveSettings, OS13k.Input
 // @js_externs OS13k.CreateShader, OS13k.RenderShader
-// @js_externs OS13k.KeyDirection, OS13k.StripHTML, OS13k.SafeEval, OS13k.Popup
+// @js_externs OS13k.KeyDirection, OS13k.StripHTML, OS13k.StringToMusic, OS13k.Popup
 // @js_externs localStorage.OS13k, localStorage.OS13kVersion, OS13k, source.gain
 // @js_externs iframeContent, iframeContent.OS13k, iframeContent.OS13kWindow
 // @js_externs iframeContent.zzfx, zzfx, zzfxG, zzfxM
@@ -297,8 +297,8 @@ class _OS13k
 // OS13k Math
 
     Clamp   (a, max=1, min=0) { return a < min ? min : a > max ? max : a; }
-    Percent (v, a, b)         { return b-a ? this.Clamp((v-a)/(b-a)) : 0; }
-    Lerp    (p, a, b)         { return a + this.Clamp(p) * (b-a); }
+    Percent (v, a, b)         { return b-a ? OS13k.Clamp((v-a)/(b-a)) : 0; }
+    Lerp    (p, a, b)         { return a + OS13k.Clamp(p) * (b-a); }
 
     // convert string to hash value like Java's hashCode()
     Hash    (s)               { return [...s].reduce((a,c)=> c.charCodeAt()+a*31|0, 0); }
@@ -306,9 +306,9 @@ class _OS13k
     // seeded random numbers - Xorshift
     Random(max=1, min=0)
     {
-        this.randomSeed ^= this.randomSeed << 13;
-        this.randomSeed ^= this.randomSeed >> 17; // note: >>> would use the full 32 bit range
-        return this.Lerp(Math.abs(this.randomSeed ^= this.randomSeed << 5) % 1e9 / 1e9, min, max);
+        OS13k.randomSeed ^= OS13k.randomSeed << 13;
+        OS13k.randomSeed ^= OS13k.randomSeed >> 17; // note: >>> would use the full 32 bit range
+        return OS13k.Lerp(Math.abs(OS13k.randomSeed ^= OS13k.randomSeed << 5) % 1e9 / 1e9, min, max);
     }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -318,7 +318,7 @@ class _OS13k
     Trophy(icon, game, name, message)
     {
         // replace commas and apostrophes
-        const Clean = string=> this.StripHTML(string||'', maxWordLength).replace(/[,`]/g, '');
+        const Clean = string=> OS13k.StripHTML(string||'', maxWordLength).replace(/[,`]/g, '');
         icon    = Clean(icon);
         game    = Clean(game);
         name    = Clean(name);
@@ -344,7 +344,7 @@ class _OS13k
         name || (name = game, game = '');
 
         // add trophy popup
-        this.Popup(`<div class=trophyIcon>${   // popup html
+        OS13k.Popup(`<div class=trophyIcon>${   // popup html
                 icon || '🏆' }</div><div><b>${ // icon
                 name }</b><br><i>${            // name
                 game }</i></div>` +            // game
@@ -353,7 +353,7 @@ class _OS13k
             'ja');                             // language 
 
         // save and reload trophy window
-        this.Save(trophyTrayIcon.program.window && trophyTrayIcon.program.window.Reload());
+        OS13k.Save(trophyTrayIcon.program.window && trophyTrayIcon.program.window.Reload());
     }
     
     // get message, 0 if no trophy
@@ -371,18 +371,18 @@ class _OS13k
 
     // play seed sound
     PlaySeed(seed, lengthScale=1, volume=1, randomness=.05, frequency, isMusic)
-    { return this.PlaySamples(this.SeedSamples(...arguments), isMusic); }
+    { return OS13k.PlaySamples(OS13k.SeedSamples(...arguments), isMusic); }
     
     // get seed samples
     SeedSamples(seed, lengthScale=1, volume=1, randomness=.05, frequency)
-    { return zzfxG(...this.SeedParameters(...arguments)); }
+    { return zzfxG(...OS13k.SeedParameters(...arguments)); }
     
     // get zzfx sound parameters from seed
     SeedParameters(seed, lengthScale=1, volume=1, randomness=.05, frequency)
     {
         // use default params if no seed
         if (!seed)
-            return [volume, randomness, frequency || this.Note(-9), 0, lengthScale];
+            return [volume, randomness, frequency || OS13k.Note(-9), 0, lengthScale];
 
         // check if seed is a number
         if (parseFloat(seed = (seed+'').trim()) != seed)
@@ -396,14 +396,14 @@ class _OS13k
                     p.length ? parseFloat(p) : undefined);
             
             // use hash string as seed 
-            seed = this.Hash(seed);
+            seed = OS13k.Hash(seed);
         }
 
         // set seed
-        this.randomSeed = seed;
+        OS13k.randomSeed = seed;
      
         // helper functions
-        const R=()=>this.Random(), C=()=>R()<.5?R():0, S=e=>C()?e:-e,
+        const R=()=>OS13k.Random(), C=()=>R()<.5?R():0, S=e=>C()?e:-e,
         
             // randomize sound length
             attack  = R()**3/4*lengthScale,
@@ -439,7 +439,7 @@ class _OS13k
     
     // play audio sample data
     PlaySamples(samples, isMusic, sampleRate=defaultSampleRate)
-    { return this.PlaySamplesArray([samples], isMusic, sampleRate); }
+    { return OS13k.PlaySamplesArray([samples], isMusic, sampleRate); }
     
     // play array of audio sample data, connect analyser to gain if isMusic > 1
     PlaySamplesArray(samplesArray, isMusic, sampleRate=defaultSampleRate)
@@ -464,12 +464,23 @@ class _OS13k
     PlayMusic(song) 
     { 
         // catch errors when playing music
-        try { return this.PlaySamplesArray(zzfxM(...song), 1); }
+        try { return OS13k.PlaySamplesArray(zzfxM(...song), 1); }
         catch(e) { console.log(e); }
     }
     
     GetAnalyser() { return analyserCanvas; }
     GetAnalyserData(e) { return analyserData[e] ? analyserData[e] : 0; }
+    
+    // convert a string to a music data array, will throw error if invalid
+    StringToMusic(string, validate = 0)
+    {
+        // check if safe to eval and get music data
+        const music = string.replace(/null|[[\],\d\.-]/g, '') || eval(string.replace(/null/g, undefined)); 
+
+        // try to generate music to check if valid
+        validate && zzfxM(...music);
+        return music;
+    }
     
     // get frequency of a note on a musical scale
     Note(semitoneOffset=0, rootNoteFrequency=440, scaleNotes=12)
@@ -614,10 +625,6 @@ class _OS13k
     // remove html tags from a string and clamp length
     StripHTML(string, maxLength)
     { return (string+'').substring(0, maxLength || string.length).replace(/<.*>/g, ''); }
-    
-    // check if string is safe to eval and replace null with undefined
-    SafeEval(string)
-    { return string.replace(/null|[[\],\d\.-]/g, '') || eval(string.replace(/null/g, undefined)); }
 
     Popup(html, speak, language)
     {
@@ -708,7 +715,7 @@ class _OS13k
     SaveSettings(volume, musicVolume, speech, popups, systemSounds, color1, color2, text, filter)
     {
         // set settings and save
-        this.Save(settings = {
+        OS13k.Save(settings = {
             v:gain.gain.value = volume,
             m:gainMusic.gain.value = musicVolume,
             s:speech,
@@ -1564,7 +1571,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             this.iframe.onload = ()=> loadFrame();
-            this.iframe.src = program.src + '?v217';
+            this.iframe.src = program.src + '?v218';
         }
     }
         
@@ -2009,89 +2016,78 @@ zzfxG = (volume = 1, randomness = .05, frequency = 220, attack = 0, sustain = 0,
 ///////////////////////////////////////////////////////////////////////////////
 //! ZzFXM (v1.0.0) | (C) Keith Clark | MIT | https://github.com/keithclark/ZzFXM
 
-zzfxM = (instruments, patterns, sequence, BPM = 125) => {
-    const beatLength = defaultSampleRate / BPM * 60 >> 2;
-    const sampleCache = {};
-    const channelBuffers = [[]];
-    const channels = [];
+zzfxM = (instruments, patterns, sequence, BPM = 125) => 
+{
+    let instrumentParameters, i, j, k, sample, patternChannel,
+        beat, stop, instrument, pitch, attenuation, outSampleOffset, 
+        sampleOffset, nextSampleOffset, sampleBuffer = [], 
+        channelIndex = 0, hasMore = 1, channelBuffers = [[],[]], 
+        sampleCache = {}, beatLength = defaultSampleRate / BPM * 60 >> 2;
 
-    // build song
-    let n = 0, k = 0, instrument, note, notePitch, x, i, j, stop, attenuation, sampleBuffer;
+    // for each channel in order until there are no more
+    for(; hasMore; channelIndex++)
+    {
+        // reset current values
+        hasMore = beat = pitch = outSampleOffset = 0;
 
-    // for each pattern in sequence
-    sequence.map(patternIndex => {
-
-        // track longest channel of this pattern
-        j = 0;
-
-        // for each channel of pattern
-        patterns[patternIndex].map((patternChannel, channelIndex) => {
-
-            // init channel
-            channels[channelIndex] || (channels[channelIndex] = []);
-
-            // set channel note data
-            for (i = 2; i < patternChannel.length; ++i)
-            {
-                // update longest channel
-                j = Math.max(j, i-1);
-
-                // add note data to channel
-                channels[channelIndex][n+i-2] = 
-                    [instrument = patternChannel[0] || 0, patternChannel[1] || 0, note = patternChannel[i] || 0, notePitch = note | 0];
-
-                if (notePitch > 0 && !sampleCache[[instrument, notePitch]])
-                {
-                    // get instrument parmenters
-                    x = [...instruments[instrument]];
-                    x[2] *= 2 ** ((notePitch - 12) / 12);
-
-                    // add to cache and track longest sample (to add extra 0's to end)
-                    k = Math.max(k, (sampleCache[[instrument, notePitch]] = zzfxG(...x)).length);
-                }
-            }   
-        });
-
-        // set note offset for next pattern
-        n += j;
-    });
-
-    // set song sample length and fill with with 0's
-    channelBuffers[0].length = n * beatLength + k;
-    channelBuffers[1] = [...channelBuffers[0].fill(0)];
-
-    // render song
-    channels.map(channel=>channel.map((noteData, noteIndex) => {
-
-        // get sample buffer from cache
-        sampleBuffer = sampleCache[[noteData[0], noteData[3]]];
-
-        // for each beat this sample covers
-        for(i = stop = attenuation = 0; !stop & noteData[3] > 0 && i < sampleBuffer.length / beatLength; ++i)
+        // for each pattern in sequence
+        sequence.map((patternIndex, sequenceIndex) => 
         {
-            // set attenuation
-            channel[noteIndex + i] && channel[noteIndex + i][2] ? attenuation = channel[noteIndex + i][2]%1 : 0;
+            // get pattern for current channel, use empty 1 note pattern if none found
+            patternChannel = patterns[patternIndex][channelIndex] || [0, 0, 0];
 
-            // check next note, stop if different instrument or pitch
-            if (n = channel[noteIndex + i + 1])
-                stop |= n[0] != noteData[0] | n[3] && n[3] != noteData[3];
+            // check if there are more channels
+            hasMore = hasMore || patterns[patternIndex][channelIndex];
 
-            // get offset for this note
-            k = noteIndex * beatLength + i * beatLength;
+            // get next offset, use the length of first channel
+            nextSampleOffset = outSampleOffset + (patterns[patternIndex][0].length - 2 - !beat) * beatLength;
 
-            // fill buffer with samples for this beat (most cpu intensive part)
-            for(j = 0; j < beatLength & attenuation < 1; 
+            // for each beat in pattern, plus one extra if end of sequence
+            for (i = 2, k = outSampleOffset; i < patternChannel.length + (sequenceIndex == sequence.length-1); ++i, ++beat)
+            {
+                // stop if different instrument or note
+                stop = instrument != patternChannel[0] || patternChannel[i] | 0;
 
-                // fade off attenuation at end of beat if stopping note, prevents clicking
-                stop & j > beatLength - 99 ? attenuation += .01 : 0) {
+                // fill buffer with samples for previous beat, most cpu intensive part
+                for(j = 0; beat && j < beatLength; 
 
-                // copy sample to stereo buffers with panning
-                x = (1-attenuation) * sampleBuffer[i*beatLength + j++] / 2 || 0;
-                channelBuffers[0][k]   -= x - x * noteData[1];
-                channelBuffers[1][k++] += x + x * noteData[1];
+                    // fade off attenuation at end of beat if stopping note, prevents clicking
+                    j++ > beatLength - 99 && stop ? attenuation += (attenuation < 1) / 99 : 0
+                )
+                {
+                    // copy sample to stereo buffers with panning
+                    sample = (1-attenuation) * sampleBuffer[sampleOffset++] / 2 || 0;
+                    channelBuffers[0][k] = (channelBuffers[0][k]   || 0) + sample * (patternChannel[1] || 0) - sample;
+                    channelBuffers[1][k] = (channelBuffers[1][k++] || 0) + sample * (patternChannel[1] || 0) + sample;
+                }
+
+                // set up for next note
+                if (patternChannel[i])
+                {
+                    // set attenuation
+                    attenuation = patternChannel[i] % 1;
+                    if (patternChannel[i] | 0)
+                    {
+                        // add sample to cache
+                        sampleBuffer = sampleCache
+                            [[
+                                instrument = patternChannel[sampleOffset = 0] || 0, 
+                                pitch = patternChannel[i] | 0
+                            ]] = 
+                            sampleCache[[instrument, pitch]] ||
+                        (
+                            instrumentParameters = [...instruments[instrument]],
+                            instrumentParameters[2] *= 2 ** ((pitch - 12) / 12),
+                            zzfxG(...instrumentParameters)
+                        );
+                    }
+                }
             }
-        }
-    }));
+
+            // update the sample offset
+            outSampleOffset = nextSampleOffset;
+        });
+    }
 
     return channelBuffers;
 }
