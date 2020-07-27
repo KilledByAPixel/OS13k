@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?v2276></script>
+<script src=programs.js?v229></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -1571,7 +1571,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             this.iframe.onload = ()=> loadFrame();
-            this.iframe.src = program.src + '?v227';
+            this.iframe.src = program.src + '?v229';
         }
     }
         
@@ -2015,9 +2015,8 @@ zzfxG = (volume = 1, randomness = .05, frequency = 220, attack = 0, sustain = 0,
 
 ///////////////////////////////////////////////////////////////////////////////
 //! ZzFXM (v1.0.0) | (C) Keith Clark | MIT | https://github.com/keithclark/ZzFXM
-zzfxM=(B,n,w,C=125)=>{let g,b,p,c,d,a,h,x,k,e,l,m,y,z,q=[],r=0,t=1,f=[[],[]],A={},u=2646e3/C>>2;for(;t;r++)q=[t=h=e=m=0],w.map((v,D)=>{a=n[v][r]||[0,0,0];t|=!!n[v][r];z=m+(n[v][0].length-2-!h)*u;b=2;for(c=m;b<a.length+(D==w.length-1);h=++b){x=k!=a[0]|a[b]|0;for(p=0;p<u&&h;p++>u-99&&x?l+=(1>l)/99:0)d=(1-l)*q[y++]/2||0,f[0][c]=(f[0][c]||0)+d*a[1]-d,f[1][c]=(f[1][c++]||0)+d*a[1]+d;a[b]&&(l=a[b]%1,a[b]|0&&(q=A[[k=a[y=0]||0,e=a[b]|0]]=A[[k,e]]||(g=[...B[k]],g[2]*=2**((e-12)/12),0<e?zzfxG(...g):[])))}m=z});return f},
 
-zzfxMz = (instruments, patterns, sequence, BPM = 125) => 
+zzfxM = (instruments, patterns, sequence, BPM = 125) => 
 {
     let instrumentParameters, i, j, k, sample, patternChannel,
         notFirstBeat, stop, instrument, pitch, attenuation, outSampleOffset, 
