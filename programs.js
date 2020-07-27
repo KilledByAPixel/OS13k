@@ -59,10 +59,10 @@ programStubs =
 [,'🎶',,,,'Music',,
 [
     ['music/musicPlayer.html','🎵',400,330,sticky],
+    ['music/visualizer.dweet.js','👁️',,,awake|full|resize|code],
     ['music/piano.html','🎹',520,510,reload],
     ['music/sequencer.html','🥁',,340,,,'Keyboard = Note\nUp/Down = Volume\nSpace = Stop\nEnter = End'],
     ['music/soundSeeds.html','🌱',350,480,resize|reload],
-    ['music/visualizer.dweet.js','👁️',,,awake|full|resize|code],
     ['music/byteBeatPlayer.html','🦈',300,89,reload],
     ['music/bach.dweet.js','🎼'],
     ['music/minBytes.html','<span style=color:#f00>𝓜',450,450],
