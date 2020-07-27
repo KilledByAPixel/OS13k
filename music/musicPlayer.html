@@ -90,7 +90,7 @@ I=k=> // key
     if (f.substring(0,10) == 'OS13kMusic')   // check if music key
     {  
         n = p[0] ? p[0] : 'Untitled';            // get song name
-        f.substring(10,11) == 'U' ?              // check if user song
+        f[10] == 'U' ?                           // check if user song
             Z = Math.max(Z, f.substring(11)) :   // update highest user song
             K.indexOf(k) < 0 && (OS13k.Popup(    // check if new song
                 '🎵 New Music<br><b>' + n, n),   // new music popup
