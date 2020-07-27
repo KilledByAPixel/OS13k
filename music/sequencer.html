@@ -6,15 +6,13 @@ Loop <input type=number style=width:59 id=L value=8>
 <script>
 /*
 
-up down to set octave
-left right to set volume
-show note and volume
 
 color changed notes
 - color by frequency and volume
 show play head
 
-save/load
+multiple patterns
+pattern sequence
 
 
 */
@@ -57,8 +55,6 @@ P = e=>A = OS13k.PlayMusic(O(S()));
 
 // stop music
 onunload = S = e=> A && A.stop();
-
-
 
 // set instrument
 I = (s, x)=> M[0][x] = OS13k.SeedParameters(s, 1, 1, 0);
@@ -155,9 +151,9 @@ R = e=>
                 I(m, x);
             }
             else if (y==1)
-                o += `<input style=width:100% onchange=M[1][0][${x}][1]=event.target.value/50-1 type=range title=Pan value=${M[1][0][x][y]*50+50 || 50}>`;
+                o += `<input style=width:100% onchange=M[1][0][${x}][1]=event.target.value/50-1 type=range title=Pan value=${(M[1][0][x][y]||0)*50+50}>`;
             else
-                o += `<input style=width:100%;${(y+2)%4? '' : 'background:#fdd'} onkeydown='return N(event,${x},${y})' value=${Q(M[1][0][x][y])}>`;
+                o += `<input style=width:100%;${(y+2)%4? '' : 'background:#fcc'} onkeydown='return N(event,${x},${y})' value=${Q(M[1][0][x][y])}>`;
             o += '</td>';
         }
         o += '</tr>';
