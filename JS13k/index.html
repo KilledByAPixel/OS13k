@@ -1832,7 +1832,7 @@ zzfxM = (instruments, patterns, sequence, BPM = 125) =>
                             // add sample to cache
                             instrumentParameters = [...instruments[instrument]],
                             instrumentParameters[2] *= 2 ** ((pitch - 12) / 12),
-                            patternChannel[i] > 0 ? zzfxG(...instrumentParameters) : []
+                            pitch > 0 ? zzfxG(...instrumentParameters) : []
                         );
                     }
                 }
