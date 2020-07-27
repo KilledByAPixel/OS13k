@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?v221></script>
+<script src=programs.js?v222></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -1335,7 +1335,7 @@ class OS13kWindow extends HTMLElement
         // save button
         this.shadowRoot.getElementById('G').onmousedown = ()=>
             link.click(SystemSound(soundSave),
-            link.href = URL.createObjectURL(new Blob([this.codeText.value], {type:'text/plain'})),
+            link.href = URL.createObjectURL(new Blob([this.codeText.value])),
             link.download = 'OS13k_' + program.name);
 
         // screenshot button
@@ -1571,7 +1571,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             this.iframe.onload = ()=> loadFrame();
-            this.iframe.src = program.src + '?v221';
+            this.iframe.src = program.src + '?v222';
         }
     }
         
