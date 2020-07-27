@@ -21,7 +21,8 @@ Popups <input type=checkbox id=P oninput=s()>
 <button onmousedown=X&&X.stop(X=0)>Stop</button>
 <button onmousedown=A()>Load</button>
 <button onmousedown=R()>Delete</button><br><br>Volume <input type=range id=V>
-Loop <input type=checkbox id=O><br><canvas id=C style=width:350;height:29;image-rendering:-moz-crisp-edges;image-rendering:pixelated></canvas><br><select id=S size=9 style=width:350;background:#000;color:#fff><script>OS13k=parent.OS13k,X=E=D=T=0,Y=Q=-1,U=e=>{requestAnimationFrame(U),!--Y&&Q>=0?(l=L[Q],T=0,Q=-1,(X=OS13k.PlayMusic(l.d))?X.gain.gain.value=V.value/99:alert`⚠️ Error!`):Y<-1&&(C.getContext`2d`.drawImage(OS13k.GetAnalyser(),0,0,C.width=32,C.height=32),F.innerText=X?(X.gain.gain.value=V.value/99,d=X.buffer.duration,T+=(e-D)/1e3,X.loop=O.checked?T%=d:T>d&&X.stop(X=0),W(T)+"/"+W(d)):(N.innerText="OS13k Music Player","")),D=e},B=e=>{for(e in i=S.selectedIndex,S.innerHTML="",Z=0,L=[],localStorage)I(e);L.sort((e,n)=>e.n.localeCompare(n.n)).map(e=>S.innerHTML+=`<option>${e.n}</option>`),S.selectedIndex=OS13k.Clamp(E?L.findIndex(e=>e.k==E):i,S.length-1,E=0),localStorage.OS13kM=JSON.stringify(K)},I=e=>{if(p=e.split`,`,f=p.shift(),"OS13kMusic"==f.substring(0,10)){n=p[0]?p[0]:"Untitled","U"==f.substring(10,11)?Z=Math.max(Z,f.substring(11)):K.indexOf(e)<0&&(OS13k.Popup("🎵 New Music<br><b>"+n,n),K.push(e));try{(d=OS13k.SafeEval(localStorage[e]))&&L.push({d:d,k:e,n:n})}catch(e){console.log(e)}}},P=e=>{X&&X.stop(),Y=2,(Q=S.selectedIndex)<0||(N.innerText=L[Q].n,F.innerText="Loading...")},A=e=>{try{parent.zzfxM(...OS13k.SafeEval(d=prompt`ZzFXM Data`)),B(localStorage[E=`OS13kMusicU${Z+1},`+prompt`Name`.replace(/,/g,"")]=d)}catch(e){alert`⚠️ Error!`,console.log(e)}},R=e=>confirm(`⚠️ Delete ${L[S.selectedIndex].n}?`)&&B(localStorage[L[S.selectedIndex].k]=0),W=e=>(e/60|0)+((e=e%60|0)<=9?":0":":")+e,localStorage["OS13kMusic,OS13k Test"]=JSON.stringify([[[,0,219,,,,,1.1,,-.1,-50,-.05,-.01,1],[2,0,84,,,.1,,.7,,,,.5,,6.7,1,.05]],[[[0,-1,1,0,5,0],[1,1,8,8,0,3]]],[0,0,0,0],90]),K=localStorage.OS13kM?JSON.parse(localStorage.OS13kM):[],B(onunload=e=>X&&X.stop()),U()</script></template>
+Loop <input type=checkbox id=O><br><canvas id=C style=width:350;height:29;image-rendering:-moz-crisp-edges;image-rendering:pixelated></canvas><br><select id=S size=9 style=width:350;background:#000;color:#fff>
+<script>OS13k=parent.OS13k,X=E=D=T=0,Y=Q=-1,U=e=>{requestAnimationFrame(U),!--Y&&Q>=0?(l=L[Q],T=0,Q=-1,(X=OS13k.PlayMusic(l.d))?X.gain.gain.value=V.value/99:alert`⚠️ Error!`):Y<-1&&(C.getContext`2d`.drawImage(OS13k.GetAnalyser(),0,0,C.width=32,C.height=32),F.innerText=X?(X.gain.gain.value=V.value/99,d=X.buffer.duration,T+=(e-D)/1e3,X.loop=O.checked?T%=d:T>d&&X.stop(X=0),W(T)+"/"+W(d)):(N.innerText="OS13k Music Player","")),D=e},B=e=>{for(e in i=S.selectedIndex,S.innerHTML="",Z=0,L=[],localStorage)I(e);L.sort((e,n)=>e.n.localeCompare(n.n)).map(e=>S.innerHTML+=`<option>${e.n}</option>`),S.selectedIndex=OS13k.Clamp(E?L.findIndex(e=>e.k==E):i,S.length-1,E=0),localStorage.OS13kM=JSON.stringify(K)},I=e=>{if(p=e.split`,`,f=p.shift(),"OS13kMusic"==f.substring(0,10)){n=p[0]?p[0]:"Untitled","U"==f.substring(10,11)?Z=Math.max(Z,f.substring(11)):K.indexOf(e)<0&&(OS13k.Popup("🎵 New Music<br><b>"+n,n),K.push(e));try{(d=OS13k.StringToMusic(localStorage[e]))&&L.push({d:d,k:e,n:n})}catch(e){console.log(e)}}},P=e=>{X&&X.stop(),Y=2,(Q=S.selectedIndex)<0||(N.innerText=L[Q].n,F.innerText="Loading...")},A=e=>{try{OS13k.StringToMusic(d=prompt`ZzFXM Data`,1),B(localStorage[E=`OS13kMusicU${Z+1},`+prompt`Name`.replace(/,/g,"")]=d)}catch(e){alert`⚠️ Error!`,console.log(e)}},R=e=>confirm(`⚠️ Delete ${L[S.selectedIndex].n}?`)&&B(localStorage[L[S.selectedIndex].k]=0),W=e=>(e/60|0)+((e=e%60|0)<=9?":0":":")+e,localStorage["OS13kMusic,OS13k Test"]=JSON.stringify([[[,0,219,,,,,1.1,,-.1,-50,-.05,-.01,1],[2,0,84,,,.1,,.7,,,,.5,,6.7,1,.05]],[[[0,-1,1,0,5,0],[1,1,8,8,0,3]]],[0,0,0,0],90]),K=localStorage.OS13kM?JSON.parse(localStorage.OS13kM):[],B(onunload=e=>X&&X.stop()),U()</script></template>
 
 <template name=Visualizer>for(x.fillRect(0,0,2e3,2e3),x.fillStyle="#0003",t?x.lineWidth=9:h=[],x.strokeStyle="#fff",i=32;i--;x.beginPath(x.strokeStyle=`hsl(${-99-i*360/32} 99%${9+m/2}%)`,x.stroke()))for(m=199*OS13k.GetAnalyserData(i),j=5;j--;)x.arc(960,540,256+(j+1&2?1:-1)*m,a=2*((2&j)/2-8.5+i)*Math.PI/32,a);x.drawImage(c,-40,-20,2e3,1120)</template>
 
@@ -161,7 +162,7 @@ const OS13kVersion = 76;
 // @js_externs OS13k.Speak, OS13k.StopSpeech, OS13k.PlaySeed
 // @js_externs OS13k.SeedSamples, OS13k.SeedParameters
 // @js_externs OS13k.Settings, OS13k.SaveSettings, OS13k.Input
-// @js_externs OS13k.KeyDirection, OS13k.StripHTML, OS13k.SafeEval, OS13k.Popup
+// @js_externs OS13k.KeyDirection, OS13k.StripHTML, OS13k.StringToMusic, OS13k.Popup
 // @js_externs localStorage.OS13k, localStorage.OS13kVersion, OS13k, source.gain
 // @js_externs iframeContent, iframeContent.OS13k, iframeContent.OS13kWindow
 // @js_externs iframeContent.zzfx, zzfx, zzfxG, zzfxM
@@ -248,8 +249,8 @@ class _OS13k
 // OS13k Math
 
     Clamp   (a, max=1, min=0) { return a < min ? min : a > max ? max : a; }
-    Percent (v, a, b)         { return b-a ? this.Clamp((v-a)/(b-a)) : 0; }
-    Lerp    (p, a, b)         { return a + this.Clamp(p) * (b-a); }
+    Percent (v, a, b)         { return b-a ? OS13k.Clamp((v-a)/(b-a)) : 0; }
+    Lerp    (p, a, b)         { return a + OS13k.Clamp(p) * (b-a); }
 
     // convert string to hash value like Java's hashCode()
     Hash    (s)               { return [...s].reduce((a,c)=> c.charCodeAt()+a*31|0, 0); }
@@ -257,9 +258,9 @@ class _OS13k
     // seeded random numbers - Xorshift
     Random(max=1, min=0)
     {
-        this.randomSeed ^= this.randomSeed << 13;
-        this.randomSeed ^= this.randomSeed >> 17; // note: >>> would use the full 32 bit range
-        return this.Lerp(Math.abs(this.randomSeed ^= this.randomSeed << 5) % 1e9 / 1e9, min, max);
+        OS13k.randomSeed ^= OS13k.randomSeed << 13;
+        OS13k.randomSeed ^= OS13k.randomSeed >> 17; // note: >>> would use the full 32 bit range
+        return OS13k.Lerp(Math.abs(OS13k.randomSeed ^= OS13k.randomSeed << 5) % 1e9 / 1e9, min, max);
     }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -269,7 +270,7 @@ class _OS13k
     Trophy(icon, game, name, message)
     {
         // replace commas and apostrophes
-        const Clean = string=> this.StripHTML(string||'', maxWordLength).replace(/[,`]/g, '');
+        const Clean = string=> OS13k.StripHTML(string||'', maxWordLength).replace(/[,`]/g, '');
         icon    = Clean(icon);
         game    = Clean(game);
         name    = Clean(name);
@@ -295,7 +296,7 @@ class _OS13k
         name || (name = game, game = '');
 
         // add trophy popup
-        this.Popup(`<div style='padding:9;font-size:40;text-shadow:2px 2px 4px;white-space:nowrap'>${   // popup html
+        OS13k.Popup(`<div style='padding:9;font-size:40;text-shadow:2px 2px 4px;white-space:nowrap'>${   // popup html
                 icon || '🏆' }</div><div><b>${ // icon
                 name }</b><br><i>${            // name
                 game }</i></div>` +            // game
@@ -304,7 +305,7 @@ class _OS13k
             'ja');                             // language 
 
         // save and reload trophy window
-        this.Save(trophyTrayIcon.program.w && trophyTrayIcon.program.w.Reload());
+        OS13k.Save(trophyTrayIcon.program.w && trophyTrayIcon.program.w.Reload());
     }
     
     // get message, 0 if no trophy
@@ -322,18 +323,18 @@ class _OS13k
 
     // play seed sound
     PlaySeed(seed, lengthScale=1, volume=1, randomness=.05, frequency, isMusic)
-    { return this.PlaySamples(this.SeedSamples(...arguments), isMusic); }
+    { return OS13k.PlaySamples(OS13k.SeedSamples(...arguments), isMusic); }
     
     // get seed samples
     SeedSamples(seed, lengthScale=1, volume=1, randomness=.05, frequency)
-    { return zzfxG(...this.SeedParameters(...arguments)); }
+    { return zzfxG(...OS13k.SeedParameters(...arguments)); }
     
     // get zzfx sound parameters from seed
     SeedParameters(seed, lengthScale=1, volume=1, randomness=.05, frequency)
     {
         // use default params if no seed
         if (!seed)
-            return [volume, randomness, frequency || this.Note(-9), 0, lengthScale];
+            return [volume, randomness, frequency || OS13k.Note(-9), 0, lengthScale];
 
         // check if seed is a number
         if (parseFloat(seed = (seed+'').trim()) != seed)
@@ -347,14 +348,14 @@ class _OS13k
                     p.length ? parseFloat(p) : undefined);
             
             // use hash string as seed 
-            seed = this.Hash(seed);
+            seed = OS13k.Hash(seed);
         }
 
         // set seed
-        this.randomSeed = seed;
+        OS13k.randomSeed = seed;
      
         // helper functions
-        const R=()=>this.Random(), C=()=>R()<.5?R():0, S=e=>C()?e:-e,
+        const R=()=>OS13k.Random(), C=()=>R()<.5?R():0, S=e=>C()?e:-e,
         
             // randomize sound length
             attack  = R()**3/4*lengthScale,
@@ -390,7 +391,7 @@ class _OS13k
     
     // play audio sample data
     PlaySamples(samples, isMusic, sampleRate=defaultSampleRate)
-    { return this.PlaySamplesArray([samples], isMusic, sampleRate); }
+    { return OS13k.PlaySamplesArray([samples], isMusic, sampleRate); }
     
     // play array of audio sample data, connect analyser to gain if isMusic > 1
     PlaySamplesArray(samplesArray, isMusic, sampleRate=defaultSampleRate)
@@ -415,7 +416,7 @@ class _OS13k
     PlayMusic(song) 
     { 
         // catch errors when playing music
-        try { return this.PlaySamplesArray(zzfxM(...song), 1); }
+        try { return OS13k.PlaySamplesArray(zzfxM(...song), 1); }
         catch(e) { }
     }
     
@@ -461,9 +462,16 @@ class _OS13k
     StripHTML(string, maxLength)
     { return (string+'').substring(0, maxLength || string.length).replace(/<.*>/g, ''); }
     
-    // check if string is safe to eval and replace null with undefined
-    SafeEval(string)
-    { return string.replace(/null|[[\],\d\.-]/g, '') || eval(string.replace(/null/g, undefined)); }
+    // convert a string to a music data array, will throw error if invalid
+    StringToMusic(string, validate = 0)
+    {
+        // check if safe to eval and get music data
+        const music = string.replace(/null|[[\],\d\.-]/g, '') || eval(string.replace(/null/g, undefined)); 
+
+        // try to generate music to check if valid
+        validate && zzfxM(...music);
+        return music;
+    }
     
     Popup(html, speak, language)
     {
@@ -551,7 +559,7 @@ class _OS13k
     SaveSettings(volume, musicVolume, speech, popups, systemSounds, color1, color2, text)
     {
         // set settings and save
-        this.Save(S = {
+        OS13k.Save(S = {
             v:gain.gain.value = volume,
             m:gainMusic.gain.value = musicVolume,
             s:speech,
@@ -1217,15 +1225,15 @@ class OS13kWindow extends HTMLElement
         this.iframeContent.document.open();
 
         // set on error now to catch errors on load
-        this.iframeContent.onerror = (message, source, line, col, e)=> this.SetErrorText(e, e.stack && [col, line]);
+        this.iframeContent.onerror = (...parameters)=>this.SetErrorText(...parameters);
         !this.program.userProgram | allCodeIsSafe ? this.iframeContent.document.write(code) : 0;
         this.iframeContent.document.close();
     }
 
-    SetErrorText(text, pos)
+    SetErrorText(message='', source, line, col, e)
     {
-        this.errorText.value = text + (pos ? ` (${(pos[1]-1) + ':' + pos[0]})` : '');
-        this.errorText.style.display = text != undefined ? '' : 'none';
+        this.errorText.value = (e || message) + (source ? ` (${(line-1) + ':' + col})` : '');
+        this.errorText.style.display = this.errorText.value ? '' : 'none';
         return true;
     }
     
@@ -1258,7 +1266,7 @@ class OS13kWindow extends HTMLElement
             this.WriteToFrame(program.i.C);
 
             // show error messages from user code
-            iframeContent.onerror = (message, source, line, col, e)=>this.SetErrorText(e, e.stack && [col, line])
+            iframeContent.onerror = (...parameters)=>this.SetErrorText(...parameters);
         }
         else
         {
@@ -1308,7 +1316,7 @@ class OS13kWindow extends HTMLElement
                     (c == ')' ? '' : ',') + c : a ) : iframeText;
 
             // show error messages from user code init
-            onerror = (message, source, line, col, e)=> {this.SetErrorText(e, e.stack && [col, line])};
+            onerror = (...parameters)=>this.SetErrorText(...parameters);
 
             // create dweet program
             iframeContent.eval(
