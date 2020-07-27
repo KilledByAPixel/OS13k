@@ -7,7 +7,7 @@
 <button onmousedown=R()>Delete</button><br><br>
 Volume <input type=range id=V>
 Loop <input type=checkbox id=O><br>
-<canvas id=C style=width:350;height:29;image-rendering:-moz-crisp-edges;image-rendering:pixelated></canvas><br>
+<canvas id=C style=width:350;height:29></canvas><br>
 <select id=S size=9 style=width:350;background:#000;color:#fff>
 <script src=songs/cuddly.js?5></script>
 <script src=songs/iamback.js?5></script>
@@ -48,15 +48,14 @@ U=t=>
         C.getContext`2d`.drawImage(OS13k.GetAnalyser(), 0, 0, C.width = 32, C.height = 32);
 
         // update song info
-        F.innerText = X ? (                              // check if song playing
-            X.gain.gain.value = V.value / 99,            // set music volume
-            d = X.buffer.duration,                       // get buffer duration
-            T += (t-D)/1e3,                              // update time
-            X.loop = O.checked ?                         // set loop
-                T %= d :                                 // wrap time if looping
-                T > d && X.stop(X = 0),                  // stop song if ended
-            W(T) + '/' + W(d))                           // display song time
-            : (N.innerText = 'OS13k Music Player', '');  // reset name if not playing  
+        F.innerText = X ? (                             // check if song playing
+            X.gain.gain.value = V.value / 99,           // set music volume
+            d = X.buffer.duration,                      // get buffer duration
+            T += (t-D)/1e3,                             // update time
+            X.loop = O.checked ? 1 :                    // set loop
+                T > d ? X = 0 : 0,                      // stop song if ended
+            W(T%d) + '/' + W(d))                        // display song time
+            : (N.innerText = 'OS13k Music Player', ''); // reset name if not playing  
     }
 
     D = t;
@@ -70,17 +69,17 @@ B=k=>
     Z = 0;               // track user song count
     L = [];              // clear song list
 
-    for (k in localStorage) I(k);                  // search local storage for songs
+    for (k in localStorage) I(k);             // search local storage for songs
     
-    L.sort((i,j)=>i.n.localeCompare(j.n))          // sort songs
-        .map(e=>                                   // add songs to select
-        S.innerHTML += `<option>${e.n}</option>`); // create option
+    L.sort((i,j)=>i.n.localeCompare(j.n))     // sort songs
+        .map(e=>                              // add songs to select
+        S.innerHTML += '<option>' + e.n);     // create option
 
-    S.selectedIndex =                              // set selected index back
-        OS13k.Clamp(                               // clamp to select length
-            E ? L.findIndex(e=>e.k == E) : i,      // look for added song key 
-            S.length - 1, E = 0);                  // clamp to select length
-    localStorage.OS13kM = JSON.stringify(K);       // save known song list
+    S.selectedIndex =                         // set selected index back
+        OS13k.Clamp(                          // clamp to select length
+            E ? L.findIndex(e=>e.k == E) : i, // look for added song key 
+            S.length - 1, E = 0);             // clamp to select length
+    localStorage.OS13kM = JSON.stringify(K);  // save known song list
 }
 
 // insert song into list
@@ -88,20 +87,20 @@ I=k=> // key
 {
     p = k.split`,`;                          // get key parts
     f = p.shift();                           // get first part of key
-    if (f.substring(0,10) != 'OS13kMusic')   // check if music key
-        return;
-            
-    n = p[0] ? p[0] : 'Untitled';            // get song name
-    f.substring(10,11) == 'U' ?              // check if user song
-        Z = Math.max(Z, f.substring(11)) :   // update highest user song
-        K.indexOf(k) < 0 && (OS13k.Popup(    // check if new song
-            '🎵 New Music<br><b>' + n, n),   // new music popup
-            K.push(k));                      // add song to known list
-              
-    try {                                    // try to load the data
-        (d = OS13k.StringToMusic(localStorage[k])) && ( // get song data
-            L.push({d, k, n}));              // add to song list
-    } catch(e) {console.log(e)}              // load failed
+    if (f.substring(0,10) == 'OS13kMusic')   // check if music key
+    {  
+        n = p[0] ? p[0] : 'Untitled';            // get song name
+        f.substring(10,11) == 'U' ?              // check if user song
+            Z = Math.max(Z, f.substring(11)) :   // update highest user song
+            K.indexOf(k) < 0 && (OS13k.Popup(    // check if new song
+                '🎵 New Music<br><b>' + n, n),   // new music popup
+                K.push(k));                      // add song to known list
+                
+        try {                                    // try to load the data
+            (d = OS13k.StringToMusic(localStorage[k])) && ( // get song data
+                L.push({d, k, n}));              // add to song list
+        } catch(e) {console.log(e)}              // load failed
+    }
 }
 
 // play song
@@ -128,12 +127,12 @@ A=k=>
                 prompt`Name`.replace(/,/g, '')         // get song name
             ] = d);                                    // set data
     }
-    catch (e) { alert`⚠️ Error!`; console.log(e);}     // load failed
+    catch (e) { alert`⚠️ Error!`; console.log(e);}    // load failed
 }
 
 // remove song
-R=k=> confirm(`⚠️ Delete ${ L[S.selectedIndex].n }?`) &&     // confirm to remove
-        B(localStorage[L[S.selectedIndex].k] = 0);    // remove and rebuild
+R=k=> confirm(`⚠️ Delete ${ L[S.selectedIndex].n }?`) && // confirm to remove
+        B(localStorage[L[S.selectedIndex].k] = 0);        // remove and rebuild
 
 // convert seconds to time string
 W=k=> (k/60|0) + ((k = k%60|0) <=9 ? ':0' : ':') + k;
@@ -165,10 +164,7 @@ localStorage['OS13kMusic,OS13k Test'] = JSON.stringify(
 // load know songs
 K = localStorage.OS13kM ? JSON.parse(localStorage.OS13kM) : []
 
-// build music list and stop music when unloaded
-B(onunload=_=> X && X.stop());
-
-// set update interval
-U();
+// build music list and stop music when unloaded, set update interval
+U(B(onunload=_=> X && X.stop()));
 
 </script>
