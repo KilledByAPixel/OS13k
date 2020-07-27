@@ -80,7 +80,7 @@ O = e=>
         // chop off at end marker (-2) or if no more notes
         for(n = y = 2; y < 130; ++y)
             n = m[1][0][x][y] == -2 ? y : m[1][0][x][y] ? y + 1 : n;
-        m[1][0][x].length = n;
+        m[1][0][x].length = Math.max(n, M[1][0].reduce((a,c)=>Math.max(a, c.length), 0));
     }
 
     return m;
