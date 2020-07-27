@@ -1,0 +1,62 @@
+<style>body{background:#111;color:#fff;user-select:none;text-align:center}</style><span id=B></span>🌱 <input oninput=P(0,R()) style=width:240 id=S placeholder="ZzFX or Seed"><p>🔊 <input onchange=R() style=width:99 type=range id=V> 🐇 <input onchange=R() style=width:99 type=range id=L> 🐢<script>
+
+// globals
+// S = seed
+// V = volume
+// L = length
+// A = active sounds
+
+OS13k = parent.OS13k;
+
+//////////////////////////////////////////////////////////////
+// sound
+
+// build cached samples
+R = e=>
+{
+    onblur(D = []);                      // cancel all sounds and init sample cache
+    for(i=5;--i;                         // loop for each octave
+        D[i] = OS13k.SeedSamples(        // get seed samples
+            S.value, .1+L.value/9, 1, 0, // seed parameters
+                OS13k.Note(i*12-33))     // root frequency C
+    );
+}
+
+// play note
+P = e=> e < 0 || A[e] ||         // is note valid and not playing
+(
+    // play cached sound
+    (A[e] =                     // set sound                 
+        OS13k.PlaySamples(      // play samples
+            D[2 + e/12|0], 2)). // get octave
+                detune.value =  // set frequency
+                    e%12*100,   // get note offset
+
+    A[e].gain.gain.value = V.value / 50 // set volume
+);
+
+// cancel note
+X = e=> A[e] &&                                                     // is note playing
+(                                    
+    A[e].gain.gain.linearRampToValueAtTime(V.value / 50, t = A[e].context.currentTime + .02), // set gain
+    A[e].gain.gain.linearRampToValueAtTime(A[e] = 0, t + .1)        // ramp gain to 0 and remove sound
+);
+
+//////////////////////////////////////////////////////////////
+// init
+
+onunload = onblur = e=> A.map((e,i)=> X(i));
+R(A = []);
+
+//////////////////////////////////////////////////////////////
+// keyboard controls
+
+// play note on key down
+onkeydown = e=>
+    document.activeElement == S || // not when editing seed
+        P(OS13k.PianoKey(e));                   // play note
+
+// release note on key up
+onkeyup = e=> X(OS13k.PianoKey(e));
+
+</script>
