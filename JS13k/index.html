@@ -1230,9 +1230,9 @@ class OS13kWindow extends HTMLElement
         this.iframeContent.document.close();
     }
 
-    SetErrorText(message='', source, line, col, e)
+    SetErrorText(message, source, line, col, e)
     {
-        this.errorText.value = (e || message) + (source ? ` (${(line-1) + ':' + col})` : '');
+        this.errorText.value = e + (e && e.stack ? ` (${(line-1) + ':' + col})` : '');
         this.errorText.style.display = this.errorText.value ? '' : 'none';
         return true;
     }
@@ -1256,7 +1256,7 @@ class OS13kWindow extends HTMLElement
             program.isDweet = program.i.C.trim()[0] != '<';
 
             // clear error text
-            this.SetErrorText();
+            this.errorText.style.display = 'none';
 
             // allow code editing, check for alt+enter to reload
             this.codeText.onkeydown = e=> !e.altKey || e.keyCode == 13 && this.SetCode(this.codeText.value);
