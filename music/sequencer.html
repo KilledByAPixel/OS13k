@@ -1,4 +1,4 @@
-<style>body{background:#111;color:#fff;user-select:none;white-space:nowrap;text-align:center}</style>BPM <input type=number style=width:59 id=T value=120> Loop <input type=number style=width:59 id=L value=8> <button onmousedown=A=OS13k.PlayMusic(O(S()))>Play</button> <button onmousedown=S()>Stop</button> <button onmousedown=V()>Save</button> <button onclick=W()>Load</button><a id=H download></a><div id=B><script>
+<style>td,body{background:#111;color:#fff;user-select:none;white-space:nowrap;text-align:center}</style>BPM <input type=number style=width:59 id=T value=120> Loop <input type=number style=width:59 id=L value=8> <button onmousedown=A=OS13k.PlayMusic(U(S()))>Play</button> <button onmousedown=S()>Stop</button> <button onmousedown=V()>Save</button> <button onclick=W()>Load</button><a id=H download></a><div id=B><script>
 /*
 
 todo:
@@ -9,22 +9,22 @@ todo:
 
 */
 
-OS13k = parent.OS13k;
+O = parent.OS13k;
 M = [[],[[]]]; // music
 
 // stop music
 onunload = S = e=> A && A.stop();
 
 // set instrument
-I = (s, x)=> M[0][x] = OS13k.SeedParameters(s, 1, 1, 0);
+I = (s, x)=> M[0][x] = O.SeedParameters(s, 1, 1, 0);
 
 // get name of note
 Q=e=>e ? e > 0 ? 
-    (e >= 1 ? 'CCDDEFFGGAAB'[e%12|0] +          // note letter
-              ' # #  # # # '[e%12|0] +          // natural or sharp
-        ' - ' + (e/12-1|0) + ' ' : '') +        // octave
-    (e%1 ? (10 - e*10 % 10|0) + '0%' : '') :    // volume
-    e < -1 ? ' End' : 'Stop' : '';              // special notes
+    (e >= 1 ? "CCDDEFFGGAAB"[e%12|0] +          // note letter
+              " # #  # # # "[e%12|0] +          // natural or sharp
+        " - " + (e/12-1|0) + " " : "") +        // octave
+    (e%1 ? (10 - e*10 % 10|0) + "0%" : "") :    // volume
+    e < -1 ? " End" : "Stop" : "";              // special notes
 
 // set note
 N = (e, x, y)=>
@@ -37,7 +37,7 @@ N = (e, x, y)=>
             n = M[1][0][x][y] > 0 ? M[1][0][x][y] : 0,
             (n|0) + ((n*10%10 + 10 + (e.keyCode - 39)) / 10)%1
         ) :
-        OS13k.PianoKey(e) >= 0 ? v = 12 + OS13k.PianoKey(e) : // key
+        O.PianoKey(e) >= 0 ? v = 12 + O.PianoKey(e) : // key
         -3; // no valid input
 
     // if input was valid
@@ -49,11 +49,11 @@ N = (e, x, y)=>
         // set zzfx parameters
         p = [...M[0][x]];                  // copy instrument
         p[0] *= 1 - v%1;                   // volume
-        p[2] = OS13k.Note(v - 12|0, p[2]); // frequency
+        p[2] = O.Note(v - 12|0, p[2]);     // frequency
 
         // stop old sound and play new one if valid
         Z && Z.stop();
-        Z = v > 0 && zzfx(...p);
+        Z = v > 0 && O.PlaySamples(parent.zzfxG(...p), 1);
     }
 
     // only allow to continue if tab
@@ -61,13 +61,13 @@ N = (e, x, y)=>
 }
 
 // build music
-O = e=>
+U = e=>
 {
     // create music format, with padding at end
-    m = [M[x = i = 0], [[],[[]]], [], OS13k.Clamp(T.value, 1e3, 30)];
+    m = [M[x = i = 0], [[],[[]]], [], O.Clamp(T.value, 1e3, 30)];
 
     // set sequence loop
-    for(; i < OS13k.Clamp(L.value, 99, 1); ) m[2][i++] = 0;
+    for(; i < O.Clamp(L.value, 99, 1); ) m[2][i++] = 0;
 
     // add empty padding sequence at end so notes arent clipped
     for(i = 0; i < 32; ) m[1][1][0][i++] = 0;
@@ -95,31 +95,32 @@ O = e=>
 // rebuild pattern display
 R = e=>
 {
-    o = '<p>';
-    for(x = -2; ++x < 9; o += '<br>')
+    o = "<p><table>";
+    for(x = -2; ++x < 9; o += "</tr><tr>")
     for(y = 0; y < 130; ++y)
     {
-        o += 
+        o += "<td>" + (
             // beat index display
-            x == -1 ? `<span style=display:inline-block;width:${y<2?140:80}>${y>1?y-1:''}</span>` :
+            x == -1 ? y > 1 ? y-1 : "" :
 
             // note
-            y > 1 ? `<input style=width:80;${(y+2)%4? '' : 'background:#ccf'} onkeydown='return N(event,${x},${y})'value=${Q(M[1][0][x][y])}>` :
+            y > 1 ? `<input style=width:80;${(y+2)%4? "" : "background:#ccf"} onkeydown="return N(event,${x},${y})"value=${Q(M[1][0][x][y])}>` :
 
-            // empty
-            y ? '' :
+            // pan
+            y > 0 ? `🎧 <input style=width:99 oninput=M[1][0][${x}][1]=this.value/50-1 type=range value=${(M[1][0][x][1]||0)*50+50}>` :
 
-            // instrument, pan, and init
+            // instrument and init
             (
                 // init channel
                 M[1][0][x] || (M[1][0][x] = [x, 0]),
 
                 // set instrument
-                I(m = M[0][x]?'zzfx(...['+M[0][x]+'])' : '', x),
+                I(m = M[0][x]?`zzfx(...[${M[0][x]}])` : "", x),
 
-                // instrument and pan setting
-                `<span style=display:inline-block;width:280>🌱 <input style=width:99 oninput=I(this.value,${x}) placeholder='ZzFX or Seed'value=${m}> 🎧 <input style=width:99 oninput=M[1][0][${x}][1]=this.value/50-1 type=range value=${(M[1][0][x][1]||0)*50+50}></span>`
-            );
+                // instrument
+                `🌱 <input style=width:99 oninput=I(this.value,${x}) placeholder="ZzFX or Seed"value=${m}>`
+            )) +
+            "</td>";
     }
     B.innerHTML = o;
 }
@@ -131,10 +132,10 @@ R(A = Z = 0);
 // save / load
 
 // convert array to string
-D = e=> Array.isArray(e) ? '[' + e.map(e=>D(e)).join(',') + ']': e;
+D = e=> Array.isArray(e) ? "[" + e.map(e=>D(e)).join(",") + "]": e;
 
 // save
-V = e=> H.click(H.href = URL.createObjectURL(new Blob([D(O())])));
+V = e=> H.click(H.href = URL.createObjectURL(new Blob([D(U())])));
 
 // load
 W = e=>
@@ -142,7 +143,7 @@ W = e=>
     try
     {
         // load song data
-        M = OS13k.StringToMusic(d = prompt `ZzFXM Data`, 1);
+        M = O.StringToMusic(d = prompt `ZzFXM Data`, 1);
 
         // set end at max channel length
         //M[1][0][0][M[1][0].reduce((a,c)=>Math.max(a, c.length), 0)] = -2;
