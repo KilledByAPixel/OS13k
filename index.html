@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?v218></script>
+<script src=programs.js?v220></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -1571,7 +1571,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             this.iframe.onload = ()=> loadFrame();
-            this.iframe.src = program.src + '?v218';
+            this.iframe.src = program.src + '?v220';
         }
     }
         
@@ -2019,7 +2019,7 @@ zzfxG = (volume = 1, randomness = .05, frequency = 220, attack = 0, sustain = 0,
 zzfxM = (instruments, patterns, sequence, BPM = 125) => 
 {
     let instrumentParameters, i, j, k, sample, patternChannel,
-        beat, stop, instrument, pitch, attenuation, outSampleOffset, 
+        notFirstBeat, stop, instrument, pitch, attenuation, outSampleOffset, 
         sampleOffset, nextSampleOffset, sampleBuffer = [], 
         channelIndex = 0, hasMore = 1, channelBuffers = [[],[]], 
         sampleCache = {}, beatLength = defaultSampleRate / BPM * 60 >> 2;
@@ -2028,7 +2028,7 @@ zzfxM = (instruments, patterns, sequence, BPM = 125) =>
     for(; hasMore; channelIndex++)
     {
         // reset current values
-        hasMore = beat = pitch = outSampleOffset = 0;
+        sampleBuffer = [hasMore = notFirstBeat = pitch = outSampleOffset = 0];
 
         // for each pattern in sequence
         sequence.map((patternIndex, sequenceIndex) => 
@@ -2037,19 +2037,19 @@ zzfxM = (instruments, patterns, sequence, BPM = 125) =>
             patternChannel = patterns[patternIndex][channelIndex] || [0, 0, 0];
 
             // check if there are more channels
-            hasMore = hasMore || patterns[patternIndex][channelIndex];
+            hasMore |= !!patterns[patternIndex][channelIndex];
 
             // get next offset, use the length of first channel
-            nextSampleOffset = outSampleOffset + (patterns[patternIndex][0].length - 2 - !beat) * beatLength;
+            nextSampleOffset = outSampleOffset + (patterns[patternIndex][0].length - 2 - !notFirstBeat) * beatLength;
 
             // for each beat in pattern, plus one extra if end of sequence
-            for (i = 2, k = outSampleOffset; i < patternChannel.length + (sequenceIndex == sequence.length-1); ++i, ++beat)
+            for (i = 2, k = outSampleOffset; i < patternChannel.length + (sequenceIndex == sequence.length-1); notFirstBeat = ++i)
             {
-                // stop if different instrument or note
-                stop = instrument != patternChannel[0] || patternChannel[i] | 0;
+                // stop if different instrument or new note
+                stop = instrument != patternChannel[0] | patternChannel[i] | 0;
 
                 // fill buffer with samples for previous beat, most cpu intensive part
-                for(j = 0; beat && j < beatLength; 
+                for(j = 0; j < beatLength && notFirstBeat; 
 
                     // fade off attenuation at end of beat if stopping note, prevents clicking
                     j++ > beatLength - 99 && stop ? attenuation += (attenuation < 1) / 99 : 0
@@ -2057,8 +2057,8 @@ zzfxM = (instruments, patterns, sequence, BPM = 125) =>
                 {
                     // copy sample to stereo buffers with panning
                     sample = (1-attenuation) * sampleBuffer[sampleOffset++] / 2 || 0;
-                    channelBuffers[0][k] = (channelBuffers[0][k]   || 0) + sample * (patternChannel[1] || 0) - sample;
-                    channelBuffers[1][k] = (channelBuffers[1][k++] || 0) + sample * (patternChannel[1] || 0) + sample;
+                    channelBuffers[0][k] = (channelBuffers[0][k]   || 0) + sample * patternChannel[1] - sample;
+                    channelBuffers[1][k] = (channelBuffers[1][k++] || 0) + sample * patternChannel[1] + sample;
                 }
 
                 // set up for next note
@@ -2068,7 +2068,7 @@ zzfxM = (instruments, patterns, sequence, BPM = 125) =>
                     attenuation = patternChannel[i] % 1;
                     if (patternChannel[i] | 0)
                     {
-                        // add sample to cache
+                        // get cached sample
                         sampleBuffer = sampleCache
                             [[
                                 instrument = patternChannel[sampleOffset = 0] || 0, 
@@ -2076,6 +2076,7 @@ zzfxM = (instruments, patterns, sequence, BPM = 125) =>
                             ]] = 
                             sampleCache[[instrument, pitch]] ||
                         (
+                            // add sample to cache
                             instrumentParameters = [...instruments[instrument]],
                             instrumentParameters[2] *= 2 ** ((pitch - 12) / 12),
                             zzfxG(...instrumentParameters)
