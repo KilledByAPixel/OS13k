@@ -1,15 +1,6 @@
 <template name=Help><h2><i>Welcome to OS13k!</i></h2><p>OS13k is a tiny operating system designed for JS13k.<p>Play JS13k games to earn trophies and unlock music. <a href=https://github.com/KilledByAPixel/OS13k target=_blank>More info on GitHub.</a><p>✌️😄 ❤️ OS13k Team</template>
 
-<template name=Settings><style>body{background:#111;color:#fff;user-select:none;text-align:center}</style>
-Volume <input type=range id=V oninput=s() style=width:99>&nbsp;&nbsp;
-Music <input type=range id=M oninput=s() style=width:99><br><br>
-System Sounds <input type=checkbox id=Y oninput=s()>&nbsp;&nbsp;
-Speech <input type=checkbox id=S oninput=s()>&nbsp;&nbsp;
-Popups <input type=checkbox id=P oninput=s()>
-<br><br>Background
-<input id=C type=color oninput=s()>&nbsp;&nbsp;
-<input id=D type=color oninput=s()>&nbsp;&nbsp;
-<input id=T oninput=s()><span id=F></span><script>s=e=>parent.OS13k.SaveSettings(V.value/100,M.value/100,S.checked,P.checked,Y.checked,D.value,C.value,T.value,t),s(i=parent.OS13k.Settings(),V.value=100*i.v,M.value=100*i.m,S.checked=i.s,P.checked=i.p,Y.checked=i.o,C.value=i.d,D.value=i.c,T.value=i.t,t=i.f)</script></template>
+<template name=Settings><style>body{background:#111;color:#fff;user-select:none;text-align:center}</style>Volume <input type=range id=V oninput=s() style=width:99> Music <input type=range id=M oninput=s() style=width:99><p>System Sounds <input type=checkbox id=Y oninput=s()> Speech <input type=checkbox id=S oninput=s()> Popups <input type=checkbox id=P oninput=s()> <p>Background <input id=C type=color oninput=s()> <input id=D type=color oninput=s()> <input id=T oninput=s()><script>s=e=>parent.OS13k.SaveSettings(V.value/100,M.value/100,S.checked,P.checked,Y.checked,D.value,C.value,T.value),s(i=parent.OS13k.Settings(),V.value=100*i.v,M.value=100*i.m,S.checked=i.s,P.checked=i.p,Y.checked=i.o,C.value=i.d,D.value=i.c,T.value=i.t)</script></template>
 
 <template name="Trophy Case"><style>body{background:#232}</style>&nbsp;<script>OS13kReload=()=>{for(t of(this.document.body.innerHTML="",parent.OS13k.Trophies()))this.document.body.innerHTML+=`<div style='display:inline-block;font-family:arial;padding:9;overflow:hidden;text-align:center;background:linear-gradient(#eee,#888);width:120;height:120;margin:9;font-size:18;box-shadow:5px 5px 9px;border:2px solid;border-radius:29px'title='${i=t[0]||"🏆"} ${n=t[2]}\n${g=t[1]}\n${m=t[3]}'onmousedown='parent.OS13k.Speak(\`${n}\`,1,1,1,"ja",1)'><div style='padding:3;white-space:nowrap;font-size:28;text-shadow:2px 2px 4px'>${i}</div><div><b>${n}</b><br><i>${g}</i><br><div style=font-size:14>`+m},OS13kReload()</script></template>
 
