@@ -50,11 +50,9 @@ programStubs =
     ['games/lavaRush.html','🌋',640,400],
     ['games/swatch.html','🌈',320,340,reload],
     ['games/sn1ke.html','👀',400,280],
-    ['games/tetris.html','<span style=font-size:10>▀█▀',210,380,reload],
-    ['games/queensGambit.html','<span style=color:#f0f>♛'],
     ['games/freeCell.html','♠️',800,900,full|reload],
     ['games/hueJumper.html','🌲'],
-    ['dweets/bogusRoads.dweet.js','🛣️'],
+    ['games/bogusRoadsMini.dweet.js','🛣️'],
 ]],
 [,'🎶',,,,'Music',,
 [
