@@ -207,7 +207,7 @@ span                { white-space:nowrap; }
 ///////////////////////////////////////////////////////////////////////////////
 // OS13k Debug (remove from minified)
 
-const OS13kVersion = 76;
+let OS13kVersion = 76;
 {
     // version check, clear local storage if older
     if (localStorage.OS13k && localStorage.OS13kVersion != OS13kVersion)
@@ -215,7 +215,7 @@ const OS13kVersion = 76;
         alert('OS13k version out of date! System reset in 3, 2, 1...');
 
         // save what we can
-        const save = localStorage.OS13kVersion >= 70 ? localStorage.OS13k : 0;
+        let save = localStorage.OS13kVersion >= 70 ? localStorage.OS13k : 0;
         localStorage.clear();
         if (save)
           localStorage.OS13k = save;
@@ -318,23 +318,23 @@ class _OS13k
     Trophy(icon, game, name, message)
     {
         // replace commas and apostrophes
-        const Clean = string=> OS13k.StripHTML(string||'', maxWordLength).replace(/[,`]/g, '');
+        let Clean = string=> OS13k.StripHTML(string||'', maxWordLength).replace(/[,`]/g, '');
         icon    = Clean(icon);
         game    = Clean(game);
         name    = Clean(name);
         message = Clean(message);
         
         // build key
-        const key = icon + ',' + game + ',' + name;
+        let key = icon + ',' + game + ',' + name;
                 
         // find in trophy list
-        const i = trophies.findIndex(e=> e[4] == key);
+        let i = trophies.findIndex(e=> e[4] == key);
         
         // skip if same message
         if (i >=0 && trophies[i][3] == message) return;
         
         // add or update trophy list
-        const trophyData = [icon, game, name, message, key];
+        let trophyData = [icon, game, name, message, key];
         i < 0 ? trophies.unshift( trophyData ) : trophies[i] = trophyData;
 
         // save trophy
@@ -359,7 +359,7 @@ class _OS13k
     // get message, 0 if no trophy
     GetTrophy(game, name) 
     { 
-        const trophy = trophies.find(e=> e[1]==game & e[2]==name); 
+        let trophy = trophies.find(e=> e[1]==game & e[2]==name); 
         return trophy ? trophy[3] : 0; 
     }
     
@@ -403,7 +403,7 @@ class _OS13k
         OS13k.randomSeed = seed;
      
         // helper functions
-        const R=()=>OS13k.Random(), C=()=>R()<.5?R():0, S=e=>C()?e:-e,
+        let R=()=>OS13k.Random(), C=()=>R()<.5?R():0, S=e=>C()?e:-e,
         
             // randomize sound length
             attack  = R()**3/4*lengthScale,
@@ -445,7 +445,7 @@ class _OS13k
     PlaySamplesArray(samplesArray, isMusic, sampleRate=defaultSampleRate)
     {
         // create buffer and source
-        const buffer = audioContext.createBuffer(samplesArray.length, samplesArray[0].length, sampleRate),
+        let buffer = audioContext.createBuffer(samplesArray.length, samplesArray[0].length, sampleRate),
             source = audioContext.createBufferSource();
         
         // copy samples to buffer and play
@@ -475,7 +475,7 @@ class _OS13k
     StringToMusic(string, validate = 0)
     {
         // check if safe to eval and get music data
-        const music = string.replace(/null|[[\],\d\.-]/g, '') || eval(string.replace(/null/g, undefined)); 
+        let music = string.replace(/null|[[\],\d\.-]/g, '') || eval(string.replace(/null/g, undefined)); 
 
         // try to generate music to check if valid
         validate && zzfxM(...music);
@@ -488,7 +488,7 @@ class _OS13k
 
     PianoKey(event)
     {
-        const k = 'ZSXDCVGBHNJM,L.;/Q2W3ER5T6Y7UI9O0P[=]'    // map key to note
+        let k = 'ZSXDCVGBHNJM,L.;/Q2W3ER5T6Y7UI9O0P[=]'      // map key to note
             .indexOf(event.key && event.key.toUpperCase());  // find the key and check for invalid key
         return k - 5 * (k > 16);                             // offset second row of keys
     }
@@ -501,7 +501,7 @@ class _OS13k
         // ja - japanese, hi - hindi,  ru - russian, zh - chinese, ko - korean
     
         // set utterance parameters
-        const utterance = new SpeechSynthesisUtterance(text);
+        let utterance = new SpeechSynthesisUtterance(text);
         utterance.volume = volume * gain.gain.value * 3;
         utterance.pitch = pitch;
         utterance.rate = rate;
@@ -539,7 +539,7 @@ class _OS13k
             return;
 
         // create a simple pass through vertex shader
-        const vertexShader = x.createShader(xVERTEX_SHADER);
+        let vertexShader = x.createShader(xVERTEX_SHADER);
         x.shaderSource(vertexShader, '#version 300 es\nin vec4 c;void main(){gl_Position=c;}');
         x.compileShader(vertexShader);
         
@@ -548,8 +548,8 @@ class _OS13k
         //    throw x.getShaderInfoLog(vertexShader);
         
         // create shadertoy compatible pixel shader
-        const pixelShader = x.createShader(xFRAGMENT_SHADER);
-        const shaderProgramCode = 
+        let pixelShader = x.createShader(xFRAGMENT_SHADER);
+        let shaderProgramCode = 
             `#version 300 es\n` +
             `precision mediump float;` +
             `uniform float iTime;` +
@@ -581,7 +581,7 @@ class _OS13k
         x.pixelStorei(xUNPACK_FLIP_Y_WEBGL, 1);
         
         // create shader program
-        const shaderProgram = x.createProgram();
+        let shaderProgram = x.createProgram();
         x.attachShader(shaderProgram, vertexShader);
         x.attachShader(shaderProgram, pixelShader);
         x.linkProgram(shaderProgram);
@@ -629,7 +629,7 @@ class _OS13k
     Popup(html, speak, language)
     {
         // create popup
-        const popup = popups.appendChild(document.createElement('div'));
+        let popup = popups.appendChild(document.createElement('div'));
         popup.className = 'popup';
         popup.innerHTML = html;
         popup.speak = speak;
@@ -658,7 +658,7 @@ class _OS13k
         }
 
         // create or clear input object
-        const input = inputWindow.document.OS13kInput =
+        let input = inputWindow.document.OS13kInput =
         {
             x: 0, y: 0,
             keypress: [], mousepress: [],
@@ -765,8 +765,8 @@ const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26,
 RebuildMenu = ()=>
 {
     // combine old stubs for reference to flat array
-    const oldStubs = [];
-    const getOldStubs = stubs => stubs.map( stub => stub[7] ? getOldStubs(stub[7]) : oldStubs.push(stub));
+    let oldStubs = [],
+        getOldStubs = stubs => stubs.map( stub => stub[7] ? getOldStubs(stub[7]) : oldStubs.push(stub));
     getOldStubs(programStubs);
 
     // remove user folder if it exists
@@ -780,14 +780,14 @@ RebuildMenu = ()=>
 
 CreateUserFolder = (parentStubs, stub, userFolderName, oldStubs)=>
 {
-    const folderStubs = 
+    let folderStubs = 
     [
         [,'📌',,,newUserProgram,'New User Program',,,,userFolderName],
         [,'⚠️',,,deleteUserPrograms, userFolderName ? `Delete User Folder ${userFolderName}` : 'Delete User Programs',,,,userFolderName]
     ];
     
     // add subfolders
-    const folderNames = [];
+    let folderNames = [];
     userFolderName || programInfos.map(i=> i.code != undefined && i.userFolder && 
         !folderNames.includes(i.userFolder) && 
             CreateUserFolder(folderStubs,[,'📁',,,,i.userFolder], i.userFolder, oldStubs, folderNames.push(i.userFolder)));
@@ -822,8 +822,8 @@ Update = time=>
         self == top && startProgram && startProgram.Open(startProgram = 0), finishedStartup = 1);
         
     // check if iframe became new active element
-    const activeElement = document.activeElement;
-    const activeFrame = activeElement.shadowRoot && activeElement.shadowRoot.activeElement == activeElement.iframe ? 
+    let activeElement = document.activeElement,
+        activeFrame = activeElement.shadowRoot && activeElement.shadowRoot.activeElement == activeElement.iframe ? 
         activeElement.iframe : 0;
             
     // if a new frame took focus, set window active and that we had input
@@ -847,7 +847,7 @@ Update = time=>
     if (!finishedStartup | !hadInput) return;
     
     // get analyser data
-    const frequencyData = new Uint8Array(musicAnalyser.fftSize = 512),
+    let frequencyData = new Uint8Array(musicAnalyser.fftSize = 512),
         context = analyserCanvas.getContext('2d');
     musicAnalyser.getByteFrequencyData(frequencyData);
     analyserCanvas.width = analyserCanvas.height = 32
@@ -856,7 +856,7 @@ Update = time=>
     for(let i = 0; i < 32; )
     {
         // get frequency band volume and adjust for loudness
-        const volume = (frequencyData[i+3] / 255)**3 * (1 + Math.log10((i+3) * defaultSampleRate / 1024 ));
+        let volume = (frequencyData[i+3] / 255)**3 * (1 + Math.log10((i+3) * defaultSampleRate / 1024 ));
 
         // draw loudness bar
         context.fillStyle = `hsl(${-99-59*volume} 99%50%)`;
@@ -961,10 +961,10 @@ class OS13kProgramMenu extends HTMLElement
     Rebuild(y = 0)
     {
         // add programs to menu
-        for(const stub of this.programStubs)
+        for(let stub of this.programStubs)
         {
             // create program and menu
-            const program = stub[-1] = stub[-1] || new OS13kProgram(...stub);  
+            let program = stub[-1] = stub[-1] || new OS13kProgram(...stub);  
             program.programMenu = program.folder ? new OS13kProgramMenu(program.folder, this) : this;
         }
 
@@ -1005,11 +1005,11 @@ class OS13kProgramMenu extends HTMLElement
     NewUserProgram(copyProgram, userFolder)
     {
         // create new program
-        const stub = copyProgram ? 
+        let stub = copyProgram ? 
             [,copyProgram.icon, copyProgram.width, copyProgram.height, defaultFlags|code, 
                 copyProgram.name + '+', , ,++nextUserProgramId, copyProgram.userFolder] :
             [,'✋',,,defaultFlags|code,,,,++nextUserProgramId, userFolder];
-        const program = stub[-1] = new OS13kProgram(...stub);
+        let program = stub[-1] = new OS13kProgram(...stub);
         
         // add to menu program infos
         this.programStubs.push(stub);
@@ -1048,10 +1048,10 @@ class OS13kProgram extends HTMLElement
         super();
 
         // split source by . to get extension
-        const srcParts = src.split('.');
+        let srcParts = src.split('.');
         
         // split source by / to get filename to convert camel case to nice name
-        const srcCleanName = srcParts[0].split('/').pop().replace(/([a-z](?=[A-Z]))/g, '$1 ');
+        let srcCleanName = srcParts[0].split('/').pop().replace(/([a-z](?=[A-Z]))/g, '$1 ');
         name = name || srcCleanName && (srcCleanName[0].toUpperCase() + srcCleanName.slice(1));
         
         // check for special extensions
@@ -1176,7 +1176,7 @@ class OS13kProgram extends HTMLElement
     Load() 
     {
         // load saved program info from local storage
-        const i = programInfos.findIndex(e=> e.id == this.id);
+        let i = programInfos.findIndex(e=> e.id == this.id);
         this.info = i < 0 ? {} : programInfos[i];
 
         // check for user code
@@ -1207,7 +1207,7 @@ class OS13kProgram extends HTMLElement
         }
         
         // add to programs info and save
-        const i = programInfos.findIndex(e=> e.id == this.id);
+        let i = programInfos.findIndex(e=> e.id == this.id);
         OS13k.Save(i < 0 ? programInfos.push(this.info) : programInfos[i] = this.info);
     }
     
@@ -1242,7 +1242,7 @@ class OS13kWindow extends HTMLElement
         this.titlebar.id = 'titlebar';
 
         // create title bar buttons
-        const AddTitlebarIcon=(title, svg, hover, shape='path')=>
+        let AddTitlebarIcon=(title, svg, hover, shape='path')=>
         {
             this.titlebar.innerHTML += 
             `<style>#${title.split(' ')[0]}:hover{background:#${hover}</style>` + 
@@ -1262,7 +1262,7 @@ class OS13kWindow extends HTMLElement
         // title bar name
         this.titlebar.prepend(this.name = document.createElement('div'));
         this.name.id = 'name';
-        const SetName = ()=>
+        let SetName = ()=>
         {
             // icon and name
             this.name.innerHTML = `<span id=icon>${program.icon}`;
@@ -1307,7 +1307,7 @@ class OS13kWindow extends HTMLElement
             `<a id=A><canvas id=V style=display:none>`;
 
         // get links to code options and create error text
-        const iconInput = this.shadowRoot.getElementById('I'),
+        let iconInput = this.shadowRoot.getElementById('I'),
             nameInput = this.shadowRoot.getElementById('N'),
             folderInput = this.shadowRoot.getElementById('F'),
             widthInput = this.shadowRoot.getElementById('W'),
@@ -1394,7 +1394,7 @@ class OS13kWindow extends HTMLElement
         this.allowSleep.oninput = e=> this.Reload(1, program.Save());
 
         // resize window size to fit inner width while preserving aspect
-        const width = program.flags & resize ? 
+        let width = program.flags & resize ? 
             Math.min(program.width*(program.info.scale||1), innerWidth-6) :
             program.width;
             
@@ -1431,20 +1431,21 @@ class OS13kWindow extends HTMLElement
     CreateFrame()
     {
         // wait for frame to load
-        const loadFrame = ()=>
+        let loadFrame = ()=>
         {
             // check if code is safe to execute
-            const codeIsSafe = !this.program.userProgram | allCodeIsSafe;
+            let codeIsSafe = !this.program.userProgram | allCodeIsSafe,
 
-            // only dweets and shadertoys can do screenshots
-            const hasExtension = program.isDweet | program.isShader;
-            this.screenshot.disabled = !hasExtension | !codeIsSafe;
+                // only dweets and shadertoys can do screenshots
+                hasExtension = program.isDweet | program.isShader,
 
-            // get iframe content and document (will fail if cross site)       
-            const iframeDocument = iframeContent.document;
-            const iframeText = program.userProgram ? program.info.code :
+                // get iframe content and document (will fail if cross site)       
+                iframeDocument = iframeContent.document,
+                iframeText = program.userProgram ? program.info.code :
                 program.help || (hasExtension ? iframeDocument.body.innerText : iframeDocument.body.innerHTML);
             
+            this.screenshot.disabled = !hasExtension | !codeIsSafe;
+
             // set code/help display if not user program
             program.userProgram || (this.codeText.value = iframeText);
 
@@ -1473,7 +1474,7 @@ class OS13kWindow extends HTMLElement
                     'align-items:center';
                     
                 // loop protection for user dweets
-                const code = program.userProgram && !program.isShader? 
+                let code = program.userProgram && !program.isShader? 
                     iframeText.replace(
                         /(for\s*\((?!\s+of\s+)(?!\s+in\s+)[^;]*;[^;]*;|while\s*\()\s*(\S)/g, (a, b, c)=> b && c ? b +
                         '++OS13kL>1e5&&(e=>{throw"Timed out!"})()' +
@@ -1538,9 +1539,9 @@ class OS13kWindow extends HTMLElement
 
         // create iframe
         this.iframe = this.iframeWrapper.appendChild(document.createElement('iframe')); 
-        const iframeContent = this.iframeContent = this.iframe.contentWindow;
-        const program = this.program;
-        let reloadCount = 0;
+        let iframeContent = this.iframeContent = this.iframe.contentWindow,
+            program = this.program,
+            reloadCount = 0;
         this.iframe.id = 'frame';
         
         // load src and force pages to be refreshed
@@ -1623,7 +1624,7 @@ class OS13kWindow extends HTMLElement
     Resize(scale, sound)
     {
         // get new width and fix window offset
-        const wNew = OS13k.Clamp(this.program.width * scale, 1920, 170);
+        let wNew = OS13k.Clamp(this.program.width * scale, 1920, 170);
         this.style.left = parseInt(this.style.left) + parseInt(this.style.width) - wNew;
         
         // set new size
@@ -1652,7 +1653,7 @@ class OS13kWindow extends HTMLElement
         if (!active) return;
 
         // clamp window to screen
-        const rect = this.getBoundingClientRect();
+        let rect = this.getBoundingClientRect();
         clamp && (
             this.style.left = OS13k.Clamp(rect.x, innerWidth - rect.width, 0,
             this.style.top = OS13k.Clamp(rect.y, Math.max(taskbarHeight, innerHeight - rect.height), taskbarHeight)));
@@ -1672,9 +1673,9 @@ class OS13kWindow extends HTMLElement
             this.style.zIndex = ++topZ;
 
             // show menu buttons
-            const MenuButton = (text, onmousedown)=>
+            let MenuButton = (text, onmousedown)=>
             {
-                const button = menu.appendChild(document.createElement('button'));
+                let button = menu.appendChild(document.createElement('button'));
                 button.innerText = text;
                 button.onmousedown = onmousedown;
             }
@@ -1869,7 +1870,7 @@ onmousedown = e=>
             (e.target.SetActive ? e.target : loadIcon).SetActive();
 
             // get which menu to open
-            const targetMenu = e.target.menu ? (SystemSound(soundMenu, .5), menu) : programsMenu;
+            let targetMenu = e.target.menu ? (SystemSound(soundMenu, .5), menu) : programsMenu;
 
             // show context menu
             targetMenu.style.left = e.x;
@@ -1914,7 +1915,7 @@ oncontextmenu = ()=> false;
 // allow drag and drop code into editor
 ondrop = e=>
 {
-    const reader = new FileReader();
+    let reader = new FileReader();
     reader.onload = f=> e.target.SetActive(1, 0, e.target.SetCode(f.target.result, 1));
 
     // read file, set code, and set active
@@ -2121,7 +2122,7 @@ RebuildMenu(loadIcon = new OS13kTaskbarIcon({icon:'💾', name:'Load'}, new OS13
 OS13k.Trophy('👋','','Welcome to OS13k!');
 
 // search local storage for new trophies (from other JS13k games)1
-for (const key in localStorage) CheckForTrophy(key);
+for (let key in localStorage) CheckForTrophy(key);
 
 // listen for trophies from other windows
 onstorage = e=> CheckForTrophy(e.key);
@@ -2141,7 +2142,7 @@ let wasTouching;
 if (typeof ontouchstart != 'undefined')
 {
     // remove hovers, they get stuck on mobile
-    const RemoveHovers = e=>
+    let RemoveHovers = e=>
     {
         [...e.styleSheets].map(sheet=> {
         for(let i = sheet.rules.length; i--; )
@@ -2152,10 +2153,10 @@ if (typeof ontouchstart != 'undefined')
     RemoveHovers(document);
                 
     // handle touch event
-    const ProcessTouch = e=>
+    let ProcessTouch = e=>
     {
         // check if touching
-        const touching = e.touches.length;
+        let touching = e.touches.length;
         if (touching)
         {
             // set event pos
@@ -2179,7 +2180,7 @@ if (typeof ontouchstart != 'undefined')
         activeWindow && RemoveHovers(activeWindow.shadowRoot);
         
         // prevent default if not edit area
-        const originalTarget = e.originalTarget || e.path[0];
+        let originalTarget = e.originalTarget || e.path[0];
         
         // allow event to contiue only if input
         return !e.cancelable || e.target == loadIcon || /input|textarea|button/.test(originalTarget.localName);
