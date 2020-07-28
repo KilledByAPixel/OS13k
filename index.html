@@ -776,49 +776,6 @@ let grabWindow, grabOffsetX, grabOffsetY, finishedStartup, nextUserProgramId = 0
     gainMusic = audioContext.createGain(), 
     musicAnalyser = audioContext.createAnalyser(),
 
-RebuildMenu = ()=>
-{
-    // combine old stubs for reference to flat array
-    let oldStubs = [],
-        getOldStubs = stubs => stubs.map( stub => stub[7] ? getOldStubs(stub[7]) : oldStubs.push(stub));
-    getOldStubs(programStubs);
-
-    // remove user folder if it exists
-    loadIcon && loadIcon.windowOrMenu.lastChild && (
-      loadIcon.windowOrMenu.removeChild(loadIcon.windowOrMenu.lastChild), 
-      programStubs.pop());
-
-    CreateUserFolder(programStubs, [,'😀',,,,'User Programs'], '', oldStubs);
-    loadIcon.windowOrMenu.Rebuild();
-},
-
-CreateUserFolder = (parentStubs, stub, userFolderName, oldStubs)=>
-{
-    let folderStubs = 
-    [
-        [,'📌',,,newUserProgram,'New User Program',,,,userFolderName],
-        [,'⚠️',,,deleteUserPrograms, userFolderName ? `Delete User Folder ${userFolderName}` : 'Delete User Programs',,,,userFolderName]
-    ];
-    
-    // add subfolders
-    let folderNames = [];
-    userFolderName || programInfos.map(i=> i.code != undefined && i.userFolder && 
-        !folderNames.includes(i.userFolder) && 
-            CreateUserFolder(folderStubs,[,'📁',,,,i.userFolder], i.userFolder, oldStubs, folderNames.push(i.userFolder)));
-       
-    // add stubs for programs in this folder
-   programInfos.map(i=> i.code != undefined && i.userFolder == userFolderName &&
-
-        // add stubs to folder, check if it already existed first
-        folderStubs.push(oldStubs.find(stub => stub[8] == i.id) ||
-            [,i.icon,i.width,i.height,defaultFlags|code,i.name,,,i.id,i.userFolder])
-        );
-
-    // set folder stubs and add to parent stubs
-    stub[7] = folderStubs;
-    parentStubs.push(stub);
-},
-
 // main update loop
 Update = time=>
 {
@@ -833,7 +790,7 @@ Update = time=>
         analyserCanvas.style = 'width:16;height:16;margin:2;pointer-events:none;display:none',
 
         // load start program
-        self == top && startProgram && startProgram.Open(startProgram = 0), finishedStartup = 1);
+        self == top && startProgram && startProgram.Open(), finishedStartup = 1);
         
     // check if iframe became new active element
     let activeElement = document.activeElement,
@@ -922,6 +879,49 @@ Update = time=>
     });
 },
 
+RebuildMenu = ()=>
+{
+    // combine old stubs for reference to flat array
+    let oldStubs = [],
+        getOldStubs = stubs => stubs.map( stub => stub[7] ? getOldStubs(stub[7]) : oldStubs.push(stub));
+    getOldStubs(programStubs);
+
+    // remove user folder if it exists
+    loadIcon && loadIcon.windowOrMenu.lastChild && (
+      loadIcon.windowOrMenu.removeChild(loadIcon.windowOrMenu.lastChild), 
+      programStubs.pop());
+
+    CreateUserFolder(programStubs, [,'😀',,,,'User Programs'], '', oldStubs);
+    loadIcon.windowOrMenu.Rebuild();
+},
+
+CreateUserFolder = (parentStubs, stub, userFolderName, oldStubs)=>
+{
+    let folderStubs = 
+    [
+        [,'📌',,,newUserProgram,'New User Program',,,,userFolderName],
+        [,'⚠️',,,deleteUserPrograms, userFolderName ? `Delete User Folder ${userFolderName}` : 'Delete User Programs',,,,userFolderName]
+    ];
+    
+    // add subfolders
+    let folderNames = [];
+    userFolderName || programInfos.map(i=> i.code != undefined && i.userFolder && 
+        !folderNames.includes(i.userFolder) && 
+            CreateUserFolder(folderStubs,[,'📁',,,,i.userFolder], i.userFolder, oldStubs, folderNames.push(i.userFolder)));
+       
+    // add stubs for programs in this folder
+   programInfos.map(i=> i.code != undefined && i.userFolder == userFolderName &&
+
+        // add stubs to folder, check if it already existed first
+        folderStubs.push(oldStubs.find(stub => stub[8] == i.id) ||
+            [,i.icon,i.width,i.height,defaultFlags|code,i.name,,,i.id,i.userFolder])
+        );
+
+    // set folder stubs and add to parent stubs
+    stub[7] = folderStubs;
+    parentStubs.push(stub);
+},
+
 // close all menus
 CloseMenus = ()=>
 {
@@ -941,7 +941,7 @@ CheckForTrophy = (key, keyParts = key ? key.split(',') : [])=>
 StopSpeech = ()=> speechSynthesis && speechSynthesis.cancel(),
 
 // play system sound if enabled
-SystemSound = (seed, length)=> finishedStartup & hadInput & settings.o && OS13k.PlaySeed(seed, length);
+SystemSound = (...parameters)=> finishedStartup & hadInput & settings.o && OS13k.PlaySeed(...parameters);
 
 ///////////////////////////////////////////////////////////////////////////////
 // OS13kProgramMenu - holds a list of programs
