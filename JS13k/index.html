@@ -2,7 +2,7 @@
 
 <template name=Settings><style>body{background:#111;color:#fff;user-select:none;text-align:center}</style>Volume <input type=range id=V oninput=s() style=width:99> Music <input type=range id=M oninput=s() style=width:99><p>System Sounds <input type=checkbox id=Y oninput=s()> Speech <input type=checkbox id=S oninput=s()> Popups <input type=checkbox id=P oninput=s()> <p>Background <input id=C type=color oninput=s()> <input id=D type=color oninput=s()> <input id=T oninput=s()><script>s=e=>parent.OS13k.SaveSettings(V.value/100,M.value/100,S.checked,P.checked,Y.checked,D.value,C.value,T.value),s(i=parent.OS13k.Settings(),V.value=100*i.v,M.value=100*i.m,S.checked=i.s,P.checked=i.p,Y.checked=i.o,C.value=i.d,D.value=i.c,T.value=i.t)</script></template>
 
-<template name="Trophy Case"><style>body{background:#232}</style>&nbsp;<script>OS13kReload=()=>{for(t of(this.document.body.innerHTML="",parent.OS13k.Trophies()))this.document.body.innerHTML+=`<div style='display:inline-block;font-family:arial;padding:9;overflow:hidden;text-align:center;background:linear-gradient(#eee,#888);width:120;height:120;margin:9;font-size:18;box-shadow:5px 5px 9px;border:2px solid;border-radius:29px'title='${i=t[0]||"🏆"} ${n=t[2]}\n${g=t[1]}\n${m=t[3]}'onmousedown='parent.OS13k.Speak(\`${n}\`,1,1,1,"ja",1)'><div style='padding:3;white-space:nowrap;font-size:28;text-shadow:2px 2px 4px'>${i}</div><div><b>${n}</b><br><i>${g}</i><br><div style=font-size:14>`+m},OS13kReload()</script></template>
+<template name="Trophy Case"><style>body{background:#232}</style>&nbsp;<script>OS13kReload=()=>{for(t of(this.document.body.innerHTML="",parent.OS13k.Trophies()))this.document.body.innerHTML+=`<div style='display:inline-block;font-family:arial;padding:9;overflow:hidden;text-align:center;background:linear-gradient(#eee,#888);width:120;height:120;margin:9;font-size:18;box-shadow:5px 5px 9px;border:2px solid;border-radius:29px'title='${i=t[0]||"🏆"} ${n=t[2]}\n${g=t[1]}\n${m=t[3]}'onmousedown='parent.OS13k.Speak(\`${n}\`,"ja",1)'><div style='padding:3;white-space:nowrap;font-size:28;text-shadow:2px 2px 4px'>${i}</div><div><b>${n}</b><br><i>${g}</i><br><div style=font-size:14>`+m},OS13kReload()</script></template>
 
 <template name="Sticky Note"><style>*{background:#ff8;font-family:cursive;font-size:23}</style>&nbsp;<script>b=document.body;b.setAttribute("contenteditable",true);b.spellcheck=false;b.innerHTML=localStorage.OS13kN||'';b.oninput=e=>localStorage.OS13kN=b.innerHTML;OS13kReload=e=>b.innerHTML=localStorage.OS13kN='';b.focus();</script></template>
 
@@ -253,23 +253,25 @@ class _OS13k
     Trophy(icon, game, name, message)
     {
         // replace commas and apostrophes
-        let Clean = string=> OS13k.StripHTML(string||'', maxWordLength).replace(/[,`]/g, '');
-        icon    = Clean(icon);
-        game    = Clean(game);
-        name    = Clean(name);
-        message = Clean(message);
+        let key, Clean = string=> OS13k.StripHTML(string||'', maxWordLength).replace(/[,`]/g, ''),
         
-        // build key
-        let key = icon + ',' + game + ',' + name;
-                
-        // find in trophy list
-        let i = trophies.findIndex(e=> e[4] == key);
-        
+            // init trophy data
+            trophyData = 
+            [
+                icon = Clean(icon), 
+                game = Clean(game), 
+                name = Clean(name),
+                message = Clean(message),
+                key = icon + ',' + game + ',' + name
+            ],
+
+            // find in trophy list
+            i = trophies.findIndex(e=> e[4] == key);
+
         // skip if same message
         if (i >=0 && trophies[i][3] == message) return;
         
         // add or update trophy list
-        let trophyData = [icon, game, name, message, key];
         i < 0 ? trophies.unshift( trophyData ) : trophies[i] = trophyData;
 
         // save trophy
@@ -279,7 +281,7 @@ class _OS13k
         name || (name = game, game = '');
 
         // add trophy popup
-        OS13k.Popup(`<div style='padding:9;font-size:40;text-shadow:2px 2px 4px;white-space:nowrap'>${   // popup html
+        OS13k.Popup(`<div class=trophyIcon>${   // popup html
                 icon || '🏆' }</div><div><b>${ // icon
                 name }</b><br><i>${            // name
                 game }</i></div>` +            // game
@@ -288,7 +290,7 @@ class _OS13k
             'ja');                             // language 
 
         // save and reload trophy window
-        OS13k.Save(trophyTrayIcon.program.w && trophyTrayIcon.program.w.Reload());
+        OS13k.Save(trophyTrayIcon.program.window && trophyTrayIcon.program.window.Reload());
     }
     
     // get message, 0 if no trophy
@@ -309,8 +311,8 @@ class _OS13k
     { return OS13k.PlaySamples(OS13k.SeedSamples(...arguments), isMusic); }
     
     // get seed samples
-    SeedSamples(seed, lengthScale=1, volume=1, randomness=.05, frequency)
-    { return zzfxG(...OS13k.SeedParameters(...arguments)); }
+    SeedSamples(...parameters)
+    { return zzfxG(...OS13k.SeedParameters(...parameters)); }
     
     // get zzfx sound parameters from seed
     SeedParameters(seed, lengthScale=1, volume=1, randomness=.05, frequency)
@@ -418,7 +420,7 @@ class _OS13k
     }
 
     // speak text
-    Speak(text, rate=1, pitch=1, volume=1, language='en', stopSpeech)
+    Speak(text, language='en', stopSpeech)
     {
         // common languages (not supported by all browsers)
         // it - italian,  fr - french, de - german,  es - spanish, pl - polish
@@ -426,9 +428,7 @@ class _OS13k
     
         // set utterance parameters
         let utterance = new SpeechSynthesisUtterance(text);
-        utterance.volume = volume * gain.gain.value * 3;
-        utterance.pitch = pitch;
-        utterance.rate = rate;
+        utterance.volume = gain.gain.value * 3;
         utterance.lang = language;
 
         // stop speech if set
@@ -580,13 +580,120 @@ const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26,
     soundCode       = 16,
     soundReload     = 85,
     soundProgram    = 90,
-    soundSave = 6,
+    soundSave       = 6;
+
+///////////////////////////////////////////////////////////////////////////////
+// Global Variables
+
+let grabWindow, grabOffsetX, grabOffsetY, finishedStartup, nextUserProgramId = 0,
+    activeWindow, activeProgram, activeTaskbarIcon, loadIcon, allCodeIsSafe,
+    analyserCanvas = document.createElement('canvas'), analyserData = [], lastMusicTime = -analyserWaitTime,
+    lastActiveFrame, topZ = 0, hadInput = 0,
+    windowOpenX = startOpenOffset, windowOpenY = startOpenOffset + taskbarHeight,
+    startProgram, startProgramId, programInfos = [], trophies = [],
+    trophyTrayIcon, settingsTrayIcon, clockTrayIcon, musicTrayIcon, stickyNoteTrayIcon,
+
+    // volume, music, speech, popups, color1, color2, text
+    S = {v:.3, m:.3, s:1, p:1, o:1, c:'#222233', d:'#332222', t:'OS13k'},
 
     // init web audio
     audioContext = new AudioContext, 
     gain = audioContext.createGain(), 
     gainMusic = audioContext.createGain(), 
     musicAnalyser = audioContext.createAnalyser(),
+
+// main update loop
+Update = time=>
+{
+    // request new animation frame
+    requestAnimationFrame(Update);
+        
+    // check if iframe became new active element
+    let activeElement = document.activeElement,
+        activeFrame = activeElement.shadowRoot && activeElement.shadowRoot.activeElement == activeElement.iframe ? 
+        activeElement.iframe : 0;
+            
+    // if a new frame took focus, set window active and that we had input
+    activeFrame && lastActiveFrame != activeFrame && activeElement.SetActive(hadInput = 1);
+        
+    // set last active frame
+    lastActiveFrame = activeFrame;
+
+    // fade in desktop, convert opacity to number
+    document.body.style.opacity = OS13k.Clamp(.02 + document.body.style.opacity*1);
+
+    // update trophy count
+    trophyTrayIcon.innerHTML = trophies.length + '🏆';
+    
+    // update time
+    clockTrayIcon.title = Date();
+    clockTrayIcon.innerHTML = clockTrayIcon.title.
+        replace(/.* (\d+):(\d+).*/, (a,b,c)=> (b%12||12)+':'+c);
+    
+    // show popups after startup is finished and there was input
+    if (!hadInput) return;
+    
+    // get analyser data
+    let frequencyData = new Uint8Array(musicAnalyser.fftSize = 512),
+        context = analyserCanvas.getContext('2d');
+    musicAnalyser.getByteFrequencyData(frequencyData);
+    analyserCanvas.width = analyserCanvas.height = 32
+
+    // render analyser
+    for(let i = 0; i < 32; )
+    {
+        // get frequency band volume and adjust for loudness
+        let volume = (frequencyData[i+3] / 255)**3 * (1 + Math.log10((i+3) * defaultSampleRate / 1024 ));
+
+        // draw loudness bar
+        context.fillStyle = `hsl(${-99-59*volume} 99%50%)`;
+        context.fillRect(i, 31, 1, -7*volume);
+        
+        // set anaylzer data, normalize between 0-1
+        analyserData[i++] = OS13k.Clamp(volume / 5);
+
+        // save how long there has been no music
+        lastMusicTime = volume ? time : lastMusicTime;
+    }
+    
+    // set analyser visibility
+    analyserCanvas.style.display = time - lastMusicTime < analyserWaitTime ? '' : 'none';
+    
+    // update popups, use copy to prevent skipping if removed
+    let offsetY = 0;
+    [...PU.children].map((popup,i)=>
+    {
+        // speak popup
+        popup.S && OS13k.Speak(popup.S, popup.L);
+        popup.S = 0;
+        
+        if (!S.p)
+            PU.removeChild(popup);
+        else if (!document.fullscreenElement)
+        {
+            // move popup up, set to bottom if it was invisible
+            let y = popup.style.visibility ? innerHeight : parseInt(popup.style.top) + offsetY - 9;
+            popup.style.visibility = '';
+            
+            if (y < taskbarHeight)
+            {
+                // stop popup below taskbar
+                y = taskbarHeight;
+
+                // fade out popup if at top
+                if (!i && (popup.style.opacity = (popup.style.opacity || popupTime) - .01) < 0)
+                {
+                    // remove when invisible and adjust for height
+                    offsetY += popup.getBoundingClientRect().height;
+                    PU.removeChild(popup);
+                }
+            }
+
+            // set popup position
+            popup.style.top = y;
+        }
+    });
+},
 
 RebuildMenu = ()=>
 {
@@ -631,109 +738,6 @@ CreateUserFolder = (parentStubs, stub, userFolderName, oldStubs)=>
     parentStubs.push(stub);
 },
 
-// main update loop
-Update = time=>
-{
-    // request new animation frame
-    requestAnimationFrame(Update);
-    
-    // update startup routine
-    loading | finishedStartup || OS13k.Save(
-
-        // create analyser canvas
-        musicTrayIcon.prepend(analyserCanvas),
-        analyserCanvas.style = 'width:16;height:16;margin:2;pointer-events:none;display:none',
-
-        // load start program
-        startProgram && startProgram.Open(startProgram = 0), finishedStartup = 1);
-        
-    // check if iframe became new active element
-    let activeElement = document.activeElement,
-        activeFrame = activeElement.shadowRoot && activeElement.shadowRoot.activeElement == activeElement.iframe ? 
-        activeElement.iframe : 0;
-            
-    // if a new frame took focus, set window active and that we had input
-    activeFrame && lastActiveFrame != activeFrame && activeElement.SetActive(hadInput = 1);
-        
-    // set last active frame
-    lastActiveFrame = activeFrame;
-
-    // fade in desktop after loading, convert opacity to number
-    document.body.style.opacity = OS13k.Clamp(!loading*.02 + document.body.style.opacity*1);
-
-    // update trophy count
-    trophyTrayIcon.innerHTML = trophies.length + '🏆';
-    
-    // update time
-    clockTrayIcon.title = Date();
-    clockTrayIcon.innerHTML = clockTrayIcon.title.
-        replace(/.* (\d+):(\d+).*/, (a,b,c)=> (b%12||12)+':'+c);
-    
-    // show popups after startup is finished and there was input
-    if (!finishedStartup | !hadInput) return;
-    
-    // get analyser data
-    let frequencyData = new Uint8Array(musicAnalyser.fftSize = 512),
-        context = analyserCanvas.getContext('2d');
-    musicAnalyser.getByteFrequencyData(frequencyData);
-    analyserCanvas.width = analyserCanvas.height = 32
-
-    // render analyser
-    for(let i = 0; i < 32; )
-    {
-        // get frequency band volume and adjust for loudness
-        let volume = (frequencyData[i+3] / 255)**3 * (1 + Math.log10((i+3) * defaultSampleRate / 1024 ));
-
-        // draw loudness bar
-        context.fillStyle = `hsl(${-99-59*volume} 99%50%)`;
-        context.fillRect(i, 31, 1, -7*volume);
-        
-        // set anaylzer data, normalize between 0-1
-        analyserData[i++] = OS13k.Clamp(volume / 5);
-
-        // save how long there has been no music
-        lastMusicTime = volume ? time : lastMusicTime;
-    }
-    
-    // set analyser visibility
-    analyserCanvas.style.display = time - lastMusicTime < analyserWaitTime ? '' : 'none';
-    
-    // update popups, use copy to prevent skipping if removed
-    let offsetY = 0;
-    [...PU.children].map((popup,i)=>
-    {
-        // speak popup
-        popup.S && OS13k.Speak(popup.S, 1, 1, 1, popup.L);
-        popup.S = 0;
-        
-        if (!S.p)
-            PU.removeChild(popup);
-        else if (!document.fullscreenElement)
-        {
-            // move popup up, set to bottom if it was invisible
-            let y = popup.style.visibility ? innerHeight : parseInt(popup.style.top) + offsetY - 9;
-            popup.style.visibility = '';
-            
-            if (y < taskbarHeight)
-            {
-                // stop popup below taskbar
-                y = taskbarHeight;
-
-                // fade out popup if at top
-                if (!i && (popup.style.opacity = (popup.style.opacity || popupTime) - .01) < 0)
-                {
-                    // remove when invisible and adjust for height
-                    offsetY += popup.getBoundingClientRect().height;
-                    PU.removeChild(popup);
-                }
-            }
-
-            // set popup position
-            popup.style.top = y;
-        }
-    });
-},
-
 // close all menus
 CloseMenus = ()=>
 {
@@ -753,21 +757,7 @@ CheckForTrophy = (key, keyParts = key ? key.split(',') : [])=>
 StopSpeech = ()=> speechSynthesis && speechSynthesis.cancel(),
 
 // play system sound if enabled
-SystemSound = (seed, length)=> finishedStartup & hadInput & S.o && OS13k.PlaySeed(seed, length);
-
-///////////////////////////////////////////////////////////////////////////////
-// Global Variables
-
-let grabWindow, grabOffsetX, grabOffsetY, finishedStartup, nextUserProgramId = 0,
-    activeWindow, activeProgram, activeTaskbarIcon, loadIcon, allCodeIsSafe,
-    analyserCanvas = document.createElement('canvas'), analyserData = [], lastMusicTime = -analyserWaitTime,
-    lastActiveFrame, topZ = 0, loading = 0, hadInput = 0,
-    windowOpenX = startOpenOffset, windowOpenY = startOpenOffset + taskbarHeight,
-    startProgram, startProgramId, programInfos = [], trophies = [],
-    trophyTrayIcon, settingsTrayIcon, clockTrayIcon, musicTrayIcon, stickyNoteTrayIcon,
-
-    // volume, music, speech, popups, color1, color2, text
-    S = {v:.3, m:.3, s:1, p:1, o:1, c:'#222233', d:'#332222', t:'OS13k'};
+SystemSound = (...parameters)=> finishedStartup & hadInput & S.o && OS13k.PlaySeed(...parameters);
 
 ///////////////////////////////////////////////////////////////////////////////
 // OS13kProgramMenu - holds a list of programs
@@ -869,7 +859,7 @@ customElements.define('m-', OS13kProgramMenu);
     
 class OS13kProgram extends HTMLElement
 {
-	constructor(icon='💠', width=defaultWidth, height=defaultHeight, flags, name='', help='', folder, userProgramId, userFolder)
+	constructor(icon, width=defaultWidth, height=defaultHeight, flags, name='', help='', folder, userProgramId, userFolder)
     {
         super();
 
@@ -1124,13 +1114,13 @@ class OS13kWindow extends HTMLElement
             `<span id=Z>${program.i.C && program.i.C.length}</span> Bytes`;
 
         // get links to code options and create error text
-        let iconInput = this.shadowRoot.getElementById('I'),
-            nameInput = this.shadowRoot.getElementById('N'),
+        let iconInput   = this.shadowRoot.getElementById('I'),
+            nameInput   = this.shadowRoot.getElementById('N'),
             folderInput = this.shadowRoot.getElementById('F'),
-            widthInput = this.shadowRoot.getElementById('W'),
+            widthInput  = this.shadowRoot.getElementById('W'),
             heightInput = this.shadowRoot.getElementById('H'),
-            link = this.shadowRoot.getElementById('A'),
-            canvas = this.shadowRoot.getElementById('V');
+            link        = this.shadowRoot.getElementById('A'),
+            canvas      = this.shadowRoot.getElementById('V');
 
         // error text
         this.errorText = this.codeDisplay.appendChild(document.createElement('textarea'));
@@ -1150,12 +1140,12 @@ class OS13kWindow extends HTMLElement
         }
 
         // get elements by id
-        this.codeSize = this.shadowRoot.getElementById('Z');
-        this.liveEdit = this.shadowRoot.getElementById('L');
-        this.allowSleep = this.shadowRoot.getElementById('P');
-        iconInput.value = program.I;
-        nameInput.value = program.N;
-        widthInput.value = program.W;
+        this.codeSize     = this.shadowRoot.getElementById('Z');
+        this.liveEdit     = this.shadowRoot.getElementById('L');
+        this.allowSleep   = this.shadowRoot.getElementById('P');
+        iconInput.value   = program.I;
+        nameInput.value   = program.N;
+        widthInput.value  = program.W;
         heightInput.value = program.H;
         program.U != undefined && (folderInput.value = program.U);
 
@@ -1198,19 +1188,8 @@ class OS13kWindow extends HTMLElement
         // announce game when first opened
         OS13k.Speak(program.N);
         
-        // update loading and create iframe
-        this.CreateFrame(loading += !finishedStartup);
-    }
-    
-    WriteToFrame(code)
-    {
-        // open iframe to write code
-        this.iframeContent.document.open();
-
-        // set on error now to catch errors on load
-        this.iframeContent.onerror = (...parameters)=>this.SetErrorText(...parameters);
-        !this.program.userProgram | allCodeIsSafe ? this.iframeContent.document.write(code) : 0;
-        this.iframeContent.document.close();
+        // create iframe
+        this.CreateFrame();
     }
 
     SetErrorText(message, source, line, col, e)
@@ -1231,8 +1210,15 @@ class OS13kWindow extends HTMLElement
             program = this.program,
             reloadCount = 0;
         this.iframe.style = 'width:100%;height:100%;background:#fff;border:none;visibility:hidden';
-        
-        // load src and force pages to be refreshed
+
+        let code, iframeCode, codeIsSafe = !this.program.userProgram | allCodeIsSafe,
+
+            // get iframe content and document (will fail if cross site)       
+            iframeDocument = iframeContent.document,
+            iframeText = program.userProgram ? program.i.C :
+            program.help || (program.isDweet ? iframeDocument.body.innerText : iframeDocument.body.innerHTML);
+
+        // load code
         if (program.userProgram)
         {
             // get type of user code, html or dweet
@@ -1246,43 +1232,49 @@ class OS13kWindow extends HTMLElement
             this.codeText.oninput = e=> this.liveEdit.checked && this.SetCode(this.codeText.value);
 
             // write code to iframe and load it immediately
-            this.WriteToFrame(program.i.C);
-
-            // show error messages from user code
-            iframeContent.onerror = (...parameters)=>this.SetErrorText(...parameters);
+            iframeCode = program.i.C;
         }
         else
         {
             // load from template (for JS13k)
-            this.WriteToFrame(document.getElementsByName(program.N)[0].innerHTML);
+            iframeCode = document.getElementsByName(program.N)[0].innerHTML;
         }
-
-        // check if code is safe to execute
-        let codeIsSafe = !this.program.userProgram | allCodeIsSafe,
-
-            // get iframe content and document (will fail if cross site)       
-            iframeDocument = iframeContent.document,
-            iframeText = program.userProgram ? program.i.C :
-            program.help || (program.isDweet ? iframeDocument.body.innerText : iframeDocument.body.innerHTML);
         
         // set code/help display if not user program
-        program.userProgram || (this.codeText.value = iframeText);
+        program.userProgram || (this.codeText.value = iframeCode);
 
         // pass OS13k constants to iframe
         iframeContent.OS13k = OS13k;
         iframeContent.OS13kWindow = this;
         iframeContent.zzfx = zzfx;
 
-        // set to grey if code is not safe
-        codeIsSafe || (iframeDocument.body.style.background = '#111');
+        // check for extensions
+        if (!codeIsSafe)
+            iframeDocument.body.style.background = '#111';
+        else if (program.isDweet) 
+        {
+            code = iframeCode;
+            iframeCode = `<style>canvas{width:100%;background:#fff}</style><canvas id=c width=1920 height=1080>`;
+        }
+    
+        // open iframe to write code
+        this.iframeContent.document.open();
+
+        // set on error now to catch errors on load
+        this.iframeContent.onerror = (...parameters)=>this.SetErrorText(...parameters);
+        !this.program.userProgram | allCodeIsSafe ? this.iframeContent.document.write(iframeCode) : 0;
+        this.iframeContent.document.close();
 
         // check for extensions
-        if (program.isDweet && codeIsSafe) 
-        {
-            // create canvas
-            this.WriteToFrame(
-                `<style>canvas{width:100%;background:#fff}</style><canvas id=c width=1920 height=1080>`);
+        !codeIsSafe ? iframeDocument.body.style.background = '#111' :
+            program.isDweet ? iframeCode = `<style>canvas{width:100%;background:#fff}</style><canvas id=c width=1920 height=1080>` : 0;
 
+        // show error messages from user code
+        iframeContent.onerror = (...parameters)=>this.SetErrorText(...parameters);
+        onerror = (...parameters)=>this.SetErrorText(...parameters);
+
+        if (code)
+        {
             // set body style
             iframeDocument.body.style =
                 'background:#111;' +
@@ -1292,14 +1284,11 @@ class OS13kWindow extends HTMLElement
                 'align-items:center';
                 
             // loop protection for user dweets
-            let code = program.userProgram ? 
+            iframeCode = program.userProgram ? 
                 iframeText.replace(
                     /(for\s*\((?!\s+of\s+)(?!\s+in\s+)[^;]*;[^;]*;|while\s*\()\s*(\S)/g, (a, b, c)=> b && c ? b +
                     '++OS13kL>1e5&&(e=>{throw"Timed out!"})()' +
-                    (c == ')' ? '' : ',') + c : a ) : iframeText;
-
-            // show error messages from user code init
-            onerror = (...parameters)=>this.SetErrorText(...parameters);
+                    (c == ')' ? '' : ',') + c : a ) : iframeCode;
 
             // create dweet program
             iframeContent.eval(
@@ -1331,14 +1320,8 @@ class OS13kWindow extends HTMLElement
         // make visible
         this.style.visibility = this.iframe.style.visibility = 'visible';
 
-        // update loading
-        loading = loading && --loading;
-
         // listen for reload from iframe, prevent infnite recursion
         program.userProgram && (this.iframe.onload = ()=> reloadCount++ && this.Reload(1, 0));
-
-        // release grab window since this one will be in front
-        grabWindow && onmouseup();
     }
         
     SetCode(code, setText)
@@ -1401,7 +1384,7 @@ class OS13kWindow extends HTMLElement
         sound && SystemSound(sound);
     }
     
-    SetActive(active=1, clamp)
+    SetActive(active=1, clamp, focus=1)
     {
         // close menus when window is set active
         CloseMenus();
@@ -1424,7 +1407,7 @@ class OS13kWindow extends HTMLElement
             this.style.top = OS13k.Clamp(rect.y, Math.max(taskbarHeight, innerHeight - rect.height), taskbarHeight)));
 
         // set focus to iframe using timeout
-        loading ||
+        finishedStartup && focus &&
             setTimeout(e=> document.activeElement != this && this.iframeContent && this.iframeContent.focus(lastActiveFrame = this.iframe));
 
         if (activeWindow != this)
@@ -1453,7 +1436,7 @@ class OS13kWindow extends HTMLElement
             MenuButton('Close', ()=> this.Close());
 
             // set taskbar icon active if it exists
-            this.taskbarIcon && this.taskbarIcon.SetActive(1, 0);
+            this.taskbarIcon && this.taskbarIcon.SetActive(active, clamp, focus);
             
             // save start program if finished startup and not sticky
             finishedStartup & !(this.program.F & sticky) && OS13k.Save(startProgramId = this.program.D);
@@ -1534,16 +1517,16 @@ class OS13kTaskbarIcon extends HTMLElement
 
     SetName()
     {
-        this.innerHTML = '<div style=pointer-events:none>' + (this.program.I || '💠');
+        this.innerHTML = '<div style=pointer-events:none>' + this.program.I;
         this.title = this.program.N;
     }
     
     Open() { this.SetActive(); }
     
-    SetActive(active=1, clamp=1)
+    SetActive(active=1, clamp=1, focus=1)
     {
         // set window active and clamp
-        active && this.windowOrMenu.SetActive(1, clamp);
+        active && this.windowOrMenu.SetActive(1, clamp, focus);
     
         // load icon cant be active taskbar item
         if (this == loadIcon)
@@ -1610,10 +1593,12 @@ onmousedown = e=>
     if (grabWindow) return onmouseup(e);
     
     // get orignal target
-    let originalTarget = e.originalTarget || e.path[0];
+    let originalTarget = e.originalTarget || e.path[0], isInput = 0,
+
+        // get which menu to open
+        targetMenu = e.target.menu ? (SystemSound(soundMenu, .5), M) : PM;
 
     // fix firefix issue, return if orignal target id is restricted, happens for code editor
-    let isInput = 0;
     try {isInput = /input|textarea/.test(originalTarget.localName);} 
     catch { isInput = 1; originalTarget = e.target; }
     
@@ -1628,10 +1613,7 @@ onmousedown = e=>
         if (e.button & 2)
         {
             // set target active, use load icon if no valid target
-            (e.target.SetActive ? e.target : loadIcon).SetActive();
-
-            // get which menu to open
-            let targetMenu = e.target.menu ? (SystemSound(soundMenu, .5), M) : PM;
+            (e.target.SetActive ? e.target : loadIcon).SetActive(1, 1, 0);
 
             // show context menu
             targetMenu.style.left = e.x;
@@ -1640,14 +1622,15 @@ onmousedown = e=>
         }
     
         // allow main document to take focus
-        return;
     }
-
-    // open or reactivate window if no valid target
-    e.target.Open ? e.target.Open(originalTarget, e.x, e.y) : activeWindow && activeWindow.SetActive();
-    
-    // allow event to contiue only if input
-    return e.target == loadIcon || isInput;
+    else
+    {
+        // open or reactivate window if no valid target
+        e.target.Open ? e.target.Open(originalTarget, e.x, e.y) : activeWindow && activeWindow.SetActive();
+        
+        // allow event to contiue only if input
+        return e.target == loadIcon || isInput;
+    }
 }
 
 onmousemove = e=>
@@ -1840,12 +1823,8 @@ zzfxM = (instruments, patterns, sequence, BPM = 125) =>
 ///////////////////////////////////////////////////////////////////////////////
 // Start OS13k!
 
-// load save data
-if (localStorage.OS13k)
-    [trophies, S, programInfos, startProgramId, nextUserProgramId] = JSON.parse(localStorage.OS13k);
-
 // save and update settings
-OS13k.Save();
+OS13k.Save(localStorage.OS13k ? [trophies, S, programInfos, startProgramId, nextUserProgramId] = JSON.parse(localStorage.OS13k) : 0);
 
 // setup audio
 gain.connect(audioContext.destination);
@@ -1861,6 +1840,13 @@ clockTrayIcon      = new OS13kTrayIcon();
 // create load program taskbar icon and add folders/programs
 RebuildMenu(loadIcon = new OS13kTaskbarIcon({I:'💾', N:'Load'}, new OS13kProgramMenu(programStubs)));
 
+// load start program
+startProgram && startProgram.Open();
+
+// create analyser canvas
+musicTrayIcon.prepend(analyserCanvas);
+analyserCanvas.style = 'width:16;height:16;margin:2;pointer-events:none;display:none';
+
 // welcome message
 OS13k.Trophy('👋','','Welcome to OS13k!');
 
@@ -1870,11 +1856,11 @@ for (let key in localStorage) CheckForTrophy(key);
 // listen for trophies from other windows
 onstorage = e=> CheckForTrophy(e.key);
 
-// stop spech if page is unloaded
-onunload = e=> StopSpeech();
+// finish startup
+OS13k.Save(finishedStartup = 1);
 
-// try to update startup and kick off first update
-Update();
+// try to update startup and kick off first update, stop spech if page is unloaded
+Update(onunload = e=> StopSpeech());
 
 ///////////////////////////////////////////////////////////////////////////////
 // Mobile Support OPTIONAL
