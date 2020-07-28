@@ -1,13 +1,13 @@
 <style>body{background:#111;color:#fff;user-select:none;text-align:center}</style>
-Volume <input type=range id=V oninput=s() style=width:99>&nbsp;&nbsp;
-Music <input type=range id=M oninput=s() style=width:99><br><br>
-System Sounds <input type=checkbox id=Y oninput=s()>&nbsp;&nbsp;
-Speech <input type=checkbox id=S oninput=s()>&nbsp;&nbsp;
+Volume <input type=range id=V oninput=s() style=width:99>
+Music <input type=range id=M oninput=s() style=width:99><p>
+System Sounds <input type=checkbox id=Y oninput=s()>
+Speech <input type=checkbox id=S oninput=s()>
 Popups <input type=checkbox id=P oninput=s()>
 <br><br>Background
-<input id=C type=color oninput=s()>&nbsp;&nbsp;
-<input id=D type=color oninput=s()>&nbsp;&nbsp;
-<input id=T oninput=s()><br><br>Filters
+<input id=C type=color oninput=s()>
+<input id=D type=color oninput=s()>
+<input id=T oninput=s()><p>Filters
 <span id=F><script>
 
 // save settings and rebuild
@@ -49,7 +49,7 @@ s(
     C.value   = i.d,              // color 1
     D.value   = i.c,              // color 2
     T.value   = i.t,              // background text
-    t = i.f                       // filter
+    t = i.f || 0                  // filter
 );
 
 </script>
