@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?v231></script>
+<script src=programs.js?v232></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -891,7 +891,7 @@ RebuildMenu = ()=>
       loadIcon.windowOrMenu.removeChild(loadIcon.windowOrMenu.lastChild), 
       programStubs.pop());
 
-    CreateUserFolder(programStubs, [,'😀',,,,'User Programs'], '', oldStubs);
+    CreateUserFolder(programStubs, ['😀',,,,,'User Programs'], '', oldStubs);
     loadIcon.windowOrMenu.Rebuild();
 },
 
@@ -899,22 +899,22 @@ CreateUserFolder = (parentStubs, stub, userFolderName, oldStubs)=>
 {
     let folderStubs = 
     [
-        [,'📌',,,newUserProgram,'New User Program',,,,userFolderName],
-        [,'⚠️',,,deleteUserPrograms, userFolderName ? `Delete User Folder ${userFolderName}` : 'Delete User Programs',,,,userFolderName]
+        ['📌',,,,newUserProgram,'New User Program',,,,userFolderName],
+        ['⚠️',,,,deleteUserPrograms, userFolderName ? `Delete User Folder ${userFolderName}` : 'Delete User Programs',,,,userFolderName]
     ];
     
     // add subfolders
     let folderNames = [];
     userFolderName || programInfos.map(i=> i.code != undefined && i.userFolder && 
         !folderNames.includes(i.userFolder) && 
-            CreateUserFolder(folderStubs,[,'📁',,,,i.userFolder], i.userFolder, oldStubs, folderNames.push(i.userFolder)));
+            CreateUserFolder(folderStubs,['📁',,,,,i.userFolder], i.userFolder, oldStubs, folderNames.push(i.userFolder)));
        
     // add stubs for programs in this folder
    programInfos.map(i=> i.code != undefined && i.userFolder == userFolderName &&
 
         // add stubs to folder, check if it already existed first
         folderStubs.push(oldStubs.find(stub => stub[8] == i.id) ||
-            [,i.icon,i.width,i.height,defaultFlags|code,i.name,,,i.id,i.userFolder])
+            [i.icon,,i.width,i.height,defaultFlags|code,i.name,,,i.id,i.userFolder])
         );
 
     // set folder stubs and add to parent stubs
@@ -1006,9 +1006,9 @@ class OS13kProgramMenu extends HTMLElement
     {
         // create new program
         let stub = copyProgram ? 
-            [,copyProgram.icon, copyProgram.width, copyProgram.height, defaultFlags|code, 
+            [copyProgram.icon,, copyProgram.width, copyProgram.height, defaultFlags|code, 
                 copyProgram.name + '+', , ,++nextUserProgramId, copyProgram.userFolder] :
-            [,'✋',,,defaultFlags|code,,,,++nextUserProgramId, userFolder];
+            ['✋',,,,defaultFlags|code,,,,++nextUserProgramId, userFolder];
         let program = stub[-1] = new OS13kProgram(...stub);
         
         // add to menu program infos
@@ -1043,7 +1043,7 @@ customElements.define('m-', OS13kProgramMenu);
     
 class OS13kProgram extends HTMLElement
 {
-	constructor(src='', icon='💠', width=defaultWidth, height=defaultHeight, flags, name='', help='', folder, userProgramId, userFolder)
+	constructor(icon='💠', src='', width=defaultWidth, height=defaultHeight, flags, name='', help='', folder, userProgramId, userFolder)
     {
         super();
 
@@ -1571,7 +1571,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             this.iframe.onload = ()=> LoadFrame();
-            this.iframe.src = program.src + '?v231';
+            this.iframe.src = program.src + '?v232';
         }
     }
         
