@@ -1,4 +1,5 @@
 <div style=display:none>
+
 <iframe name=Help><h2><i>Welcome to OS13k!</i></h2><p>OS13k is a tiny operating system designed for JS13k.<p>Play JS13k games to earn trophies and unlock music. <a href=https://github.com/KilledByAPixel/OS13k target=_blank>More info on GitHub.</a><p>✌️😄 ❤️ OS13k Team</iframe>
 
 <iframe name=Settings><style>body{background:#111;color:#fff;user-select:none;text-align:center}</style>Volume <input type=range id=V oninput=s() style=width:99> Music <input type=range id=M oninput=s() style=width:99><p>System Sounds <input type=checkbox id=Y oninput=s()> Speech <input type=checkbox id=S oninput=s()> Popups <input type=checkbox id=P oninput=s()> <p>Background <input id=C type=color oninput=s()> <input id=D type=color oninput=s()> <input id=T oninput=s()><script>s=e=>parent.OS13k.SaveSettings(V.value/100,M.value/100,S.checked,P.checked,Y.checked,D.value,C.value,T.value),s(i=parent.OS13k.Settings(),V.value=100*i.v,M.value=100*i.m,S.checked=i.s,P.checked=i.p,Y.checked=i.o,C.value=i.d,D.value=i.c,T.value=i.t)</script></iframe>
@@ -21,42 +22,8 @@
 
 <iframe name=Sequencer><style>td,body{background:#111;color:#fff;user-select:none;white-space:nowrap;text-align:center}</style>BPM <input type=number style=width:59 id=T value=120> Loop <input type=number style=width:59 id=L value=8> <button onmousedown=A=OS13k.PlayMusic(U(S()))>Play</button> <button onmousedown=S()>Stop</button> <button onmousedown=V()>Save</button> <button onclick=W()>Load</button><a id=H download></a><div id=B><script>OS13k=parent.OS13k,M=[[],[[]]],onunload=S=e=>A&&A.stop(),I=(e,t)=>M[0][t]=OS13k.SeedParameters(e,1,1,0),Q=e=>e?e>0?(e>=1?"CCDDEFFGGAAB"[e%12|0]+" # #  # # # "[e%12|0]+" - "+(e/12-1|0)+" ":"")+(e%1?(10-10*e%10|0)+"0%":""):e<-1?" End":"Stop":"",N=(e,t,o)=>(v=8==e.keyCode?0:32==e.keyCode?-1:13==e.keyCode?-2:38==e.keyCode||40==e.keyCode?(n=M[1][0][t][o]>0?M[1][0][t][o]:0,(0|n)+(10*n%10+10+(e.keyCode-39))/10%1):OS13k.PianoKey(e)>=0?v=12+OS13k.PianoKey(e):-3,v>-3&&(e.target.value=Q(M[1][0][t][o]=v),p=[...M[0][t]],p[0]*=1-v%1,p[2]=OS13k.Note(v-12|0,p[2]),Z&&Z.stop(),Z=v>0&&OS13k.PlaySamples(parent.zzfxG(...p),1)),9==e.keyCode),O=e=>{for(m=[M[x=i=0],[[],[[]]],[],OS13k.Clamp(T.value,1e3,30)];i<OS13k.Clamp(L.value,99,1);)m[2][i++]=0;for(i=0;i<32;)m[1][1][0][i++]=0;for(m[2][L.value]=n=1;x<4;){for(y=2;y<130;++y)n=Math.max(n,-2==M[1][0][x][y]?y:M[1][0][x][y]?y+1:n);m[1][0][x]=[...M[1][0][x++]]}for(x=0;x<4;)m[1][0][x++].length=n;return m},R=e=>{for(o="<p><table>",x=-2;++x<9;o+="</tr><tr>")for(y=0;y<130;++y)o+="<td>"+(-1==x?y>1?y-1:"":y>1?`<input style=width:80;${(y+2)%4?"":"background:#ccf"} onkeydown="return N(event,${x},${y})"value=${Q(M[1][0][x][y])}>`:y>0?`🎧 <input style=width:99 oninput=M[1][0][${x}][1]=this.value/50-1 type=range value=${50*(M[1][0][x][1]||0)+50}>`:(M[1][0][x]||(M[1][0][x]=[x,0]),I(m=M[0][x]?`zzfx(...[${M[0][x]}])`:"",x),`🌱 <input style=width:99 oninput=I(this.value,${x}) placeholder="ZzFX or Seed"value=${m}>`))+"</td>";B.innerHTML=o},R(A=Z=0),D=e=>Array.isArray(e)?"["+e.map(e=>D(e)).join(",")+"]":e,V=e=>H.click(H.href=URL.createObjectURL(new Blob([D(O())]))),W=e=>{try{M=OS13k.StringToMusic(d=prompt`ZzFXM Data`,1),R(T.value=M[3])}catch(e){alert`⚠️ Error!`}}</script></iframe>
 
-<iframe id=T>
-<style>
-:host
-{
-    position:absolute;
-    background:#000;
-    box-shadow:5px 5px 9px;
-    border:3px solid#222;
-    border-radius:6px;
-    overflow:hidden;
-}
-input, button, span { margin:4; }
-span                { white-space:nowrap; }
-.T
-{
-    height:34;
-    font-size:24;
-    display:flex;
-    align-items:center;
-    white-space:nowrap;
-    background:linear-gradient(#ccc,#444);
-    border-bottom:3px solid;
-}
-.TA  { background:linear-gradient(#eee,#88f); }
-.TAU { background:linear-gradient(#eee,#8f8); }
-.TAS { background:linear-gradient(#eee,#f88); }
-.TS  { background:linear-gradient(#ccc,#844); }
-.U
-{
-    width:100%;
-    resize:none;
-    outline:0;
-    border-top:2px solid;
-}
-</style>
-</iframe>
+<iframe id=T><style>:host{position:absolute;background:#000;box-shadow:5px 5px 9px;border:3px solid#222;border-radius:6px;overflow:hidden}input,button,span{margin:4}span{white-space:nowrap}.T{height:34;font-size:24;display:flex;align-items:center;white-space:nowrap;background:linear-gradient(#ccc,#444);border-bottom:3px solid}.TA{background:linear-gradient(#eee,#88f)}.TAU{background:linear-gradient(#eee,#8f8)}.TAS{background:linear-gradient(#eee,#f88)}.TS{background:linear-gradient(#ccc,#844)}.U{width:100%;resize:none;outline:0;border-top:2px solid}</style></iframe>
+
 </div>
 
 <meta charset=utf-8>
@@ -107,15 +74,14 @@ body
     justify-content:center;
 }
 </style>
+<div id=PU style=float:right></div>
+<div id=PM style=position:absolute></div>
+<div id=M></div>
 <div class=F id=B style=position:absolute;width:100%;height:100%;color:#0002;font-family:impact;font-size:30vw;font-weight:900;position:absolute></div>
 <div id=D>
 <div class=F style="position:absolute;z-index:10000;width:100%;background:linear-gradient(#888,#333);box-shadow:0px 1px 9px;border:2px solid;left:-2">
 <div id=FS style=flex:1></div>
-<div class=F id=F style="margin:2;padding-left:9;padding-right:9;color:#fff;background:linear-gradient(#000,#333);border:1px solid;border-radius:6px;text-shadow:1px 1px 3px#000"></div>
-</div>
-<div id=PU style=float:right></div>
-<div id=PM style=position:absolute></div>
-<div id=M></div>
+<div class=F id=F style="margin:2;padding-left:9;padding-right:9;color:#fff;background:linear-gradient(#000,#333);border:1px solid;border-radius:6px;text-shadow:1px 1px 3px#000">
 <script>
 
 'use strict';
@@ -1598,7 +1564,7 @@ onmousedown = e=>
             // show context menu
             targetMenu.style.left = e.x;
             targetMenu.style.top  = e.y;
-            targetMenu.style.visibility = 'visible';
+            e.target != loadIcon && (targetMenu.style.visibility = 'visible');
         }
     
         // allow main document to take focus
