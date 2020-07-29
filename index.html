@@ -1875,7 +1875,7 @@ onmousedown = e=>
             // show context menu
             targetMenu.style.left = e.x;
             targetMenu.style.top  = e.y;
-            targetMenu.style.visibility = 'visible';
+            e.target != loadIcon && (targetMenu.style.visibility = 'visible');
         }
     }
     else
