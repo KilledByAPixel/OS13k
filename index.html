@@ -1420,19 +1420,7 @@ class OS13kWindow extends HTMLElement
     
     CreateFrame()
     {
-        // wait for frame to load
-        let WriteToFrame = code=>
-        {
-            // open iframe to write code
-            this.iframeContent.document.open();
-
-            // set on error now to catch errors on load
-            this.iframeContent.onerror = (...parameters)=>this.SetErrorText(...parameters);
-            !this.program.userProgram | allCodeIsSafe ? this.iframeContent.document.write(code) : 0;
-            this.iframeContent.document.close();
-        },
-
-        LoadFrame = ()=>
+        let LoadFrame = ()=>
         {
             // check if code is safe to execute
             let codeIsSafe = !this.program.userProgram | allCodeIsSafe,
@@ -1461,9 +1449,9 @@ class OS13kWindow extends HTMLElement
             else if (hasExtension) 
             {
                 // create canvas
-                WriteToFrame(
+                iframeDocument.body.innerHTML = 
                     `<style>canvas{width:100%;background:${ 
-                        program.isShader ? '#000' : '#fff' }}</style><canvas id=c width=1920 height=1080>`);
+                        program.isShader ? '#000' : '#fff' }}</style><canvas id=c width=1920 height=1080>`;
 
                 // set body style
                 iframeDocument.body.style =
@@ -1481,7 +1469,7 @@ class OS13kWindow extends HTMLElement
                         (c == ')' ? '' : ',') + c : a ) : iframeText;
 
                 // show error messages from user code init
-                onerror = (...parameters)=>this.SetErrorText(...parameters);
+                program.userProgram && (onerror = (...parameters)=>this.SetErrorText(...parameters));
 
                 // create dweet or shader program
                 iframeContent.eval(
@@ -1554,8 +1542,11 @@ class OS13kWindow extends HTMLElement
             this.codeText.onkeydown = e=> !e.altKey || e.keyCode == 13 && this.SetCode(this.codeText.value);
             this.codeText.oninput = e=> this.liveEdit.checked && this.SetCode(this.codeText.value);
 
-            // write code to iframe
-            WriteToFrame(program.info.code);
+            // set on error now to catch errors on load
+            iframeContent.onerror = (...parameters)=>this.SetErrorText(...parameters);
+
+            // set code
+            this.iframeContent.document.body.innerHTML = allCodeIsSafe && program.info.code;
            
             // get type of user code, html, shadertoy, or dweet
             program.info.code.trim()[0] != '<' ?
