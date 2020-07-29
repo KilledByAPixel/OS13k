@@ -1181,7 +1181,7 @@ class OS13kWindow extends HTMLElement
         let iframeContent = this.iframeContent = this.iframe.contentWindow,
             program = this.program,
             reloadCount = 0, 
-            codeIsSafe = !this.program.userProgram | allCodeIsSafe,
+            codeIsSafe = !program.userProgram | allCodeIsSafe,
 
             // get iframe content and document (will fail if cross site)       
             iframeDocument = iframeContent.document,
@@ -1204,24 +1204,24 @@ class OS13kWindow extends HTMLElement
 
         // check if dweet
         program.isDweet && (iframeCode = "<style>canvas{width:100%;background:#fff}</style><canvas id=c width=1920 height=1080>");
-    
-        // open iframe to write code
-        iframeDocument.open();
 
         // set on error now to catch errors on load
         this.iframeContent.onerror = (...parameters)=>this.SetErrorText(...parameters);
+
+        // open iframe to write code
+        iframeDocument.open();
         codeIsSafe && iframeDocument.write(iframeCode);
         iframeDocument.close();
+
+        // show error messages
+        iframeContent.onerror = (...parameters)=>this.SetErrorText(...parameters);
+        onerror = (...parameters)=>this.SetErrorText(...parameters);
 
         // check for extensions
         if (!codeIsSafe)
             iframeDocument.body.style.background = '#111';
         else if (program.isDweet) 
         {
-            // show error messages from user code
-            iframeContent.onerror = (...parameters)=>this.SetErrorText(...parameters);
-            onerror = (...parameters)=>this.SetErrorText(...parameters);
-
             // set body style
             iframeDocument.body.style =
                 'background:#111;' +
