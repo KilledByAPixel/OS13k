@@ -127,7 +127,7 @@ body
 <div id=popups style=float:right></div>
 <div id=programsMenu style=position:absolute></div>
 <div id=menu></div>
-<template id=T>
+<iframe id=windowTemplate style=display:none>
 <style>
 :host
 {
@@ -199,7 +199,7 @@ span                { white-space:nowrap; }
     border-top:2px solid;
 }
 </style>
-</template>
+</iframe>
 <script>
 
 'use strict';
@@ -1235,7 +1235,7 @@ class OS13kWindow extends HTMLElement
         
         // shadow root
 		this.attachShadow({mode: 'open'});
-        this.shadowRoot.innerHTML = T.innerHTML;
+        this.shadowRoot.innerHTML = windowTemplate.innerHTML;
         
         // title bar
         this.titlebar = this.shadowRoot.appendChild(document.createElement('div'));
@@ -1414,6 +1414,7 @@ class OS13kWindow extends HTMLElement
     {
         this.errorText.value = e + (e && e.stack ? ` (${(line-1) + ':' + col})` : '');
         this.errorText.style.display = this.errorText.value ? '' : 'none';
+        console.log(this.errorText.value);
         return true;
     }
     
