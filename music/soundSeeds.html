@@ -1,20 +1,32 @@
-<style>body{background:#111;color:#fff;user-select:none;text-align:center}</style><input id=S onmousedown=p(S.value) onchange=s()>
-<button onmousedown=s(S.value=Math.random()*1e6|0)>🎲</button><hr><div id=A><script>
+<style>body{background:#111;color:#fff;user-select:none;text-align:center}</style>
+Seed &nbsp;<input id=S onmousedown="P(S.value.replace(/'/g,''))"><br><br>
+<button onmousedown=P(S.value=Math.random()*1e6|0,E.checked&&V())>Random</button>
+<button onmousedown=V()>Save</button>
+<button onmousedown='confirm`Clear All?`&&B(A=[])'>Clear</button>&nbsp;
+Auto Save <input id=E type=checkbox><hr><div id=D><script>
 
 // save last played sound
-x = 0;
+X = 0;
 
-// stop last sound and play new sound
-p = e=>{x.stop?.(); x = OS13k.PlaySeed(e)}
+// stop last sound and play sound
+P = e=> {X && X.stop(); X = OS13k.PlaySeed(e)}
 
-// save the seed
-s = e=>
+// save the seed and play it
+V = e=> B(A.push(e = S.value.replace(/'/g, '')), P(e));
+
+// refresh list
+B = e=>
 {
-    A.prepend(document.createElement('br'));
-    A.prepend(d = document.createElement('input'));
-    d.readOnly = true;
-    d.onmousedown = e=>p(e.target.value);
-    p(d.value = S.value);
+    localStorage.OS13kSS = JSON.stringify(A);             // save seed list
+    D.innerHTML = '';                                     // reset html
+    A.map((i,j)=>                                         // go through list
+        D.innerHTML = `<button onmousedown=B(P(A[${       // remove button
+        j }]),A.splice(${                                 // play removed sound
+        j },1))>❌</button> <input onmousedown=P(A[${    // remove and refresh
+        j }]) value='${i}' readonly><br>` + D.innerHTML); // seed text
 }
+
+// load saved sounds
+B(A = localStorage.OS13kSS ? JSON.parse(localStorage.OS13kSS) : []);
 
 </script>
