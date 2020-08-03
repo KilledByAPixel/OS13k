@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?v233></script>
+<script src=programs.js?v234></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -496,7 +496,7 @@ class _OS13k
     }
 
     // speak text
-    Speak(text, language='en', stopSpeech)
+    Speak(text, language='en', stopSpeech, volume=1, rate=1, pitch=1)
     {
         // common languages (not supported by all browsers)
         // it - italian,  fr - french, de - german,  es - spanish, pl - polish
@@ -504,7 +504,9 @@ class _OS13k
     
         // set utterance parameters
         let utterance = new SpeechSynthesisUtterance(text);
-        utterance.volume = gain.gain.value * 3;
+        utterance.volume = volume * gain.gain.value * 3;
+        utterance.rate = rate;
+        utterance.pitch = pitch;
         utterance.lang = language;
 
         // stop speech if set
@@ -1563,7 +1565,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             this.iframe.onload = ()=> LoadFrame();
-            this.iframe.src = program.src + '?v233';
+            this.iframe.src = program.src + '?v234';
         }
     }
         
