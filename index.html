@@ -1447,7 +1447,10 @@ class OS13kWindow extends HTMLElement
 
             // check for extensions
             if (!codeIsSafe)
-                iframeDocument.body.style.background = '#111';
+            {
+                iframeDocument.body.style.background = '#111';  
+                iframeDocument.body.innerHTML = '';
+            }
             else if (hasExtension) 
             {
                 // create canvas
