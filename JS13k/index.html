@@ -6,7 +6,7 @@
 
 <iframe name="Trophy Case"><style>body{background:#232}</style>&nbsp;<script>OS13kReload=()=>{for(t of(this.document.body.innerHTML="",parent.OS13k.Trophies()))this.document.body.innerHTML+=`<div style='display:inline-block;font-family:arial;padding:9;overflow:hidden;text-align:center;background:linear-gradient(#eee,#888);width:120;height:120;margin:9;font-size:18;box-shadow:5px 5px 9px;border:2px solid;border-radius:29px'title='${i=t[0]||"🏆"} ${n=t[2]}\n${g=t[1]}\n${m=t[3]}'onmousedown='parent.OS13k.Speak(\`${n}\`,"ja",1)'><div style='padding:3;white-space:nowrap;font-size:28;text-shadow:2px 2px 4px'>${i}</div><div><b>${n}</b><br><i>${g}</i><br><div style=font-size:14>`+m},OS13kReload()</script></iframe>
 
-<iframe name="Sticky Note"><style>*{background:#ff8;font-family:cursive;font-size:23}</style>&nbsp;<script>b=document.body;b.setAttribute("contenteditable",true);b.spellcheck=false;b.innerHTML=localStorage.OS13kN||'';b.oninput=e=>localStorage.OS13kN=b.innerHTML;OS13kReload=e=>b.innerHTML=localStorage.OS13kN='';b.focus();</script></iframe>
+<iframe name="Sticky Note"><body style=background:#ff8;font-family:cursive;font-size:23 id=b contenteditable=true spellcheck=false><script>b.focus();b.innerHTML=localStorage.OS13kN||'';b.oninput=e=>localStorage.OS13kN=b.innerHTML;OS13kReload=e=>b.innerHTML=localStorage.OS13kN='';</script></iframe>
 
 <iframe name=Clock>D=Date(L=(t,e,l,o=-6)=>x.fillRect(-e/2,o,e,l,x.rotate(-a+(a=Math.PI*(2*t-1)))));if(c.title!=D){document.hasFocus()&&OS13k.PlaySeed(6,.1,1,.01);c.title=D;c.style.background='#111';c.width=198;x.translate(99,99);D=D.slice(16,24).split`:`;for(a=i=0;61>i++;L(i/60,2,i%5?3:8,88))x.fillStyle='#fff';L(D[0]%12/12+D[1]/720,6,59);L(D[1]/60,3,85);x.fillStyle='#f00';L(D[2]/60,2,99)}</iframe>
 
@@ -388,7 +388,7 @@ class _OS13k
     }
 
     // speak text
-    Speak(text, language='en', stopSpeech)
+    Speak(text, language='en', stopSpeech, volume=1, rate=1, pitch=1)
     {
         // common languages (not supported by all browsers)
         // it - italian,  fr - french, de - german,  es - spanish, pl - polish
@@ -396,7 +396,9 @@ class _OS13k
     
         // set utterance parameters
         let utterance = new SpeechSynthesisUtterance(text);
-        utterance.volume = gain.gain.value * 3;
+        utterance.volume = volume * gain.gain.value * 3;
+        utterance.rate = rate;
+        utterance.pitch = pitch;
         utterance.lang = language;
 
         // stop speech if set
