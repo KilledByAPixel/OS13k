@@ -1300,8 +1300,8 @@ class OS13kWindow extends HTMLElement
             `Name <input id=N> ` +
             `Folder <input id=F><br>` +
             `&nbsp;Size <input style=width:50 type=number id=W>x<input style=width:50 type=number id=H>` + 
-            `Sleep <input type=checkbox id=P ${program.info.allowSleep != false ? 'checked' : ''}>` +
-            `Live Edit <input type=checkbox id=L ${program.info.liveEdit != false ? 'checked' : ''}>` +
+            `Sleep <input type=checkbox id=P ${program.info.allowSleep != !1 ? 'checked' : ''}>` +
+            `Live Edit <input type=checkbox id=L ${program.info.liveEdit != !1 ? 'checked' : ''}>` +
             `<button id=G>Save</button>` +
             `<button id=C>Copy</button>` +
             `<button id=D>Delete</button>` +
@@ -1321,7 +1321,7 @@ class OS13kWindow extends HTMLElement
         // error text
         this.errorText = this.codeDisplay.appendChild(document.createElement('textarea'));
         this.errorText.id = 'errorText';
-        this.errorText.readOnly = true;
+        this.errorText.readOnly = !0;
         
         // copy button
         this.shadowRoot.getElementById('C').onmousedown = ()=> program.programMenu.NewUserProgram(program);
@@ -1417,7 +1417,7 @@ class OS13kWindow extends HTMLElement
         this.errorText.value = e + (e && e.stack ? ` (${(line-1) + ':' + col})` : '');
         this.errorText.style.display = this.errorText.value ? '' : 'none';
         console.log(this.errorText.value);
-        return true;
+        return !0;
     }
     
     CreateFrame()
@@ -1480,7 +1480,7 @@ class OS13kWindow extends HTMLElement
                 iframeContent.eval(
                     `OS13k=parent.OS13k;x=c.getContext` +
                     (program.isShader ? // preserve buffer for user programs for screenshot
-                        `('webgl2'${program.userProgram ? ',{preserveDrawingBuffer:true}' : ''});` +
+                        `('webgl2'${program.userProgram ? ',{preserveDrawingBuffer:!0}' : ''});` +
                         `X=Y=Z=W=0;` +
                         `onmousemove=e=>e.buttons&&(X=e.x,Y=c.height-e.y);` +
                         `onmousedown=e=>(X=Z=e.x,Y=W=c.height-e.y);` +
@@ -1509,7 +1509,7 @@ class OS13kWindow extends HTMLElement
             codeIsSafe || (iframeContent.onmousedown = e=> (this.Reload(allCodeIsSafe = 1), onmousedown(e)));
             
             // prevent iframes context menu and drop events
-            iframeContent.ondrop = iframeContent.ondragover = iframeContent.oncontextmenu = ()=> false;
+            iframeContent.ondrop = iframeContent.ondragover = iframeContent.oncontextmenu = ()=> !1;
             
             // add taskbar icon if it doesnt exist and set active
             this.taskbarIcon || (this.taskbarIcon = new OS13kTaskbarIcon(program, this)).SetActive();
@@ -1835,7 +1835,7 @@ onmousedown = e=>
         activeWindow && activeWindow.SetActive();
         
         // prevent main document from taking focus
-        return false;
+        return !1;
     }
     
     // close menus and reset program menu position, and set there has been input
@@ -1857,7 +1857,7 @@ onmousedown = e=>
     {
         // dont allow right click on buttons
         if (originalTarget.localName == 'button')
-            return false;
+            return !1;
 
         // check for right mouse button
         if (e.button & 2)
@@ -1902,7 +1902,7 @@ onmouseup = ()=>
         document.body.style.cursor = desktop.style.pointerEvents = grabWindow = '');
 
 // prevent default right click context menu
-oncontextmenu = ()=> false;
+oncontextmenu = ()=> !1;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Drag and Drop
@@ -1916,11 +1916,11 @@ ondrop = e=>
     // read file, set code, and set active
     e.dataTransfer.files.length && e.target.program.userProgram &&
         reader.readAsText(e.dataTransfer.files[0], 'utf-8'); 
-    return false;
+    return !1;
 }
 
 // prevent default drop events
-ondragover = ()=> false;
+ondragover = ()=> !1;
 
 ///////////////////////////////////////////////////////////////////////////////
 // ZzFXMicro - Zuper Zmall Zound Zynth
