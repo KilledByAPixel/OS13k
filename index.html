@@ -2042,7 +2042,7 @@ zzfxM = (instruments, patterns, sequence, BPM = 125) =>
             for (i = 2, k = outSampleOffset; i < patternChannel.length + (sequenceIndex == sequence.length-1); notFirstBeat = ++i)
             {
                 // stop if different instrument or new note
-                stop = instrument != patternChannel[0] | patternChannel[i] | 0;
+                stop = instrument != (patternChannel[0] || 0) | patternChannel[i] | 0;
 
                 // fill buffer with samples for previous beat, most cpu intensive part
                 for(j = 0; j < beatLength && notFirstBeat; 
