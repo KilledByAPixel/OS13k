@@ -1081,8 +1081,8 @@ class OS13kWindow extends HTMLElement
             `Name <input id=N> ` +
             `Folder <input id=F><br>` +
             `&nbsp;Size <input style=width:50 type=number id=W>x<input style=width:50 type=number id=H>` + 
-            `Sleep <input type=checkbox id=P ${program.i.allowSleep != false ? 'checked' : ''}>` +
-            `Live Edit <input type=checkbox id=L ${program.i.liveEdit != false ? 'checked' : ''}>` +
+            `Sleep <input type=checkbox id=P ${program.i.allowSleep != !1 ? 'checked' : ''}>` +
+            `Live Edit <input type=checkbox id=L ${program.i.liveEdit != !1 ? 'checked' : ''}>` +
             `<button id=C>Copy</button>` +
             `<button id=D>Delete</button>` +
             `<span id=Z>${program.i.C && program.i.C.length}</span> Bytes`;
@@ -1100,7 +1100,7 @@ class OS13kWindow extends HTMLElement
         this.errorText = this.codeDisplay.appendChild(document.createElement('textarea'));
         this.errorText.className = 'U';
         this.errorText.style = 'padding:9;background:#000;color:#f00';
-        this.errorText.readOnly = true;
+        this.errorText.readOnly = !0;
         
         // copy button
         this.shadowRoot.getElementById('C').onmousedown = ()=> program.programMenu.NewUserProgram(program);
@@ -1170,7 +1170,7 @@ class OS13kWindow extends HTMLElement
     {
         this.errorText.value = e + (e && e.stack ? ` (${(line-1) + ':' + col})` : '');
         this.errorText.style.display = this.errorText.value ? '' : 'none';
-        return true;
+        return !0;
     }
     
     CreateFrame()
@@ -1263,7 +1263,7 @@ class OS13kWindow extends HTMLElement
         codeIsSafe || (iframeContent.onmousedown = e=> (this.Reload(allCodeIsSafe = 1), onmousedown(e)));
 
         // prevent iframes context menu
-        iframeContent.oncontextmenu = ()=> false;
+        iframeContent.oncontextmenu = ()=> !1;
 
         // add taskbar icon if it doesnt exist and set active
         this.taskbarIcon || (this.taskbarIcon = new OS13kTaskbarIcon(program, this)).SetActive();
@@ -1531,7 +1531,7 @@ onmousedown = e=>
         activeWindow && activeWindow.SetActive();
         
         // prevent main document from taking focus
-        return false;
+        return !1;
     }
     
     // close menus and reset program menu position, and set there has been input
@@ -1555,7 +1555,7 @@ onmousedown = e=>
     {
         // dont allow right click on buttons
         if (originalTarget.localName == 'button')
-            return false;
+            return !1;
 
         // check for right mouse button
         if (e.button & 2)
@@ -1599,7 +1599,7 @@ onmouseup = ()=>
         document.body.style.cursor = D.style.pointerEvents = grabWindow = '');
 
 // prevent default right click context menu
-oncontextmenu = ()=> false;
+oncontextmenu = ()=> !1;
 
 ///////////////////////////////////////////////////////////////////////////////
 // ZzFXMicro - Zuper Zmall Zound Zynth
