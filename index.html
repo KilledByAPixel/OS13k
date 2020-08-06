@@ -2015,8 +2015,8 @@ zzfxG = (volume = 1, randomness = .05, frequency = 220, attack = 0, sustain = 0,
 zzfxM = (instruments, patterns, sequence, BPM = 125) => 
 {
     let instrumentParameters, i, j, k, sample, patternChannel,
-        notFirstBeat, stop, instrument, pitch, attenuation, outSampleOffset, 
-        sampleOffset, nextSampleOffset, sampleBuffer = [], 
+        notFirstBeat, stop, instrument, pitch, attenuation, pan, 
+        outSampleOffset, sampleOffset, nextSampleOffset, sampleBuffer = [], 
         channelIndex = 0, hasMore = 1, channelBuffers = [[],[]], 
         sampleCache = {}, beatLength = defaultSampleRate / BPM * 60 >> 2;
 
@@ -2053,8 +2053,8 @@ zzfxM = (instruments, patterns, sequence, BPM = 125) =>
                 {
                     // copy sample to stereo buffers with panning
                     sample = (1-attenuation) * sampleBuffer[sampleOffset++] / 2 || 0;
-                    channelBuffers[0][k] = (channelBuffers[0][k]   || 0) + sample * patternChannel[1] - sample;
-                    channelBuffers[1][k] = (channelBuffers[1][k++] || 0) + sample * patternChannel[1] + sample;
+                    channelBuffers[0][k] = (channelBuffers[0][k]   || 0) + sample * pan - sample;
+                    channelBuffers[1][k] = (channelBuffers[1][k++] || 0) + sample * pan + sample;
                 }
 
                 // set up for next note
@@ -2062,6 +2062,7 @@ zzfxM = (instruments, patterns, sequence, BPM = 125) =>
                 {
                     // set attenuation
                     attenuation = patternChannel[i] % 1;
+                    pan = patternChannel[1] || 0;
                     if (patternChannel[i] | 0)
                     {
                         // get cached sample
@@ -2074,7 +2075,7 @@ zzfxM = (instruments, patterns, sequence, BPM = 125) =>
                         (
                             // add sample to cache
                             instrumentParameters = [...instruments[instrument]],
-                            instrumentParameters[2] *= 2 ** ((pitch - 12) / 12),
+                            instrumentParameters[2] = OS13k.Note(pitch - 12, instrumentParameters[2]),
                             pitch > 0 ? zzfxG(...instrumentParameters) : []
                         );
                     }
