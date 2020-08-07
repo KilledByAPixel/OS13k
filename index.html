@@ -1472,9 +1472,10 @@ class OS13kWindow extends HTMLElement
                 // loop protection for user dweets
                 let code = program.userProgram && !program.isShader? 
                     iframeText.replace(
-                        /(for\s*\((?!\s+of\s+)(?!\s+in\s+)[^;]*;[^;]*;|while\s*\()\s*(\S)/g, (a, b, c)=> b && c ? b +
-                        '++OS13kL>1e5&&(e=>{throw"Timed out!"})()' +
-                        (c == ')' ? '' : ',') + c : a ) : iframeText;
+                        /(for\s*\([^;]*;[^;]*;|while\s*\()\s*(\S)/g, (a, b, c)=> 
+                            b && c && !b.match(/\sof\s|\sin\s/g) ? 
+                                b + '++OS13kL>1e5&&(e=>{throw"Timed out!"})()' +
+                                (c == ')' ? '' : ',') + c : a ) : iframeText;
 
                 // show error messages from user code init
                 program.userProgram && (onerror = (...parameters)=>this.SetErrorText(...parameters));
