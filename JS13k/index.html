@@ -1244,12 +1244,11 @@ class OS13kWindow extends HTMLElement
                     `u=t=>{\n${ 
 
                     // loop protection for user dweets
-                    program.userProgram ? 
-                        code.replace(
-                            /(for\s*\((?!\s+of\s+)(?!\s+in\s+)[^;]*;[^;]*;|while\s*\()\s*(\S)/g, (a, b, c)=> b && c ? b +
-                            '++OS13kL>1e5&&(e=>{throw"Timed out!"})()' +
-                            (c == ')' ? '' : ',') + c : a ) : code
-
+                    program.userProgram ? code.replace(
+                        /(for\s*\([^;]*;[^;]*;|while\s*\()\s*(\S)/g, (a, b, c)=> 
+                            b && c && !b.match(/\sof\s|\sin\s/g) ? 
+                                b + '++OS13kL>1e5&&(e=>{throw"Timed out!"})()' +
+                                (c == ')' ? '' : ',') + c : a ) : code
                      }\n};` +
                     `OS13kU=t=>t>OS13kF-2&&` + 
                         `u(((t=frame++/60)*60|0==frame-1)&&t>0?t+1e-6:t,` +
