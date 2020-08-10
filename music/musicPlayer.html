@@ -145,20 +145,18 @@ localStorage['OS13kMusic,OS13k Test'] = JSON.stringify(
       [,0,219,,,,,1.1,,-.1,-50,-.05,-.01,1], // snare
       [2,0,84,,,.1,,.7,,,,.5,,6.7,1,.05]     // kick
     ],
-    [                        // patterns
-        [                    // pattern 1
-            [                // channel 0
-                0, -1,       // instrument 0, left speaker
-                1, 0, 5, 0   // channel notes
-            ],
-            [                // channel 1
-                1, 1,        // instrument 1, right speaker
-                8, 8, 0, 3   // channel notes
-            ]
+    [                    // patterns
+        [                // pattern 0
+            0, -1,       // instrument 0, left speaker
+            1, 0, 5, 1   // channel notes
+        ],
+        [                // pattern 1
+            1, 1,        // instrument 1, right speaker
+            8, 8,0,0  // channel notes
         ],
     ],
-    [0, 0, 0, 0], // sequence, play pattern 0 four times
-    90            // BPM
+    [[0]],      // sequence
+    90                   // BPM
 ]
 ); // test song
 
