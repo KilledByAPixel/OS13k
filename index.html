@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?v235></script>
+<script src=programs.js?v236></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -207,7 +207,7 @@ span                { white-space:nowrap; }
 ///////////////////////////////////////////////////////////////////////////////
 // OS13k Debug (remove from minified)
 
-let OS13kVersion = 76;
+let OS13kVersion = 77;
 {
     // version check, clear local storage if older
     if (localStorage.OS13k && localStorage.OS13kVersion != OS13kVersion)
@@ -384,7 +384,7 @@ class _OS13k
     {
         // use default params if no seed
         if (!seed)
-            return [volume, randomness, frequency || OS13k.Note(-9), 0, lengthScale];
+            return [volume, randomness, frequency || OS13k.Note(-21), 0, lengthScale];
 
         // check if seed is a number
         if (parseFloat(seed = (seed+'').trim()) != seed)
@@ -476,11 +476,8 @@ class _OS13k
     // convert a string to a music data array, will throw error if invalid
     StringToMusic(string, validate = 0)
     {
-        // remove comments, white space, 
-        string = string.replace(/\/\*[\s\S]*?\*\/|\s|{[\s\S]*?}/g,'');
-
         // check if safe to eval and get music data
-        let music = string.replace(/null|[[\],\d.\-e]|\/\*[\s\S]*?\*\//g, '') || eval(string.replace(/null/g, undefined)); 
+        let music = string.replace(/null|[[\],\d\.-]/g, '') || eval(string.replace(/null/g, undefined)); 
 
         // try to generate music to check if valid
         validate && zzfxM(...music);
@@ -1572,7 +1569,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             this.iframe.onload = ()=> LoadFrame();
-            this.iframe.src = program.src + '?v235';
+            this.iframe.src = program.src + '?v236';
         }
     }
         
@@ -2018,32 +2015,30 @@ zzfxG = (volume = 1, randomness = .05, frequency = 220, attack = 0, sustain = 0,
 
 zzfxM = (instruments, patterns, sequence, BPM = 125) => 
 {
-    let instrumentParameters, i, j, k, sample, patternChannel,
-        notFirstBeat, stop, instrument, pitch, attenuation, pan, 
-        outSampleOffset, sampleOffset, nextSampleOffset, sampleBuffer = [], 
-        channelIndex = 0, hasMore = 1, channelBuffers = [[],[]], 
-        sampleCache = {}, beatLength = defaultSampleRate / BPM * 60 >> 2;
+    let instrumentParameters, patternChannel, longestPattern, i, j,
+        instrument, pan, pitch, attenuation, notFirstBeat, stop,
+        sampleCache = {}, sampleBuffer = [], sampleOffset, sample,
+        outBuffers = [[],[]], outOffset, beatLength = defaultSampleRate / BPM * 60 >> 2,
+        channelIndex = 0, channelCount = sequence.reduce((a,b)=>Math.max(a, b.length), 0);
 
     // for each channel in order until there are no more
-    for(; hasMore; channelIndex++)
+    for(; channelIndex < channelCount; channelIndex++)
     {
         // reset current values
-        sampleBuffer = [hasMore = notFirstBeat = pitch = outSampleOffset = 0];
+        sampleBuffer = [notFirstBeat = pitch = outOffset = 0];
 
-        // for each pattern in sequence
-        sequence.map((patternIndex, sequenceIndex) => 
+        // for each sequence of patterns
+        sequence.map((sequencePatterns, sequenceIndex) =>
         {
-            // get pattern for current channel, use empty 1 note pattern if none found
-            patternChannel = patterns[patternIndex][channelIndex] || [0, 0, 0];
+            // get pattern for current channel, use empty pattern if none found
+            patternChannel = patterns[sequencePatterns[channelIndex]] || [];
 
-            // check if there are more channels
-            hasMore |= !!patterns[patternIndex][channelIndex];
+            // get length of longest pattern channel, plus one extra if last sequence
+            longestPattern = sequencePatterns.reduce((a,b)=>Math.max(a, patterns[b].length), 0)
+                 + (sequenceIndex == sequence.length - 1);
 
-            // get next offset, use the length of first channel
-            nextSampleOffset = outSampleOffset + (patterns[patternIndex][0].length - 2 - !notFirstBeat) * beatLength;
-
-            // for each beat in pattern, plus one extra if end of sequence
-            for (i = 2, k = outSampleOffset; i < patternChannel.length + (sequenceIndex == sequence.length-1); notFirstBeat = ++i)
+            // for each beat in pattern
+            for (i = 2; i < longestPattern; notFirstBeat = ++i)
             {
                 // stop if different instrument or new note
                 stop = instrument != (patternChannel[0] || 0) | patternChannel[i] | 0;
@@ -2057,8 +2052,8 @@ zzfxM = (instruments, patterns, sequence, BPM = 125) =>
                 {
                     // copy sample to stereo buffers with panning
                     sample = (1-attenuation) * sampleBuffer[sampleOffset++] / 2 || 0;
-                    channelBuffers[0][k] = (channelBuffers[0][k]   || 0) + sample * pan - sample;
-                    channelBuffers[1][k] = (channelBuffers[1][k++] || 0) + sample * pan + sample;
+                    outBuffers[0][outOffset] = (outBuffers[0][outOffset]   || 0) + sample * pan - sample;
+                    outBuffers[1][outOffset] = (outBuffers[1][outOffset++] || 0) + sample * pan + sample;
                 }
 
                 // set up for next note
@@ -2079,19 +2074,16 @@ zzfxM = (instruments, patterns, sequence, BPM = 125) =>
                         (
                             // add sample to cache
                             instrumentParameters = [...instruments[instrument]],
-                            instrumentParameters[2] = OS13k.Note(pitch - 12, instrumentParameters[2]),
+                            instrumentParameters[2] *= 2 ** ((pitch - 12) / 12),
                             pitch > 0 ? zzfxG(...instrumentParameters) : []
                         );
                     }
                 }
             }
-
-            // update the sample offset
-            outSampleOffset = nextSampleOffset;
         });
     }
 
-    return channelBuffers;
+    return outBuffers;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
