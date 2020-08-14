@@ -45,6 +45,7 @@ programStubs =
 ]],
 ['🎮',,,,,'Games',,
 [
+    ['💖','games/bounceBack.html',,,,,'WASD = Move\nMouse = Aim\nClick = Throw\nShift = Dash'],
     ['🏂🏻','games/bogusSlopes.dweet.js',,,,,'Collect Stars to Boost.\n\nUp/Down = Move'],
     ['🙉','games/dontFall.dweet.js',,,,,'Build energy to bounce higher.\n\nLeft/Right = Move\nDown = Bounce'],
     ['🌋','games/lavaRush.html',640,400,,,'Escape the rising lava for as long as you can.\n\nWASD = Move\nMouse = Look\nSpace = Jump'],
