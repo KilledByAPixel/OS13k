@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript Operating System</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?v239></script>
+<script src=programs.js?v240></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -207,7 +207,7 @@ span                { white-space:nowrap; }
 ///////////////////////////////////////////////////////////////////////////////
 // OS13k Debug (remove from minified)
 
-let OS13kVersion = 78;
+let OS13kVersion = 81;
 {
     // version check, clear local storage if older
     if (localStorage.OS13k && localStorage.OS13kVersion != OS13kVersion)
@@ -215,7 +215,7 @@ let OS13kVersion = 78;
         alert('OS13k version out of date! System reset in 3, 2, 1...');
 
         // save what we can
-        let save = localStorage.OS13kVersion >= 70 ? localStorage.OS13k : 0;
+        let save = 0;//localStorage.OS13kVersion >= 70 ? localStorage.OS13k : 0;
         localStorage.clear();
         if (save)
           localStorage.OS13k = save;
@@ -480,7 +480,7 @@ class _OS13k
         let music = string.replace(/null|[[\],\d\.-]/g, '') || eval(string.replace(/null/g, undefined)); 
 
         // try to generate music to check if valid
-        validate && zzfxM(...music);
+        validate && zzfxM(...music, 1);
         return music;
     }
     
@@ -1569,7 +1569,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             this.iframe.onload = ()=> LoadFrame();
-            this.iframe.src = program.src + '?v239';
+            this.iframe.src = program.src + '?v240';
         }
     }
         
@@ -1915,8 +1915,8 @@ ondrop = e=>
     reader.onload = f=> e.target.SetActive(1, 0, e.target.SetCode(f.target.result, 1));
 
     // read file, set code, and set active
-    e.dataTransfer.files.length && e.target.program.userProgram &&
-        reader.readAsText(e.dataTransfer.files[0], 'utf-8'); 
+    e.dataTransfer.files.length && e.target.program && e.target.program.userProgram &&
+        reader.readAsText(e.dataTransfer.files[0]); 
     return !1;
 }
 
@@ -2011,39 +2011,44 @@ zzfxG = (volume = 1, randomness = .05, frequency = 220, attack = 0, sustain = 0,
 },
 
 ///////////////////////////////////////////////////////////////////////////////
-//! ZzFXM (v1.0.0) | (C) Keith Clark | MIT | https://github.com/keithclark/ZzFXM
+//! ZzFXM (v2.0.2) | (C) Keith Clark & Frank Force | MIT | https://github.com/keithclark/ZzFXM
 
-zzfxM = (instruments, patterns, sequence, BPM = 125) => 
+zzfxM = (instruments, patterns, sequence, BPM = 125, validate) => 
 {
-    let instrumentParameters, patternChannel, longestPattern, i, j,
-        instrument, pan, pitch, attenuation, notFirstBeat, stop,
-        sampleCache = {}, sampleBuffer = [], sampleOffset, sample,
-        outBuffers = [[],[]], outOffset, beatLength = defaultSampleRate / BPM * 60 >> 2,
-        channelIndex = 0, channelCount = sequence.reduce((a,b)=>Math.max(a, b.length), 0);
+    let instrumentParameters, i, j, k, sample, patternChannel, isSequenceEnd,
+        notFirstBeat, stop, instrument, pitch, attenuation, pan, 
+        outSampleOffset, sampleOffset, nextSampleOffset, sampleBuffer = [], 
+        channelIndex = 0, hasMore = 1, channelBuffers = [[],[]], 
+        sampleCache = {}, beatLength = defaultSampleRate / BPM * 60 >> 2;
 
     // for each channel in order until there are no more
-    for(; channelIndex < channelCount; channelIndex++)
+    for(; hasMore; channelIndex++)
     {
         // reset current values
-        sampleBuffer = [notFirstBeat = pitch = outOffset = 0];
+        sampleBuffer = [hasMore = notFirstBeat = outSampleOffset = 0];
 
-        // for each sequence of patterns
-        sequence.map((sequencePatterns, sequenceIndex) =>
+        // for each pattern in sequence
+        sequence.map((patternIndex, sequenceIndex) => 
         {
-            // get pattern for current channel, use empty pattern if none found
-            patternChannel = patterns[sequencePatterns[channelIndex]] || [];
+            // get pattern for current channel, use empty 1 note pattern if none found
+            patternChannel = patterns[patternIndex][channelIndex] || [0, 0, 0];
 
-            // get length of longest pattern channel, plus one extra if last sequence
-            longestPattern = sequencePatterns.reduce((a,b)=>Math.max(a, patterns[b].length), 0)
-                 + (sequenceIndex == sequence.length - 1);
+            // check if there are more channels
+            hasMore |= !!patterns[patternIndex][channelIndex];
 
-            // for each beat in pattern
-            for (i = 2; i < longestPattern; notFirstBeat = ++i)
+            // get next offset, use the length of first channel
+            nextSampleOffset = outSampleOffset + (patterns[patternIndex][0].length - 2 - !notFirstBeat) * beatLength;
+
+            // for each beat in pattern, plus one extra if end of sequence
+            isSequenceEnd = sequenceIndex == sequence.length - 1;
+            for (i = 2, k = outSampleOffset; i < patternChannel.length + isSequenceEnd; notFirstBeat = ++i)
             {
-                // stop if different instrument or new note
-                stop = instrument != (patternChannel[0] || 0) | patternChannel[i] | 0;
+                // stop if end, different instrument, or new note
+                stop = i == patternChannel.length + isSequenceEnd - 1 && isSequenceEnd || 
+                    instrument != (patternChannel[0] || 0) | patternChannel[i] | 0;
 
                 // fill buffer with samples for previous beat, most cpu intensive part
+                if (!validate)
                 for(j = 0; j < beatLength && notFirstBeat; 
 
                     // fade off attenuation at end of beat if stopping note, prevents clicking
@@ -2052,16 +2057,17 @@ zzfxM = (instruments, patterns, sequence, BPM = 125) =>
                 {
                     // copy sample to stereo buffers with panning
                     sample = (1-attenuation) * sampleBuffer[sampleOffset++] / 2 || 0;
-                    outBuffers[0][outOffset] = (outBuffers[0][outOffset]   || 0) + sample * pan - sample;
-                    outBuffers[1][outOffset] = (outBuffers[1][outOffset++] || 0) + sample * pan + sample;
+                    channelBuffers[0][k] = (channelBuffers[0][k]   || 0) - sample * pan + sample;
+                    channelBuffers[1][k] = (channelBuffers[1][k++] || 0) + sample * pan + sample;
                 }
 
                 // set up for next note
                 if (patternChannel[i])
                 {
-                    // set attenuation
+                    // set attenuation and pan
                     attenuation = patternChannel[i] % 1;
                     pan = patternChannel[1] || 0;
+
                     if (patternChannel[i] | 0)
                     {
                         // get cached sample
@@ -2080,10 +2086,13 @@ zzfxM = (instruments, patterns, sequence, BPM = 125) =>
                     }
                 }
             }
+
+            // update the sample offset
+            outSampleOffset = nextSampleOffset;
         });
     }
 
-    return outBuffers;
+    return channelBuffers;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

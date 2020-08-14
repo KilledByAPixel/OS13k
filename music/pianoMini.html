@@ -6,7 +6,7 @@
 // L = length
 // A = active sounds
 
-O = parent.OS13k;
+OS13k = parent.OS13k;
 
 //////////////////////////////////////////////////////////////
 // sound
@@ -16,9 +16,9 @@ R = e=>
 {
     onblur(D = []);                      // cancel all sounds and init sample cache
     for(i=5;--i;                         // loop for each octave
-        D[i] = O.SeedSamples(            // get seed samples
+        D[i] = OS13k.SeedSamples(        // get seed samples
             S.value, .1+L.value/9, 1, 0, // seed parameters
-                O.Note(i*12-33))         // root frequency C
+                OS13k.Note(i*12-33))     // root frequency C
     );
 }
 
@@ -27,7 +27,7 @@ P = e=> e < 0 || A[e] ||         // is note valid and not playing
 (
     // play cached sound
     (A[e] =                     // set sound                 
-        O.PlaySamples(          // play samples
+        OS13k.PlaySamples(      // play samples
             D[2 + e/12|0], 2)). // get octave
                 detune.value =  // set frequency
                     e%12*100,   // get note offset
@@ -54,9 +54,9 @@ R(A = []);
 // play note on key down
 onkeydown = e=>
     document.activeElement == S || // not when editing seed
-        P(O.PianoKey(e));          // play note
+        P(OS13k.PianoKey(e));                   // play note
 
 // release note on key up
-onkeyup = e=> X(O.PianoKey(e));
+onkeyup = e=> X(OS13k.PianoKey(e));
 
 </script>

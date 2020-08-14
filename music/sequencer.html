@@ -9,9 +9,6 @@ todo:
 
 */
 
-const channels = 8
-const beats = 128
-
 OS13k = parent.OS13k;
 M = [[],[[]]]; // music
 
@@ -37,7 +34,7 @@ N = (e, x, y)=>
         e.keyCode == 13 ? -2 :               // enter = end
         e.keyCode == 38 || e.keyCode == 40 ? // up/down = volume
         (
-            n = M[1][x][y] > 0 ? M[1][x][y] : 0,
+            n = M[1][0][x][y] > 0 ? M[1][0][x][y] : 0,
             (n|0) + ((n*10%10 + 10 + (e.keyCode - 39)) / 10)%1
         ) :
         OS13k.PianoKey(e) >= 0 ? v = 12 + OS13k.PianoKey(e) : // key
@@ -47,7 +44,7 @@ N = (e, x, y)=>
     if (v > -3)
     {
         // set note value and input text
-        e.target.value = Q(M[1][x][y] = v);
+        e.target.value = Q(M[1][0][x][y] = v);
 
         // set zzfx parameters
         p = [...M[0][x]];                  // copy instrument
@@ -66,31 +63,28 @@ N = (e, x, y)=>
 // build music
 O = e=>
 {
-    // create empty music format
-    m = [M[0], [], [], OS13k.Clamp(T.value, 1e3, 30)];
+    // create music format, with padding at end
+    m = [M[x = i = 0], [[],[[]]], [], OS13k.Clamp(T.value, 1e3, 30)];
 
     // set sequence loop
-    for(x = OS13k.Clamp(L.value, 99, 1); x--;) 
-    for(m[2][x] = [], y = channels; y--;) 
-        m[2][x][y] = y;
+    for(; i < OS13k.Clamp(L.value, 99, 1); ) m[2][i++] = 0;
 
-    // add empty padding sequence at end of song so notes arent clipped
-   // m[2].push([channels]);
-  //  for(m[1][channels] = [], i = 0; i < 32; ) m[1][channels][i++] = 0;
+    // add empty padding sequence at end so notes arent clipped
+    for(i = 0; i < 32; ) m[1][1][0][i++] = 0;
 
     // clone patterns and get ends
-    for(n = x = 0; x < channels; x++)
+    for(m[2][L.value] = n = 1; x < 4; )
     {
         // chop off at end marker (-2) or if no more notes
-        for(y = 2; y < 2+beats; ++y)
-            n = Math.max(n, M[1][x][y] == -2 ? y : M[1][x][y] ? y + 1 : n);
+        for(y = 2; y < 130; ++y)
+            n = Math.max(n, M[1][0][x][y] == -2 ? y : M[1][0][x][y] ? y + 1 : n);
 
         // clone pattern
-        m[1][x] = [...M[1][x]];
+        m[1][0][x] = [...M[1][0][x++]];
     }
 
     // set all patterns to be same length
-    for(x = 0; x < channels; ) m[1][x++].length = n;
+    for(x = 0; x < 4; ) m[1][0][x++].length = n;
 
     return m;
 }
@@ -102,23 +96,23 @@ O = e=>
 R = e=>
 {
     o = "<p><table>";
-    for(x = -2; ++x < channels+1; o += "</tr><tr>")
-    for(y = 0; y < 2+beats; ++y)
+    for(x = -2; ++x < 9; o += "</tr><tr>")
+    for(y = 0; y < 130; ++y)
     {
         o += "<td>" + (
             // beat index display
             x == -1 ? y > 1 ? y-1 : "" :
 
             // note
-            y > 1 ? `<input style=width:80;${(y+2)%4? "" : "background:#ccf"} onkeydown="return N(event,${x},${y})"value=${Q(M[1][x][y])}>` :
+            y > 1 ? `<input style=width:80;${(y+2)%4? "" : "background:#ccf"} onkeydown="return N(event,${x},${y})"value=${Q(M[1][0][x][y])}>` :
 
             // pan
-            y > 0 ? `🎧 <input style=width:99 oninput=M[1][0][${x}][1]=this.value/50-1 type=range value=${(M[1][x][1]||0)*50+50}>` :
+            y > 0 ? `🎧 <input style=width:99 oninput=M[1][0][${x}][1]=this.value/50-1 type=range value=${(M[1][0][x][1]||0)*50+50}>` :
 
             // instrument and init
             (
                 // init channel
-                M[1][x] == [] || (M[1][x] = [x, 0]),
+                M[1][0][x] || (M[1][0][x] = [x, 0]),
 
                 // set instrument
                 I(m = M[0][x]?`zzfx(...[${M[0][x]}])` : "", x),
@@ -152,7 +146,7 @@ W = e=>
         M = OS13k.StringToMusic(d = prompt `ZzFXM Data`, 1);
 
         // set end at max channel length
-        //M[1][0][0][M[1][0].reduce((a,b)=>Math.max(a, b.length))] = -2;
+        //M[1][0][0][M[1][0].reduce((a,c)=>Math.max(a, c.length), 0)] = -2;
 
         // rebuild and set bpm
         R(T.value = M[3]);
