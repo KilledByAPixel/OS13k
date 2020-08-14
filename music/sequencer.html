@@ -1,30 +1,29 @@
-<style>td,body{background:#111;color:#fff;user-select:none;white-space:nowrap;text-align:center}</style>BPM <input type=number style=width:59 id=T value=120> Loop <input type=number style=width:59 id=L value=8> <button onmousedown=A=OS13k.PlayMusic(O(S()))>Play</button> <button onmousedown=S()>Stop</button> <button onmousedown=V()>Save</button> <button onclick=W()>Load</button><a id=H download></a><div id=B><script>
-/*
-
-todo:
-- show play head
-- multiple patterns
-- pattern sequence
-- strict version
-
-*/
+<style>body{background:#111;color:#fff;user-select:none;text-align:center}</style>BPM <input type=number style=width:59 id=T value=120>
+&nbsp;Loop <input type=checkbox id=L>
+&nbsp;<button onmousedown=P()>Play</button>
+<button onmousedown=S()>Stop</button>
+<button onmousedown=V()>Save</button>
+<button onclick=W()>Load</button><p><a id=H download></a><div id=B style=display:grid;justify-content:center><script>
 
 OS13k = parent.OS13k;
 M = [[],[[]]]; // music
+
+// play music
+P = e=>(A=OS13k.PlayMusic(O(S()))).loop=L.checked
 
 // stop music
 onunload = S = e=> A && A.stop();
 
 // set instrument
-I = (s, x)=> M[0][x] = OS13k.SeedParameters(s, 1, 1, 0);
+I = (s, x)=> M[0][x] = OS13k.SeedParameters(s, 1, 1, 0, OS13k.Note(-21));
 
 // get name of note
 Q=e=>e ? e > 0 ? 
-    (e >= 1 ? "CCDDEFFGGAAB"[e%12|0] +          // note letter
-              " # #  # # # "[e%12|0] +          // natural or sharp
-        " - " + (e/12-1|0) + " " : "") +        // octave
-    (e%1 ? (10 - e*10 % 10|0) + "0%" : "") :    // volume
-    e < -1 ? " End" : "Stop" : "";              // special notes
+    (e >= 1 ? "CCDDEFFGGAAB"[e%12|0] +                 // note letter
+              ('02579'.indexOf(e%12-1) >=0? '#':'') +  // natural or sharp
+        " - " + (e/12-1|0) + " " : "") +               // octave
+    (e%1 ? (10 - e*10 % 10|0) + "0%" : "") :           // volume
+    e < -1 ? " End" : "Stop" : "";                     // special notes
 
 // set note
 N = (e, x, y)=>
@@ -64,16 +63,13 @@ N = (e, x, y)=>
 O = e=>
 {
     // create music format, with padding at end
-    m = [M[x = i = 0], [[],[[]]], [], OS13k.Clamp(T.value, 1e3, 30)];
+    m = [M[0], [[],[[]]], [], OS13k.Clamp(T.value, 1e3, 30)];
 
-    // set sequence loop
-    for(; i < OS13k.Clamp(L.value, 99, 1); ) m[2][i++] = 0;
-
-    // add empty padding sequence at end so notes arent clipped
-    for(i = 0; i < 32; ) m[1][1][0][i++] = 0;
+    // set sequence
+    m[2][0] = x = 0;
 
     // clone patterns and get ends
-    for(m[2][L.value] = n = 1; x < 4; )
+    for(n = 1; x < 4; )
     {
         // chop off at end marker (-2) or if no more notes
         for(y = 2; y < 130; ++y)
@@ -95,19 +91,25 @@ O = e=>
 // rebuild pattern display
 R = e=>
 {
-    o = "<p><table>";
-    for(x = -2; ++x < 9; o += "</tr><tr>")
+    o = "";
+
+    // sequencer grid
+    B.style.gridTemplateColumns = '40px';
+    for(x = 8; x--;)
+        B.style.gridTemplateColumns += ' 80px';
+
     for(y = 0; y < 130; ++y)
+    for(x = -1; x < 8; ++x)
     {
-        o += "<td>" + (
+        o +=
             // beat index display
-            x == -1 ? y > 1 ? y-1 : "" :
+            x == -1 ? y > 1 ? y-1 : [...'🌱🎧'][y]:
 
             // note
-            y > 1 ? `<input style=width:80;${(y+2)%4? "" : "background:#ccf"} onkeydown="return N(event,${x},${y})"value=${Q(M[1][0][x][y])}>` :
+            y > 1 ? `<input readonly style=width:80;${(y+2)%4? "" : "background:#ccf"} onkeydown="return N(event,${x},${y})"value="${Q(M[1][0][x][y])}">` :
 
             // pan
-            y > 0 ? `🎧 <input style=width:99 oninput=M[1][0][${x}][1]=this.value/50-1 type=range value=${(M[1][0][x][1]||0)*50+50}>` :
+            y > 0 ? `<input style=width:80 oninput=M[1][0][${x}][1]=this.value/50-1 type=range value=${(M[1][0][x][1]||0)*50+50}>` :
 
             // instrument and init
             (
@@ -118,9 +120,8 @@ R = e=>
                 I(m = M[0][x]?`zzfx(...[${M[0][x]}])` : "", x),
 
                 // instrument
-                `🌱 <input style=width:99 oninput=I(this.value,${x}) placeholder="ZzFX or Seed"value=${m}>`
-            )) +
-            "</td>";
+                `<input style=width:80 oninput=I(this.value,${x});Z&&Z.stop();Z=this.value&&OS13k.PlaySeed(this.value,1,1,0,OS13k.Note(-21),1) placeholder="ZzFX or Seed"value=${m}>`
+            );
     }
     B.innerHTML = o;
 }

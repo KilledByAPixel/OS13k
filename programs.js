@@ -60,7 +60,7 @@ programStubs =
     ['🎵','music/musicPlayer.html',400,330,sticky,,'OS13k can play music using the tiny ZzFXM format.\nJS13k games can add their music to your library.\nPlay games to collect more music.'],
     ['👁️','music/visualizer.dweet.js',,,awake|full|resize|code],
     ['🎹','music/piano.html',520,510,reload],
-    ['🥁','music/sequencer.html',,360,,,'Keyboard = Note\nUp/Down = Volume\nSpace = Stop\nEnter = End'],
+    ['🥁','music/sequencer.html',800,,,,'Keyboard = Note\nUp/Down = Volume\nSpace = Stop\nEnter = End'],
     ['🌱','music/soundSeeds.html',350,480,resize|reload,,'OS13k can play sounds using a hashed string.\nYou can also paste in ZzFX sounds.'],
     ['🦈','music/byteBeatPlayer.html',320,89,reload,,'Enter a funtion and length in seconds to generate music.'],
     ['🎼','music/bach.dweet.js'],
