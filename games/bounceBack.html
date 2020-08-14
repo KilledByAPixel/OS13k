@@ -250,7 +250,6 @@ function EngineInit()
     tileMaskCanvasContext.drawImage(tileMaskCanvas,tileImage.width,0);
     tileMaskCanvasContext.globalCompositeOperation = 'difference';
     tileMaskCanvasContext.drawImage(tileMaskCanvas,tileImage.width,0);
-    
 }
 
 function EngineUpdate(frameTime=0)
@@ -268,6 +267,10 @@ function EngineUpdate(frameTime=0)
     if (frameTime < nextFrameMS)
         return;  // skip this cycle
     nextFrameMS = nextFrameMS + 1000 / 60;
+
+    // update volume
+    const settings = parent.OS13k.Settings();
+    zzfx_v = settings.v;
 
     // fit canvas to window
     mainCanvasSize.Set(window.innerWidth/2,window.innerHeight/2);
@@ -855,7 +858,7 @@ function NextLevel()
     nextLevel = (nextLevel+1)%11;
 
     if (levelNumber > OS13k.GetTrophy('Bounce Back','Warp Level'))
-        OS13k.Trophy('🌀', 'Bounce Back', 'Warp Level', levelNumber)
+        OS13k.Trophy('🌀','Bounce Back', 'Warp Level', levelNumber)
 
     if (!speedRunMode && levelNumber>warpLevel)
         warpLevel = levelNumber;
@@ -2083,8 +2086,7 @@ class ShieldEnemy extends Enemy
                 {
                     OS13k.Trophy('🏃‍♂️', 'Bounce Back', 'Speed Run Complete');
 
-                    const trophyTime = OS13k.GetTrophy('⏲️','Bounce Back','Speed Run Time');
-
+                    const trophyTime = OS13k.GetTrophy('Bounce Back','Speed Run Time');
                     if (!trophyTime || speedRunTime < trophyTime)
                         OS13k.Trophy('⏲️','Bounce Back','Speed Run Time', speedRunTime);
 
@@ -2695,7 +2697,7 @@ function UpdateTransiton()
 
 ///////////////////////////////////////////////////////////////////////////////
 // ZzFXmicro - Zuper Zmall Zound Zynth - MIT License - Copyright 2019 Frank Force
-let zzfx_v=.2;
+let zzfx_v=0;
 let zzfx_x=0;
 let zzfx=(e,f,a,b=1,d=.1,g=0,h=0,k=0,l=0)=>{if(!zzfx_x)return;let S=44100;a*=2*PI/S;a*=1+RandBetween(-f,f);g*=1E3*PI/(S**2);b=S*b|0;d=d*b|0;k*=2*PI/S;l*=PI;f=[];for(let m=0,n=0,c=0;c<b;++c)f[c]=e*zzfx_v*Math.cos(m*a*Math.cos(n*k+l))*(c<d?c/d:1-(c-d)/(b-d)),m+=1+RandBetween(-h,h),n+=1+RandBetween(-h,h),a+=g;e=zzfx_x.createBuffer(1,b,S);a=zzfx_x.createBufferSource();e.getChannelData(0).set(f);a.buffer=e;a.connect(zzfx_x.destination);a.start();return a}
 

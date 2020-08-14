@@ -294,9 +294,18 @@ cameraHeading = turn * cameraTurnScale;
 // was checkpoint crossed?
 if (position.z > nextCheckPoint)
 {
+    if (nextCheckPoint > OS13k.GetTrophy('Hue Jumper','Distance Record'))
+        OS13k.Trophy('🏁', 'Hue Jumper', 'Distance Record', nextCheckPoint/1e3|0)
+
   time += checkPointTime;               // add more time
   nextCheckPoint += checkPointDistance; // set next checkpoint
   hueShift += 36;                       // shift hue
+}
+
+if (time <= 0)
+{
+    if (position.z > OS13k.GetTrophy('Hue Jumper','Distance Record'))
+        OS13k.Trophy('🏁', 'Hue Jumper', 'Distance Record', position.z/1e3|0)
 }
 
 //////////////////////////////////////////////////////////////////
