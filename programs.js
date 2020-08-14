@@ -65,13 +65,13 @@ programStubs =
     ['🎼','music/bach.dweet.js'],
     ['<span style=color:#f00>𝓜','music/minBytes.html',450,450],
     ['🦗','music/smallSeeds.html',520,340,full|reload,,'This is a special tool for devs.\nUse smaller seeds to save space.\nYou can also tab through the list.'],
+    ['𝐙𝐙','music/zzfxSoundBoard.html',700,420,,'ZzFX Sound Board'],
 ]],
-['🤖',,,,,'Toys',,
+['<span style=color:#f40><b>𝓢',,,,,'Shader Toys',,
 [
-    ['𝐙𝐙','toys/zzfxSoundBoard.html',700,420,,'ZzFX Sound Board'],
-    ['𝓩','toys/zzartLandscape.shader.txt',,,,'ZzArt Landscape'],
-    ['<span style=color:#f00>☯','toys/infiniteYinYangs.shader.txt'],
-    ['🌀','toys/vogelSpiral.shader.txt'],
+    ['𝓩𝔃','shaders/zzartLandscape.shader.txt',,,,'ZzArt Landscape'],
+    ['<span style=color:#f00>☯','shaders/infiniteYinYangs.shader.txt'],
+    ['🌀','shaders/vogelSpiral.shader.txt'],
 ]],
 ['<b>III',,,,,'Dweets',,
 [
