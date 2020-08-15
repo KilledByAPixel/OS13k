@@ -22,7 +22,7 @@ defaultWidth = 720, defaultHeight = 405, // 16:9 aspect
 programStubs = 
 [
 ['❌',,,,closeAll,'Close All'],
-['<b><span style=color:#0f0>?','help.html',380,400,resize,,'Check here to see help, code, or edit user programs.\n\nHave fun! ✌️😄'],
+['<b><span style=color:#0f0>?','help.html',300,300,resize,,'Check here to see help, code, or edit user programs.\n\nHave fun! ✌️😄'],
 ['⚙️',,,,,'System',,
 [
     ['🏆','system/trophyCase.html',,,full|resize|sticky,,'View all your trophies here.\nAny JS13k game can add trophies, play to win more!'],
