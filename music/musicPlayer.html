@@ -117,7 +117,7 @@ P=k=>
 // add custom song
 A=k=>
 {
-    // test song [[[,0,219,,,,,1.1,,-.1,-50,-.05,-.01,1],[2,0,84,,,.1,,.7,,,,.5,,6.7,1,.05]],[[[0,-1,1,0,5,0],[1,1,8,8,0,3]]],[0,0,0,0],90]
+    // test song [[[,0,219,,,,,1.1,,-.1,-50,-.05,-.01,1],[[[0,-1,1,0,5,0],[0,1,99,99,0,99]]],[0,0,0,0],90]
 
 
     try {
@@ -142,19 +142,18 @@ W=k=> (k/60|0) + ((k = k%60|0) <=9 ? ':0' : ':') + k;
 // test song
 localStorage['OS13kMusic,OS13k Test'] = JSON.stringify(
 [
-    [                                        // instruments
-      [,0,219,,,,,1.1,,-.1,-50,-.05,-.01,1], // snare
-      [2,0,84,,,.1,,.7,,,,.5,,6.7,1,.05]     // kick
+    [                        // instruments
+      [,0,400,,,,,,,,,,,5,,,.1]   // kick
     ],
     [                        // patterns
         [                    // pattern 1
             [                // channel 0
                 0, -1,       // instrument 0, left speaker
-                1, 0, 5, 0   // channel notes
+                1, 0, 9, 1   // channel notes
             ],
             [                // channel 1
-                1, 1,        // instrument 1, right speaker
-                8, 8, 0, 3   // channel notes
+                0, 1,        // instrument 1, right speaker
+                0, 99, -1, 0 // channel notes
             ]
         ],
     ],
