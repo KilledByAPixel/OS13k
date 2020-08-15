@@ -22,9 +22,8 @@ It includes native support for Shadertoys, Dweets, ZzFX sounds, music, trophies,
 ## Programming Info
 - OS13k stores it's list of programs in programs.js
 - For fast iteration when developing, most recent active window is opened on startup
-- Though you can use images and other files, for JS13k we will need each program in one html file
 
-Add an icon config to programs.js to register your program, and send me pull request, examples...
+Add an icon config to programs.js to register your program, examples...
 - [icon, src, width, height, flags, name, help, folder]
 - ['?','help.html']
 - ['✌️😄','system/systemTest.html',,,full|resize|code|sticky]
@@ -33,13 +32,12 @@ Add an icon config to programs.js to register your program, and send me pull req
 
 ### Programs
 - OS13k can open any html file and it will work the same as if opened directly
-- Chrome is recommended for development, but Firefox is also supported
+- Chrome is recommended, but Firefox is also supported
 - [Viewing OS13k locally may not work if it treats local files as cross-origin](https://discourse.mozilla.org/t/firefox-68-local-files-now-treated-as-cross-origin-1558299/42493/9)
 - Prefix all local storage keys with OS13kYourProgramName to prevent collisions during JS13k (use at least 2 letters)
 - When the reload button is clicked, OS13kReload is called if it exists instead of reloading the iframe
-- OS13k works well on mobile devices, so we could have a separate entry for the JS13k mobile category
 - For development we recommend [VSCode](https://code.visualstudio.com/) with the [Live Server Plugin](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer)
-- You can also create a custom program to edit code directly in OS13k.
+- You can also create a custom program to edit code directly in OS13k
 
  ### Trophies
  - Trophies are perhaps the most important part of OS13k and have many uses
@@ -94,6 +92,13 @@ Add an icon config to programs.js to register your program, and send me pull req
 - OS13k.Hash(string) - Returns numeric hash code for a struing
 - OS13k.Popup(html, speak) - Shows a popup with html body and optional speech and sound
 
+### Math Library
+- OS13k.Random(max=1, min=0) - Get a seeded random value clamped between min and max
+- OS13k.randomSeed - You must set the seed before calling OS13k.Random
+- OS13k.Clamp(a, max=1, min=0) - Clamp value between max and min
+- OS13k.Percent(v, a, b) - Get clamped percent between a and b
+- OS13k.Lerp(p, a, b) - Lerp clamped percent between a and b
+
 ### Dweets and Shadertoys
 - Programs with the extension .dweet.js or .shader.txt or will automatically load as Dweets or Shadertoys!
 - Dweets and Shadertoys are automatically paused when they don't have focus (after a 1 second warmup)
@@ -104,7 +109,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 - iChannel0 is an image of the previous frame, this can be used to make effects or store game logic
 
 ### Input System
-- OS13k provides an easy to use input system to help limit code duplication
+- OS13k provides an easy to use input system to help eliminate redundant code
 - Call OS13k.Input(window) to create an input object
 - the object format is {x, y, keypress, keydown, mousex, mousey, mousepress, mousedown}
 - x and y is a -1 to 1 direction from WASD or direction buttons
@@ -113,14 +118,6 @@ Add an icon config to programs.js to register your program, and send me pull req
 - keypress and mousepress are arrays, an element is 1 if that key is pressed
 - keydown and mousedown are arrays, an element is 1 if that key is down
 - *See System/Test/InputTest for an example*
-
-### Math Library
-- Some basic math functions are provided to help reduce code duplication
-- OS13k.Random(max=1, min=0) - Get a seeded random value clamped between min and max
-- OS13k.randomSeed - You must set the seed before calling OS13k.Random
-- OS13k.Clamp(a, max=1, min=0) - Clamp value between max and min
-- OS13k.Percent(v, a, b) - Get clamped percent between a and b
-- OS13k.Lerp(p, a, b) - Lerp clamped percent between a and b
 
 ### Program Settings and Defaults
 - name - Display name (if absent will build nice name from camel case src filename)
@@ -138,14 +135,14 @@ Add an icon config to programs.js to register your program, and send me pull req
 - rezize (1) - Allows resizing the window
  
 ### User Programs
- - You can create and access custom programs in user programs folder
+ - You can create and access custom programs in the user programs folder
  - *User programs have the same capabilities as any other program!*
  - It auto detects HTML (starts with <), Shadertoy (has void mainImage), or Dweet
  - This can be used to iterate on dweets or small shaders, or to load a full program.
  - Drag and drop a file into the text box to load it
  - The screenshot button is available for Dweets and Shadertoys
  - User Dweets has loop protection to help prevent freeze ups, though it can still occur
- - Press Alt+Enter to reload when not using live edit
+ - Press Alt+Enter to reload when live edit is disabled
  - User programs will not run until clicked to prevent executing bad code
 
 ## Minification Tips
@@ -155,10 +152,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 - There is much less overhead for common functions calls and html tags then program logic
 - Try to limit your use of non repeated text strings, those compresses the worst, try using emojis
 - Don't compress your code, let zip do the work for us
-- Dweets and Shadertoys can help save space by reducing setup cost
-- You do not need charset=utf-8, it will be applied automatically
 - For the OS13k core system we are using [Google Closer](https://closure-compiler.appspot.com/home) and [Terser](https://xem.github.io/terser-online)
-- For JS13k we will pack everything together into one massive html file before zipping to save space
 
  ## Resources
  - [Dwitter](https://www.dwitter.net/) - Many ideas for tiny programs we can repurpose
@@ -173,4 +167,3 @@ Add an icon config to programs.js to register your program, and send me pull req
 Most of the OS was created by me, Frank Force, but there were many other people helping out. Thank you to everyone for their efforts, I could not have done it alone! Please let me know if I forgot anyone...
 
 Keith Clark, Tomxor, Katkip, Jaburns, Xem, Pavel, Rebecca König, Cantelope, DaSpider, Lionleaf, Yurume, Magna, Rodrigo Siqueira, Thomas Brierley, Nicholas Ortenzio, Yuanchuan, Jani Ylikangas, Martinn Kleppe, Erik Sombroek
-
