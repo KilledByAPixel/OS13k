@@ -416,7 +416,7 @@ class _OS13k
     { return (string+'').substring(0, maxLength || string.length).replace(/<.*>/g, ''); }
     
     // convert a string to a music data array, will throw error if invalid
-    StringToMusic(string, validate = 0)
+    StringToMusic(string, validate)
     {
         // check if safe to eval and get music data
         let music = string.replace(/null|[[\],\d\.-]/g, '') || eval(string.replace(/null/g, undefined)); 

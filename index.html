@@ -474,7 +474,7 @@ class _OS13k
     GetAnalyserData(e) { return analyserData[e] ? analyserData[e] : 0; }
     
     // convert a string to a music data array, will throw error if invalid
-    StringToMusic(string, validate = 0)
+    StringToMusic(string, validate)
     {
         // check if safe to eval and get music data
         let music = string.replace(/null|[[\],\d\.-]/g, '') || eval(string.replace(/null/g, undefined)); 
