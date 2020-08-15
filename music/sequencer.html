@@ -69,7 +69,7 @@ O = e=>
     m[2][0] = x = 0;
 
     // clone patterns and get ends
-    for(n = 1; x < 4; )
+    for(n = 1; x < 8; )
     {
         // chop off at end marker (-2) or if no more notes
         for(y = 2; y < 130; ++y)
@@ -80,7 +80,7 @@ O = e=>
     }
 
     // set all patterns to be same length
-    for(x = 0; x < 4; ) m[1][0][x++].length = n;
+    for(x = 0; x < 8; ) m[1][0][x++].length = n;
 
     return m;
 }
@@ -147,7 +147,7 @@ W = e=>
         M = OS13k.StringToMusic(d = prompt `ZzFXM Data`, 1);
 
         // set end at max channel length
-        //M[1][0][0][M[1][0].reduce((a,c)=>Math.max(a, c.length), 0)] = -2;
+        M[1][0][0][M[1][0].reduce((a,c)=>Math.max(a, c.length), 0)] = -2;
 
         // rebuild and set bpm
         R(T.value = M[3]);

@@ -29,7 +29,7 @@ localStorage.OS13kFrozen &&
 
 // add unicode glitches to a string
 // based on dweet by f8f82804 www.dwitter.net/d/11808
-Z=(s,c)=>{for(c;c-->0;)s=s.slice(0,r=Math.random()*(s+='').length+1)+String.fromCharCode(768+99*Math.random())+s.slice(r);return OS13k.StripHTML(s)}
+Z=(s,c)=>{for(c;c-->0;)s=(s+='').slice(0,r=Math.random()*s.length+1)+String.fromCharCode(768+99*Math.random())+s.slice(r);return OS13k.StripHTML(s)}
 
 // set saved config
 c.checked=localStorage.OS13kCc!='false'
