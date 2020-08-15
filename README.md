@@ -3,10 +3,6 @@ OS13k is a tiny operating system that fits in a 13 kb zip file.
 
 It includes native support for Shadertoys, Dweets, ZzFX sounds, music, trophies, mobile support, and much more.
 
-![OS13k Image](/favicon.ico) 
-
-## Please keep this project confidential!
-
 # [Live Demo](https://killedbyapixel.github.io/OS13k) -  [JS13k Build](https://killedbyapixel.github.io/OS13k/JS13k) - [Discord](https://discord.gg/n8vxUcZ)
 
 ## What is OS13k?
@@ -165,3 +161,5 @@ Add an icon config to programs.js to register your program, examples...
 Most of the OS was created by me, Frank Force, but there were many other people helping out. Thank you to everyone for their efforts, I could not have done it alone! Please let me know if I forgot anyone...
 
 Keith Clark, Tomxor, Katkip, Jaburns, Xem, Pavel, Rebecca König, Cantelope, DaSpider, Lionleaf, Yurume, Magna, Rodrigo Siqueira, Thomas Brierley, Nicholas Ortenzio, Yuanchuan, Jani Ylikangas, Martinn Kleppe, Erik Sombroek
+
+![OS13k Image](/favicon.ico) 
