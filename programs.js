@@ -39,7 +39,7 @@ programStubs =
 ['🛠️',,,,,'Apps',,
 [
     ['⌛','apps/timer.html',400,139,reload],
-    ['📈','apps/grapher.html',,,,,'Enter an function of x to see the graph.\n\nMouse = Show Y value\nWheel = Zoom'],
+    ['📈','apps/grapher.html',,,,,'Enter an function of x to see the graph.\n\nMouse = Show Values\nWheel = Zoom'],
     ['📸','apps/camera.html',640,480],
     ['<span style=color:#0f0;background:#000;font-family:monospace>JS>','apps/console.html']
 ]],
@@ -63,7 +63,7 @@ programStubs =
     ['🏂🏻','games/bogusSlopes.dweet.js',,,,,'Collect Stars to Boost.\n\nUp/Down = Move'],
     ['🌋','games/lavaRush.html',640,400,,,'Escape the rising lava for as long as you can.\n\nWASD = Move\nMouse = Look\nSpace = Jump'],
     ['🌈','games/swatch.html',320,340,reload,,'Create a smooth gradient.\n\nClick = Swap Colors'],
-    ['🧜🏽‍♂️','games/aquapop.html',640,480,,,'Left/Right = Move\nSpace = Shoot\nEnter = Restart'],
+    ['🧜🏽‍♂️','games/aquaPop.html',640,480,,,'Left/Right = Move\nSpace = Shoot\nEnter = Restart'],
     ['<span style=color:#fff;background:#000;font-family:monospace>&nbsp;☻&nbsp;','games/digitDilemma.html',400,560,,,'Push numbers until none are left.\nAll puzzles are solvable!\n\nArrows = Move\nSpace = Undo\nR = Randomize'],
     ['<span style=font-size:25px>♠️','games/freeCell.html',800,900,full|reload],
     ['🌲','games/hueJumper.html',,,,,'Reach checkpoints to get more time.\nThe road ends at 1000.\n\nMouse = Turn\nClick = Brake\nDouble Click = Jump'],
