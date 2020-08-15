@@ -108,7 +108,13 @@ $main = $a => {
     g.uniform4fv(g.getUniformLocation($shader, 'g'), $shaderWriteBuffer);
 
     OS13k.RenderShader(a, $shader);
-    
+
+    if ($shaderWriteBuffer[DEAD_FRAMES])
+        $score&&$score>OS13k.GetTrophy('Lava Rush','High Score')&&OS13k.Trophy('🌋','Lava Rush','High Score',$score);
+
+    if ($shaderWriteBuffer[WON_FRAMES])
+        OS13k.Trophy('🏆','Lava Rush','Escaped The Volcano');
+
     g.readPixels(0,0, 2, 1, g.RGBA, g.UNSIGNED_BYTE, $shaderReadBuffer );
 
     $shaderWriteBuffer[PLAYER_X] += $readFloat(0);

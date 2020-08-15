@@ -308,6 +308,9 @@ if (time <= 0)
         OS13k.Trophy('🏁', 'Hue Jumper', 'Distance Record', position.z/1e3|0)
 }
 
+if (position.z > 1e6)
+    OS13k.Trophy('🌲','Hue Jumper','End of The Road')
+
 //////////////////////////////////////////////////////////////////
 // draw background - sky, sun/moon, mountains, and horizon
 //////////////////////////////////////////////////////////////////
