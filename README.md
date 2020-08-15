@@ -30,11 +30,11 @@ It includes native support for Shadertoys, Dweets, ZzFX sounds, music, trophies,
 - Though you can use images and other files, for JS13k we will need each program in one html file
 
 Add an icon config to programs.js to register your program, and send me pull request, examples...
-- [src, icon, width, height, flags, name, help, folder]
-- ['help.html','?']
-- ['system/systemTest.html','✌️😄',,,full|resize|code|sticky]
-- ['dweets/underwaterCavern.dweet.js','🌊']
-- ['toys/infiniteYinYangs.shader.txt','☯',500,500,full,'Put instructions here.']
+- [icon, src, width, height, flags, name, help, folder]
+- ['?','help.html']
+- ['✌️😄','system/systemTest.html',,,full|resize|code|sticky]
+- ['🌊','dweets/underwaterCavern.dweet.js']
+- ['☯','toys/infiniteYinYangs.shader.txt',500,500,full,'Put instructions here.']
 
 ### Programs
 - OS13k can open any html file and it will work the same as if opened directly
@@ -71,7 +71,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 - OS13k.PlaySamples(samples, sampleRate=44100) - Play audio samples
 - OS13k.Note(semitoneOffset=0, rootNoteFrequency=440) - Get frequency of a note on a musical scale
 - OS13k.Speak(text, language='en', stopSpeech, volume=1, rate=1, pitch=1) - Play speech of the text
-- Seeds can also be strings (will be hashed) or full zzfx sounds
+- Seeds can also be strings (will be hashed) or full ZzFX sounds
 - An extra custom gain node is created for every sound, use sound.gain.gain.value to change
 
 ### Music
@@ -157,7 +157,7 @@ Add an icon config to programs.js to register your program, and send me pull req
  - Press Alt+Enter to reload when not using live edit
  - User programs will not run until clicked to prevent executing bad code
 
-# Minification Tips
+## Minification Tips
 - The goal is to fit as much as possible into 13 kilobytes so everything must be small and clean
 - For inclusion in the JS13k build, programs need be around 100-500 bytes when minified
 - *Always remember, this will be zipped! Don't over golf your code.*
@@ -169,23 +169,7 @@ Add an icon config to programs.js to register your program, and send me pull req
 - For the OS13k core system we are using [Google Closer](https://closure-compiler.appspot.com/home) and [Terser](https://xem.github.io/terser-online)
 - For JS13k we will pack everything together into one massive html file before zipping to save space
 
-### Games
-- *JS13k is a game development competition, so we need to focus on games and fun apps*
-- Don't put music in your games, music will be handled by music specific programs
-- Use local storage to save your game's data (prefix keys with OS13kProgramName)
-- Use JS13k features like trophies, seeded sound effects, and speech to enrich your games
-- To add sounds with little space, use seeded sounds with a tiny function call OS13k.PlaySeed(seed)
-- Dweets and Shaders are the smallest way to make games, check out Lava Rush for a shader example
-
-### Apps
-- Apps that complement each other is one of the key ways we can make this interesting
-- Keep text short and essential, try using emojis instead
-- Apps that are creative or fun to use are are ideal
-- Design your app well and let players have fun figuring out how to use it
-- Think of how your app can enhance other apps and vice versa
-- *Apps can play sounds and have trophies too!*
-
- # Resources
+ ## Resources
  - [Dwitter](https://www.dwitter.net/) - Many ideas for tiny programs we can repurpose
  - [The Dweetabase](http://dweetabase.3d2k.com/) - An offline searable database of every dweet
  - [Shadertoy](https://www.shadertoy.com/) - There are many amazing tiny shaders [(check out the 2TC tag)](https://www.shadertoy.com/results?query=2TC)
