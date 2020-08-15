@@ -10,17 +10,12 @@ It includes native support for Shadertoys, Dweets, ZzFX sounds, music, trophies,
 # [Live Demo](https://killedbyapixel.github.io/OS13k)
 # [JS13k Build](https://killedbyapixel.github.io/OS13k/JS13k)
 # [Discord](https://discord.gg/n8vxUcZ)
-# [Trello Board](https://trello.com/b/1PNeOZfM/os13k) (ask for an invite)
 
-## The Plan
-- The idea is to build a tiny OS to host a variety of games, music, and apps that fits in 13 kilobytes
-- The core of OS13k is around 10k zipped, and by using it's shared features we can pack a lot into 13k
-- Programs should be in the 100-500 byte range, what matters most is how well it zips with everything else
-- We plan to fit 10-20 programs [(probably not 26!)](http://js13kgames.com/entries/26-games-in-1) 😅
-- **A very important rule for JS13k is that all content must be new, so no old stuff!**
-- You can start with an old project but polish it up a lot, minify it and make it work with OS13k
-- We will need to curate the best and perhaps smallest content for what actually lands in the JS13k build
-- Anything left out of the JS13k build will still be available in the full GitHub version
+## What is OS13k?
+- OS13k is a tiny web based OS and game engine designed for creative coding purposes
+- The core of OS13k is around 10k zipped including all the system apps
+- OS13k can connect with other JS13k games via local storage to add music and trophies
+- Users can extend OS13k by addinng their own programs and shaders
 
 ### [You can learn more about JS13k here](https://js13kgames.com/)
 
@@ -51,8 +46,7 @@ Add an icon config to programs.js to register your program, and send me pull req
  - Apps can register trophies for their games, the OS tracks which are unlocked
  - To unlock trophies use OS13k.Trophy(icon, gameName, trophyName, message)
  - You can pass in a value as the message, like a high score for example
- - "OS13kTrophy,icon,gameName,trophyName" is the unique local storage key for each trophy
- - *HTML tags and commas can not used in trophy data*
+ - *HTML tags and commas can not be used in trophy data*
  - When a new trophy is unlocked or the message is changed a popup will automatically appear
  - Total trophy count is shown in the taskbar and the trophy case shows all unlocked trophies
  - *You can use tophies to store data!* Use OS13k.GetTrophy to get a trophy message
@@ -76,13 +70,10 @@ Add an icon config to programs.js to register your program, and send me pull req
 
 ### Music
 - [ZzFXM by Keith Clark](https://github.com/keithclark/ZzFXM) is the music player
-- ZzFXM music shoud only be played by the Music Player, you can add a new songs to the library
-- We can have music generators, synth instruments, and maybe even mini albums
-- The idea is that players can listen to music while playing with other games and apps
-- Other JS13k games can add their music to OS13k, and users can also paste in music
-- Music programs should continue playing if the frame loses focus, but reduced graphics if necessary to lower the load
+- OS13k.PlayMusic(song) - plays the song with zzfxm
 - OS13k.GetAnalyser() - returns a 32x32 music analyser canvas
 - OS13k.GetAnalyserData(i) - returns index into a 32 length array of frequency volumes normalized between 0-1
+- OS13k.StringToMusic(string, validate) - Converts a string to a music array and checks if valid
 
  ### Any JS13k game can add trophies and music, even if not part of OS13k!
  - *To add a trophy or music track, just save a special key to localStorage!*
@@ -176,3 +167,10 @@ Add an icon config to programs.js to register your program, and send me pull req
  - [JS1k](https://js1k.com/) - A resource for tiny programs
  - [JS13k](https://js13kgames.com/) - This is the contest we are entering
 -  [Emojipedia](https://emojipedia.org/) - Emoji reference
+
+## Contribuitors
+
+Most of the OS was created by me, Frank Force, but there were many other people helping out. Thank you to everyone for their efforts, I could not have done it alone! Please let me know if I forgot anyone...
+
+Keith Clark, Tomxor, Katkip, Jaburns, Xem, Pavel, Rebecca König, Cantelope, DaSpider, Lionleaf, Yurume, Magna, Rodrigo Siqueira, Thomas Brierley, Nicholas Ortenzio, Yuanchuan, Jani Ylikangas, Martinn Kleppe, Erik Sombroek
+
