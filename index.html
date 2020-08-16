@@ -235,6 +235,22 @@ let OS13kVersion = 81;
 } // debug stuff
 
 ///////////////////////////////////////////////////////////////////////////////
+// Audio Compatibilty - Optional aliases for old web audio (remove from minified)
+
+if (typeof AudioContext == 'undefined')
+{
+    AudioContext = webkitAudioContext;
+    AudioContext.prototype.createGain = AudioContext.prototype.createGainNode;
+    AudioContext.prototype._createBufferSource = AudioContext.prototype.createBufferSource;
+    AudioContext.prototype.createBufferSource = (s = audioContext._createBufferSource())=>
+    (
+        s.start = s.start || s.noteOn,
+        s.stop  = s.stop  || s.noteOff,
+        s
+    );
+}
+
+///////////////////////////////////////////////////////////////////////////////
 // Minification Stuff
 
 {
@@ -757,22 +773,6 @@ const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26,
     soundReload     = 85,
     soundProgram    = 90,
     soundSave       = 6;
-
-///////////////////////////////////////////////////////////////////////////////
-// Audio Compatibilty - Optional aliases for old web audio
-
-if (typeof AudioContext == 'undefined')
-{
-    AudioContext = webkitAudioContext;
-    AudioContext.prototype.createGain = AudioContext.prototype.createGainNode;
-    AudioContext.prototype._createBufferSource = AudioContext.prototype.createBufferSource;
-    AudioContext.prototype.createBufferSource = (s = audioContext._createBufferSource())=>
-    (
-        s.start = s.start || s.noteOn,
-        s.stop  = s.stop  || s.noteOff,
-        s
-    );
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 // Global Variables
