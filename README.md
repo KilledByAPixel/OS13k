@@ -11,8 +11,6 @@ It includes native support for Shadertoys, Dweets, ZzFX sounds, music, trophies,
 - OS13k can connect with other JS13k games via local storage to add music and trophies
 - Users can extend OS13k by addinng their own programs and shaders
 
-### [You can learn more about JS13k here](https://js13kgames.com/)
-
 ## Programming Info
 - OS13k stores it's list of programs in programs.js
 - For fast iteration when developing, most recent active window is opened on startup
