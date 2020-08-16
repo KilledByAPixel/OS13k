@@ -13,7 +13,7 @@ Please keep this project confidential!
 <title>OS13k - A Tiny JavaScript OS</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?v252></script>
+<script src=programs.js?v253></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -823,7 +823,7 @@ Update = time=>
     let frequencyData = new Uint8Array(musicAnalyser.fftSize = 512),
         context = analyserCanvas.getContext('2d');
     musicAnalyser.getByteFrequencyData(frequencyData);
-    analyserCanvas.width = analyserCanvas.height = 32
+    analyserCanvas.width = analyserCanvas.height = 32;
 
     // render analyser
     for(let i = 0; i < 32; )
@@ -1354,7 +1354,7 @@ class OS13kWindow extends HTMLElement
                         canvas.height = this.iframeContent.c.height,
                         canvasContext.fillStyle = '#fff'),
                         canvasContext.drawImage(this.iframeContent.c, 0, 0),
-                    link.href = canvas.toDataURL('image/jpeg'),
+                    link.href = canvas.toDataURL('image/png'),
                     link.download = 'OS13k_Image_' + program.name);
             } catch(e) {} // ignore screenshot errors
         }
@@ -1569,7 +1569,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             this.iframe.onload = ()=> LoadFrame();
-            this.iframe.src = program.src + '?v252';
+            this.iframe.src = program.src + '?v253';
         }
     }
         
