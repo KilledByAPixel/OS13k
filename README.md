@@ -81,7 +81,7 @@ Add an icon config to programs.js to register your program, examples...
 - OS13k.CreateShader(canvas, shaderCode) - Create a shadertoy compatible webgl shader
 - OS13k.RenderShader(canvas, shaderProgram, time=0, frame=0) - Render a shader
 - OS13k.StripHTML(string) - Removes all HTML tags in a string
-- OS13k.Hash(string) - Returns numeric hash code for a struing
+- OS13k.Hash(string) - Returns numeric hash code for a string
 - OS13k.Popup(html, speak) - Shows a popup with html body and optional speech and sound
 
 ### Math Library
