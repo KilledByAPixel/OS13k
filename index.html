@@ -449,7 +449,7 @@ class _OS13k
         // create buffer and source
         let buffer = audioContext.createBuffer(samplesArray.length, samplesArray[0].length, sampleRate),
             source = audioContext.createBufferSource();
-        
+
         // copy samples to buffer and play
         samplesArray.map((d,i)=> buffer.getChannelData(i).set(d));
         source.buffer = buffer;
@@ -759,6 +759,22 @@ const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26,
     soundSave       = 6;
 
 ///////////////////////////////////////////////////////////////////////////////
+// Audio Compatibilty - Optional aliases for old web audio
+
+if (typeof AudioContext == 'undefined')
+{
+    AudioContext = webkitAudioContext;
+    AudioContext.prototype.createGain = AudioContext.prototype.createGainNode;
+    AudioContext.prototype._createBufferSource = AudioContext.prototype.createBufferSource;
+    AudioContext.prototype.createBufferSource = (s = audioContext._createBufferSource())=>
+    (
+        s.start = s.start || s.noteOn,
+        s.stop  = s.stop  || s.noteOff,
+        s
+    );
+}
+
+///////////////////////////////////////////////////////////////////////////////
 // Global Variables
 
 let grabWindow, grabOffsetX, grabOffsetY, finishedStartup, nextUserProgramId = 0,
@@ -773,10 +789,11 @@ let grabWindow, grabOffsetX, grabOffsetY, finishedStartup, nextUserProgramId = 0
     settings = {v:.3, m:.3, s:1, p:1, o:1, c:'#222233', d:'#332222', t:'OS13k', f:''},
 
     // init web audio
-    audioContext = new AudioContext, 
+    audioContext = new AudioContext,
     gain = audioContext.createGain(), 
     gainMusic = audioContext.createGain(), 
     musicAnalyser = audioContext.createAnalyser(),
+
 
 // main update loop
 Update = time=>
