@@ -6,7 +6,7 @@ It includes native support for Shadertoys, Dweets, ZzFX sounds, music, trophies,
 # [Live Demo](https://killedbyapixel.github.io/OS13k) -  [JS13k Build](https://killedbyapixel.github.io/OS13k/JS13k) - [Discord](https://discord.gg/n8vxUcZ)
 
 ## What is OS13k?
-- OS13k is a tiny web based OS and game engine designed for creative coding purposes
+- OS13k is a tiny web based pseudo OS and game engine designed for creative coding purposes
 - The core of OS13k is around 10k zipped including all the system apps
 - OS13k can connect with other JS13k games via local storage to add music and trophies
 - Users can extend OS13k by addinng their own programs and shaders
