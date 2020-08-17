@@ -222,7 +222,7 @@ let OS13kVersion = 81;
     localStorage.OS13kVersion = OS13kVersion;
 
     // load default programs if none found
-    if (typeof programStubs == 'undefined')
+    if (window.programStubs === undefined)
     {
         alert('No programs found!')
         var sticky = 2**0, reload = 2**1, awake = 2**2, full = 2**3, resize= 2**4, code = 2**5,
@@ -235,7 +235,7 @@ let OS13kVersion = 81;
 ///////////////////////////////////////////////////////////////////////////////
 // Audio Compatibilty - Optional aliases for old web audio (remove from minified)
 
-if (typeof AudioContext == 'undefined')
+if (window.AudioContext === undefined)
 {
     AudioContext = webkitAudioContext;
     AudioContext.prototype.createGain = AudioContext.prototype.createGainNode;
@@ -2155,7 +2155,7 @@ Update();
 // save if user was touching
 let wasTouching;
     
-if (typeof ontouchstart != 'undefined')
+if (window.ontouchstart !== undefined)
 {
     // remove hovers, they get stuck on mobile
     let RemoveHovers = e=>

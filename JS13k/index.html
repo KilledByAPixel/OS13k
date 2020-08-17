@@ -1,30 +1,19 @@
-<div style=display:none>
+<!--
 
-<iframe name=Help><h2><i>Welcome to OS13k!</i></h2><p>OS13k is a tiny operating system designed for JS13k.<p>Play JS13k games to earn trophies and unlock music. <a href=https://github.com/KilledByAPixel/OS13k target=_blank>More info on GitHub.</a><p>✌️😄 ❤️ OS13k Team</iframe>
+OS13k is a tiny operating system designed for JS13k.
+It has native support for Shadertoys, Dweets, ZzFX, trophies, and more.
+https://github.com/KilledByAPixel/OS13k
 
-<iframe name=Settings><style>body{background:#111;color:#fff;user-select:none;text-align:center}</style>Volume <input type=range id=V oninput=s() style=width:99> Music <input type=range id=M oninput=s() style=width:99><p>System Sounds <input type=checkbox id=Y oninput=s()> Speech <input type=checkbox id=S oninput=s()> Popups <input type=checkbox id=P oninput=s()> <p>Background <input id=C type=color oninput=s()> <input id=D type=color oninput=s()> <input id=T oninput=s()><script>s=e=>parent.OS13k.SaveSettings(V.value/100,M.value/100,S.checked,P.checked,Y.checked,D.value,C.value,T.value),s(i=parent.OS13k.Settings(),V.value=100*i.v,M.value=100*i.m,S.checked=i.s,P.checked=i.p,Y.checked=i.o,C.value=i.d,D.value=i.c,T.value=i.t)</script></iframe>
+❤️ OS13k Team ✌️😄
 
-<iframe name="Trophy Case"><style>body{background:#232}</style>&nbsp;<script>OS13kReload=()=>{for(t of(this.document.body.innerHTML="",parent.OS13k.Trophies()))this.document.body.innerHTML+=`<div style='display:inline-block;font-family:arial;padding:9;overflow:hidden;text-align:center;background:linear-gradient(#eee,#888);width:120;height:120;margin:9;font-size:18;box-shadow:5px 5px 9px;border:2px solid;border-radius:29px'title='${i=t[0]||"🏆"} ${n=t[2]}\n${g=t[1]}\n${m=t[3]}'onmousedown='parent.OS13k.Speak(\`${n}\`,"ja",1)'><div style='padding:3;white-space:nowrap;font-size:28;text-shadow:2px 2px 4px'>${i}</div><div><b>${n}</b><br><i>${g}</i><br><div style=font-size:14>`+m},OS13kReload()</script></iframe>
+-->
 
-<iframe name="Sticky Note"><body style=background:#ff8;font-family:cursive;font-size:23 id=b contenteditable=true spellcheck=false><script>b.focus();b.innerHTML=localStorage.OS13kN||'';b.oninput=e=>localStorage.OS13kN=b.innerHTML;OS13kReload=e=>b.innerHTML=localStorage.OS13kN='';</script></iframe>
+<title>OS13k - A Tiny JavaScript OS</title>
+<link rel=icon type=image/x-icon href='favicon.ico'/>
+<meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
+<script src=programs.js?v253></script>
 
-<iframe name=Clock>D=Date(L=(t,e,l,o=-6)=>x.fillRect(-e/2,o,e,l,x.rotate(-a+(a=Math.PI*(2*t-1)))));if(c.title!=D){document.hasFocus()&&OS13k.PlaySeed(6,.1,1,.01);c.title=D;c.style.background='#111';c.width=198;x.translate(99,99);D=D.slice(16,24).split`:`;for(a=i=0;61>i++;L(i/60,2,i%5?3:8,88))x.fillStyle='#fff';L(D[0]%12/12+D[1]/720,6,59);L(D[1]/60,3,85);x.fillStyle='#f00';L(D[2]/60,2,99)}</iframe>
-
-<iframe name="Music Player"><style>body{background:#111;color:#fff;user-select:none;text-align:center;overflow-x:hidden;white-space:nowrap}</style><div id=N style=font-size:27;font-family:arial>&nbsp;</div><div id=F style=height:9></div><br><button onmousedown=P()>Play</button> <button onmousedown=X&&X.stop(X=0)>Stop</button> <button onmousedown=A()>Load</button> <button onmousedown=R()>Delete</button><br><br>Volume <input type=range id=V> Loop <input type=checkbox id=O><br><canvas id=C style=width:350;height:29></canvas><br><select id=S size=9 style=width:350;background:#000;color:#fff><script>OS13k=parent.OS13k,X=E=D=T=0,Y=Q=-1,U=e=>{requestAnimationFrame(U),!--Y&&Q>=0?(l=L[Q],T=0,Q=-1,(X=OS13k.PlayMusic(l.d))?X.gain.gain.value=V.value/99:alert`⚠️ Error!`):Y<-1&&(C.getContext`2d`.drawImage(OS13k.GetAnalyser(),0,0,C.width=32,C.height=32),F.innerText=X?(X.gain.gain.value=V.value/99,d=X.buffer.duration,T+=(e-D)/1e3,X.loop=O.checked?1:T>d?X=0:0,W(T%d)+"/"+W(d)):(N.innerText="OS13k Music Player","")),D=e},B=e=>{for(e in i=S.selectedIndex,S.innerHTML="",Z=0,L=[],localStorage)I(e);L.sort((e,n)=>e.n.localeCompare(n.n)).map(e=>S.innerHTML+="<option>"+e.n),S.selectedIndex=OS13k.Clamp(E?L.findIndex(e=>e.k==E):i,S.length-1,E=0),localStorage.OS13kM=JSON.stringify(K)},I=e=>{if(p=e.split`,`,f=p.shift(),"OS13kMusic"==f.substring(0,10)){n=p[0]?p[0]:"Untitled","U"==f[10]?Z=Math.max(Z,f.substring(11)):K.indexOf(e)<0&&(OS13k.Popup("🎵 New Music<br><b>"+n,n),K.push(e));try{(d=OS13k.StringToMusic(localStorage[e]))&&L.push({d:d,k:e,n:n})}catch(e){}}},P=e=>{X&&X.stop(),Y=2,(Q=S.selectedIndex)<0||(N.innerText=L[Q].n,F.innerText="Loading...")},A=e=>{try{OS13k.StringToMusic(d=prompt`ZzFXM Data`,1),B(localStorage[E=`OS13kMusicU${Z+1},`+prompt`Name`.replace(/,/g,"")]=d)}catch(e){alert`⚠️ Error!`}},R=e=>confirm(`⚠️ Delete ${L[S.selectedIndex].n}?`)&&B(localStorage[L[S.selectedIndex].k]=0),W=e=>(e/60|0)+((e=e%60|0)<=9?":0":":")+e,localStorage["OS13kMusic,OS13k Test"]=JSON.stringify([[[,0,400,,,,,,,,,,,5,,,.1]],[[[0,-1,1,0,9,1],[0,1,0,99,-1,0]]],[0,0,0,0],90]),K=localStorage.OS13kM?JSON.parse(localStorage.OS13kM):[],U(B(onunload=e=>X&&X.stop()))</script></iframe>
-
-<iframe name=Visualizer>for(x.fillRect(0,0,2e3,2e3),x.fillStyle="#0003",t?x.lineWidth=9:h=[],x.strokeStyle="#fff",i=32;i--;x.beginPath(x.strokeStyle=`hsl(${-99-i*360/32} 99%${9+m/2}%)`,x.stroke()))for(m=199*OS13k.GetAnalyserData(i),j=5;j--;)x.arc(960,540,256+(j+1&2?1:-1)*m,a=2*((2&j)/2-8.5+i)*Math.PI/32,a);x.drawImage(c,-40,-20,2e3,1120)</iframe>
-
-<iframe name="Don't Fall">for(t||(A=B=P=8,a=b=p=0),I=OS13k.Input(window),a=-I.x/2,k=I.y,b-=.006,A-=a,B-=b,r=.2-B/240,P-=r,B+=r,c.width=512,i=3e3;X=63&i,Y=i>>6,i--;x.fillRect(8*X,8*Y,8,8))y=Y/3+B+P,z=X/3+4*(y>>4),G=T(y+z^z-y),M=G>5,A^X|B^Y|!M||(OS13k.PlaySeed(96*G,p+k*k,.3),b=k?p/3:.2,p=k?0:p>1?1:p+G%2/12),y-=P/2,z+=A/3,g=T(y+z^z-y),m=t<32?12+g%8+Y-B:(G^g)+Y-B&31,x.fillStyle=`hsl(${M*G*30+m}deg 99%${50*M+m*(1-S(t/16)**3)/2}%`;x.font=16+16*p+"px a",x.fillText(k?"🙉":"🐵",8*A-8-8*p,8*B),B<48&&OS13k.Trophy([..."🐢🦒🦉🦇🦜🕊🐒🦅"][y=32-y>>5],"Don't Fall",16*y+"ft")</iframe>
-
-<iframe name="Bogus Slopes">i=OS13k.Input(window),(!t||i.keypress[32])&&(T=U=V=F=0,W=[],Y=540,X=-700),X>0||(x.fillStyle="#ddd8",x.fillRect(0,0,2e3,2e3),x.font='9em"',x.textAlign="center",x.textBaseline="middle",x.scale(-1,1),F=Math.min(F+.2,19+T/1e4),W.push((60*t|0)%Math.max(9,19-T/1e4|0)?{t:"●",x:X,y:Y,c:`hsl(${T} 99%${U<-1?50:100}%)`}:{t:[..."🌲🌳⭐"][2*Math.random()+(Math.random()<.1)|0],x:-2200,y:79+900*Math.random()}),W=W.filter(t=>(x.fillStyle=t.c||R(),x.fillText(t.t,t.x+=F*("⭐"==t.t?.7:1),t.y),t.x<99&&("●"==t.t||(Math.hypot(X-t.x,Y-t.y)>99?1:(OS13k.PlaySeed("⭐"==t.t?169:121),U="⭐"==t.t?-9:F=9,0))))),x.fillText("🏂🏻",X=Math.max(X+(U*=.98),-1800),Y=OS13k.Clamp(Y+(V=.95*V-i.y),1e3,99)),x.scale(-1,1),x.textAlign="left",x.fillStyle=R(),x.fillText(s=(T+=F)/1e3|0,9,99),x.textAlign="right",x.fillStyle=R(255,0,0,9-t),x.fillText(d=OS13k.GetTrophy("Bogus Slopes","High Score"),c.width-9,99),s>99&&OS13k.Trophy("⭐","Bogus Slopes","100!"),X>0&&(OS13k.PlaySeed(370,5),s>d&&OS13k.Trophy("🏂🏻","Bogus Slopes","High Score",s)))</iframe>
-
-<iframe name=Ziano><style>body{background:#111;color:#fff;user-select:none;text-align:center}</style><span id=B></span>🌱 <input oninput=P(0,R()) style=width:240 id=S><p>🔊 <input onchange=R() style=width:99 type=range id=V> 🐇 <input onchange=R() style=width:99 type=range id=L> 🐢<script>OS13k=parent.OS13k,R=e=>{for(onblur(D=[]),i=5;--i;D[i]=OS13k.SeedSamples(S.value,.1+L.value/9,1,0,OS13k.Note(12*i-33)));},P=e=>e<0||A[e]||((A[e]=OS13k.PlaySamples(D[2+e/12|0],2)).detune.value=e%12*100,A[e].gain.gain.value=V.value/50),X=e=>A[e]&&(A[e].gain.gain.linearRampToValueAtTime(V.value/50,t=A[e].context.currentTime+.02),A[e].gain.gain.linearRampToValueAtTime(A[e]=0,t+.1)),onunload=onblur=e=>A.map((e,a)=>X(a)),R(A=[]),onkeydown=e=>document.activeElement==S||P(OS13k.PianoKey(e)),onkeyup=e=>X(OS13k.PianoKey(e))</script></iframe>
-
-<iframe name=Sequencer><style>body{background:#111;color:#fff;user-select:none;text-align:center}</style>BPM <input type=number style=width:59 id=T value=120>&nbsp; Loop <input type=checkbox id=L>&nbsp; <button onmousedown=P()>Play</button> <button onmousedown=S()>Stop</button> <button onmousedown=V()>Save</button> <button onclick=W()>Load</button><p><a id=H download></a><div id=B style=display:grid;justify-content:center><script>OS13k=parent.OS13k,M=[[],[[]]],P=e=>(A=OS13k.PlayMusic(O(S()))).loop=L.checked,onunload=S=e=>A&&A.stop(),I=(e,t)=>M[0][t]=OS13k.SeedParameters(e,1,1,0,OS13k.Note(-33)),Q=e=>e?e>0?(e>=1?"CCDDEFFGGAAB"[e%12|0]+("02579".indexOf(e%12-1)>=0?"#":"")+" - "+(e/12-1|0)+" ":"")+(e%1?(10-10*e%10|0)+"0%":""):e<-1?" End":"Stop":"",N=(e,t,o)=>(v=8==e.keyCode?0:32==e.keyCode?-1:13==e.keyCode?-2:38==e.keyCode||40==e.keyCode?(n=M[1][0][t][o]>0?M[1][0][t][o]:0,(0|n)+(10*n%10+10+(e.keyCode-39))/10%1):OS13k.PianoKey(e)>=0?v=12+OS13k.PianoKey(e):-3,v>-3&&(e.target.value=Q(M[1][0][t][o]=v),p=[...M[0][t]],p[0]*=1-v%1,p[2]=OS13k.Note(v-12|0,p[2]),Z&&Z.stop(),Z=v>0&&OS13k.PlaySamples(parent.zzfxG(...p),1)),9==e.keyCode),O=e=>{for(m=[M[0],[[],[[]]],[],OS13k.Clamp(T.value,1e3,30)],m[2][0]=x=0,n=1;x<8;){for(y=2;y<130;++y)n=Math.max(n,-2==M[1][0][x][y]?y:M[1][0][x][y]?y+1:n);m[1][0][x]=[...M[1][0][x++]]}for(x=0;x<8;)m[1][0][x++].length=n;return m},R=e=>{for(o="",B.style.gridTemplateColumns="40px",x=8;x--;)B.style.gridTemplateColumns+=" 80px";for(y=0;y<130;++y)for(x=-1;x<8;++x)o+=-1==x?y>1?y-1:[..."🌱🎧"][y]:y>1?`<input readonly style=width:80;${(y+2)%4?"":"background:#ccf"} onkeydown="return N(event,${x},${y})"value="${Q(M[1][0][x][y])}">`:y>0?`<input style=width:80 oninput=M[1][0][${x}][1]=this.value/50-1 type=range value=${50*(M[1][0][x][1]||0)+50}>`:(M[1][0][x]||(M[1][0][x]=[x,0]),I(m=M[0][x]?`zzfx(...[${M[0][x]}])`:"",x),`<input style=width:80 oninput=I(this.value,${x});Z&&Z.stop();Z=this.value&&OS13k.PlaySeed(this.value,1,1,0,OS13k.Note(-21),1) value=${m}>`);B.innerHTML=o},R(A=Z=0),D=e=>Array.isArray(e)?"["+e.map(e=>D(e)).join(",")+"]":e,V=e=>H.click(H.href=URL.createObjectURL(new Blob([D(O())]))),W=e=>{try{M=OS13k.StringToMusic(d=prompt`ZzFXM Data`,1),M[1][0][0][M[1][0].reduce((e,t)=>Math.max(e,t.length),0)]=-2,R(T.value=M[3])}catch(e){alert`⚠️ Error!`}}</script></iframe>
-
-<iframe id=T><style>:host{position:absolute;background:#000;box-shadow:5px 5px 9px;border:3px solid#222;border-radius:6px;overflow:hidden}input,button,span{margin:4}span{white-space:nowrap}.T{height:34;font-size:24;display:flex;align-items:center;white-space:nowrap;background:linear-gradient(#ccc,#444);border-bottom:3px solid}.TA{background:linear-gradient(#eee,#88f)}.TAU{background:linear-gradient(#eee,#8f8)}.TAS{background:linear-gradient(#eee,#f88)}.TS{background:linear-gradient(#ccc,#844)}.U{width:100%;resize:none;outline:0;border-top:2px solid}</style></iframe>
-
-</div>
+<!-- HTML above is OPTIONAL -->
 
 <meta charset=utf-8>
 <style>
@@ -39,14 +28,14 @@ body
     white-space:nowrap;
     background:#000;
 }
-#M
+#menu
 {
     display:flex;
     flex-direction:column;
     background:#000;
 }
-.PM { background:linear-gradient(#fff,#888); }
-#M, .PM
+.programMenu { background:linear-gradient(#fff,#888); }
+#menu, .programMenu
 {
     visibility:hidden;
     position:absolute;
@@ -54,34 +43,161 @@ body
     box-shadow:5px 5px 9px;
     border:2px solid;
 }
-.P
+.program
 {
     font-size:18;
     height:18;
     padding:4;
 }
-.W { border:3px solid#aaa; }
-.TI { width:50; height:40; text-shadow:1px 1px 3px#000; overflow:hidden; }
-.PA,
-.TIA      { background:linear-gradient(#ff8,#fff); }
-.TI:hover { background:linear-gradient(#fff,#44f); }
-.R        { padding:2; }
-.R:hover  { background:#fff3; }
-.TI, .F, .P
+.activeWindow { border:3px solid#aaa; }
+#taskbar
+{
+    position:absolute;
+    z-index:10000;
+    width:100%;
+    background:linear-gradient(#888,#333);
+    box-shadow:0px 1px 9px;
+    border:2px solid;
+    left:-2;
+}
+.taskbarIcon { width:50; height:40; text-shadow:1px 1px 3px#000; overflow:hidden; }
+.programActive,
+.taskbarIconActive         { background:linear-gradient(#ff8,#fff); }
+.taskbarIcon:hover         { background:linear-gradient(#fff,#44f); }
+#tray
+{
+    margin:2;
+    padding-left:9;
+    padding-right:9;
+    color:#fff;
+    background:linear-gradient(#000,#333);
+    border:1px solid;
+    border-radius:6px;
+    text-shadow:1px 1px 3px#000;
+}
+.trayIcon       { padding:2; }
+.trayIcon:hover { background:#fff3; }
+.popup
+{
+    position:relative;
+    z-index:10000;
+    width:200;
+    padding:8;
+    pointer-events:none;
+    white-space:normal;
+    text-align:center;
+    background:linear-gradient(#eee,#888);
+    box-shadow:9px 9px 19px;
+    border:2px solid;
+    border-radius:9px;
+}
+.trophyIcon
+{
+    padding:9;
+    font-size:40;
+    text-shadow:2px 2px 4px;
+    white-space:nowrap;
+}
+#background
+{
+    position:absolute;
+    width:100%;
+    height:100%;
+    color:#0002;
+    font-family:impact;
+    font-size:30vw;
+    font-weight:900;
+    position:absolute;
+}
+.program, #taskbar, .taskbarIcon, #background, #tray
 {
     display:flex;
     align-items:center;
     justify-content:center;
 }
 </style>
-<div id=PU style=float:right></div>
-<div id=PM style=position:absolute></div>
-<div id=M></div>
-<div class=F id=B style=position:absolute;width:100%;height:100%;color:#0002;font-family:impact;font-size:30vw;font-weight:900;position:absolute></div>
-<div id=D>
-<div class=F style="position:absolute;z-index:10000;width:100%;background:linear-gradient(#888,#333);box-shadow:0px 1px 9px;border:2px solid;left:-2">
-<div id=FS style=flex:1></div>
-<div class=F id=F style="margin:2;padding-left:9;padding-right:9;color:#fff;background:linear-gradient(#000,#333);border:1px solid;border-radius:6px;text-shadow:1px 1px 3px#000">
+<div id=background></div>
+<div id=desktop>
+<div id=taskbar>
+<div id=taskbarSpace style=flex:1></div>
+<div id=tray></div>
+</div>
+<div id=popups style=float:right></div>
+<div id=programsMenu style=position:absolute></div>
+<div id=menu></div>
+<iframe id=windowTemplate style=display:none>
+<style>
+:host
+{
+    visibility:hidden;
+    position:absolute;
+    background:#000;
+    box-shadow:5px 5px 9px;
+    border:3px solid#222;
+    border-radius:6px;
+    overflow:hidden;
+}
+input, button, span { margin:4; }
+textarea            { padding:9; }
+span                { white-space:nowrap; }
+.titlebar
+{
+    height:34;
+    font-size:24;
+    display:flex;
+    align-items:center;
+    white-space:nowrap;
+    background:linear-gradient(#ccc,#444);
+    border-bottom:3px solid;
+}
+.titlebarActive       { background:linear-gradient(#eee,#88f); }
+.titlebarActiveUser   { background:linear-gradient(#eee,#8f8); }
+.titlebarActiveSticky { background:linear-gradient(#eee,#f88); }
+.titlebarSticky       { background:linear-gradient(#ccc,#844); }
+#name                 { width:100%; overflow:hidden; cursor:grab; }
+#icon           
+{ 
+    display:inline;
+    text-shadow:1px 1px 3px#000;
+    margin-left:9;
+    margin-right:9;
+    pointer-events:none;
+}
+#frame
+{
+    width:100%;
+    height:100%;
+    background:#fff;
+    border:none;
+    visibility:hidden;
+}
+#codeText
+{
+    height:199;
+    background:#000;
+    color:#fff;
+}
+#errorText
+{
+    background:#000;
+    color:#f00;
+}
+#codeOptions
+{
+    background:#111;
+    color:#fff;
+    font-size:16;
+    overflow:auto;
+}
+#codeText, #errorText, #codeOptions
+{
+    width:100%;
+    resize:none;
+    outline:0;
+    border-top:2px solid;
+}
+</style>
+</iframe>
 <script>
 
 'use strict';
@@ -95,11 +211,42 @@ let OS13kVersion = 81;
     if (localStorage.OS13k && localStorage.OS13kVersion != OS13kVersion)
     {
         alert('OS13k version out of date! System reset in 3, 2, 1...');
+
+        // save what we can
+        let save = 0;//localStorage.OS13kVersion >= 70 ? localStorage.OS13k : 0;
         localStorage.clear();
+        if (save)
+          localStorage.OS13k = save;
     }
 
     localStorage.OS13kVersion = OS13kVersion;
+
+    // load default programs if none found
+    if (window.programStubs === undefined)
+    {
+        alert('No programs found!')
+        var sticky = 2**0, reload = 2**1, awake = 2**2, full = 2**3, resize= 2**4, code = 2**5,
+        closeAll = 2**7, newUserProgram = 2**8, deleteUserPrograms = 2**9,
+        defaultFlags = full|reload|resize, defaultWidth = 720, defaultHeight = 405,
+        programStubs = [[,'❌',,,closeAll,'Close All']];
+    }
 } // debug stuff
+
+///////////////////////////////////////////////////////////////////////////////
+// Audio Compatibilty - Optional aliases for old web audio (remove from minified)
+
+if (window.AudioContext === undefined)
+{
+    AudioContext = webkitAudioContext;
+    AudioContext.prototype.createGain = AudioContext.prototype.createGainNode;
+    AudioContext.prototype._createBufferSource = AudioContext.prototype.createBufferSource;
+    AudioContext.prototype.createBufferSource = (s = audioContext._createBufferSource())=>
+    (
+        s.start = s.start || s.noteOn,
+        s.stop  = s.stop  || s.noteOff,
+        s
+    );
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // Minification Stuff
@@ -116,12 +263,13 @@ let OS13kVersion = 81;
 // @js_externs OS13k.Speak, OS13k.StopSpeech, OS13k.PlaySeed
 // @js_externs OS13k.SeedSamples, OS13k.SeedParameters
 // @js_externs OS13k.Settings, OS13k.SaveSettings, OS13k.Input
+// @js_externs OS13k.CreateShader, OS13k.RenderShader
 // @js_externs OS13k.KeyDirection, OS13k.StripHTML, OS13k.StringToMusic, OS13k.Popup
 // @js_externs localStorage.OS13k, localStorage.OS13kVersion, OS13k, source.gain
 // @js_externs iframeContent, iframeContent.OS13k, iframeContent.OS13kWindow
 // @js_externs iframeContent.zzfx, zzfx, zzfxG, zzfxM
-// @js_externs S.v, S.m, S.s, S.p, S.o
-// @js_externs S.c, S.d, S.t, S.f
+// @js_externs settings.v, settings.m, settings.s, settings.p, settings.o
+// @js_externs settings.c, settings.d, settings.t, settings.f
 // @js_externs window.document.OS13kInput.x
 // @js_externs window.document.OS13kInput.y
 // @js_externs window.document.OS13kInput.keypress
@@ -135,60 +283,23 @@ let OS13kVersion = 81;
 
 // Minification Steps
 // 1. Remove touch support and optional code
-// 2. HTML Minifier http://minifycode.com/html-minifier/
-// 3. Google Closure https://closure-compiler.appspot.com/home
-// 4. JavaScript Minifier https://javascript-minifier.com/
-// 5. Zip
-// 6. Advzip "advzip -z -4 -i 1000 OS13kMin.zip"
+// 2. Paste programs directly below here
+// 3. Remove optional stuff listed below
+// 4. Verify that it works the same
+// 5. HTML Minifier http://minifycode.com/html-minifier/
+// 6. Google Closure https://closure-compiler.appspot.com/home
+// 7. JavaScript Minifier https://javascript-minifier.com/
+// 8. Zip
+// 9. Advzip "advzip -z -4 -i 1000 OS13kMin.zip"
+
+// Rework stuff marked OPTIONAL for final build
+// - all files must be packed together to save space
+// - smaller webgl names r10215
+// - move css into code, get rid of names
+// - remove system trophies
+// - remove console messages
 
 } // Minification Stuff
-
-// flags
-const
-sticky   = 2**0, // always save position and if open
-reload   = 2**1, // show reload button
-awake    = 2**2, // prevent sleep and dim when not active
-full     = 2**3, // show full screen button
-resize   = 2**4, // show resize buttons (apect ratio maintained)
-code     = 2**5, // show code button (cant show code if help is set)
-dweet    = 2**6, 
-
-// system flags
-closeAll   = 2**7,         // close all open windows
-newUserProgram = 2**8,     // create new user program
-deleteUserPrograms = 2**9, // remove all user programs
-
-// defaults
-defaultFlags = full|reload|resize,
-defaultWidth = 720, defaultHeight = 405, // 16:9 aspect
-
-// program format
-//[src, icon, width, height, flags, name, help, folder]
-
-programStubs = 
-[
-['❌',,,closeAll,'Close All'],
-['<b><span style=color:#0f0>?',300,210,resize,'Help','Check here to see help, code, or edit user programs.\n\nHave fun! ✌️😄'],
-['⚙️',,,,'System',,
-[
-    ['🏆',,,full|resize|sticky,'Trophy Case'],
-    ['✏️',300,263,sticky|reload,'Sticky Note','Ctrl+B = Bold\nCtrl+I = Italic\nCtrl+U = Underline\n\Reload = Clear'],
-    ['🕰️',198,198,sticky|code|awake|dweet,'Clock'],
-    ['🎚️',470,130,sticky,'Settings']
-]],
-['🎮',,,,'Games',,
-[
-    ['🙉',,,defaultFlags|dweet,"Don't Fall"],
-    ['🏂🏻',,,defaultFlags|dweet,"Bogus Slopes"]
-]],
-['🎶',,,,'Music',,
-[
-    ['🎵',400,330,sticky,'Music Player'],
-    ['🥁',,360,,'Sequencer','Keyboard = Note\nUp/Down = Volume\nSpace = Stop\nEnter = End'],
-    ['🎹',350,99,reload,'Ziano','Keyboard = Play Piano Note'],
-    ['👁️',,,awake|full|resize|code|dweet,'Visualizer'],
-]],
-];
 
 ///////////////////////////////////////////////////////////////////////////////
 // OS13k Client Interface
@@ -287,7 +398,7 @@ class _OS13k
     {
         // use default params if no seed
         if (!seed)
-            return [volume, randomness, frequency || OS13k.Note(-9), 0, lengthScale];
+            return [volume, randomness, frequency || OS13k.Note(-21), 0, lengthScale];
 
         // check if seed is a number
         if (parseFloat(seed = (seed+'').trim()) != seed)
@@ -352,7 +463,7 @@ class _OS13k
         // create buffer and source
         let buffer = audioContext.createBuffer(samplesArray.length, samplesArray[0].length, sampleRate),
             source = audioContext.createBufferSource();
-        
+
         // copy samples to buffer and play
         samplesArray.map((d,i)=> buffer.getChannelData(i).set(d));
         source.buffer = buffer;
@@ -370,11 +481,22 @@ class _OS13k
     { 
         // catch errors when playing music
         try { return OS13k.PlaySamplesArray(zzfxM(...song), 1); }
-        catch(e) { }
+        catch(e) { console.log(e); }
     }
     
     GetAnalyser() { return analyserCanvas; }
     GetAnalyserData(e) { return analyserData[e] ? analyserData[e] : 0; }
+    
+    // convert a string to a music data array, will throw error if invalid
+    StringToMusic(string, validate)
+    {
+        // check if safe to eval and get music data
+        let music = string.replace(/null|[[\],\d\.-]/g, '') || eval(string.replace(/null/g, undefined)); 
+
+        // try to generate music to check if valid
+        validate && zzfxM(...music, 1);
+        return music;
+    }
     
     // get frequency of a note on a musical scale
     Note(semitoneOffset=0, rootNoteFrequency=440)
@@ -382,7 +504,7 @@ class _OS13k
 
     PianoKey(event)
     {
-        let k = 'ZSXDCVGBHNJM,L.;/Q2W3ER5T6Y7UI9O0P[=]'    // map key to note
+        let k = 'ZSXDCVGBHNJM,L.;/Q2W3ER5T6Y7UI9O0P[=]'      // map key to note
             .indexOf(event.key && event.key.toUpperCase());  // find the key and check for invalid key
         return k - 5 * (k > 16);                             // offset second row of keys
     }
@@ -405,35 +527,129 @@ class _OS13k
         stopSpeech && StopSpeech();
 
         // play speech if allowed
-        S.s & finishedStartup && speechSynthesis && speechSynthesis.speak(utterance);
+        settings.s & finishedStartup && speechSynthesis && speechSynthesis.speak(utterance);
     }
 
+/////////////////////////////////////////////////////////////////////////////
+// OS13k Shaders
+
+    // create pixel shader
+    CreateShader(canvas, code)
+    {
+        // get webgl context
+        const x = canvas.getContext('webgl2'),
+        
+            // use hardcoded glsl constants to save space
+            xVERTEX_SHADER       = 35633,
+            xARRAY_BUFFER        = 34962,
+            xSTATIC_DRAW         = 35044,
+            xBYTE                = 5120,
+            xFRAGMENT_SHADER     = 35632,
+            xCOMPILE_STATUS      = 35713,
+            xTEXTURE_2D          = 3553,
+            xUNPACK_FLIP_Y_WEBGL = 37440,
+            xTEXTURE_MIN_FILTER  = 10241,
+            xLINEAR              = 9729;
+
+        if (!x)
+            return;
+
+        // create a simple pass through vertex shader
+        let vertexShader = x.createShader(xVERTEX_SHADER);
+        x.shaderSource(vertexShader, '#version 300 es\nin vec4 c;void main(){gl_Position=c;}');
+        x.compileShader(vertexShader);
+        
+        // check vertex shader for errors
+        //if (!x.getShaderParameter(vertexShader, x.COMPILE_STATUS))
+        //    throw x.getShaderInfoLog(vertexShader);
+        
+        // create shadertoy compatible pixel shader
+        let pixelShader = x.createShader(xFRAGMENT_SHADER);
+        let shaderProgramCode = 
+            `#version 300 es\n` +
+            `precision mediump float;` +
+            `uniform float iTime;` +
+            `uniform int iFrame;` +
+            `uniform vec4 iMouse;` +
+            `uniform vec3 iResolution;` +
+            `uniform sampler2D iChannel0;` +
+            `out vec4 OS13kcolor;\n` +
+            `${code}` +
+            `\nvoid main()` +
+            `{mainImage(OS13kcolor,gl_FragCoord.xy);` +
+            `OS13kcolor.a=1.;}`;
+        x.shaderSource(pixelShader, shaderProgramCode);
+        x.compileShader(pixelShader);
+
+        // check pixel shader for errors
+        if (!x.getShaderParameter(pixelShader, xCOMPILE_STATUS))
+            throw x.getShaderInfoLog(pixelShader);
+        
+        // create vertex buffer that is a big triangle
+        x.bindBuffer(xARRAY_BUFFER, x.createBuffer());
+        x.bufferData(xARRAY_BUFFER, new Int8Array([-3,1,1,-3,1,1]), xSTATIC_DRAW);
+        x.enableVertexAttribArray(0);
+        x.vertexAttribPointer(0, 2, xBYTE, 0, 0, 0);
+
+        // create texture
+        x.bindTexture(xTEXTURE_2D, x.createTexture());
+        x.texParameteri(xTEXTURE_2D, xTEXTURE_MIN_FILTER, xLINEAR);
+        x.pixelStorei(xUNPACK_FLIP_Y_WEBGL, 1);
+        
+        // create shader program
+        let shaderProgram = x.createProgram();
+        x.attachShader(shaderProgram, vertexShader);
+        x.attachShader(shaderProgram, pixelShader);
+        x.linkProgram(shaderProgram);
+        x.useProgram(shaderProgram);
+        return shaderProgram;
+    }
+    
+    // render a pixel shader
+    RenderShader(canvas, shaderProgram, time, frame, X, Y, Z, W)
+    {
+        // get webgl context
+        const x = canvas.getContext('webgl2'),
+        
+            // use hardcoded glsl constants to save space
+            xRGBA          = 6408,
+            xUNSIGNED_BYTE = 5121,
+            xTRIANGLE_FAN  = 6,
+            xTEXTURE_2D    = 3553;
+        
+        if (!x)
+            return;
+
+        // set uniforms
+        x.uniform3f(x.getUniformLocation(shaderProgram, 'iResolution'), canvas.width, canvas.height, 1);
+        x.uniform1f(x.getUniformLocation(shaderProgram, 'iTime'), time);
+        x.uniform1f(x.getUniformLocation(shaderProgram, 'iFrame'), frame);
+        x.uniform1i(x.getUniformLocation(shaderProgram, 'iChannel0'), 0);
+        x.uniform4f(x.getUniformLocation(shaderProgram, 'iMouse'), X, Y, Z, W);
+        
+        // set vieport and render shader
+        x.viewport(0, 0, canvas.width, canvas.height);
+        x.drawArrays(xTRIANGLE_FAN, 0, 3);
+        
+        // set texture to newly rendered image
+        x.texImage2D(xTEXTURE_2D, 0, xRGBA, xRGBA, xUNSIGNED_BYTE, canvas);
+    }
+    
 /////////////////////////////////////////////////////////////////////////////
 // OS13k Text
     
     // remove html tags from a string and clamp length
     StripHTML(string, maxLength)
     { return (string+'').substring(0, maxLength || string.length).replace(/<.*>/g, ''); }
-    
-    // convert a string to a music data array, will throw error if invalid
-    StringToMusic(string, validate)
-    {
-        // check if safe to eval and get music data
-        let music = string.replace(/null|[[\],\d\.-]/g, '') || eval(string.replace(/null/g, undefined)); 
 
-        // try to generate music to check if valid
-        validate && zzfxM(...music, 1);
-        return music;
-    }
-    
     Popup(html, speak, language)
     {
         // create popup
-        let popup = PU.appendChild(document.createElement('div'));
-        popup.style = 'position:relative;z-index:10000;width:200;padding:8;pointer-events:none;white-space:normal;text-align:center;background:linear-gradient(#eee,#888);box-shadow:9px 9px 19px;border:2px solid;border-radius:9px;';
+        let popup = popups.appendChild(document.createElement('div'));
+        popup.className = 'popup';
         popup.innerHTML = html;
-        popup.S = speak;
-        popup.L = language;
+        popup.speak = speak;
+        popup.speakLanguage = language;
         popup.style.visibility = 'hidden';
     }
 
@@ -491,28 +707,31 @@ class _OS13k
         finishedStartup && (localStorage.OS13k = JSON.stringify
         ([
             trophies,
-            S,
+            settings,
             programInfos,
             startProgramId,
             nextUserProgramId
         ]));
         
         // volume
-        gain.gain.value = S.v;
-        gainMusic.gain.value = S.m;
+        gain.gain.value = settings.v;
+        gainMusic.gain.value = settings.m;
            
         // stop speech if not enabled or sound muted
-        S.s && S.v || StopSpeech();
+        settings.s && settings.v || StopSpeech();
         
         // background
-        B.style.background = `linear-gradient(${S.c},${S.d})`;
-        B.innerText = S.t;
+        background.style.background = `linear-gradient(${settings.c},${settings.d})`;
+        background.innerText = settings.t;
+        
+        // filter
+        background.style.filter = desktop.style.filter = settings.f;
     }
     
-    SaveSettings(volume, musicVolume, speech, popups, systemSounds, color1, color2, text)
+    SaveSettings(volume, musicVolume, speech, popups, systemSounds, color1, color2, text, filter)
     {
         // set settings and save
-        OS13k.Save(S = {
+        OS13k.Save(settings = {
             v:gain.gain.value = volume,
             m:gainMusic.gain.value = musicVolume,
             s:speech,
@@ -520,11 +739,12 @@ class _OS13k
             o:systemSounds,
             c:color1,
             d:color2,
-            t:text
+            t:text,
+            f:filter
         });
     }
     
-    Settings() { return S; }
+    Settings() { return settings; }
 }; // _OS13k
 var OS13k = new _OS13k;
 
@@ -558,25 +778,36 @@ const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26,
 let grabWindow, grabOffsetX, grabOffsetY, finishedStartup, nextUserProgramId = 0,
     activeWindow, activeProgram, activeTaskbarIcon, loadIcon, allCodeIsSafe,
     analyserCanvas = document.createElement('canvas'), analyserData = [], lastMusicTime = -analyserWaitTime,
-    lastActiveFrame, topZ = 0, hadInput = 0,
+    lastActiveFrame, topZ = 0, loading = 0, hadInput = 0,
     windowOpenX = startOpenOffset, windowOpenY = startOpenOffset + taskbarHeight,
     startProgram, startProgramId, programInfos = [], trophies = [],
     trophyTrayIcon, settingsTrayIcon, clockTrayIcon, musicTrayIcon, stickyNoteTrayIcon,
 
-    // volume, music, speech, popups, color1, color2, text
-    S = {v:.3, m:.3, s:1, p:1, o:1, c:'#222233', d:'#332222', t:'OS13k'},
+    // volume, music, speech, popups, color1, color2, text, filter
+    settings = {v:.3, m:.3, s:1, p:1, o:1, c:'#222233', d:'#332222', t:'OS13k', f:''},
 
     // init web audio
-    audioContext = new AudioContext, 
+    audioContext = new AudioContext,
     gain = audioContext.createGain(), 
     gainMusic = audioContext.createGain(), 
     musicAnalyser = audioContext.createAnalyser(),
+
 
 // main update loop
 Update = time=>
 {
     // request new animation frame
     requestAnimationFrame(Update);
+    
+    // update startup routine
+    loading | finishedStartup || OS13k.Save(
+
+        // create analyser canvas
+        musicTrayIcon.prepend(analyserCanvas),
+        analyserCanvas.style = 'width:16;height:16;margin:2;pointer-events:none;display:none',
+
+        // load start program
+        self == top && startProgram && startProgram.Open(), finishedStartup = 1);
         
     // check if iframe became new active element
     let activeElement = document.activeElement,
@@ -589,8 +820,8 @@ Update = time=>
     // set last active frame
     lastActiveFrame = activeFrame;
 
-    // fade in desktop, convert opacity to number
-    document.body.style.opacity = OS13k.Clamp(.02 + document.body.style.opacity*1);
+    // fade in desktop after loading, convert opacity to number
+    document.body.style.opacity = OS13k.Clamp(!loading*.02 + document.body.style.opacity*1);
 
     // update trophy count
     trophyTrayIcon.innerHTML = trophies.length + '🏆';
@@ -601,13 +832,13 @@ Update = time=>
         replace(/.* (\d+):(\d+).*/, (a,b,c)=> (b%12||12)+':'+c);
     
     // show popups after startup is finished and there was input
-    if (!hadInput) return;
+    if (!finishedStartup | !hadInput) return;
     
     // get analyser data
     let frequencyData = new Uint8Array(musicAnalyser.fftSize = 512),
         context = analyserCanvas.getContext('2d');
     musicAnalyser.getByteFrequencyData(frequencyData);
-    analyserCanvas.width = analyserCanvas.height = 32
+    analyserCanvas.width = analyserCanvas.height = 32;
 
     // render analyser
     for(let i = 0; i < 32; )
@@ -631,14 +862,14 @@ Update = time=>
     
     // update popups, use copy to prevent skipping if removed
     let offsetY = 0;
-    [...PU.children].map((popup,i)=>
+    [...popups.children].map((popup,i)=>
     {
         // speak popup
-        popup.S && OS13k.Speak(popup.S, popup.L);
-        popup.S = 0;
+        popup.speak && OS13k.Speak(popup.speak, popup.speakLanguage);
+        popup.speak = 0;
         
-        if (!S.p)
-            PU.removeChild(popup);
+        if (!settings.p)
+            popups.removeChild(popup);
         else if (!document.fullscreenElement)
         {
             // move popup up, set to bottom if it was invisible
@@ -655,7 +886,7 @@ Update = time=>
                 {
                     // remove when invisible and adjust for height
                     offsetY += popup.getBoundingClientRect().height;
-                    PU.removeChild(popup);
+                    popups.removeChild(popup);
                 }
             }
 
@@ -669,7 +900,7 @@ RebuildMenu = ()=>
 {
     // combine old stubs for reference to flat array
     let oldStubs = [],
-        getOldStubs = stubs => stubs.map( stub => stub[6] ? getOldStubs(stub[6]) : oldStubs.push(stub));
+        getOldStubs = stubs => stubs.map( stub => stub[7] ? getOldStubs(stub[7]) : oldStubs.push(stub));
     getOldStubs(programStubs);
 
     // remove user folder if it exists
@@ -677,7 +908,7 @@ RebuildMenu = ()=>
       loadIcon.windowOrMenu.removeChild(loadIcon.windowOrMenu.lastChild), 
       programStubs.pop());
 
-    CreateUserFolder(programStubs, ['😀',,,,'User Programs'], '', oldStubs);
+    CreateUserFolder(programStubs, ['😀',,,,,'User Programs'], '', oldStubs);
     loadIcon.windowOrMenu.Rebuild();
 },
 
@@ -685,26 +916,26 @@ CreateUserFolder = (parentStubs, stub, userFolderName, oldStubs)=>
 {
     let folderStubs = 
     [
-        ['📌',,,newUserProgram,'New User Program',,,,userFolderName],
-        ['⚠️',,,deleteUserPrograms, userFolderName ? `Delete User Folder ${userFolderName}` : 'Delete User Programs',,,,userFolderName]
-    ],
-        folderNames = [];
-
+        ['📌',,,,newUserProgram,'New User Program',,,,userFolderName],
+        ['⚠️',,,,deleteUserPrograms, userFolderName ? `Delete User Folder ${userFolderName}` : 'Delete User Programs',,,,userFolderName]
+    ];
+    
     // add subfolders
-    userFolderName || programInfos.map(i=> i.C != undefined && i.U && 
-        !folderNames.includes(i.U) && 
-            CreateUserFolder(folderStubs,['📁',,,,i.U], i.U, oldStubs, folderNames.push(i.U)));
+    let folderNames = [];
+    userFolderName || programInfos.map(i=> i.code != undefined && i.userFolder && 
+        !folderNames.includes(i.userFolder) && 
+            CreateUserFolder(folderStubs,['📁',,,,,i.userFolder], i.userFolder, oldStubs, folderNames.push(i.userFolder)));
        
     // add stubs for programs in this folder
-   programInfos.map(i=> i.C != undefined && i.U == userFolderName &&
+   programInfos.map(i=> i.code != undefined && i.userFolder == userFolderName &&
 
         // add stubs to folder, check if it already existed first
-        folderStubs.push(oldStubs.find(stub => stub[6] == i.D) ||
-            [i.I,i.W,i.H,defaultFlags|code,i.N,,,i.D,i.U])
+        folderStubs.push(oldStubs.find(stub => stub[8] == i.id) ||
+            [i.icon,,i.width,i.height,defaultFlags|code,i.name,,,i.id,i.userFolder])
         );
 
     // set folder stubs and add to parent stubs
-    stub[6] = folderStubs;
+    stub[7] = folderStubs;
     parentStubs.push(stub);
 },
 
@@ -712,10 +943,10 @@ CreateUserFolder = (parentStubs, stub, userFolderName, oldStubs)=>
 CloseMenus = ()=>
 {
     // hide all menus
-    [...PM.children].map(e=>e.style.visibility = M.style.visibility = '');
+    [...programsMenu.children].map(e=>e.style.visibility = menu.style.visibility = '');
     
     // unselect active program
-    activeProgram && (activeProgram.className = 'P');
+    activeProgram && (activeProgram.className = 'program');
 },
 
 // try to give trophy if key is valid
@@ -727,7 +958,7 @@ CheckForTrophy = (key, keyParts = key ? key.split(',') : [])=>
 StopSpeech = ()=> speechSynthesis && speechSynthesis.cancel(),
 
 // play system sound if enabled
-SystemSound = (...parameters)=> finishedStartup & hadInput & S.o && OS13k.PlaySeed(...parameters);
+SystemSound = (...parameters)=> finishedStartup & hadInput & settings.o && OS13k.PlaySeed(...parameters);
 
 ///////////////////////////////////////////////////////////////////////////////
 // OS13kProgramMenu - holds a list of programs
@@ -739,7 +970,7 @@ class OS13kProgramMenu extends HTMLElement
 		super();
         
         // add to programs menu
-        this.className    = 'PM';
+        this.className    = 'programMenu';
         this.parentMenu   = parentMenu;
         this.programStubs = stubs;
     }
@@ -756,7 +987,7 @@ class OS13kProgramMenu extends HTMLElement
 
         // clear programs menu
         this.innerHTML = '';
-        PM.appendChild(this);
+        programsMenu.appendChild(this);
   
         // add programs to menu
         this.programStubs.map(stub=> this.appendChild(stub[-1]));
@@ -792,29 +1023,29 @@ class OS13kProgramMenu extends HTMLElement
     {
         // create new program
         let stub = copyProgram ? 
-            [copyProgram.I, copyProgram.W, copyProgram.H, defaultFlags|code, 
-                copyProgram.N + '+', , ,++nextUserProgramId, copyProgram.U] :
-            ['✋',,,defaultFlags|code,,,,++nextUserProgramId, userFolder],
-            program = stub[-1] = new OS13kProgram(...stub);
+            [copyProgram.icon,, copyProgram.width, copyProgram.height, defaultFlags|code, 
+                copyProgram.name + '+', , ,++nextUserProgramId, copyProgram.userFolder] :
+            ['✋',,,,defaultFlags|code,,,,++nextUserProgramId, userFolder];
+        let program = stub[-1] = new OS13kProgram(...stub);
         
         // add to menu program infos
         this.programStubs.push(stub);
 
         // set code, copy if passed in, use default if none found
-        program.i.C = copyProgram ? (
-            program.i.S = copyProgram.I.S,
-            windowOpenX = copyProgram.I.x,
-            windowOpenY = copyProgram.I.y + titlebarHeight,
-            copyProgram.I.C)
+        program.info.code = copyProgram ? (
+            program.info.scale = copyProgram.info.scale,
+            windowOpenX = copyProgram.info.x,
+            windowOpenY = copyProgram.info.y + titlebarHeight,
+            copyProgram.info.code)
             :
-            '// Auto detects HTML or Dweet. You can drop files here too! ✌️😄\n' +
+            '// Auto detects HTML, Dweet, or Shadertoy! You can drop files here too. ✌️😄\n' +
             'for(x.fillRect(0,0,i=s=2e3,s);i--;x.globalAlpha=.1)\n' +
             'x.clearRect((S(i)*1e9-t*i/9)%s,i*9%s,i%9,i%9)';
 
         // mark code as safe, open, and show code, prevent iframe focus so code can be focused
         program.Open(program.userProgram = allCodeIsSafe = 1);
-        program.w.ShowCode(1);
-        program.w.codeText.focus();
+        program.window.ShowCode(1);
+        program.window.codeText.focus();
         
         // set menu and rebuild menus
         RebuildMenu(program.programMenu = this);
@@ -829,25 +1060,33 @@ customElements.define('m-', OS13kProgramMenu);
     
 class OS13kProgram extends HTMLElement
 {
-	constructor(icon, width=defaultWidth, height=defaultHeight, flags, name='', help='', folder, userProgramId, userFolder)
+	constructor(icon='💠', src='', width=defaultWidth, height=defaultHeight, flags, name='', help='', folder, userProgramId, userFolder)
     {
         super();
 
+        // split source by . to get extension
+        let srcParts = src.split('.');
+        
+        // split source by / to get filename to convert camel case to nice name
+        let srcCleanName = srcParts[0].split('/').pop().replace(/([a-z](?=[A-Z]))/g, '$1 ');
+        name = name || srcCleanName && (srcCleanName[0].toUpperCase() + srcCleanName.slice(1));
+        
         // check for special extensions
-        this.isDweet =  flags & dweet;
+        this.isDweet =  srcParts[1] == 'dweet';
+        this.isShader = srcParts[1] == 'shader';
 
         // set code only if help not shown or if has extension and not disabled
-        this.C = !(this.help = help) && (flags & code || (this.isDweet && flags == undefined));
+        this.code = !(this.help = help) && (flags & code || ((this.isDweet | this.isShader) && flags == undefined));
 
         // set icon data
-        // some variables use single letters for minification
-        this.className  = 'P';
-        this.W          = width;
-        this.H          = height;
-        this.F          = flags = flags || defaultFlags;
-        this.D          = userProgramId || name;
-        this.U          = userFolder;
+        this.className  = 'program';
+        this.src        = src;
+        this.width      = width;
+        this.height     = height;
         this.folder     = folder;
+        this.id         = userProgramId || name;
+        this.userFolder = userFolder;
+        this.flags      = flags = flags || defaultFlags;
 
         // set the program name and id
         this.SetName(icon, name);
@@ -863,21 +1102,21 @@ class OS13kProgram extends HTMLElement
         name == 'Clock'        && clockTrayIcon.SetProgram(this);
         
         // open help if it has not been opened yet
-        name == 'Help' & this.i.O == undefined && (startProgram = this);
+        name == 'Help' & this.info.open == undefined && (startProgram = this);
         
         // check if sticky open or start program
-        this.F & sticky ? this.i.O && this.Open() : this.D == startProgramId && (startProgram = this);
+        this.flags & sticky ? this.info.open && this.Open() : this.id == startProgramId && (startProgram = this);
     }
 
     SetName(icon, name)
     {
         // icon
-        this.I = icon;
+        this.icon = icon;
         this.innerHTML = '<span style="pointer-events:none;width:45;text-shadow:1px 1px 3px#000;text-align:center;overflow:hidden">' + icon;
         
         // name and folder
         this.innerHTML += `<div style=flex:1;padding-right:9;pointer-events:none>${
-                this.N = OS13k.StripHTML(name) || 'User Program ' + this.D
+                this.name = OS13k.StripHTML(name) || 'User Program ' + this.id
             }</div>` + (this.folder? '▶' : '');
     }
     
@@ -887,48 +1126,50 @@ class OS13kProgram extends HTMLElement
         this.programMenu.SetActive();
         
         // set active
-        this.className = 'P PA';
+        this.className = 'program programActive';
         activeProgram !=this && SystemSound(soundProgram, 0);
         activeProgram = this;
     }
     
     Open()
     {
-        if (this.w)
+        if (this.window)
         {        
             // set window to be active and clamp
-            this.w.SetActive(1, 1);
+            this.window.SetActive(1, 1);
         }
-        else if (this.F & newUserProgram)
+        else if (this.flags & newUserProgram)
         {
             // create user program with default code
-            this.programMenu.NewUserProgram(undefined, this.U);
+            this.programMenu.NewUserProgram(undefined, this.userFolder);
         }
-        else if (this.F & deleteUserPrograms && confirm(this.N + '?'))
+        else if (this.flags & deleteUserPrograms && confirm(this.name + '?'))
         {
             // close windows with matching folder
-            [...D.children].map(child=> child.Close && (this.U ?
-                child.program.i.U == this.U : child.program.i.C != undefined) && child.Close());
+            [...desktop.children].map(child=> child.Close && (this.userFolder ?
+                child.program.info.userFolder == this.userFolder : child.program.info.code != undefined) && child.Close());
             
             // remove user program infos
-            programInfos = programInfos.filter(info=> info.C == undefined || this.U && info.U != this.U);
+            programInfos = programInfos.filter(info=> info.code == undefined || this.userFolder && info.userFolder != this.userFolder);
             
             // rebuild menu and play sound
             RebuildMenu(OS13k.Save(SystemSound(soundClose, 4)));
         }
-        else if (this.F & closeAll)
+        else if (this.flags & closeAll)
         {
             // close all windows if no src or folder and play sound
-            [...D.children].map(child=> child.Close && child.Close());
+            [...desktop.children].map(child=> child.Close && child.Close());
 
             // reset window open position
             windowOpenX = startOpenOffset;
             windowOpenY = startOpenOffset + taskbarHeight;
+
+            OS13k.Trophy('☕','OS13k','Coffee Is For Closers','Closed All');
         }
-        else if (!this.folder || this.userProgram)
+        else if (this.src || this.userProgram)
         {
             // get saved window position
-            let x = this.i.x, y = this.i.y;
+            let x = this.info.x, y = this.info.y;
             
             // update window open positions if no position was set
             x || (
@@ -938,7 +1179,7 @@ class OS13kProgram extends HTMLElement
                 (windowOpenY += titlebarHeight) > 300 && (windowOpenY =  windowOpenY = startOpenOffset + taskbarHeight));
             
             // open window
-            this.w = new OS13kWindow(this, x, y);
+            this.window = new OS13kWindow(this, x, y);
 
             // update info and save
             this.Save();
@@ -947,45 +1188,44 @@ class OS13kProgram extends HTMLElement
     
     SetActive() { this.Open(); }
     
-    Toggle() { activeWindow && activeWindow == this.w ? this.w.Close() : this.Open(); }
+    Toggle() { activeWindow && activeWindow == this.window ? this.window.Close() : this.Open(); }
     
     Load() 
     {
         // load saved program info from local storage
-        let i = programInfos.findIndex(e=> e.D == this.D);
-        this.i = i < 0 ? {} : programInfos[i];
+        let i = programInfos.findIndex(e=> e.id == this.id);
+        this.info = i < 0 ? {} : programInfos[i];
 
         // check for user code
-        this.userProgram = this.i.C != undefined;
+        this.userProgram = this.info.code != undefined;
     }
 
     // save program info and reset settings when closed if non sticky
-    // some variables use single letters for minification
-    Save(O = 1)
+    Save(open = 1)
     {
         // build save info
-        this.i = 
+        this.info = 
         {
-            O,
-            D: this.D,
-            x: O | this.F & sticky ? parseInt(this.w.style.left) : 0,
-            y: parseInt(this.w.style.top),
-            S: O | this.F & sticky ? this.w.S : 1,
+            open,
+            id: this.id,
+            x: open | this.flags & sticky ? parseInt(this.window.style.left) : 0,
+            y: parseInt(this.window.style.top),
+            scale: open | this.flags & sticky ? this.window.scale : 1,
 
             // user program info
-            N: this.N,
-            I: this.I,
-            W: this.W,
-            H: this.H,
-            C: this.i.C,
-            allowSleep: this.userProgram? this.w.allowSleep.checked : 1,
-            liveEdit: this.w.liveEdit.checked,
-            U: this.U
+            name: this.name,
+            icon: this.icon,
+            width: this.width,
+            height: this.height,
+            code: this.info.code,
+            allowSleep: this.userProgram? this.window.allowSleep.checked : 1,
+            liveEdit: this.window.liveEdit.checked,
+            userFolder: this.userFolder
         }
         
         // add to programs info and save
-        let i = programInfos.findIndex(e=> e.D == this.D);
-        OS13k.Save(i < 0 ? programInfos.push(this.i) : programInfos[i] = this.i);
+        let i = programInfos.findIndex(e=> e.id == this.id);
+        OS13k.Save(i < 0 ? programInfos.push(this.info) : programInfos[i] = this.info);
     }
     
 } // OS13kProgram
@@ -1001,7 +1241,7 @@ class OS13kWindow extends HTMLElement
 		super();
 
         // add to desktop
-        D.appendChild(this);
+        desktop.appendChild(this);
         
         // save settings
         this.program = program;
@@ -1012,11 +1252,11 @@ class OS13kWindow extends HTMLElement
         
         // shadow root
 		this.attachShadow({mode: 'open'});
-        this.shadowRoot.innerHTML = T.innerHTML;
+        this.shadowRoot.innerHTML = windowTemplate.innerHTML;
         
         // title bar
         this.titlebar = this.shadowRoot.appendChild(document.createElement('div'));
-        this.titlebar.id = 'T';
+        this.titlebar.id = 'titlebar';
 
         // create title bar buttons
         let AddTitlebarIcon=(title, svg, hover, shape='path')=>
@@ -1027,24 +1267,23 @@ class OS13kWindow extends HTMLElement
             `<svg viewBox='0 0 10 10'style=height:100%;width:28;pointer-events:none><${
                 shape} stroke=#000 fill=none ${svg} />`;
         }
-        program.F & resize && 
+        program.flags & resize && 
             AddTitlebarIcon('Grow', 'd="M2 5L8 5M5 8L5 2"', '0f0',
             AddTitlebarIcon('Shrink', 'd="M2 5L8 5"', '0ff'));
-        program.F & full && AddTitlebarIcon('Full Screen', 'x=1 y=2 width=8 height=6', 'fff', 'rect');
+        program.flags & full && AddTitlebarIcon('Full Screen', 'x=1 y=2 width=8 height=6', 'fff', 'rect');
         program.help && AddTitlebarIcon('Help', 'd="M5 8L8 2L2 2L5 8L8 2"', '0ff');
-        program.C && AddTitlebarIcon('Code', 'd="M5 2L8 8L2 8L5 2L8 8"', 'f0f');
-        program.F & reload && AddTitlebarIcon('Reload', 'cx=5 cy=5 r=3', 'ff0', 'circle');
+        program.code && AddTitlebarIcon('Code', 'd="M5 2L8 8L2 8L5 2L8 8"', 'f0f');
+        program.flags & reload && AddTitlebarIcon('Reload', 'cx=5 cy=5 r=3', 'ff0', 'circle');
             AddTitlebarIcon('Close', 'd="M2 2L8 8M8 2L2 8"', 'f00');
 
         // title bar name
-        this.titlebar.prepend(this.N = document.createElement('div'));
-        this.N.style = 'width:100%;overflow:hidden;cursor:grab';
+        this.titlebar.prepend(this.name = document.createElement('div'));
+        this.name.id = 'name';
         let SetName = ()=>
         {
             // icon and name
-            this.N.innerHTML = `<span style='display:inline;text-shadow:1px 1px 3px#000;margin-left:9;margin-right:9;pointer-events:none'>${
-                program.I}`;
-            this.N.innerHTML += program.N;
+            this.name.innerHTML = `<span id=icon>${program.icon}`;
+            this.name.innerHTML += program.name;
         }
         SetName();
 
@@ -1058,48 +1297,45 @@ class OS13kWindow extends HTMLElement
 
         // create code/help display
         this.codeText = this.codeDisplay.appendChild(document.createElement('textarea'));
-        this.codeText.className = 'U';
-        this.codeText.style = 'padding:9;height:199;background:#000;color:#fff';
-
-        // allow code editing, check for alt+enter to reload
-        this.codeText.onkeydown = e=> !e.altKey || e.keyCode == 13 && this.SetCode(this.codeText.value);
-        this.codeText.oninput = e=> this.liveEdit.checked && this.SetCode(this.codeText.value);
-
+        this.codeText.id = 'codeText';
+          
         // use custom code  
-        program.userProgram ? this.codeText.value = program.i.C : this.codeText.readOnly = 1;
+        program.userProgram ? this.codeText.value = program.info.code : this.codeText.readOnly = 1;
         this.codeText.spellcheck = 0;
 
         // init custom code options
         this.codeOptions = this.codeDisplay.appendChild(document.createElement('div'));
-        this.codeOptions.class = 'U';
-        this.codeOptions.style = `background:#111;color:#fff;font-size:16;overflow:auto;${ 
-                program.userProgram ? '' : 'display:none'}`;
+        this.codeOptions.id = 'codeOptions';
+        this.codeOptions.style.display =  program.userProgram ? '' : 'none';
 
         // build code options html
         this.codeOptions.innerHTML = 
-            `&nbsp;Icon <input style=width:50 id=I> ` +
+            `&nbsp;<button id=S>📷</button>` +
+            `Icon <input style=width:50 id=I> ` +
             `Name <input id=N> ` +
             `Folder <input id=F><br>` +
             `&nbsp;Size <input style=width:50 type=number id=W>x<input style=width:50 type=number id=H>` + 
-            `Sleep <input type=checkbox id=P ${program.i.allowSleep != !1 ? 'checked' : ''}>` +
-            `Live Edit <input type=checkbox id=L ${program.i.liveEdit != !1 ? 'checked' : ''}>` +
+            `Sleep <input type=checkbox id=P ${program.info.allowSleep != !1 ? 'checked' : ''}>` +
+            `Live Edit <input type=checkbox id=L ${program.info.liveEdit != !1 ? 'checked' : ''}>` +
+            `<button id=G>Save</button>` +
             `<button id=C>Copy</button>` +
             `<button id=D>Delete</button>` +
-            `<span id=Z>${program.i.C && program.i.C.length}</span> Bytes`;
+            `<span id=Z>${program.info.code && program.info.code.length}</span> Bytes` +
+            `<a id=A><canvas id=V style=display:none>`;
 
         // get links to code options and create error text
-        let iconInput   = this.shadowRoot.getElementById('I'),
-            nameInput   = this.shadowRoot.getElementById('N'),
-            folderInput = this.shadowRoot.getElementById('F'),
-            widthInput  = this.shadowRoot.getElementById('W'),
-            heightInput = this.shadowRoot.getElementById('H'),
-            link        = this.shadowRoot.getElementById('A'),
-            canvas      = this.shadowRoot.getElementById('V');
+        let iconInput     = this.shadowRoot.getElementById('I'),
+            nameInput     = this.shadowRoot.getElementById('N'),
+            folderInput   = this.shadowRoot.getElementById('F'),
+            widthInput    = this.shadowRoot.getElementById('W'),
+            heightInput   = this.shadowRoot.getElementById('H'),
+            link          = this.shadowRoot.getElementById('A'),
+            canvas        = this.shadowRoot.getElementById('V'),
+            canvasContext = canvas.getContext('2d');
 
         // error text
         this.errorText = this.codeDisplay.appendChild(document.createElement('textarea'));
-        this.errorText.className = 'U';
-        this.errorText.style = 'padding:9;background:#000;color:#f00';
+        this.errorText.id = 'errorText';
         this.errorText.readOnly = !0;
         
         // copy button
@@ -1110,18 +1346,43 @@ class OS13kWindow extends HTMLElement
         {
             // close, remove, and rebuild (must close first)
             this.Close();
-            RebuildMenu(OS13k.Save(programInfos = programInfos.filter(info=> info.D != program.D)));
+            RebuildMenu(OS13k.Save(programInfos = programInfos.filter(info=> info.id != program.id)));
+        }
+        
+        // save button
+        this.shadowRoot.getElementById('G').onmousedown = ()=>
+            link.click(SystemSound(soundSave),
+            link.href = URL.createObjectURL(new Blob([this.codeText.value])),
+            link.download = 'OS13k_' + program.name);
+
+        // screenshot button
+        this.screenshot = this.shadowRoot.getElementById('S');
+        this.screenshot.onmousedown = ()=>
+        {
+            // wrap in try block in case canvas doesnt exist
+            try {
+                link.click(
+                    // copy to a white canvas before saving
+                    SystemSound(soundSave),
+                    canvasContext.fillRect(0, 0, 
+                        canvas.width  = this.iframeContent.c.width, 
+                        canvas.height = this.iframeContent.c.height,
+                        canvasContext.fillStyle = '#fff'),
+                        canvasContext.drawImage(this.iframeContent.c, 0, 0),
+                    link.href = canvas.toDataURL('image/png'),
+                    link.download = 'OS13k_Image_' + program.name);
+            } catch(e) {} // ignore screenshot errors
         }
 
         // get elements by id
         this.codeSize     = this.shadowRoot.getElementById('Z');
         this.liveEdit     = this.shadowRoot.getElementById('L');
         this.allowSleep   = this.shadowRoot.getElementById('P');
-        iconInput.value   = program.I;
-        nameInput.value   = program.N;
-        widthInput.value  = program.W;
-        heightInput.value = program.H;
-        program.U != undefined && (folderInput.value = program.U);
+        iconInput.value   = program.icon;
+        nameInput.value   = program.name;
+        widthInput.value  = program.width;
+        heightInput.value = program.height;
+        program.userFolder != undefined && (folderInput.value = program.userFolder);
 
         // set new icon and name when changed
         iconInput.oninput = nameInput.oninput =
@@ -1132,14 +1393,14 @@ class OS13kWindow extends HTMLElement
             SetName(OS13k.StripHTML(iconInput.value), nameInput.value))));
 
         folderInput.oninput = e=>
-            RebuildMenu(program.Save(program.U = OS13k.StripHTML(folderInput.value.trim())));
+            RebuildMenu(program.Save(program.userFolder = OS13k.StripHTML(folderInput.value.trim())));
 
         // size options
         widthInput.onchange =
         heightInput.onchange = e=>
         {
-            program.W = widthInput.value = OS13k.Clamp(widthInput.value, defaultWidth, 99);
-            program.H = heightInput.value = OS13k.Clamp(heightInput.value, program.W*2, 99);
+            program.width = widthInput.value = OS13k.Clamp(widthInput.value, defaultWidth, 99);
+            program.height = heightInput.value = OS13k.Clamp(heightInput.value, program.width*2, 99);
 
             // update to new size and clamp to desktop
             this.Resize(1);
@@ -1150,31 +1411,138 @@ class OS13kWindow extends HTMLElement
         this.allowSleep.oninput = e=> this.Reload(1, program.Save());
 
         // resize window size to fit inner width while preserving aspect
-        let width = program.F & resize ? 
-            Math.min(program.W*(program.i.S||1), innerWidth-6) :
-            program.W;
+        let width = program.flags & resize ? 
+            Math.min(program.width*(program.info.scale||1), innerWidth-6) :
+            program.width;
             
         // set window width, height, and scale while preserving aspect ratio
         this.style.width = width;
-        this.iframeWrapper.style.height = width * program.H / program.W;
-        this.S = width / program.W;
+        this.iframeWrapper.style.height = width * program.height / program.width;
+        this.scale = width / program.width;
         
         // announce game when first opened
-        OS13k.Speak(program.N);
+        OS13k.Speak(program.name);
         
-        // create iframe
-        this.CreateFrame();
+        // update loading and create iframe
+        this.CreateFrame(loading += !finishedStartup);
     }
 
     SetErrorText(message, source, line, col, e)
     {
         this.errorText.value = e + (e && e.stack ? ` (${(line-1) + ':' + col})` : '');
         this.errorText.style.display = this.errorText.value ? '' : 'none';
+        console.log(this.errorText.value);
         return !0;
     }
     
     CreateFrame()
     {
+        let LoadFrame = ()=>
+        {
+            // check if code is safe to execute
+            let codeIsSafe = !this.program.userProgram | allCodeIsSafe,
+
+                // only dweets and shadertoys can do screenshots
+                hasExtension = program.isDweet | program.isShader,
+
+                // get iframe content and document (will fail if cross site)       
+                iframeDocument = iframeContent.document,
+                iframeText = program.userProgram ? program.info.code :
+                hasExtension ? iframeDocument.body.innerText : iframeDocument.body.innerHTML;
+            
+            this.screenshot.disabled = !hasExtension | !codeIsSafe;
+
+            // set code/help display if not user program
+            program.userProgram || (this.codeText.value = program.help || iframeText);
+
+            // pass OS13k constants to iframe
+            iframeContent.OS13k = OS13k;
+            iframeContent.OS13kWindow = this;
+            iframeContent.zzfx = zzfx;
+
+            // check for extensions
+            if (!codeIsSafe)
+            {
+                iframeDocument.body.style.background = '#111';  
+                iframeDocument.body.innerHTML = '';
+            }
+            else if (hasExtension) 
+            {
+                // create canvas
+                iframeDocument.body.innerHTML = 
+                    `<style>canvas{width:100%;background:${ 
+                        program.isShader ? '#000' : '#fff' }}</style><canvas id=c width=1920 height=1080>`;
+
+                // set body style
+                iframeDocument.body.style =
+                    'background:#111;' +
+                    'overflow:hidden;' +
+                    'margin:0;' +
+                    'display:flex;' +
+                    'align-items:center';
+                    
+                // loop protection for user dweets
+                let code = program.userProgram && !program.isShader? 
+                    iframeText.replace(
+                        /(for\s*\([^;]*;[^;]*;|while\s*\()\s*(\S)/g, (a, b, c)=> 
+                            b && c && !b.match(/\sof\s|\sin\s/g) ? 
+                                b + '++OS13kL>1e5&&(e=>{throw"Timed out!"})()' +
+                                (c == ')' ? '' : ',') + c : a ) : iframeText;
+
+                // show error messages from user code init
+                program.userProgram && (onerror = (...parameters)=>this.SetErrorText(...parameters));
+
+                // create dweet or shader program
+                iframeContent.eval(
+                    `OS13k=parent.OS13k;x=c.getContext` +
+                    (program.isShader ? // preserve buffer for user programs for screenshot
+                        `('webgl2'${program.userProgram ? ',{preserveDrawingBuffer:!0}' : ''});` +
+                        `X=Y=Z=W=0;` +
+                        `onmousemove=e=>e.buttons&&(X=e.x,Y=c.height-e.y);` +
+                        `onmousedown=e=>(X=Z=e.x,Y=W=c.height-e.y);` +
+                        `onmouseup=e=>Z=W=0;` +
+                        `s=OS13k.CreateShader(c,\`${ code }\`);` +
+                        `OS13kU=t=>` +
+                        `OS13k.RenderShader(c,s,t/1e3,frame++,X,Y,Z,W,c.width=innerWidth,c.height=innerHeight)`
+                        :
+                        `('2d');` +
+                        `zzfx=parent.zzfx;` +
+                        `S=Math.sin;C=Math.cos;T=Math.tan;` +
+                        `R=(r,g,b,a=1)=>\`rgba(\${0|r},\${0|g},\${0|b},\${a})\`;` +
+                        `u=t=>{\n${ code }\n};` +
+                        `OS13kU=t=>t>OS13kF-2&&` + 
+                            `u(((t=frame++/60)*60|0==frame-1)&&t>0?t+1e-6:t,` +
+                            `OS13kL=0,` +
+                            `OS13kF=Math.max(OS13kF+100/6,t))`) +
+                        `;(OS13kA=t=>(requestAnimationFrame(OS13kA),` +
+                            (program.flags & awake || program.info.allowSleep == 0 ? '' : 
+                                `t<1e3|parent.document.activeElement==OS13kWindow&&`) +
+                                `OS13kU(t)))` +
+                        `(frame=OS13kF=0)`);
+            }
+            
+            // mouse down on iframe to load unsafe code, and call normal mousedown
+            codeIsSafe || (iframeContent.onmousedown = e=> (this.Reload(allCodeIsSafe = 1), onmousedown(e)));
+            
+            // prevent iframes context menu and drop events
+            iframeContent.ondrop = iframeContent.ondragover = iframeContent.oncontextmenu = ()=> !1;
+            
+            // add taskbar icon if it doesnt exist and set active
+            this.taskbarIcon || (this.taskbarIcon = new OS13kTaskbarIcon(program, this)).SetActive();
+
+            // make visible
+            this.style.visibility = this.iframe.style.visibility = 'visible';
+            
+            // update loading
+            loading && --loading;
+
+            // listen for reload from iframe, prevent infnite recursion
+            program.userProgram && (this.iframe.onload = ()=> reloadCount++ && this.Reload(1, 0));
+
+            // release grab window since this one will be in front
+            grabWindow && onmouseup();
+        }
+        
         // remove old iframe if it exists
         this.iframe && this.iframeWrapper.removeChild(this.iframe);
 
@@ -1182,100 +1550,49 @@ class OS13kWindow extends HTMLElement
         this.iframe = this.iframeWrapper.appendChild(document.createElement('iframe')); 
         let iframeContent = this.iframeContent = this.iframe.contentWindow,
             program = this.program,
-            reloadCount = 0, 
-            codeIsSafe = !program.userProgram | allCodeIsSafe,
-
-            // get iframe content and document (will fail if cross site)       
-            iframeDocument = iframeContent.document,
-            iframeCode = program.userProgram ? program.i.C : document.getElementsByName(program.N)[0].innerHTML,
-            code = iframeCode;
-
-        this.iframe.style = 'width:100%;height:100%;background:#fff;border:none';
-
-        // hide error text
-        this.errorText.style.display = 'none';
-
-        // pass OS13k constants to iframe
-        iframeContent.OS13k = OS13k;
-        iframeContent.OS13kWindow = this;
-        iframeContent.zzfx = zzfx;
+            reloadCount = 0;
+        this.iframe.id = 'frame';
         
-        program.userProgram ?
-            program.isDweet = code.trim()[0] != '<' :         // get type of user code, html or dweet
-            this.codeText.value = program.help || iframeCode; // set code/help display
-
-        // check if dweet
-        program.isDweet && (iframeCode = "<style>canvas{width:100%;background:#fff}</style><canvas id=c width=1920 height=1080>");
-
-        // set on error now to catch errors on load
-        this.iframeContent.onerror = (...parameters)=>this.SetErrorText(...parameters);
-
-        // open iframe to write code
-        iframeDocument.open();
-        codeIsSafe && iframeDocument.write(iframeCode);
-        iframeDocument.close();
-
-        // show error messages
-        iframeContent.onerror = (...parameters)=>this.SetErrorText(...parameters);
-        onerror = (...parameters)=>this.SetErrorText(...parameters);
-
-        // check for extensions
-        if (!codeIsSafe)
-            iframeDocument.body.style.background = '#111';
-        else if (program.isDweet) 
+        // load src and force pages to be refreshed
+        if (program.userProgram)
         {
-            // set body style
-            iframeDocument.body.style =
-                'background:#111;' +
-                'overflow:hidden;' +
-                'margin:0;' +
-                'display:flex;' +
-                'align-items:center';
+            // clear error text
+            this.errorText.style.display = 'none';
 
-            // create dweet program
-            iframeContent.eval(
-                `OS13k=parent.OS13k;x=c.getContext('2d');` +
-                    `zzfx=parent.zzfx;` +
-                    `S=Math.sin;C=Math.cos;T=Math.tan;` +
-                    `R=(r,g,b,a=1)=>\`rgba(\${0|r},\${0|g},\${0|b},\${a})\`;` +
-                    `u=t=>{\n${ 
+            // allow code editing, check for alt+enter to reload
+            this.codeText.onkeydown = e=> !e.altKey || e.keyCode == 13 && this.SetCode(this.codeText.value);
+            this.codeText.oninput = e=> this.liveEdit.checked && this.SetCode(this.codeText.value);
 
-                    // loop protection for user dweets
-                    program.userProgram ? code.replace(
-                        /(for\s*\([^;]*;[^;]*;|while\s*\()\s*(\S)/g, (a, b, c)=> 
-                            b && c && !b.match(/\sof\s|\sin\s/g) ? 
-                                b + '++OS13kL>1e5&&(e=>{throw"Timed out!"})()' +
-                                (c == ')' ? '' : ',') + c : a ) : code
-                     }\n};` +
-                    `OS13kU=t=>t>OS13kF-2&&` + 
-                        `u(((t=frame++/60)*60|0==frame-1)&&t>0?t+1e-6:t,` +
-                        `OS13kL=0,` +
-                        `OS13kF=Math.max(OS13kF+100/6,t));` +
-                    `(OS13kA=t=>(requestAnimationFrame(OS13kA),` +
-                        (program.F & awake || program.i.allowSleep == 0 ? '' : 
-                            't<1e3|parent.document.activeElement==OS13kWindow&&') +
-                            `OS13kU(t)))` +
-                    `(frame=OS13kF=0)`);
+            // set on error now to catch errors on load
+            iframeContent.onerror = (...parameters)=>this.SetErrorText(...parameters);
+
+            // set code
+            this.iframeContent.document.body.innerHTML = allCodeIsSafe && program.info.code;
+           
+            // get type of user code, html, shadertoy, or dweet
+            program.info.code.trim()[0] != '<' ?
+                program.isDweet = !(program.isShader = program.info.code.search(/void\s+mainImage/) >= 0) :
+                program.isDweet = program.isShader = 0;
+
+            // show error messages from user code
+            iframeContent.onerror = (...parameters)=>this.SetErrorText(...parameters);
+
+            // load the iframe
+            LoadFrame();
         }
-
-        // mouse down on iframe to load unsafe code, and call normal mousedown
-        codeIsSafe || (iframeContent.onmousedown = e=> (this.Reload(allCodeIsSafe = 1), onmousedown(e)));
-
-        // prevent iframes context menu and drop events
-        iframeContent.ondrop = iframeContent.ondragover = iframeContent.oncontextmenu = ()=> !1;
-
-        // add taskbar icon if it doesnt exist and set active
-        this.taskbarIcon || (this.taskbarIcon = new OS13kTaskbarIcon(program, this)).SetActive();
-
-        // listen for reload from iframe, prevent infnite recursion
-        program.userProgram && (this.iframe.onload = ()=> reloadCount++ && this.Reload(1, 0));
+        else
+        {
+            // load source
+            this.iframe.onload = ()=> LoadFrame();
+            this.iframe.src = program.src + '?v253';
+        }
     }
         
     SetCode(code, setText)
     {
         // set code when changed
         setText && (this.codeText.value = code);
-        this.program.i.C = code;
+        this.program.info.code = code;
         this.codeSize.innerHTML = code.length;
         this.program.Save();
 
@@ -1289,7 +1606,7 @@ class OS13kWindow extends HTMLElement
         target.id != 'C' && this.SetActive();
         
         // set grab window if name is target
-        if (target == this.N)
+        if (target == this.name)
         {
             // set grab window and play sound
             grabWindow = this;
@@ -1299,7 +1616,7 @@ class OS13kWindow extends HTMLElement
             document.body.style.cursor = 'grabbing';
             
             // prevent anything from getting focus white grabbing
-            D.style.pointerEvents = 'none';
+            desktop.style.pointerEvents = 'none';
 
             // save grab offset
             grabOffsetX = x - parseInt(this.style.left);
@@ -1311,20 +1628,20 @@ class OS13kWindow extends HTMLElement
         target.id == 'Full'        && this.FullScreen();
         target.id == 'Reload'      && this.Reload();
         target.id == 'Close'       && this.Close();
-        target.id == 'Shrink'      && this.Resize(this.S - .2, soundShrink);
-        target.id == 'Grow'        && this.Resize(this.S + .2, soundGrow);
+        target.id == 'Shrink'      && this.Resize(this.scale - .2, soundShrink);
+        target.id == 'Grow'        && this.Resize(this.scale + .2, soundGrow);
         (target.id == 'Help' | target.id == 'Code') && this.ShowCode();
     }
     
     Resize(scale, sound)
     {
         // get new width and fix window offset
-        let wNew = OS13k.Clamp(this.program.W * scale, 1920, 170);
+        let wNew = OS13k.Clamp(this.program.width * scale, 1920, 170);
         this.style.left = parseInt(this.style.left) + parseInt(this.style.width) - wNew;
         
         // set new size
         this.style.width = wNew;
-        this.iframeWrapper.style.height = this.program.H * (this.S = wNew / this.program.W);
+        this.iframeWrapper.style.height = this.program.height * (this.scale = wNew / this.program.width);
     
         // update program info and play sound
         this.program.Save();
@@ -1337,11 +1654,11 @@ class OS13kWindow extends HTMLElement
         CloseMenus();
         
         // set style, dim non active windows
-        this.className = active? 'W' : '';
-        this.titlebar.className = 'T T' + 
-            (active? 'A' : '') + 
-            (this.program.F & sticky ? 'S' : this.program.userProgram ? 'U' : '');
-        this.iframeWrapper.style.filter = active || this.program.F & awake ? 
+        this.className = active? 'activeWindow' : '';
+        this.titlebar.className = 'titlebar titlebar' + 
+            (active? 'Active' : '') + 
+            (this.program.flags & sticky ? 'Sticky' : this.program.userProgram ? 'User' : '');
+        this.iframeWrapper.style.filter = active || this.program.flags & awake ? 
             '' : 'saturate(.7)brightness(.7';
 
         // check if active
@@ -1354,7 +1671,7 @@ class OS13kWindow extends HTMLElement
             this.style.top = OS13k.Clamp(rect.y, Math.max(taskbarHeight, innerHeight - rect.height), taskbarHeight)));
 
         // set focus to iframe using timeout
-        finishedStartup && focus &&
+        loading || focus &&
             setTimeout(e=> document.activeElement != this && this.iframeContent && this.iframeContent.focus(lastActiveFrame = this.iframe));
 
         if (activeWindow != this)
@@ -1370,23 +1687,23 @@ class OS13kWindow extends HTMLElement
             // show menu buttons
             let MenuButton = (text, onmousedown)=>
             {
-                let button = M.appendChild(document.createElement('button'));
+                let button = menu.appendChild(document.createElement('button'));
                 button.innerText = text;
                 button.onmousedown = onmousedown;
             }
-            M.innerHTML = '';
-            this.program.F & full &&   MenuButton('Full Screen', ()=> this.FullScreen());
-            this.program.C &&          MenuButton('Code',        ()=> this.ShowCode());
-            this.program.help &&       MenuButton('Help',        ()=> this.ShowCode());
-            this.program.F & resize && MenuButton('Reset Size',  ()=> this.SetActive(1, 1, this.Resize(1, soundGrow)));
-            this.program.F & reload && MenuButton('Reload',      ()=> this.Reload());
+            menu.innerHTML = '';
+            this.program.flags & full &&   MenuButton('Full Screen', ()=> this.FullScreen());
+            this.program.code &&           MenuButton('Code',        ()=> this.ShowCode());
+            this.program.help &&           MenuButton('Help',        ()=> this.ShowCode());
+            this.program.flags & resize && MenuButton('Reset Size',  ()=> this.SetActive(1, 1, this.Resize(1, soundGrow)));
+            this.program.flags & reload && MenuButton('Reload',      ()=> this.Reload());
             MenuButton('Close', ()=> this.Close());
 
             // set taskbar icon active if it exists
             this.taskbarIcon && this.taskbarIcon.SetActive(active, clamp, focus);
             
             // save start program if finished startup and not sticky
-            finishedStartup & !(this.program.F & sticky) && OS13k.Save(startProgramId = this.program.D);
+            finishedStartup & !(this.program.flags & sticky) && OS13k.Save(startProgramId = this.program.id);
         }
     }
     
@@ -1400,6 +1717,8 @@ class OS13kWindow extends HTMLElement
         this.iframeContent.focus();
         this.iframeWrapper.webkitRequestFullScreen ? this.iframeWrapper.webkitRequestFullScreen() :
             this.iframeWrapper.mozRequestFullScreen ? this.iframeWrapper.mozRequestFullScreen() : 0;
+        
+        OS13k.Trophy('🕹️','OS13k','Pro Gamer','Went Full Screen');
     }
     
     ShowCode(silent)
@@ -1407,12 +1726,14 @@ class OS13kWindow extends HTMLElement
         // toggle showing code and play sound
         this.codeDisplay.style.display = (this.showCode = !this.showCode) ? 'inline' : 'none';
         silent || SystemSound(this.program.help ? soundHelp : soundCode);
+
+        this.program.help || OS13k.Trophy('👨‍💻','OS13k','Hacker','Viewed Code');
     }
     
     Reload(silent, clamp=1)
     {
         // update program info and play sound
-        this.program.userProgram && (this.program.i.C = this.codeText.value);
+        this.program.userProgram && (this.program.info.code = this.codeText.value);
         this.program.Save();
         silent || SystemSound(soundReload);
         
@@ -1421,21 +1742,21 @@ class OS13kWindow extends HTMLElement
             this.iframeContent.OS13kReload ?
             this.iframeContent.OS13kReload() :
             this.program.userProgram ?
-                this.SetCode(this.program.i.C) :
-            this.CreateFrame();
+                this.SetCode(this.program.info.code) :
+            this.CreateFrame(this.iframe.style.visibility = '');
     }
     
     Close()
     {
         // remove start program if closed and play sound
-        this.program.D == startProgramId && (startProgramId = '');
+        this.program.id == startProgramId && (startProgramId = '');
         SystemSound(soundClose);
             
         // save info and set closed
         this.program.Save(0);
         
         // invalidate window after info is saved
-        this.program.w = 0;
+        this.program.window = 0;
         
         // remove taskbar icon and self
         this.taskbarIcon.remove();
@@ -1454,18 +1775,18 @@ class OS13kTaskbarIcon extends HTMLElement
         super();
         
         // create icon
-        this.className = 'TI';
+        this.className = 'taskbarIcon';
         this.menu = this.windowOrMenu = windowOrMenu;
         this.SetName(this.program = program);
         
         // add to taskbar
-        FS.before(this);
+        taskbarSpace.before(this);
     }
 
     SetName()
     {
-        this.innerHTML = '<div style=pointer-events:none>' + this.program.I;
-        this.title = this.program.N;
+        this.innerHTML = '<div style=pointer-events:none>' + (this.program.icon || '💠');
+        this.title = this.program.name;
     }
     
     Open() { this.SetActive(); }
@@ -1480,7 +1801,7 @@ class OS13kTaskbarIcon extends HTMLElement
             return SystemSound(soundMenu, .5);
         
         // set active style
-        this.className = 'TI ' + (active ? 'TIA' : '');
+        this.className = 'taskbarIcon ' + (active ? 'taskbarIconActive' : '');
         
         // if active, unselect old taskbar icon and set this active
         active && activeTaskbarIcon != this && (activeTaskbarIcon && activeTaskbarIcon.SetActive(0), activeTaskbarIcon = this);
@@ -1499,16 +1820,16 @@ class OS13kTrayIcon extends HTMLElement
 		super();
         
         // create tray icon and add it
-        this.className = 'R';
-        F.appendChild(this);
+        this.className = 'trayIcon';
+        tray.appendChild(this);
     }
     
     SetProgram(program)
     {
         // set program, title, and icon
         this.program = program;
-        this.title = program.N;
-        this.innerHTML = program.I;
+        this.title = program.name;
+        this.innerHTML = program.icon;
     }
     
     Open() { this.program.Toggle(); }
@@ -1534,15 +1855,16 @@ onmousedown = e=>
     }
     
     // close menus and reset program menu position, and set there has been input
-    CloseMenus(PM.style.left = 0, PM.style.top = taskbarHeight, hadInput = 1);
+    CloseMenus(programsMenu.style.left = 0, programsMenu.style.top = taskbarHeight, hadInput = 1);
 
     // prevent stuck grab (from tabbing to another window while grabbing)
     if (grabWindow) return onmouseup(e);
     
     // get orignal target
-    let originalTarget = e.originalTarget || e.path[0], isInput = 0;
+    let originalTarget = e.originalTarget || e.path[0];
 
     // fix firefix issue, return if orignal target id is restricted, happens for code editor
+    let isInput = 0;
     try {isInput = /input|textarea/.test(originalTarget.localName);} 
     catch { isInput = 1; originalTarget = e.target; }
     
@@ -1560,15 +1882,13 @@ onmousedown = e=>
             (e.target.SetActive ? e.target : loadIcon).SetActive(1, 1, 0);
 
             // get which menu to open
-            let targetMenu = e.target.menu ? (SystemSound(soundMenu, .5), M) : PM;
+            let targetMenu = e.target.menu ? (SystemSound(soundMenu, .5), menu) : programsMenu;
 
             // show context menu
             targetMenu.style.left = e.x;
             targetMenu.style.top  = e.y;
             e.target != loadIcon && (targetMenu.style.visibility = 'visible');
         }
-    
-        // allow main document to take focus
     }
     else
     {
@@ -1595,7 +1915,7 @@ onmouseup = ()=>
     grabWindow && (grabWindow.program.Save(),
     SystemSound(soundGrabEnd),
     grabWindow.SetActive(1, 0),
-        document.body.style.cursor = D.style.pointerEvents = grabWindow = '');
+        document.body.style.cursor = desktop.style.pointerEvents = grabWindow = '');
 
 // prevent default right click context menu
 oncontextmenu = ()=> !1;
@@ -1793,8 +2113,12 @@ zzfxM = (instruments, patterns, sequence, BPM = 125, validate) =>
 ///////////////////////////////////////////////////////////////////////////////
 // Start OS13k!
 
+// load save data
+if (localStorage.OS13k)
+    [trophies, settings, programInfos, startProgramId, nextUserProgramId] = JSON.parse(localStorage.OS13k);
+
 // save and update settings
-OS13k.Save(localStorage.OS13k ? [trophies, S, programInfos, startProgramId, nextUserProgramId] = JSON.parse(localStorage.OS13k) : 0);
+OS13k.Save();
 
 // setup audio
 gain.connect(audioContext.destination);
@@ -1808,14 +2132,7 @@ stickyNoteTrayIcon = new OS13kTrayIcon();
 clockTrayIcon      = new OS13kTrayIcon();
 
 // create load program taskbar icon and add folders/programs
-RebuildMenu(loadIcon = new OS13kTaskbarIcon({I:'💾', N:'Load'}, new OS13kProgramMenu(programStubs)));
-
-// load start program
-startProgram && startProgram.Open();
-
-// create analyser canvas
-musicTrayIcon.prepend(analyserCanvas);
-analyserCanvas.style = 'width:16;height:16;margin:2;pointer-events:none;display:none';
+RebuildMenu(loadIcon = new OS13kTaskbarIcon({icon:'💾', name:'Load'}, new OS13kProgramMenu(programStubs)));
 
 // welcome message
 OS13k.Trophy('👋','','Welcome to OS13k!');
@@ -1826,11 +2143,11 @@ for (let key in localStorage) CheckForTrophy(key);
 // listen for trophies from other windows
 onstorage = e=> CheckForTrophy(e.key);
 
-// finish startup
-OS13k.Save(finishedStartup = 1);
+// stop spech if page is unloaded
+onunload = e=> StopSpeech();
 
-// try to update startup and kick off first update, stop spech if page is unloaded
-Update(onunload = e=> StopSpeech());
+// try to update startup and kick off first update
+Update();
 
 ///////////////////////////////////////////////////////////////////////////////
 // Mobile Support OPTIONAL
@@ -1838,7 +2155,7 @@ Update(onunload = e=> StopSpeech());
 // save if user was touching
 let wasTouching;
     
-if (typeof ontouchstart != 'undefined')
+if (window.ontouchstart !== undefined)
 {
     // remove hovers, they get stuck on mobile
     let RemoveHovers = e=>
