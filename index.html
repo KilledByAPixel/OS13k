@@ -1234,7 +1234,7 @@ class OS13kWindow extends HTMLElement
         
         // shadow root
 		this.attachShadow({mode: 'open'});
-        this.shadowRoot.innerHTML = windowTemplate.innerHTML;
+        this.shadowRoot.innerHTML = windowTemplate.textContent;
         
         // title bar
         this.titlebar = this.shadowRoot.appendChild(document.createElement('div'));
