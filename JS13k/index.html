@@ -233,22 +233,6 @@ let OS13kVersion = 81;
 } // debug stuff
 
 ///////////////////////////////////////////////////////////////////////////////
-// Audio Compatibilty - Optional aliases for old web audio (remove from minified)
-
-if (window.AudioContext === undefined)
-{
-    AudioContext = webkitAudioContext;
-    AudioContext.prototype.createGain = AudioContext.prototype.createGainNode;
-    AudioContext.prototype._createBufferSource = AudioContext.prototype.createBufferSource;
-    AudioContext.prototype.createBufferSource = (s = audioContext._createBufferSource())=>
-    (
-        s.start = s.start || s.noteOn,
-        s.stop  = s.stop  || s.noteOff,
-        s
-    );
-}
-
-///////////////////////////////////////////////////////////////////////////////
 // Minification Stuff
 
 {
@@ -787,7 +771,7 @@ let grabWindow, grabOffsetX, grabOffsetY, finishedStartup, nextUserProgramId = 0
     settings = {v:.3, m:.3, s:1, p:1, o:1, c:'#222233', d:'#332222', t:'OS13k', f:''},
 
     // init web audio
-    audioContext = new AudioContext,
+    audioContext = new (window.AudioContext||webkitAudioContext),
     gain = audioContext.createGain(), 
     gainMusic = audioContext.createGain(), 
     musicAnalyser = audioContext.createAnalyser(),
@@ -1861,7 +1845,7 @@ onmousedown = e=>
     if (grabWindow) return onmouseup(e);
     
     // get orignal target
-    let originalTarget = e.originalTarget || e.path[0];
+    let originalTarget = e.composedPath()[0];
 
     // fix firefix issue, return if orignal target id is restricted, happens for code editor
     let isInput = 0;
