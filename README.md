@@ -102,7 +102,7 @@ Add an icon config to programs.js to register your program, examples...
 
 ### Input System
 - OS13k provides an easy to use input system to help eliminate redundant code
-- Call OS13k.Input(window) to create an input object
+- Call OS13k.Input(window) to get the input object
 - the object format is {x, y, keypress, keydown, mousex, mousey, mousepress, mousedown}
 - x and y is a -1 to 1 direction from WASD or direction buttons
 - mousex and mousey is the mouse position
