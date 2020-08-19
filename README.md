@@ -11,6 +11,16 @@ It includes native support for Shadertoys, Dweets, ZzFX sounds, music, trophies,
 - OS13k can connect with other JS13k games via local storage to add music and trophies
 - Users can extend OS13k by addinng their own programs and shaders
 
+## Features
+- ZzFX sound effects with support for sound seeds
+- ZzFXM music system, player, and visualizer
+- Trophy system and viewer
+- Centralized input system
+- Custom user programs
+- Dwitter, ShaderToy, and WebGL support
+- GUI with window manger, taskbar, tray and settings
+- Mobile/touch support
+
 ## Programming Info
 - OS13k stores it's list of programs in programs.js
 - For fast iteration when developing, most recent active window is opened on startup
@@ -68,9 +78,9 @@ Add an icon config to programs.js to register your program, examples...
  ### Any JS13k game can add trophies and music, even if not part of OS13k!
  - *To add a trophy or music track, just save a special key to localStorage!*
  - The smallest way to add a single trophy (like for winning) is localStorage['OS13kTrophy,Icon,GameName'] = ''
- - For more control use localStorage['OS13kTrophy,Icon,GameName,TrophyName'] = Message
+ - For more control use localStorage['OS13kTrophy,Icon,Game Name,Trophy Name'] = Message
  - You can change the message to update the trophy, like a highscore for example
- - Music works the same way, use localStorage['OS13kMusic,SongName'] = JSON.stringify(song)
+ - Music works the same way, use localStorage['OS13kMusic,Song Name'] = JSON.stringify(song)
  - OS13k automatically checks localStorage and display popups for new trophies and songs from other games
  - This is possible because all JS13k games share the same local storage! Pretty cool right?
  - *Don't spam the trophy system, lets agree to around 5 trophies per game*
@@ -102,7 +112,7 @@ Add an icon config to programs.js to register your program, examples...
 
 ### Input System
 - OS13k provides an easy to use input system to help eliminate redundant code
-- Call OS13k.Input(window) to create an input object
+- Call OS13k.Input(window) to get the input object
 - the object format is {x, y, keypress, keydown, mousex, mousey, mousepress, mousedown}
 - x and y is a -1 to 1 direction from WASD or direction buttons
 - mousex and mousey is the mouse position
