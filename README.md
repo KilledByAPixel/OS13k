@@ -78,9 +78,9 @@ Add an icon config to programs.js to register your program, examples...
  ### Any JS13k game can add trophies and music, even if not part of OS13k!
  - *To add a trophy or music track, just save a special key to localStorage!*
  - The smallest way to add a single trophy (like for winning) is localStorage['OS13kTrophy,Icon,GameName'] = ''
- - For more control use localStorage['OS13kTrophy,Icon,GameName,TrophyName'] = Message
+ - For more control use localStorage['OS13kTrophy,Icon,Game Name,Trophy Name'] = Message
  - You can change the message to update the trophy, like a highscore for example
- - Music works the same way, use localStorage['OS13kMusic,SongName'] = JSON.stringify(song)
+ - Music works the same way, use localStorage['OS13kMusic,Song Name'] = JSON.stringify(song)
  - OS13k automatically checks localStorage and display popups for new trophies and songs from other games
  - This is possible because all JS13k games share the same local storage! Pretty cool right?
  - *Don't spam the trophy system, lets agree to around 5 trophies per game*
