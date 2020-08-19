@@ -419,7 +419,7 @@ class _OS13k
     StringToMusic(string, validate)
     {
         // check if safe to eval and get music data
-        let music = string.replace(/null|[[\],\d\.-]/g, '') || eval(string.replace(/null/g, undefined)); 
+        let music = string.replace(/null|[[\],\de\.-]/g, '') || eval(string.replace(/null/g, undefined)); 
 
         // try to generate music to check if valid
         validate && zzfxM(...music, 1);
