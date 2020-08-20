@@ -1551,7 +1551,9 @@ class OS13kWindow extends HTMLElement
             iframeContent.onerror = (...parameters)=>this.SetErrorText(...parameters);
 
             // set code
-            this.iframeContent.document.body.innerHTML = allCodeIsSafe && program.info.code;
+            iframeContent.document.open();
+            allCodeIsSafe && iframeContent.document.write(program.info.code);
+            iframeContent.document.close();
            
             // get type of user code, html, shadertoy, or dweet
             program.info.code.trim()[0] != '<' ?
