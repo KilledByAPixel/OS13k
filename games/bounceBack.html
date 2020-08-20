@@ -985,7 +985,7 @@ function Update()
             level.DrawText('A JS13k 2019 Game',   new Vector2(8,9.5), 14);
         if (levelFrame==260)
             level.DrawText('By Frank Force',   new Vector2(8,10.5), 14);
-        if (levelFrame==260) 
+        if (levelFrame==320) 
         {
             let  h = 1;
             level.DrawText('WASD = Move',   pos.AddXY(0, 8.2), 18);
@@ -2717,6 +2717,9 @@ function UpdateAudio()
 
     if (!(isStartLevel || winTimer.IsSet()))
         return;
+
+    // disable music
+    return;
         
     // play music
     let scale = [-5,0,2,4,7,12,-5,-8];
