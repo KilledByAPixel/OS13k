@@ -985,14 +985,14 @@ function Update()
             level.DrawText('A JS13k 2019 Game',   new Vector2(8,9.5), 14);
         if (levelFrame==260)
             level.DrawText('By Frank Force',   new Vector2(8,10.5), 14);
-        /*if (levelFrame==260) 
+        if (levelFrame==260) 
         {
-            pos = new Vector2(8,7);
-            level.DrawText('WASD = Move',   pos.AddXY(0, 3.5), 18);
+            let  h = 1;
+            level.DrawText('WASD = Move',   pos.AddXY(0, 8.2), 18);
+            level.DrawText('Shift = Dodge', pos.AddXY(0, h), 18);
             level.DrawText('Mouse = Aim',   pos.AddXY(0, h), 18);
             level.DrawText('Click = Throw', pos.AddXY(0, h), 18);
-            level.DrawText('Space = Dodge', pos.AddXY(0, h), 18);
-        }*/
+        }
     }
 }
 
