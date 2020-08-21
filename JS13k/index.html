@@ -163,7 +163,7 @@ defaultFlags = full|reload|resize,
 defaultWidth = 720, defaultHeight = 405, // 16:9 aspect
 
 // program format
-//[src, icon, width, height, flags, name, help, folder]
+//[icon, width, height, flags, name, help, folder]
 
 programStubs = 
 [
@@ -793,7 +793,7 @@ class OS13kProgramMenu extends HTMLElement
         // create new program
         let stub = copyProgram ? 
             [copyProgram.I, copyProgram.W, copyProgram.H, defaultFlags|code, 
-                copyProgram.N + '+', , ,++nextUserProgramId, copyProgram.U] :
+                copyProgram.N + '+',,,++nextUserProgramId, copyProgram.U] :
             ['✋',,,defaultFlags|code,,,,++nextUserProgramId, userFolder],
             program = stub[-1] = new OS13kProgram(...stub);
         
@@ -802,10 +802,10 @@ class OS13kProgramMenu extends HTMLElement
 
         // set code, copy if passed in, use default if none found
         program.i.C = copyProgram ? (
-            program.i.S = copyProgram.I.S,
-            windowOpenX = copyProgram.I.x,
-            windowOpenY = copyProgram.I.y + titlebarHeight,
-            copyProgram.I.C)
+            program.i.S = copyProgram.i.S,
+            windowOpenX = copyProgram.i.x,
+            windowOpenY = copyProgram.i.y + titlebarHeight,
+            copyProgram.i.C)
             :
             '// Auto detects HTML or Dweet. You can drop files here too! ✌️😄\n' +
             'for(x.fillRect(0,0,i=s=2e3,s);i--;x.globalAlpha=.1)\n' +
