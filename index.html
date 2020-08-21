@@ -451,12 +451,10 @@ class _OS13k
         // copy samples to buffer and play
         samplesArray.map((d,i)=> buffer.getChannelData(i).set(d));
         source.buffer = buffer;
-        
-        // create custom gain node
-        source.connect(source.gain = audioContext.createGain()).connect(isMusic ? gainMusic : gain);
+        source.connect(isMusic ? gainMusic : gain);
         
         // connect analyser and start
-        isMusic && (isMusic > 1 ? source.gain : source).connect(musicAnalyser);
+        isMusic && (isMusic > 1 ? gain : source).connect(musicAnalyser);
         source.start();
         return source;
     }
@@ -1236,7 +1234,7 @@ class OS13kWindow extends HTMLElement
         
         // shadow root
 		this.attachShadow({mode: 'open'});
-        this.shadowRoot.innerHTML = windowTemplate.innerHTML;
+        this.shadowRoot.innerHTML = windowTemplate.textContent;
         
         // title bar
         this.titlebar = this.shadowRoot.appendChild(document.createElement('div'));
