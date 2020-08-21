@@ -441,7 +441,7 @@ class _OS13k
     PlaySamples(samples, isMusic, sampleRate=defaultSampleRate)
     { return OS13k.PlaySamplesArray([samples], isMusic, sampleRate); }
     
-    // play array of audio sample data, connect analyser to gain if isMusic > 1
+    // play array of audio sample data, connect analyser to gain if isMusic > 1 for instruments
     PlaySamplesArray(samplesArray, isMusic, sampleRate=defaultSampleRate)
     {
         // create buffer and source
@@ -451,10 +451,14 @@ class _OS13k
         // copy samples to buffer and play
         samplesArray.map((d,i)=> buffer.getChannelData(i).set(d));
         source.buffer = buffer;
-        source.connect(isMusic ? gainMusic : gain);
+
+        // create custom gain node
+        let sourceOut = source;
+        source.gain || source.connect(sourceOut = source.gain = audioContext.createGain());
+        sourceOut.connect(isMusic ? gainMusic : gain);
         
         // connect analyser and start
-        isMusic && (isMusic > 1 ? gain : source).connect(musicAnalyser);
+        isMusic && (isMusic > 1 ? sourceOut : source).connect(musicAnalyser);
         source.start();
         return source;
     }
