@@ -1233,29 +1233,31 @@ class OS13kWindow extends HTMLElement
                 'align-items:center';
 
             // create dweet program
-            iframeContent.eval(
-                `OS13k=parent.OS13k;x=c.getContext('2d');` +
-                    `zzfx=parent.zzfx;` +
-                    `S=Math.sin;C=Math.cos;T=Math.tan;` +
-                    `R=(r,g,b,a=1)=>\`rgba(\${0|r},\${0|g},\${0|b},\${a})\`;` +
-                    `u=t=>{\n${ 
+            try {
+                iframeContent.eval(
+                    `OS13k=parent.OS13k;x=c.getContext('2d');` +
+                        `zzfx=parent.zzfx;` +
+                        `S=Math.sin;C=Math.cos;T=Math.tan;` +
+                        `R=(r,g,b,a=1)=>\`rgba(\${0|r},\${0|g},\${0|b},\${a})\`;` +
+                        `u=t=>{\n${ 
 
-                    // loop protection for user dweets
-                    program.userProgram ? code.replace(
-                        /(for\s*\([^;]*;[^;]*;|while\s*\()\s*(\S)/g, (a, b, c)=> 
-                            b && c && !b.match(/\sof\s|\sin\s/g) ? 
-                                b + '++OS13kL>1e5&&(e=>{throw"Timed out!"})()' +
-                                (c == ')' ? '' : ',') + c : a ) : code
-                     }\n};` +
-                    `OS13kU=t=>t>OS13kF-2&&` + 
-                        `u(((t=frame++/60)*60|0==frame-1)&&t>0?t+1e-6:t,` +
-                        `OS13kL=0,` +
-                        `OS13kF=Math.max(OS13kF+100/6,t));` +
-                    `(OS13kA=t=>(requestAnimationFrame(OS13kA),` +
-                        (program.F & awake || program.i.allowSleep == 0 ? '' : 
-                            't<1e3|parent.document.activeElement==OS13kWindow&&') +
-                            `OS13kU(t)))` +
-                    `(frame=OS13kF=0)`);
+                        // loop protection for user dweets
+                        program.userProgram ? code.replace(
+                            /(for\s*\([^;]*;[^;]*;|while\s*\()\s*(\S)/g, (a, b, c)=> 
+                                b && c && !b.match(/\sof\s|\sin\s/g) ? 
+                                    b + '++OS13kL>1e5&&(e=>{throw"Timed out!"})()' +
+                                    (c == ')' ? '' : ',') + c : a ) : code
+                        }\n};` +
+                        `OS13kU=t=>t>OS13kF-2&&` + 
+                            `u(((t=frame++/60)*60|0==frame-1)&&t>0?t+1e-6:t,` +
+                            `OS13kL=0,` +
+                            `OS13kF=Math.max(OS13kF+100/6,t));` +
+                        `(OS13kA=t=>(requestAnimationFrame(OS13kA),` +
+                            (program.F & awake || program.i.allowSleep == 0 ? '' : 
+                                't<1e3|parent.document.activeElement==OS13kWindow&&') +
+                                `OS13kU(t)))` +
+                        `(frame=OS13kF=0)`);
+            } catch (e) {}
         }
 
         // mouse down on iframe to load unsafe code, and call normal mousedown
