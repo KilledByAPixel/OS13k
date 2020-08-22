@@ -1831,6 +1831,9 @@ customElements.define('t-', OS13kTrayIcon);
 
 onmousedown = e=>
 {
+    // get orignal target
+    const originalTarget = e.composedPath()[0];
+
     // check if load icon is target while programs menu was visible
     if (e.target == loadIcon && e.target.windowOrMenu.style.visibility)
     {
@@ -1849,14 +1852,6 @@ onmousedown = e=>
 
     // prevent stuck grab (from tabbing to another window while grabbing)
     if (grabWindow) return onmouseup(e);
-    
-    // get orignal target
-    let originalTarget = e.composedPath()[0];
-
-    // fix firefix issue, return if orignal target id is restricted, happens for code editor
-    let isInput = 0;
-    try {isInput = /input|textarea/.test(originalTarget.localName);} 
-    catch { isInput = 1; originalTarget = e.target; }
     
     // check if not left mouse button
     if (e.button)
@@ -1886,7 +1881,7 @@ onmousedown = e=>
         e.target.Open ? e.target.Open(originalTarget, e.x, e.y) : activeWindow && activeWindow.SetActive();
         
         // allow event to contiue only if input
-        return e.target == loadIcon || isInput;
+        return e.target == loadIcon || /input|textarea/.test(originalTarget.localName);
     }
 }
 
