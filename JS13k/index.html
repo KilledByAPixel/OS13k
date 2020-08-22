@@ -1168,7 +1168,7 @@ class OS13kWindow extends HTMLElement
 
     SetErrorText(message, source, line, col, e)
     {
-        this.errorText.value = e + (e && e.stack ? ` (${(line-1) + ':' + col})` : '');
+        this.errorText.value = e ? e + (e && e.stack ? ` (${(line-1) + ':' + col})` : '') : message;
         this.errorText.style.display = this.errorText.value ? '' : 'none';
         return !0;
     }
@@ -1257,7 +1257,7 @@ class OS13kWindow extends HTMLElement
                                 't<1e3|parent.document.activeElement==OS13kWindow&&') +
                                 `OS13kU(t)))` +
                         `(frame=OS13kF=0)`);
-            } catch (e) {}
+            } catch (e) { this.SetErrorText(e); }
         }
 
         // mouse down on iframe to load unsafe code, and call normal mousedown
