@@ -430,8 +430,8 @@ class _OS13k
     {
         // create popup
         let popup = PU.appendChild(document.createElement('div'));
-        popup.style = 'position:relative;z-index:10000;width:200;padding:8;pointer-events:none;white-space:normal;text-align:center;background:linear-gradient(#eee,#888);box-shadow:9px 9px 19px;border:2px solid;border-radius:9px;';
-        popup.innerHTML = html;
+        popup.style = 'position:relative;z-index:10000;width:200;padding:8;white-space:normal;text-align:center;background:linear-gradient(#eee,#888);box-shadow:9px 9px 19px;border:2px solid;border-radius:9px;';
+        popup.innerHTML = '<div style=pointer-events:none>' + html;
         popup.S = speak;
         popup.L = language;
         popup.style.visibility = 'hidden';
@@ -1586,15 +1586,20 @@ onmousemove = e=>
     e.target.Move && e.target.Move();
 }
 
-onmouseup = ()=>
+onmouseup = e=>
+{
+    const originalTarget = e.composedPath()[0];
+    originalTarget.parentElement == PU && originalTarget.remove(SystemSound(soundClose));
+
     // set grab window active, no clamp, and set cursor to default, unset grab
     grabWindow && (grabWindow.program.Save(),
     SystemSound(soundGrabEnd),
     grabWindow.SetActive(1, 0),
         document.body.style.cursor = D.style.pointerEvents = grabWindow = '');
+}
 
 // prevent default right click context menu
-oncontextmenu = ()=> !1;
+oncontextmenu = e=> !1;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Drag and Drop
