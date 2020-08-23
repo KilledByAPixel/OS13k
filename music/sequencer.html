@@ -20,7 +20,7 @@ I = (s, x)=> M[0][x] = OS13k.SeedParameters(s, 1, 1, 0, OS13k.Note(-33));
 // get name of note
 Q=e=>e ? e > 0 ? 
     (e >= 1 ? "CCDDEFFGGAAB"[e%12|0] +                 // note letter
-              ('02579'.indexOf(e%12-1) >=0? '#':'') +  // natural or sharp
+              ('02579'.indexOf(e%12-1) < 0 ? '':'#') + // natural or sharp
         " - " + (e/12-1|0) + " " : "") +               // octave
     (e%1 ? (10 - e*10 % 10|0) + "0%" : "") :           // volume
     e < -1 ? " End" : "Stop" : "";                     // special notes
