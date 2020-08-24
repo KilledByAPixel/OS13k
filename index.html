@@ -1945,7 +1945,7 @@ zzfxG = (volume = 1, randomness = .05, frequency = 220, attack = 0, sustain = 0,
     // init parameters and helper functions
     let PI2 = Math.PI*2,
     sign = v=> v>0? 1 : -1,
-    length = OS13k.randomSeed = OS13k.Clamp(attack + decay + sustain + release + delay, 9*sampleRate),
+    length = OS13k.randomSeed = OS13k.Clamp(attack + decay + sustain + release + delay, 9*sampleRate) | 0,
     startSlide = slide *= 500 * PI2 / sampleRate**2,
     startFrequency = frequency *= (1 + randomness*2*Math.random() - randomness) * PI2 / sampleRate,
     modPhase = sign(modulation) * PI2/4,
