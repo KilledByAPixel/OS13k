@@ -541,7 +541,7 @@ const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26,
     soundClose      = 92,
     soundGrabStart  = 45,
     soundGrabEnd    = 66,
-    soundMenu       = 8,
+    soundMenu       = -9,
     soundActive     = 66,
     soundShrink     = 75,
     soundGrow       = 61,
@@ -549,7 +549,7 @@ const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26,
     soundHelp       = 87,
     soundCode       = 16,
     soundReload     = -5,
-    soundProgram    = 3,
+    soundProgram    = 9,
     soundSave       = 6;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1479,7 +1479,7 @@ class OS13kTaskbarIcon extends HTMLElement
     
         // load icon cant be active taskbar item
         if (this == loadIcon)
-            return SystemSound(soundMenu, .5);
+            return SystemSound(soundMenu, .3);
         
         // set active style
         this.className = 'TI ' + (active ? 'TIA' : '');
@@ -1558,7 +1558,7 @@ onmousedown = e=>
             (e.target.SetActive ? e.target : loadIcon).SetActive(1, 1, 0);
 
             // get which menu to open
-            let targetMenu = e.target.menu ? (SystemSound(soundMenu, .5), M) : PM;
+            let targetMenu = e.target.menu ? (SystemSound(soundMenu, .1), M) : PM;
 
             // show context menu
             targetMenu.style.left = e.x;
