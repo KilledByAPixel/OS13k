@@ -397,7 +397,7 @@ class _OS13k
     
         // set utterance parameters
         let utterance = new SpeechSynthesisUtterance(text);
-        utterance.volume = volume * gain.gain.value * 3;
+        utterance.volume = volume * gain.gain.value * 2;
         utterance.rate = rate;
         utterance.pitch = pitch;
         utterance.lang = language;
@@ -546,10 +546,10 @@ const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26,
     soundShrink     = 75,
     soundGrow       = 61,
     soundFullScreen = -9,
-    soundHelp       = 48,
+    soundHelp       = 87,
     soundCode       = 16,
-    soundReload     = 93,
-    soundProgram    = 90,
+    soundReload     = -5,
+    soundProgram    = 3,
     soundSave       = 6;
 
 ///////////////////////////////////////////////////////////////////////////////
