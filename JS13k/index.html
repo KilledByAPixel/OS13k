@@ -549,7 +549,7 @@ const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26,
     soundHelp       = 87,
     soundCode       = 16,
     soundReload     = -5,
-    soundProgram    = 9,
+    soundProgram    = 3,
     soundSave       = 6;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -888,7 +888,7 @@ class OS13kProgram extends HTMLElement
         
         // set active
         this.className = 'P PA';
-        activeProgram !=this && SystemSound(soundProgram, 0);
+        activeProgram !=this && SystemSound(soundProgram, .1);
         activeProgram = this;
     }
     
@@ -1629,9 +1629,9 @@ var zzfx = (...parameters)=> OS13k.PlaySamples(zzfxG(...parameters)),
 zzfxG = (volume = 1, randomness = .05, frequency = 220, attack = 0, sustain = 0, release = .1, shape = 0, shapeCurve = 1, slide = 0, deltaSlide = 0, pitchJump = 0, pitchJumpTime = 0, repeatTime = 0, noise = 0, modulation = 0, bitCrush = 0, delay = 0, sustainVolume = 1, decay = 0, tremolo = 0)=>
 {
     attack = 99 + attack * defaultSampleRate;
-    release = 99 + release * defaultSampleRate;
     sustain *= defaultSampleRate;
     decay *= defaultSampleRate;
+    release = release * defaultSampleRate;
     delay *= defaultSampleRate;
     
     // init parameters and helper functions
@@ -1662,8 +1662,10 @@ zzfxG = (volume = 1, randomness = .05, frequency = 220, attack = 0, sustain = 0,
                 1-4*Math.abs(Math.round(t/PI2)-t/PI2):   // 1 triangle
                 Math.sin(t);                             // 0 sin
 
-            s = sign(s)*(Math.abs(s)**shapeCurve) *          // curve 0=square, 2=pointy
-                (repeatTime ? 1 - tremolo + tremolo*Math.sin(2*Math.PI*i/repeatTime) : 1) * // tremolo
+            s = (repeatTime ?
+                    1 - tremolo + tremolo*Math.sin(2*Math.PI*i/repeatTime) // tremolo
+                    : 1) *
+                sign(s)*(Math.abs(s)**shapeCurve) *          // curve 0=square, 2=pointy
                 volume * (                                   // envelope
                     i < attack ? i/attack :                  // attack
                     i < attack + decay ?                     // decay
@@ -1677,7 +1679,7 @@ zzfxG = (volume = 1, randomness = .05, frequency = 220, attack = 0, sustain = 0,
 
             s = delay ?                                      // delay
                 s/2 + (delay > i ? 0 :
-                (i<length-delay? 1 : (i-length)/delay) *     // release delay 
+                (i<length-delay? 1 : (length-i)/delay) *     // release delay 
                 buffer[i - delay|0]/2) : s;                  // sample delay
         }
 
