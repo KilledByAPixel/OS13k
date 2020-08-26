@@ -34,7 +34,7 @@ x=>
     // no pieces left or randomize on R
     if (!pieceCount || controls[45])
     {
-        pieceCount||level&&level>OS13k.GetTrophy('Digit Dilemma','Level Complete')&&OS13k.Trophy('☺#'+level,'Digit Dilemma','Level Complete',level);
+        pieceCount||level&&level>OS13k.GetTrophy('Digit Dilemma','Level Complete')&&OS13k.Trophy('☺','Digit Dilemma','Level Complete',level);
 
         // go up a level when there are no pieces left
         pieceCount || (size = ++level<11?4+level:15);
