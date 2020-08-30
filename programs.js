@@ -41,6 +41,7 @@ programStubs =
     ['⌛','apps/timer.html',400,139,reload],
     ['📈','apps/grapher.html',,,,,'Enter an function of x to see the graph.\n\nMouse = Show Values\nWheel = Zoom'],
     ['📸','apps/camera.html',640,480],
+    ['👾','apps/spriteGenerator.html'],
     ['<span style=color:#0f0;background:#000;font-family:monospace>JS>','apps/console.html']
 ]],
 ['🎶',,,,,'Music',,
