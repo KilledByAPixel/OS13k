@@ -1292,57 +1292,66 @@ class OS13kWindow extends HTMLElement
         this.codeOptions = this.codeDisplay.appendChild(document.createElement('div'));
         this.codeOptions.id = 'codeOptions';
         this.codeOptions.style.display =  program.userProgram ? '' : 'none';
+        this.codeOptions.style.paddingLeft = 9;
 
-        // build code options html
-        this.codeOptions.innerHTML = 
-            `&nbsp;<button id=S>📷</button>` +
-            `Icon <input style=width:50 id=I> ` +
-            `Name <input id=N> ` +
-            `Folder <input id=F><br>` +
-            `&nbsp;Size <input style=width:50 type=number id=W>x<input style=width:50 type=number id=H>` + 
-            `Sleep <input type=checkbox id=P ${program.info.allowSleep != !1 ? 'checked' : ''}>` +
-            `Live Edit <input type=checkbox id=L ${program.info.liveEdit != !1 ? 'checked' : ''}>` +
-            `<button id=G>Save</button>` +
-            `<button id=C>Copy</button>` +
-            `<button id=D>Delete</button>` +
-            `<span id=Z>${program.info.code && program.info.code.length}</span> Bytes` +
-            `<a id=A><canvas id=V style=display:none>`;
+        // build the code options
+        const CodeOption = (text, tagName, innerHTML='', style, type)=>
+        {
+            text && this.codeOptions.appendChild(document.createTextNode(text));
+            let e = this.codeOptions.appendChild(document.createElement(tagName));
+            e.innerHTML = innerHTML;
+            e.style = style;
+            e.type = type;
+            return e;
+        }
 
-        // get links to code options and create error text
-        let iconInput     = this.shadowRoot.getElementById('I'),
-            nameInput     = this.shadowRoot.getElementById('N'),
-            folderInput   = this.shadowRoot.getElementById('F'),
-            widthInput    = this.shadowRoot.getElementById('W'),
-            heightInput   = this.shadowRoot.getElementById('H'),
-            link          = this.shadowRoot.getElementById('A'),
-            canvas        = this.shadowRoot.getElementById('V'),
-            canvasContext = canvas.getContext('2d');
+        // create each element for code options
+        let
+        screenshotButton = this.screenshot = CodeOption('', 'button', '📷'),
+        iconInput = CodeOption('Icon ', 'input', '', 'width:50'),
+        nameInput = CodeOption('Name ', 'input'),
+        folderInput = CodeOption('Folder ', 'input'),
+        nextLine = CodeOption('', 'br'),
+        widthInput = CodeOption('Size ', 'input', '', 'width:50', 'number'),
+        heightInput = CodeOption('x', 'input', '', 'width:50', 'number'),
+        sleepInput = this.allowSleep = CodeOption('Sleep ', 'input', '', '', 'checkbox'),
+        liveEditInput = this.liveEdit = CodeOption('Live Edit ', 'input', '', '', 'checkbox'),
+        saveButton = CodeOption('', 'button', 'Save'),
+        copyButton = CodeOption('', 'button', 'Copy'),
+        deleteButton = CodeOption('', 'button', 'Delete'),
+        byteSizeSpan = this.codeSize = CodeOption('', 'span', program.info.code && program.info.code.length),
+        link = CodeOption(' Bytes', 'a'),
+        canvas = CodeOption('', 'canvas', '', 'display:none'),
+        canvasContext = canvas.getContext('2d');
 
+        // set checkboxes
+        sleepInput.checked = program.info.allowSleep != !1;
+        liveEditInput.checked = program.info.liveEdit != !1;
+        
         // error text
         this.errorText = this.codeDisplay.appendChild(document.createElement('textarea'));
         this.errorText.id = 'errorText';
         this.errorText.readOnly = !0;
         
+        // save button
+        saveButton.onmousedown = ()=>
+            link.click(SystemSound(soundSave),
+            link.href = URL.createObjectURL(new Blob([this.codeText.value])),
+            link.download = 'OS13k_' + program.name);
+        
         // copy button
-        this.shadowRoot.getElementById('C').onmousedown = ()=> program.programMenu.NewUserProgram(program);
+        copyButton.onmousedown = ()=> program.programMenu.NewUserProgram(program);
 
         // delete button
-        this.shadowRoot.getElementById('D').onmousedown = ()=>
+        deleteButton.onmousedown = ()=>
         {
             // close, remove, and rebuild (must close first)
             this.Close();
             RebuildMenu(OS13k.Save(programInfos = programInfos.filter(info=> info.id != program.id)));
         }
-        
-        // save button
-        this.shadowRoot.getElementById('G').onmousedown = ()=>
-            link.click(SystemSound(soundSave),
-            link.href = URL.createObjectURL(new Blob([this.codeText.value])),
-            link.download = 'OS13k_' + program.name);
 
         // screenshot button
-        this.screenshot = this.shadowRoot.getElementById('S');
-        this.screenshot.onmousedown = ()=>
+        screenshotButton.onmousedown = ()=>
         {
             // wrap in try block in case canvas doesnt exist
             try {
@@ -1360,9 +1369,6 @@ class OS13kWindow extends HTMLElement
         }
 
         // get elements by id
-        this.codeSize     = this.shadowRoot.getElementById('Z');
-        this.liveEdit     = this.shadowRoot.getElementById('L');
-        this.allowSleep   = this.shadowRoot.getElementById('P');
         iconInput.value   = program.icon;
         nameInput.value   = program.name;
         widthInput.value  = program.width;
@@ -1371,7 +1377,7 @@ class OS13kWindow extends HTMLElement
 
         // set new icon and name when changed
         iconInput.oninput = nameInput.oninput =
-        this.liveEdit.oninput = e=>
+        liveEditInput.oninput = e=>
         program.Save(
             SetName(this.taskbarIcon.
             SetName(program.
@@ -1393,7 +1399,7 @@ class OS13kWindow extends HTMLElement
         }
 
         // allow sleep button
-        this.allowSleep.oninput = e=> this.Reload(1, program.Save());
+        sleepInput.oninput = e=> this.Reload(1, program.Save());
 
         // resize window size to fit inner width while preserving aspect
         let width = program.flags & resize ? 
