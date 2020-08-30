@@ -16,11 +16,31 @@
 
 <iframe name="Don't Fall">for(t||(A=B=P=8,a=b=p=0),I=OS13k.Input(window),a=-I.x/2,k=I.y,b-=.006,A-=a,B-=b,r=.2-B/240,P-=r,B+=r,c.width=512,i=3e3;X=63&i,Y=i>>6,i--;x.fillRect(8*X,8*Y,8,8))y=Y/3+B+P,z=X/3+4*(y>>4),G=T(y+z^z-y),M=G>5,A^X|B^Y|!M||(OS13k.PlaySeed(96*G,p+k*k,.3),b=k?p/3:.2,p=k?0:p>1?1:p+G%2/12),y-=P/2,z+=A/3,g=T(y+z^z-y),m=t<32?12+g%8+Y-B:(G^g)+Y-B&31,x.fillStyle=`hsl(${M*G*30+m}deg 99%${50*M+m*(1-S(t/16)**3)/2}%`;x.font=16+16*p+"px a",x.fillText(k?"🙉":"🐵",8*A-8-8*p,8*B),B<48&&OS13k.Trophy([..."🐢🦒🦉🦇🦜🕊🐒🦅"][y=32-y>>5],"Don't Fall",16*y+"ft")</iframe>
 
-<iframe name="Bogus Slopes">i=OS13k.Input(window),(!t||i.keypress[32])&&(T=U=V=F=0,W=[],Y=540,X=-700),X>0||(x.fillStyle="#ddd8",x.fillRect(0,0,2e3,2e3),x.font='9em"',x.textAlign="center",x.textBaseline="middle",x.scale(-1,1),F=Math.min(F+.2,19+T/1e4),W.push((60*t|0)%Math.max(9,19-T/1e4|0)?{t:"●",x:X,y:Y,c:`hsl(${T} 99%${U<-1?50:100}%)`}:{t:[..."🌲🌳⭐"][2*Math.random()+(Math.random()<.1)|0],x:-2200,y:79+900*Math.random()}),W=W.filter(t=>(x.fillStyle=t.c||R(),x.fillText(t.t,t.x+=F*("⭐"==t.t?.7:1),t.y),t.x<99&&("●"==t.t||(Math.hypot(X-t.x,Y-t.y)>99?1:(OS13k.PlaySeed("⭐"==t.t?169:121),U="⭐"==t.t?-9:F=9,0))))),x.fillText("🏂🏻",X=Math.max(X+(U*=.98),-1800),Y=OS13k.Clamp(Y+(V=.95*V-i.y),1e3,99)),x.scale(-1,1),x.textAlign="left",x.fillStyle=R(),x.fillText(s=(T+=F)/1e3|0,9,99),x.textAlign="right",x.fillStyle=R(255,0,0,9-t),x.fillText(d=OS13k.GetTrophy("Bogus Slopes","High Score"),c.width-9,99),s>99&&OS13k.Trophy("⭐","Bogus Slopes","100!"),X>0&&(OS13k.PlaySeed(370,5),s>d&&OS13k.Trophy("🏂🏻","Bogus Slopes","High Score",s)))</iframe>
+<iframe name="Bogus Slopes">i=OS13k.Input(window),(!t||i.keypress[32])&&(T=U=V=F=0,W=[],Y=540,X=-700),X>0||(x.fillStyle="#ccc8",x.fillRect(0,0,2e3,2e3),x.font='9em"',x.textAlign="center",x.textBaseline="middle",x.scale(-1,1),F=Math.min(F+.2,Math.min(20+T/5e4,30)),Z=U>1,W.push((60*t|0)%Math.max(9,Z?30:20-T/1e4|0)?{t:"●",x:X,y:Y,c:`hsl(${T} 99%${Z?50:100}%)`}:{t:[..."🌲🌳⭐"][2*Math.random()+(Math.random()<.05)|0],x:-2200,y:79+900*Math.random()}),W=W.filter(e=>(z="⭐"==e.t,x.fillStyle=e.c||R(),x.fillText("●"==e.t||U<1||z?e.t:"🌮",e.x+=F*(z?.7:1),e.y),e.x<99&&("●"==e.t||(Math.hypot(X-e.x,Y-e.y)>99?1:(OS13k.PlaySeed(z?169:Z?22:121),z?U=4:Z?U=U>2?U:2:(F=9,U=-3),0))))),Y+=V=.95*V+.5-1.5*i.mousedown,x.fillText(U>1.5&&4*t%1<.5?"":"🏂🏻",X=Math.max(X-(U*=.99),-960),Y>1e3?(V=0,Y=1e3):Y<99?(V=0,Y=99):Y),x.scale(-1,1),x.textAlign="left",x.fillStyle=R(),x.fillText(s=(T+=F)/500|0,9,99),x.textAlign="right",x.fillStyle=R(255,0,0,9-t),x.fillText(d=OS13k.GetTrophy("Bogus Slopes","High Score"),c.width-9,99),s>99&&OS13k.Trophy("⭐","Bogus Slopes","100!"),X>0&&(OS13k.PlaySeed(370,5),s>d&&OS13k.Trophy("🏂🏻","Bogus Slopes","High Score",s)),Z&&frame%(U>2?10:20)==0&&OS13k.PlaySeed(53,1,1,.01,OS13k.Note(10-Y/100|0)))</iframe>
 
 <iframe name=Ziano><style>body{background:#111;color:#fff;user-select:none;text-align:center}</style><span id=B></span>🌱 <input oninput=P(0,R()) style=width:240 id=S><p>🔊 <input onchange=R() style=width:99 type=range id=V> 🐇 <input onchange=R() style=width:99 type=range id=L> 🐢<script>OS13k=parent.OS13k,R=e=>{for(onblur(D=[]),i=5;--i;D[i]=OS13k.SeedSamples(S.value,.1+L.value/9,1,0,OS13k.Note(12*i-33)));},P=e=>e<0||A[e]||((A[e]=OS13k.PlaySamples(D[2+e/12|0],2)).detune.value=e%12*100,A[e].gain.gain.value=V.value/50),X=e=>A[e]&&(A[e].gain.gain.linearRampToValueAtTime(V.value/50,t=A[e].context.currentTime+.02),A[e].gain.gain.linearRampToValueAtTime(A[e]=0,t+.1)),onunload=onblur=e=>A.map((e,a)=>X(a)),R(A=[]),onkeydown=e=>document.activeElement==S||P(OS13k.PianoKey(e)),onkeyup=e=>X(OS13k.PianoKey(e))</script></iframe>
 
-<iframe name=Sequencer><style>body{background:#111;color:#fff;user-select:none;text-align:center}</style>BPM <input type=number style=width:59 id=T value=120>&nbsp; Loop <input type=checkbox id=L>&nbsp; <button onmousedown=P()>Play</button> <button onmousedown=S()>Stop</button> <button onmousedown=V()>Save</button> <button onclick=W()>Load</button><p><a id=H download></a><div id=B style=display:grid;justify-content:center><script>OS13k=parent.OS13k,M=[[],[[]]],P=e=>(A=OS13k.PlayMusic(O(S()))).loop=L.checked,onunload=S=e=>A&&A.stop(),I=(e,t)=>M[0][t]=OS13k.SeedParameters(e,1,1,0,OS13k.Note(-33)),Q=e=>e?e>0?(e>=1?"CCDDEFFGGAAB"[e%12|0]+("02579".indexOf(e%12-1)>=0?"#":"")+" - "+(e/12-1|0)+" ":"")+(e%1?(10-10*e%10|0)+"0%":""):e<-1?" End":"Stop":"",N=(e,t,o)=>(v=8==e.keyCode?0:32==e.keyCode?-1:13==e.keyCode?-2:38==e.keyCode||40==e.keyCode?(n=M[1][0][t][o]>0?M[1][0][t][o]:0,(0|n)+(10*n%10+10+(e.keyCode-39))/10%1):OS13k.PianoKey(e)>=0?v=12+OS13k.PianoKey(e):-3,v>-3&&(e.target.value=Q(M[1][0][t][o]=v),p=[...M[0][t]],p[0]*=1-v%1,p[2]=OS13k.Note(v-12|0,p[2]),Z&&Z.stop(),Z=v>0&&OS13k.PlaySamples(parent.zzfxG(...p),1)),9==e.keyCode),O=e=>{for(m=[M[0],[[],[[]]],[],OS13k.Clamp(T.value,1e3,30)],m[2][0]=x=0,n=1;x<8;){for(y=2;y<130;++y)n=Math.max(n,-2==M[1][0][x][y]?y:M[1][0][x][y]?y+1:n);m[1][0][x]=[...M[1][0][x++]]}for(x=0;x<8;)m[1][0][x++].length=n;return m},R=e=>{for(o="",B.style.gridTemplateColumns="40px",x=8;x--;)B.style.gridTemplateColumns+=" 80px";for(y=0;y<130;++y)for(x=-1;x<8;++x)o+=-1==x?y>1?y-1:[..."🌱🎧"][y]:y>1?`<input readonly style=width:80;${(y+2)%4?"":"background:#ccf"} onkeydown="return N(event,${x},${y})"value="${Q(M[1][0][x][y])}">`:y>0?`<input style=width:80 oninput=M[1][0][${x}][1]=this.value/50-1 type=range value=${50*(M[1][0][x][1]||0)+50}>`:(M[1][0][x]||(M[1][0][x]=[x,0]),I(m=M[0][x]?`zzfx(...[${M[0][x]}])`:"",x),`<input style=width:80 oninput=I(this.value,${x});Z&&Z.stop();Z=this.value&&OS13k.PlaySeed(this.value,1,1,0,OS13k.Note(-21),1) value=${m}>`);B.innerHTML=o},R(A=Z=0),D=e=>Array.isArray(e)?"["+e.map(e=>D(e)).join(",")+"]":e,V=e=>H.click(H.href=URL.createObjectURL(new Blob([D(O())]))),W=e=>{try{M=OS13k.StringToMusic(d=prompt`ZzFXM Data`,1),M[1][0][0][M[1][0].reduce((e,t)=>Math.max(e,t.length),0)]=-2,R(T.value=M[3])}catch(e){alert`⚠️ Error!`}}</script></iframe>
+<iframe name=Camera>
+<body style=margin:0>
+<video style=width:100%;height:100% id=V autoplay src onerror="navigator.mediaDevices.getUserMedia({audio:1,video:{width:R=640,height:480}}).then(s=>S=V.srcObject=s)"muted></video>
+<a id=A download style=display:none><canvas id=c  width=640 height=480></a>
+<div style=position:absolute;top:3;right:3>
+<button onclick=A.click(c.getContext`2d`.drawImage(V,0,0),A.href=c.toDataURL`image/png`)>📷
+</iframe>
+
+<iframe name="Sprite Generator">
+<body style=margin:0><div style=position:absolute;top:3;right:3><input id=Z onchange=R()> <button onclick=A.click(A.href=c.toDataURL`image/png`)>📷</button></div><canvas id=c style=width:100%><a id=A download style=display:none><script>
+(R=e=>{for(c.width=1920,c.height=1080,x.scale(4,4),t=480;t--;)for(k=4;k--;)for(OS13k.randomSeed=Z.value+t*t,i=0|OS13k.Random(99,50);i--;r(x.lineWidth=2)<19?x.fillStyle=`rgb(${r()} ${r()} ${r()})`:r()**2/2e3>X*X+(Y-5)**2&&x[k>1?"strokeRect":"fillRect"](7+t%30*16-k%2*2*X+X,19+16*(t>>5)+Y,1,1))X=7&i,Y=i>>3})(OS13k=parent.OS13k,Z.value=Date.now(x=c.getContext`2d`)%1e6,r=t=>OS13k.Random(255))</script>
+</iframe>
+
+<iframe name=Timer>
+<style>body{background:#111;color:#fff;user-select:none;text-align:center}*{font-size:28}input{margin:9}</style>
+<input type=number style=width:79;text-align:right min=0 value=2 id=M>m
+<input type=number style=width:79;text-align:right min=0 value=0 id=S>s<br>
+<input id=N style=width:199 placeholder=Reminder>
+<button id=A onmousedown=setInterval(U,1e3,A.disabled=M.disabled=S.disabled=P=1) style=width:99>Start</button><script>
+U=a=>{(t=Math.max(0,60*M.value+1*S.value-1))||(zzfx(2,.8,999,,,,1,2,,,,,1,,,.1,.2),--P%10||(parent.document.hasFocus()||!P)&&OS13k.Popup("<div style=font-size:40>⌛</div><b>"+OS13k.StripHTML(N.value),N.value)),M.value=t/60|0,S.value=t%60|0}</script>
+</iframe>
 
 <iframe id=T><style>:host{position:absolute;background:#000;box-shadow:5px 5px 9px;border:3px solid#222;border-radius:6px;overflow:hidden}input,button,span{margin:4}span{white-space:nowrap}.T{height:34;font-size:24;display:flex;align-items:center;white-space:nowrap;background:linear-gradient(#ccc,#444);border-bottom:3px solid}.TA{background:linear-gradient(#eee,#88f)}.TAU{background:linear-gradient(#eee,#8f8)}.TAS{background:linear-gradient(#eee,#f88)}.TS{background:linear-gradient(#ccc,#844)}.U{width:100%;resize:none;outline:0;border-top:2px solid}</style></iframe>
 
@@ -176,17 +196,22 @@ programStubs =
     ['🕰️',198,198,sticky|code|awake|dweet,'Clock'],
     ['🎚️',470,130,sticky,'Settings']
 ]],
-['🎮',,,,'Games',,
+['🛠️',,,,'Apps',,
 [
-    ['🙉',,,defaultFlags|dweet,"Don't Fall"],
-    ['🏂🏻',,,defaultFlags|dweet,"Bogus Slopes"]
+    ['⌛',400,139,reload,'Timer'],
+    ['👾',,,,'Sprite Generator'],
+    ['📸',640,480,,'Camera']
 ]],
 ['🎶',,,,'Music',,
 [
     ['🎵',400,330,sticky,'Music Player'],
-    ['🥁',,360,,'Sequencer','Keyboard = Note\nUp/Down = Volume\nSpace = Stop\nEnter = End'],
-    ['🎹',350,99,reload,'Ziano','Keyboard = Play Piano Notes'],
     ['👁️',,,awake|full|resize|code|dweet,'Visualizer'],
+    ['🎹',350,99,reload,'Ziano','Keyboard = Play Piano Notes']
+]],
+['🎮',,,,'Games',,
+[
+    ['🙉',,,defaultFlags|dweet,"Don't Fall"],
+    ['🏂🏻',,,defaultFlags|dweet,"Bogus Slopes"]
 ]],
 ];
 
@@ -549,7 +574,7 @@ const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26,
     soundHelp       = 22,
     soundCode       = 16,
     soundReload     = -5,
-    soundProgram    = 3,
+    soundProgram    = 6,
     soundSave       = 6;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -888,7 +913,7 @@ class OS13kProgram extends HTMLElement
         
         // set active
         this.className = 'P PA';
-        activeProgram !=this && SystemSound(soundProgram, .1);
+        activeProgram !=this && SystemSound(soundProgram, 0);
         activeProgram = this;
     }
     
@@ -1072,29 +1097,42 @@ class OS13kWindow extends HTMLElement
         // init custom code options
         this.codeOptions = this.codeDisplay.appendChild(document.createElement('div'));
         this.codeOptions.class = 'U';
-        this.codeOptions.style = `background:#111;color:#fff;font-size:16;overflow:auto;${ 
+        this.codeOptions.style = `padding-left:9;background:#111;color:#fff;font-size:16;overflow:auto;${ 
                 program.userProgram ? '' : 'display:none'}`;
 
-        // build code options html
-        this.codeOptions.innerHTML = 
-            `&nbsp;Icon <input style=width:50 id=I> ` +
-            `Name <input id=N> ` +
-            `Folder <input id=F><br>` +
-            `&nbsp;Size <input style=width:50 type=number id=W>x<input style=width:50 type=number id=H>` + 
-            `Sleep <input type=checkbox id=P ${program.i.allowSleep != !1 ? 'checked' : ''}>` +
-            `Live Edit <input type=checkbox id=L ${program.i.liveEdit != !1 ? 'checked' : ''}>` +
-            `<button id=C>Copy</button>` +
-            `<button id=D>Delete</button>` +
-            `<span id=Z>${program.i.C && program.i.C.length}</span> Bytes`;
+        // build the code options
+        const CodeOption = (text, tagName, innerHTML='', style, type)=>
+        {
+            text && this.codeOptions.appendChild(document.createTextNode(text));
+            let e = this.codeOptions.appendChild(document.createElement(tagName));
+            e.innerHTML = innerHTML;
+            e.style = style;
+            e.type = type;
+            return e;
+        }
 
-        // get links to code options and create error text
-        let iconInput   = this.shadowRoot.getElementById('I'),
-            nameInput   = this.shadowRoot.getElementById('N'),
-            folderInput = this.shadowRoot.getElementById('F'),
-            widthInput  = this.shadowRoot.getElementById('W'),
-            heightInput = this.shadowRoot.getElementById('H'),
-            link        = this.shadowRoot.getElementById('A'),
-            canvas      = this.shadowRoot.getElementById('V');
+        // create each element for code options
+        let
+        screenshotButton = this.screenshot = CodeOption('', 'button', '📷'),
+        iconInput = CodeOption('Icon ', 'input', '', 'width:50'),
+        nameInput = CodeOption('Name ', 'input'),
+        folderInput = CodeOption('Folder ', 'input'),
+        nextLine = CodeOption('', 'br'),
+        widthInput = CodeOption('Size ', 'input', '', 'width:50', 'number'),
+        heightInput = CodeOption('x', 'input', '', 'width:50', 'number'),
+        sleepInput = this.allowSleep = CodeOption('Sleep ', 'input', '', '', 'checkbox'),
+        liveEditInput = this.liveEdit = CodeOption('Live Edit ', 'input', '', '', 'checkbox'),
+        saveButton = CodeOption('', 'button', 'Save'),
+        copyButton = CodeOption('', 'button', 'Copy'),
+        deleteButton = CodeOption('', 'button', 'Delete'),
+        byteSizeSpan = this.codeSize = CodeOption('', 'span', program.i.C && program.i.C.length),
+        link = CodeOption(' Bytes', 'a'),
+        canvas = CodeOption('', 'canvas', '', 'display:none'),
+        canvasContext = canvas.getContext('2d');
+
+        // set checkboxes
+        sleepInput.checked = program.i.allowSleep != !1;
+        liveEditInput.checked = program.i.liveEdit != !1;
 
         // error text
         this.errorText = this.codeDisplay.appendChild(document.createElement('textarea'));
@@ -1102,21 +1140,42 @@ class OS13kWindow extends HTMLElement
         this.errorText.style = 'padding:9;background:#000;color:#f00';
         this.errorText.readOnly = !0;
         
+        // save button
+        saveButton.onmousedown = ()=>
+            link.click(SystemSound(soundSave),
+            link.href = URL.createObjectURL(new Blob([this.codeText.value])),
+            link.download = 'OS13k_' + program.N);
+        
         // copy button
-        this.shadowRoot.getElementById('C').onmousedown = ()=> program.programMenu.NewUserProgram(program);
+        copyButton.onmousedown = ()=> program.programMenu.NewUserProgram(program);
 
         // delete button
-        this.shadowRoot.getElementById('D').onmousedown = ()=>
+        deleteButton.onmousedown = ()=>
         {
             // close, remove, and rebuild (must close first)
             this.Close();
             RebuildMenu(OS13k.Save(programInfos = programInfos.filter(info=> info.D != program.D)));
         }
 
+        // screenshot button
+        screenshotButton.onmousedown = ()=>
+        {
+            // wrap in try block in case canvas doesnt exist
+            try {
+                link.click(
+                    // copy to a white canvas before saving
+                    SystemSound(soundSave),
+                    canvasContext.fillRect(0, 0, 
+                        canvas.width  = this.iframeContent.c.width, 
+                        canvas.height = this.iframeContent.c.height,
+                        canvasContext.fillStyle = '#fff'),
+                        canvasContext.drawImage(this.iframeContent.c, 0, 0),
+                    link.href = canvas.toDataURL('image/png'),
+                    link.download = 'OS13k_Image_' + program.name);
+            } catch(e) {} // ignore screenshot errors
+        }
+
         // get elements by id
-        this.codeSize     = this.shadowRoot.getElementById('Z');
-        this.liveEdit     = this.shadowRoot.getElementById('L');
-        this.allowSleep   = this.shadowRoot.getElementById('P');
         iconInput.value   = program.I;
         nameInput.value   = program.N;
         widthInput.value  = program.W;
@@ -1125,7 +1184,7 @@ class OS13kWindow extends HTMLElement
 
         // set new icon and name when changed
         iconInput.oninput = nameInput.oninput =
-        this.liveEdit.oninput = e=>
+        liveEditInput.oninput = e=>
         program.Save(
             SetName(this.taskbarIcon.
             SetName(program.
@@ -1147,7 +1206,7 @@ class OS13kWindow extends HTMLElement
         }
 
         // allow sleep button
-        this.allowSleep.oninput = e=> this.Reload(1, program.Save());
+        sleepInput.oninput = e=> this.Reload(1, program.Save());
 
         // resize window size to fit inner width while preserving aspect
         let width = program.F & resize ? 
@@ -1218,6 +1277,9 @@ class OS13kWindow extends HTMLElement
         // show error messages
         iframeContent.onerror = (...parameters)=>this.SetErrorText(...parameters);
         onerror = (...parameters)=>this.SetErrorText(...parameters);
+
+        // only allow screnshots from special programs 
+        this.screenshot.disabled = !program.isDweet | !codeIsSafe;
 
         // check for extensions
         if (!codeIsSafe)

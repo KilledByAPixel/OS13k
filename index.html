@@ -754,7 +754,7 @@ const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26,
     soundHelp       = 22,
     soundCode       = 16,
     soundReload     = -5,
-    soundProgram    = 3,
+    soundProgram    = 6,
     soundSave       = 6;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1112,7 +1112,7 @@ class OS13kProgram extends HTMLElement
         
         // set active
         this.className = 'program programActive';
-        activeProgram !=this && SystemSound(soundProgram, .1);
+        activeProgram !=this && SystemSound(soundProgram, 0);
         activeProgram = this;
     }
     
