@@ -83,7 +83,8 @@ Add an icon config to programs.js to register your program, examples...
  - Music works the same way, use localStorage['OS13kMusic,Song Name'] = JSON.stringify(song)
  - OS13k automatically checks localStorage and display popups for new trophies and songs from other games
  - This is possible because all JS13k games share the same local storage! Pretty cool right?
- - *Don't spam the trophy system, lets agree to around 5 trophies per game*
+ - You can test locally by pasting your trophy code into the OS13k's console app
+ - *Don't spam the trophy system, lets agree to a max of 10 trophies per game*
 
 ### System Calls
 - The OS13k object is set in your program after load, if you need it on load use parent.OS13k
