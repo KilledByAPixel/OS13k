@@ -64,6 +64,7 @@ programStubs =
     ['🏂🏻','games/bogusSlopes.dweet.js',,,,,'Star = Invincible\nClick = Move'],
     ['🌋','games/lavaRush.html',640,400,,,'Escape the rising lava for as long as you can.\n\nWASD = Move\nMouse = Look\nSpace = Jump'],
     ['🌈','games/swatch.html',320,340,reload,,'Create a smooth gradient.\n\nClick = Swap Colors'],
+    ['4x4','games/4x4.html',800,420,,'Four Fours'],
     ['🧜🏽‍♂️','games/aquaPop.html',640,480,,,'Left/Right = Move\nSpace = Shoot\nEnter = Restart'],
     ['<span style=color:#fff;background:#000;font-family:monospace>&nbsp;☻&nbsp;','games/digitDilemma.html',400,560,,,'Push numbers until none are left.\nAll puzzles are solvable!\n\nArrows = Move\nSpace = Undo\nR = Randomize'],
     ['<span style=font-size:25px>♠️','games/freeCell.html',800,900,full|reload],
