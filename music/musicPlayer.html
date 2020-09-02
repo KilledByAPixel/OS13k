@@ -55,10 +55,10 @@ U=t=>
             X.loop = O.checked ? 1 :                    // set loop
                 T > d ? X = 0 : 0,                      // stop song if ended
             W(T%d) + '/' + W(d))                        // display song time
-            : (
-                N.innerText = 'OS13k Music Player',     // reset name
-                C.style.visibility = 'hidden',          // hide anaylzer
-                '');                                    // return ''
+        : (
+            N.innerText = 'OS13k Music Player',         // reset name if not playing
+            C.style.visibility = 'hidden',              // hide anaylzer
+            '');                                        // return ''
     }
 
     D = t;
