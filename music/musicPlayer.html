@@ -45,10 +45,11 @@ U=t=>
     }
     else if (Y<-1)
     {
+        // copy analyzer canvas
+        C.getContext`2d`.drawImage(OS13k.GetAnalyser(), 0, 0, C.width = 32, C.height = 32);
+
         // update song info
         F.innerText = X ? (                             // check if song playing
-            C.getContext`2d`.drawImage(OS13k.GetAnalyser(), 0, 0, C.width = 32, C.height = 32), // copy analyzer canvas
-            C.style.visibility = '',                    // show analyzer
             X.gain.gain.value = V.value / 99,           // set music volume
             d = X.buffer.duration,                      // get buffer duration
             T += (t-D)/1e3,                             // update time
@@ -57,7 +58,6 @@ U=t=>
             W(T%d) + '/' + W(d))                        // display song time
         : (
             N.innerText = 'OS13k Music Player',         // reset name if not playing
-            C.style.visibility = 'hidden',              // hide anaylzer
             '');                                        // return ''
     }
 
