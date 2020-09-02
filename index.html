@@ -11,7 +11,7 @@ https://github.com/KilledByAPixel/OS13k
 <title>OS13k - A Tiny JavaScript OS</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?v260></script>
+<script src=programs.js?v261></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -1579,7 +1579,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             this.iframe.onload = ()=> LoadFrame();
-            this.iframe.src = program.src + '?v260';
+            this.iframe.src = program.src + '?v261';
         }
     }
         
@@ -1940,7 +1940,7 @@ ondragover = ()=> !1;
 var zzfx = (...parameters)=> OS13k.PlaySamples(zzfxG(...parameters)),
 
 // generate zzfx samples
-zzfxG = (volume = 1, randomness = .05, frequency = 220, attack = 0, sustain = 0, release = .1, shape = 0, shapeCurve = 1, slide = 0, deltaSlide = 0, pitchJump = 0, pitchJumpTime = 0, repeatTime = 0, noise = 0, modulation = 0, bitCrush = 0, delay = 0, sustainVolume = 1, decay = 0, tremolo = 0)=>
+zzfxG = (volume = 1, randomness = .05, frequency = 220, attack = 0, sustain = 0, release = .1, shape = 0, shapeCurve = 1, slide = 0, deltaSlide = 0, pitchJump = 0, pitchJumpTime = 0, repeatTime = 0, noise = 0, modulation = 0, bitCrush = 0, delay = 0, sustainVolume = 1, decay = 0, tremolo = 0, buffer = [])=>
 {
     attack = 99 + attack * defaultSampleRate;
     release = release * defaultSampleRate;
@@ -1950,7 +1950,6 @@ zzfxG = (volume = 1, randomness = .05, frequency = 220, attack = 0, sustain = 0,
     
     // init parameters and helper functions
     let PI2 = Math.PI*2,
-    buffer = [],
     sign = v=> v>0? 1 : -1,
     length = OS13k.randomSeed = OS13k.Clamp(attack + decay + sustain + release + delay, 9*defaultSampleRate) | 0,
     startSlide = slide *= 500 * PI2 / defaultSampleRate**2,
