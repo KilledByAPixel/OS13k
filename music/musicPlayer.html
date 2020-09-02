@@ -45,18 +45,20 @@ U=t=>
     }
     else if (Y<-1)
     {
-        // copy analyzer canvas
-        C.getContext`2d`.drawImage(OS13k.GetAnalyser(), 0, 0, C.width = 32, C.height = 32);
-
         // update song info
         F.innerText = X ? (                             // check if song playing
+            C.getContext`2d`.drawImage(OS13k.GetAnalyser(), 0, 0, C.width = 32, C.height = 32), // copy analyzer canvas
+            C.style.visibility = '',                    // show analyzer
             X.gain.gain.value = V.value / 99,           // set music volume
             d = X.buffer.duration,                      // get buffer duration
             T += (t-D)/1e3,                             // update time
             X.loop = O.checked ? 1 :                    // set loop
                 T > d ? X = 0 : 0,                      // stop song if ended
             W(T%d) + '/' + W(d))                        // display song time
-            : (N.innerText = 'OS13k Music Player', ''); // reset name if not playing  
+            : (
+                N.innerText = 'OS13k Music Player',     // reset name
+                C.style.visibility = 'hidden',          // hide anaylzer
+                '');                                    // return ''
     }
 
     D = t;
@@ -117,7 +119,7 @@ P=k=>
 // add custom song
 A=k=>
 {
-    // test song [[[,0,219,,,,,1.1,,-.1,-50,-.05,-.01,1],[[[0,-1,1,0,5,0],[0,1,99,99,0,99]]],[0,0,0,0],90]
+    // test song [[[,0,219,,,,,1.1,,-.1,-50,-.05,-.01,1],[2,0,84,,,.1,,.7,,,,.5,,6.7,1,.05]],[[[0,-1,1,0,5,0],[1,1,8,8,0,3]]],[0,0,0,0],90]
 
 
     try {
