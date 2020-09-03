@@ -18,29 +18,14 @@
 
 <iframe name="Bogus Slopes">i=OS13k.Input(window),(!t||i.keypress[32])&&(T=U=V=F=0,W=[],Y=540,X=-700),X>0||(x.fillStyle="#ccc8",x.fillRect(0,0,2e3,2e3),x.font='9em"',x.textAlign="center",x.textBaseline="middle",x.scale(-1,1),F=Math.min(F+.2,Math.min(20+T/5e4,30)),Z=U>1,W.push((60*t|0)%Math.max(9,Z?30:20-T/1e4|0)?{t:"●",x:X,y:Y,c:`hsl(${T} 99%${Z?50:100}%)`}:{t:[..."🌲🌳⭐"][2*Math.random()+(Math.random()<.05)|0],x:-2200,y:79+900*Math.random()}),W=W.filter(e=>(z="⭐"==e.t,x.fillStyle=e.c||R(),x.fillText("●"==e.t||U<1||z?e.t:"🌮",e.x+=F*(z?.7:1),e.y),e.x<99&&("●"==e.t||(Math.hypot(X-e.x,Y-e.y)>99?1:(OS13k.PlaySeed(z?169:Z?22:121),z?U=4:Z?U=U>2?U:2:(F=9,U=-3),0))))),Y+=V=.95*V+.5-1.5*i.mousedown,x.fillText(U>1.5&&4*t%1<.5?"":"🏂🏻",X=Math.max(X-(U*=.99),-960),Y>1e3?(V=0,Y=1e3):Y<99?(V=0,Y=99):Y),x.scale(-1,1),x.textAlign="left",x.fillStyle=R(),x.fillText(s=(T+=F)/500|0,9,99),x.textAlign="right",x.fillStyle=R(255,0,0,9-t),x.fillText(d=OS13k.GetTrophy("Bogus Slopes","High Score"),c.width-9,99),s>99&&OS13k.Trophy("⭐","Bogus Slopes","100!"),X>0&&(OS13k.PlaySeed(370,5),s>d&&OS13k.Trophy("🏂🏻","Bogus Slopes","High Score",s)),Z&&frame%(U>2?10:20)==0&&OS13k.PlaySeed(53,1,1,.01,OS13k.Note(10-Y/100|0)))</iframe>
 
+<iframe name="Shedding Snake">
+i=OS13k.Input(window),t&&!i.keypress[32]||(T=[],S=[],W=32,H=24,X=W>>1,Y=H>>1,Z=50,G=Q=D=0,F=(e,t,i,h,l)=>{x.save(),x.translate((t+.5)*Z,(i+.5)*Z),l&&x.rotate(l*Math.PI/2),h&&x.fillRect(-.5*Z,-.5*Z,Z,Z,x.fillStyle=h),x.restore(x.fillText(e,0,0))},C=(e,t)=>(b=0,S.map((i,h)=>b|=e==h%W&&t==(h/W|0)),T.map(i=>b|=e==i[0]&&t==i[1]),b),P=e=>{for(;C(A=Math.random()*W|0,B=Math.random()*H|0)||!t.length&&A==X;);},P()),s=T.length,h=OS13k.GetTrophy("Shedding Snake","High Score"),s-20||OS13k.Trophy("🍎","Shedding Snake","20 Apples!"),C(X,Y)?G||(OS13k.PlaySeed(G=178,3),s>h&&OS13k.Trophy("🐍","Shedding Snake","High Score",s)):(x.fillRect(0,0,c.width=W*Z,c.height=H*Z),frame%7==0&&((i.x||i.y)&&(d=i.x>0?3:i.x<0?1:i.y>0?2:0)%2!=D%2&&(D=d),Q&&(Q--,OS13k.PlaySeed(128,.1)),T.push([X,Y]),X-A||B-Y||P(OS13k.PlaySeed(169),T.push([X,Y]),T.map(e=>S[e[0]+e[1]*W]=1),Q=T.length),T.shift(),D%2?X=(X+(D-1?1:-1)+W)%W:Y=(Y+(D?-1:1)+H)%H),x.textAlign="center",x.textBaseline="middle",x.font=Z+'px"',S.map((e,t)=>F("✖️",t%W,t/W|0,"#ddd")),T.map(e=>F("✖️",e[0],e[1],"#693")),F("🍎",A,B),F("🐸",X,Y,0,D),x.fillStyle="#fff",x.font='90px"',x.lineWidth=9,x.strokeText(a=T.length?"Score: "+s:"🐍 High Score: "+h,c.width/2,80),x.fillText(a,c.width/2,80))</iframe>
+
+<iframe name="Four Fours">
+<style>body{background:#111;color:#fff}</style><input id=I oninput=z() placeholder='Use only -+*/() and 4 4s'> = <span id=F></span><hr><div id=O style='display:grid;grid-template-columns:auto auto auto auto auto'><script>z=e=>{i=I.value,g="👎";try{i.match(/^[-+*()/4]*$/g)&&(v=eval(i)||0)==v|0&&4==i.match(/4/g).length&&(A[v]=i,g="👍")}catch(e){}for(F.innerHTML=v+" "+g,O.innerHTML="",i=0;i<100;)j=(i/5|0)+i++%5*20,O.innerHTML+=`<div>${j}: ${A[j]||""}`;localStorage.OS13k44=JSON.stringify(A)},A=localStorage.OS13k44,z(A=A?JSON.parse(A):[])</script>
+</iframe>
+
 <iframe name=Ziano><style>body{background:#111;color:#fff;user-select:none;text-align:center}</style><span id=B></span>🌱 <input oninput=P(0,R()) style=width:240 id=S><p>🔊 <input onchange=R() style=width:99 type=range id=V> 🐇 <input onchange=R() style=width:99 type=range id=L> 🐢<script>OS13k=parent.OS13k,R=e=>{for(onblur(D=[]),i=5;--i;D[i]=OS13k.SeedSamples(S.value,.1+L.value/9,1,0,OS13k.Note(12*i-33)));},P=e=>e<0||A[e]||((A[e]=OS13k.PlaySamples(D[2+e/12|0],2)).detune.value=e%12*100,A[e].gain.gain.value=V.value/50),X=e=>A[e]&&(A[e].gain.gain.linearRampToValueAtTime(V.value/50,t=A[e].context.currentTime+.02),A[e].gain.gain.linearRampToValueAtTime(A[e]=0,t+.1)),onunload=onblur=e=>A.map((e,a)=>X(a)),R(A=[]),onkeydown=e=>document.activeElement==S||P(OS13k.PianoKey(e)),onkeyup=e=>X(OS13k.PianoKey(e))</script></iframe>
-
-<iframe name=Camera>
-<body style=margin:0>
-<video style=width:100%;height:100% id=V autoplay src onerror="navigator.mediaDevices.getUserMedia({audio:1,video:{width:R=640,height:480}}).then(s=>S=V.srcObject=s)"muted></video>
-<a id=A download style=display:none><canvas id=c  width=640 height=480></a>
-<div style=position:absolute;top:3;right:3>
-<button onclick=A.click(c.getContext`2d`.drawImage(V,0,0),A.href=c.toDataURL`image/png`)>📷
-</iframe>
-
-<iframe name="Sprite Generator">
-<body style=margin:0><div style=position:absolute;top:3;right:3><input id=Z onchange=R()> <button onclick=A.click(A.href=c.toDataURL`image/png`)>📷</button></div><canvas id=c style=width:100%><a id=A download style=display:none><script>
-(R=e=>{for(c.width=1920,c.height=1080,x.scale(4,4),t=480;t--;)for(k=4;k--;)for(OS13k.randomSeed=Z.value+t*t,i=0|OS13k.Random(99,50);i--;r(x.lineWidth=2)<19?x.fillStyle=`rgb(${r()} ${r()} ${r()})`:r()**2/2e3>X*X+(Y-5)**2&&x[k>1?"strokeRect":"fillRect"](7+t%30*16-k%2*2*X+X,19+16*(t>>5)+Y,1,1))X=7&i,Y=i>>3})(OS13k=parent.OS13k,Z.value=Date.now(x=c.getContext`2d`)%1e6,r=t=>OS13k.Random(255))</script>
-</iframe>
-
-<iframe name=Timer>
-<style>body{background:#111;color:#fff;user-select:none;text-align:center}*{font-size:28}input{margin:9}</style>
-<input type=number style=width:79;text-align:right min=0 value=2 id=M>m
-<input type=number style=width:79;text-align:right min=0 value=0 id=S>s<br>
-<input id=N style=width:199 placeholder=Reminder>
-<button id=A onmousedown=setInterval(U,1e3,A.disabled=M.disabled=S.disabled=P=1) style=width:99>Start</button><script>
-U=a=>{(t=Math.max(0,60*M.value+1*S.value-1))||(zzfx(2,.8,999,,,,1,2,,,,,1,,,.1,.2),--P%10||(parent.document.hasFocus()||!P)&&OS13k.Popup("<div style=font-size:40>⌛</div><b>"+OS13k.StripHTML(N.value),N.value)),M.value=t/60|0,S.value=t%60|0}</script>
-</iframe>
 
 <iframe id=T><style>:host{position:absolute;background:#000;box-shadow:5px 5px 9px;border:3px solid#222;border-radius:6px;overflow:hidden}input,button,span{margin:4}span{white-space:nowrap}.T{height:34;font-size:24;display:flex;align-items:center;white-space:nowrap;background:linear-gradient(#ccc,#444);border-bottom:3px solid}.TA{background:linear-gradient(#eee,#88f)}.TAU{background:linear-gradient(#eee,#8f8)}.TAS{background:linear-gradient(#eee,#f88)}.TS{background:linear-gradient(#ccc,#844)}.U{width:100%;resize:none;outline:0;border-top:2px solid}</style></iframe>
 
@@ -196,12 +181,6 @@ programStubs =
     ['🕰️',198,198,sticky|code|awake|dweet,'Clock'],
     ['🎚️',470,130,sticky,'Settings']
 ]],
-['🛠️',,,,'Apps',,
-[
-    ['⌛',400,139,reload,'Timer'],
-    ['👾',,,,'Sprite Generator'],
-    ['📸',640,480,,'Camera']
-]],
 ['🎶',,,,'Music',,
 [
     ['🎵',400,330,sticky,'Music Player'],
@@ -211,7 +190,9 @@ programStubs =
 ['🎮',,,,'Games',,
 [
     ['🙉',,,defaultFlags|dweet,"Don't Fall"],
-    ['🏂🏻',,,defaultFlags|dweet,"Bogus Slopes"]
+    ['🏂🏻',,,defaultFlags|dweet,"Bogus Slopes"],
+    ['🐍',800,600,defaultFlags|dweet,"Shedding Snake"],
+    ['4x4',800,440,,"Four Fours"],
 ]],
 ];
 

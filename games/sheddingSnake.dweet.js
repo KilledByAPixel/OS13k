@@ -47,42 +47,43 @@ if (C(X,Y))
 {
   G || (OS13k.PlaySeed(G=178,3),  // game over sound
     s>h && OS13k.Trophy('🐍','Shedding Snake','High Score',s)) // new high score
-  return // dead
 }
-
-// clear
-x.fillRect(0, 0, c.width=W*Z, c.height=H*Z);
-
-// update input
-(i.x||i.y) && (d=i.x>0?3:i.x<0?1:i.y>0?2:0)%2 != D%2 && (D=d)
-
-if (frame%7==0) // update movement
+else 
 {
-  Q && (Q--,OS13k.PlaySeed(128,.1))
-  T.push([X,Y])                   // add to tail
-  X-A || B-Y ||                   // get apple
-    P(OS13k.PlaySeed(169),        // pickup sound
-    T.push([X,Y]),                // add to tail
-    T.map(T=>S[T[0]+T[1]*W] = 1), // add skin
-    Q = T.length)                 // set skin drop sound count
-  T.shift()                       // remove end of tail
-  D%2 ?                           // check direction
-  	X = (X+(D-1?1:-1)+W)%W        // x move
-  : Y = (Y+(D?-1:1)+H)%H          // y move
+    // clear
+    x.fillRect(0, 0, c.width=W*Z, c.height=H*Z);
+
+    if (frame%7==0) // update movement
+    {
+        // update input
+        (i.x||i.y) && (d=i.x>0?3:i.x<0?1:i.y>0?2:0)%2 != D%2 && (D=d)
+
+        Q && (Q--,OS13k.PlaySeed(128,.1))
+        T.push([X,Y])                   // add to tail
+        X-A || B-Y ||                   // get apple
+        P(OS13k.PlaySeed(169),        // pickup sound
+        T.push([X,Y]),                // add to tail
+        T.map(T=>S[T[0]+T[1]*W] = 1), // add skin
+        Q = T.length)                 // set skin drop sound count
+        T.shift()                       // remove end of tail
+        D%2 ?                           // check direction
+        X = (X+(D-1?1:-1)+W)%W        // x move
+        : Y = (Y+(D?-1:1)+H)%H          // y move
+    }
+
+    // draw everything
+    x.textAlign = 'center';
+    x.textBaseline = 'middle'
+    x.font = Z + 'px"' 
+    S.map((S,i)=>F('✖️', i%W, i/W|0, '#ddd')) // skin
+    T.map(T=>F('✖️', T[0], T[1], '#693'))     // tail
+    F('🍎', A, B)                             // apple
+    F('🐸', X, Y, 0, D)                       // head
+
+    // header text
+    x.fillStyle = '#fff'
+    x.font = '90px"'
+    x.lineWidth = 9
+    x.strokeText(a = T.length? 'Score: ' + s : '🐍 High Score: ' + h, c.width/2, 80)
+    x.fillText(a, c.width/2, 80)
 }
-
-// draw everything
-x.textAlign = 'center';
-x.textBaseline = 'middle'
-x.font = Z + 'px"' 
-S.map((S,i)=>F('✖️', i%W, i/W|0, '#ddd')) // skin
-T.map(T=>F('✖️', T[0], T[1], '#693'))     // tail
-F('🍎', A, B)                             // apple
-F('🐸', X, Y, 0, D)                       // head
-
-// header text
-x.fillStyle = '#fff'
-x.font = '90px"'
-x.lineWidth = 9
-x.strokeText(a = T.length? 'Score: ' + s : '🐍 High Score: ' + h, c.width/2, 80)
-x.fillText(a, c.width/2, 80)

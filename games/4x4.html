@@ -1,12 +1,12 @@
 <style>body{background:#111;color:#fff}</style>
-<input id=I oninput=z() placeholder='Use only -+*/() and 4 4s'> = <span id=F></span><div id=O style='display:grid;grid-template-columns:auto auto auto auto auto'><script>
+<input id=I oninput=z() placeholder='Use only -+*/() and 4 4s'> = <span id=F></span><hr><div id=O style='display:grid;grid-template-columns:auto auto auto auto auto'><script>
 z=e=>{i=I.value
 g='👎'
-i.match(/^[-+*()/4]*$/g)&&
-(v=eval(i)||0)==v|0&&(i.match(/4/g)?.length==4?(A[v]=i,g='👍'):0)
+try {i.match(/^[-+*()/4]*$/g)&&
+(v=eval(i)||0)==v|0&&(i.match(/4/g).length==4?(A[v]=i,g='👍'):0)}catch(e){}
 F.innerHTML=v+' '+g
 O.innerHTML=''
-for(i=0;i<100;)O.innerHTML+=`<div>${i}: ${A[i++]||''}`
+for(i=0;i<100;)j=(i/5|0)+(i++%5)*20,O.innerHTML+=`<div>${j}: ${A[j]||''}`
 localStorage['OS13k44']=JSON.stringify(A)}
 A=localStorage['OS13k44']
 z(A=A?JSON.parse(A):[])
