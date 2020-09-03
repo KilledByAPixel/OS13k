@@ -60,6 +60,7 @@ programStubs =
 ['🎮',,,,,'Games',,
 [
     ['💖','games/bounceBack.html',1280,720,,,'When life gets you down, it\'s never too late to... BOUNCE BACK!\n\nWASD = Move\nMouse = Aim\nClick = Throw\nShift = Dash'],
+    ['🐍','games/sheddingSnake.dweet.js',800,600,,,'Eat apples to grow and don\'t hit your skin!'],
     ['🙉','games/dontFall.dweet.js',,,,,'Build energy to bounce higher.\n\nLeft/Right = Move\nDown = Bounce'],
     ['🏂🏻','games/bogusSlopes.dweet.js',,,,,'Star = Invincible\nClick = Move'],
     ['🌋','games/lavaRush.html',640,400,,,'Escape the rising lava for as long as you can.\n\nWASD = Move\nMouse = Look\nSpace = Jump'],
