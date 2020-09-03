@@ -32,7 +32,8 @@ setInterval(
 x=>
 {
     // no pieces left or randomize on R
-    if (!pieceCount || controls[45])
+    let input = OS13k.Input(window);
+    if (!pieceCount || input.keypress[45])
     {
         pieceCount||level&&level>OS13k.GetTrophy('Digit Dilemma','Level Complete')&&OS13k.Trophy('☺','Digit Dilemma','Level Complete',level);
 
@@ -125,11 +126,21 @@ x=>
     else
     {
         // player controls
-        x = controls[2] - controls[0];
-        y = x ? 0 : controls[3] - controls[1];
+        if (hadInput)
+        {
+            x = y = 0;
+            if (!input.x && !input.y)
+                hadInput = 0;
+        }
+        else
+        {
+            x = input.x;
+            y = x ? 0 : -input.y;
+            hadInput = x || y;
+        }
 
         // rewind
-        if (controls[-5] && rewind.length)
+        if (input.keypress[32] && rewind.length)
             [playArea, playerX, playerY] = rewind.pop();
 
         // player movement
@@ -149,7 +160,7 @@ x=>
     
     // draw the play area
     o = `<pre><b><big><big><big><big><center>`;
-    for(pieceCount = i=0;i<size*size;controls = [0,0,0,0])
+    for(pieceCount = i=0;i<size*size;)
         o +=
             `<span style=color:hsl(${-40*playArea[i]},${
             playArea[i]>0 ? pieceCount = 80 : 0}%,${
@@ -160,17 +171,15 @@ x=>
     B.innerHTML = o + '<span style=color:#fff>' + level;
 }, 16);
 
-let level=0, pieceCount=0, movePos=0, playArea = [],
+let level=0, pieceCount=0, movePos=0, playArea = [], hadInput=0,
 
 R=x=>(Math.random()*1e9|0)%x,
 
 // check if it is possible to get to player pos
 C =(x, y)=> playAreaFill[size*y+x] ? 0 : x == playerX & y == playerY ||
     (playAreaFill[size*y+x] = 1)&C(x+1,y)|C(x-1,y)|C(x,y-1)|C(x,y+1);
-        
-onkeydown = x=> controls[x.keyCode-37] = 1;
 
 // remove from minified
-let size, playerX, playerY, playAreaFill, rewind, moveOffset, controls;
+let size, playerX, playerY, playAreaFill, rewind, moveOffset;
 
 </script>
