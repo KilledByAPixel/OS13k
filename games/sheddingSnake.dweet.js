@@ -72,16 +72,16 @@ else
     }
 
     // draw everything
-    x.textAlign = 'center';
+    x.textAlign = 'center'
     x.textBaseline = 'middle'
     x.font = Z + 'px"' 
+    x.fillStyle = '#fff'
     S.map((S,i)=>F('✖️', i%W, i/W|0, '#ddd')) // skin
     T.map(T=>F('✖️', T[0], T[1], '#693'))     // tail
     F('🍎', A, B)                             // apple
     F('🐸', X, Y, 0, D)                       // head
 
     // header text
-    x.fillStyle = '#fff'
     x.font = '90px"'
     x.lineWidth = 9
     x.strokeText(a = T.length? 'Score: ' + s : '🐍 High Score: ' + h, c.width/2, 80)
