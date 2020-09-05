@@ -11,7 +11,7 @@ https://github.com/KilledByAPixel/OS13k
 <title>OS13k - A Tiny JavaScript OS</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?v269></script>
+<script src=programs.js?v270></script>
 
 <!-- HTML above is OPTIONAL -->
 
@@ -645,7 +645,7 @@ class _OS13k
     // create and update an input object for keyboard and mouse control
     Input(inputWindow)
     {
-        let inputCopy;
+        let inputCopy, Pressed = (k)=> inputCopy.keydown[k] || inputCopy.keypress[k];
         if (inputWindow.document.OS13kInput)
         {
             // make copy of last frame input
@@ -653,10 +653,10 @@ class _OS13k
 
             // get direction from wasd or arrow keys
             inputCopy.x = inputCopy.y = 0;
-            inputCopy.keydown[87] | inputCopy.keydown[38] && ++inputCopy.y; // up
-            inputCopy.keydown[83] | inputCopy.keydown[40] && --inputCopy.y; // down
-            inputCopy.keydown[68] | inputCopy.keydown[39] && ++inputCopy.x; // right
-            inputCopy.keydown[65] | inputCopy.keydown[37] && --inputCopy.x; // left
+            Pressed(87) | Pressed(38) && ++inputCopy.y; // up
+            Pressed(83) | Pressed(40) && --inputCopy.y; // down
+            Pressed(68) | Pressed(39) && ++inputCopy.x; // right
+            Pressed(65) | Pressed(37) && --inputCopy.x; // left
         }
 
         // create or clear input object
@@ -1308,14 +1308,14 @@ class OS13kWindow extends HTMLElement
         // create each element for code options
         let
         screenshotButton = this.screenshot = CodeOption('', 'button', '📷'),
-        iconInput = CodeOption('Icon ', 'input', '', 'width:50'),
-        nameInput = CodeOption('Name ', 'input'),
-        folderInput = CodeOption('Folder ', 'input'),
+        iconInput = CodeOption(' Icon ', 'input', '', 'width:50'),
+        nameInput = CodeOption(' Name ', 'input'),
+        folderInput = CodeOption(' Folder ', 'input'),
         nextLine = CodeOption('', 'br'),
-        widthInput = CodeOption('Size ', 'input', '', 'width:50', 'number'),
+        widthInput = CodeOption(' Size ', 'input', '', 'width:50', 'number'),
         heightInput = CodeOption('x', 'input', '', 'width:50', 'number'),
-        sleepInput = this.allowSleep = CodeOption('Sleep ', 'input', '', '', 'checkbox'),
-        liveEditInput = this.liveEdit = CodeOption('Live Edit ', 'input', '', '', 'checkbox'),
+        sleepInput = this.allowSleep = CodeOption(' Sleep ', 'input', '', '', 'checkbox'),
+        liveEditInput = this.liveEdit = CodeOption(' Live Edit ', 'input', '', '', 'checkbox'),
         saveButton = CodeOption('', 'button', 'Save'),
         copyButton = CodeOption('', 'button', 'Copy'),
         deleteButton = CodeOption('', 'button', 'Delete'),
@@ -1579,7 +1579,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             this.iframe.onload = ()=> LoadFrame();
-            this.iframe.src = program.src + '?v269';
+            this.iframe.src = program.src + '?v270';
         }
     }
         

@@ -1,5 +1,5 @@
 i=OS13k.Input(window);
-(!t||i.keypress[32])&&(T=U=V=F=0,W=[],Y=540,X=-700)
+t||(T=U=V=F=0,W=[],Y=700,X=-Y)
 if(X>0)return
 x.fillStyle='#ccc8'
 x.fillRect(0,0,2e3,2e3)

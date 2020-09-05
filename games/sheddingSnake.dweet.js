@@ -1,6 +1,4 @@
-i = OS13k.Input(window) // get input
-
-if(!t||i.keypress[32]) // init
+if(!t) // init
 {
   T = []   // tail
   S = []   // skin
@@ -56,18 +54,19 @@ else
     if (frame%7==0) // update movement
     {
         // update input
+        i = OS13k.Input(window); // get input
         (i.x||i.y) && (d=i.x>0?3:i.x<0?1:i.y>0?2:0)%2 != D%2 && (D=d)
 
         Q && (Q--,OS13k.PlaySeed(128,.1))
         T.push([X,Y])                   // add to tail
         X-A || B-Y ||                   // get apple
-        P(OS13k.PlaySeed(169),        // pickup sound
-        T.push([X,Y]),                // add to tail
-        T.map(T=>S[T[0]+T[1]*W] = 1), // add skin
-        Q = T.length)                 // set skin drop sound count
+        P(OS13k.PlaySeed(169),          // pickup sound
+        T.push([X,Y]),                  // add to tail
+        T.map(T=>S[T[0]+T[1]*W] = 1),   // add skin
+        Q = T.length)                   // set skin drop sound count
         T.shift()                       // remove end of tail
         D%2 ?                           // check direction
-        X = (X+(D-1?1:-1)+W)%W        // x move
+        X = (X+(D-1?1:-1)+W)%W          // x move
         : Y = (Y+(D?-1:1)+H)%H          // y move
     }
 

@@ -1,7 +1,7 @@
 t||(A=B=P=8,a=b=p=0);
-I=OS13k.Input(window);
-a=-I.x/2;
-k=I.y;
+i=OS13k.Input(window);
+a=-i.x/2;
+k=i.y;
 
 b-=6e-3;
 A-=a;B-=b;

@@ -14,14 +14,11 @@
 
 <iframe name=Visualizer>for(x.fillRect(0,0,2e3,2e3),x.fillStyle="#0003",t?x.lineWidth=9:h=[],x.strokeStyle="#fff",i=32;i--;x.beginPath(x.strokeStyle=`hsl(${-99-i*360/32} 99%${9+m/2}%)`,x.stroke()))for(m=199*OS13k.GetAnalyserData(i),j=5;j--;)x.arc(960,540,256+(j+1&2?1:-1)*m,a=2*((2&j)/2-8.5+i)*Math.PI/32,a);x.drawImage(c,-40,-20,2e3,1120)</iframe>
 
-<iframe name="Don't Fall">for(t||(A=B=P=8,a=b=p=0),I=OS13k.Input(window),a=-I.x/2,k=I.y,b-=.006,A-=a,B-=b,r=.2-B/240,P-=r,B+=r,c.width=512,i=3e3;X=63&i,Y=i>>6,i--;x.fillRect(8*X,8*Y,8,8))y=Y/3+B+P,z=X/3+4*(y>>4),G=T(y+z^z-y),M=G>5,A^X|B^Y|!M||(OS13k.PlaySeed(96*G,p+k*k,.3),b=k?p/3:.2,p=k?0:p>1?1:p+G%2/12),y-=P/2,z+=A/3,g=T(y+z^z-y),m=t<32?12+g%8+Y-B:(G^g)+Y-B&31,x.fillStyle=`hsl(${M*G*30+m}deg 99%${50*M+m*(1-S(t/16)**3)/2}%`;x.font=16+16*p+"px a",x.fillText(k?"🙉":"🐵",8*A-8-8*p,8*B),B<48&&OS13k.Trophy([..."🐢🦒🦉🦇🦜🕊🐒🦅"][y=32-y>>5],"Don't Fall",16*y+"ft")</iframe>
+<iframe name="Don't Fall">for(t||(A=B=P=8,a=b=p=0),i=OS13k.Input(window),a=-i.x/2,k=i.y,b-=.006,A-=a,B-=b,r=.2-B/240,P-=r,B+=r,c.width=512,i=3e3;X=63&i,Y=i>>6,i--;x.fillRect(8*X,8*Y,8,8))y=Y/3+B+P,z=X/3+4*(y>>4),G=T(y+z^z-y),M=G>5,A^X|B^Y|!M||(OS13k.PlaySeed(96*G,p+k*k,.3),b=k?p/3:.2,p=k?0:p>1?1:p+G%2/12),y-=P/2,z+=A/3,g=T(y+z^z-y),m=t<32?12+g%8+Y-B:(G^g)+Y-B&31,x.fillStyle=`hsl(${M*G*30+m}deg 99%${50*M+m*(1-S(t/16)**3)/2}%`;x.font=16+16*p+"px a",x.fillText(k?"🙉":"🐵",8*A-8-8*p,8*B),B<48&&OS13k.Trophy([..."🐢🦒🦉🦇🦜🕊🐒🦅"][y=32-y>>5],"Don't Fall",16*y+"ft")</iframe>
 
-<iframe name="Bogus Slopes">i=OS13k.Input(window),(!t||i.keypress[32])&&(T=U=V=F=0,W=[],Y=540,X=-700),X>0||(x.fillStyle="#ccc8",x.fillRect(0,0,2e3,2e3),x.font='9em"',x.textAlign="center",x.textBaseline="middle",x.scale(-1,1),F=Math.min(F+.2,Math.min(20+T/5e4,30)),Z=U>1,W.push((60*t|0)%Math.max(9,Z?30:20-T/1e4|0)?{t:"●",x:X,y:Y,c:`hsl(${T} 99%${Z?50:100}%)`}:{t:[..."🌲🌳⭐"][2*Math.random()+(Math.random()<.05)|0],x:-2200,y:79+900*Math.random()}),W=W.filter(e=>(z="⭐"==e.t,x.fillStyle=e.c||R(),x.fillText("●"==e.t||U<1||z?e.t:"🌮",e.x+=F*(z?.7:1),e.y),e.x<99&&("●"==e.t||(Math.hypot(X-e.x,Y-e.y)>99?1:(OS13k.PlaySeed(z?169:Z?22:121),z?U=4:Z?U=U>2?U:2:(F=9,U=-3),0))))),Y+=V=.95*V+.5-1.5*i.mousedown,x.fillText(U>1.5&&4*t%1<.5?"":"🏂🏻",X=Math.max(X-(U*=.99),-960),Y>1e3?(V=0,Y=1e3):Y<99?(V=0,Y=99):Y),x.scale(-1,1),x.textAlign="left",x.fillStyle=R(),x.fillText(s=(T+=F)/500|0,9,99),x.textAlign="right",x.fillStyle=R(255,0,0,9-t),x.fillText(d=OS13k.GetTrophy("Bogus Slopes","High Score"),c.width-9,99),s>99&&OS13k.Trophy("⭐","Bogus Slopes","100!"),X>0&&(OS13k.PlaySeed(370,5),s>d&&OS13k.Trophy("🏂🏻","Bogus Slopes","High Score",s)),Z&&frame%(U>2?10:20)==0&&OS13k.PlaySeed(53,1,1,.01,OS13k.Note(10-Y/100|0)))</iframe>
+<iframe name="Bogus Slopes">i=OS13k.Input(window),t||(T=U=V=F=0,W=[],Y=700,X=-Y),X>0||(x.fillStyle="#ccc8",x.fillRect(0,0,2e3,2e3),x.font='9em"',x.textAlign="center",x.textBaseline="middle",x.scale(-1,1),F=Math.min(F+.2,Math.min(20+T/5e4,30)),Z=U>1,W.push((60*t|0)%Math.max(9,Z?30:20-T/1e4|0)?{t:"●",x:X,y:Y,c:`hsl(${T} 99%${Z?50:100}%)`}:{t:[..."🌲🌳⭐"][2*Math.random()+(Math.random()<.05)|0],x:-2200,y:79+900*Math.random()}),W=W.filter(t=>(z="⭐"==t.t,x.fillStyle=t.c||R(),x.fillText("●"==t.t||U<1||z?t.t:"🌮",t.x+=F*(z?.7:1),t.y),t.x<99&&("●"==t.t||(Math.hypot(X-t.x,Y-t.y)>99?1:(OS13k.PlaySeed(z?169:Z?22:121),z?U=4:Z?U=U>2?U:2:(F=9,U=-3),0))))),Y+=V=.95*V+.5-1.5*i.mousedown,x.fillText(U>1.5&&4*t%1<.5?"":"🏂🏻",X=Math.max(X-(U*=.99),-960),Y>1e3?(V=0,Y=1e3):Y<99?(V=0,Y=99):Y),x.scale(-1,1),x.textAlign="left",x.fillStyle=R(),x.fillText(s=(T+=F)/500|0,9,99),x.textAlign="right",x.fillStyle=R(255,0,0,9-t),x.fillText(d=OS13k.GetTrophy("Bogus Slopes","High Score"),c.width-9,99),s>99&&OS13k.Trophy("⭐","Bogus Slopes","100!"),X>0&&(OS13k.PlaySeed(370,5),s>d&&OS13k.Trophy("🏂🏻","Bogus Slopes","High Score",s)),Z&&frame%(U>2?10:20)==0&&OS13k.PlaySeed(53,1,1,.01,OS13k.Note(10-Y/100|0)))</iframe>
 
-<iframe name="Shedding Snake">i=OS13k.Input(window),t&&!i.keypress[32]||(T=[],S=[],W=32,H=24,X=W>>1,Y=H>>1,Z=50,G=Q=D=0,F=(e,t,i,h,l)=>{x.save(),x.translate((t+.5)*Z,(i+.5)*Z),l&&x.rotate(l*Math.PI/2),h&&x.fillRect(-.5*Z,-.5*Z,Z,Z,x.fillStyle=h),x.restore(x.fillText(e,0,0))},C=(e,t)=>(b=0,S.map((i,h)=>b|=e==h%W&&t==(h/W|0)),T.map(i=>b|=e==i[0]&&t==i[1]),b),P=e=>{for(;C(A=Math.random()*W|0,B=Math.random()*H|0)||!t.length&&A==X;);},P()),s=T.length,h=OS13k.GetTrophy("Shedding Snake","High Score"),s-20||OS13k.Trophy("🍎","Shedding Snake","20 Apples!"),C(X,Y)?G||(OS13k.PlaySeed(G=178,3),s>h&&OS13k.Trophy("🐍","Shedding Snake","High Score",s)):(x.fillRect(0,0,c.width=W*Z,c.height=H*Z),frame%7==0&&((i.x||i.y)&&(d=i.x>0?3:i.x<0?1:i.y>0?2:0)%2!=D%2&&(D=d),Q&&(Q--,OS13k.PlaySeed(128,.1)),T.push([X,Y]),X-A||B-Y||P(OS13k.PlaySeed(169),T.push([X,Y]),T.map(e=>S[e[0]+e[1]*W]=1),Q=T.length),T.shift(),D%2?X=(X+(D-1?1:-1)+W)%W:Y=(Y+(D?-1:1)+H)%H),x.textAlign="center",x.textBaseline="middle",x.font=Z+'px"',x.fillStyle="#fff",S.map((e,t)=>F("✖️",t%W,t/W|0,"#ddd")),T.map(e=>F("✖️",e[0],e[1],"#693")),F("🍎",A,B),F("🐸",X,Y,0,D),x.font='90px"',x.lineWidth=9,x.strokeText(a=T.length?"Score: "+s:"🐍 High Score: "+h,c.width/2,80),x.fillText(a,c.width/2,80))</iframe>
-
-<iframe name="Four Fours"><style>body{background:#111;color:#fff}</style><input id=I oninput=z() placeholder='Use only -+*/() and 4 4s'> = <span id=F></span><hr><div id=O style='display:grid;grid-template-columns:auto auto auto auto auto'><script>z=e=>{i=I.value,g="👎";try{i.match(/^[-+*()/4]*$/g)&&(v=eval(i)||0)==v|0&&4==i.match(/4/g).length&&(A[v]=i,g="👍")}catch(e){}for(F.innerHTML=v+" "+g,O.innerHTML="",i=0;i<100;)j=(i/5|0)+i++%5*20,O.innerHTML+=`<div>${j}: ${A[j]||""}`;localStorage.OS13k44=JSON.stringify(A)},A=localStorage.OS13k44,z(A=A?JSON.parse(A):[])</script>
-</iframe>
+<iframe name="Shedding Snake">t||(T=[],S=[],W=32,H=24,X=W>>1,Y=H>>1,Z=50,G=Q=D=0,F=(e,t,i,h,l)=>{x.save(),x.translate((t+.5)*Z,(i+.5)*Z),l&&x.rotate(l*Math.PI/2),h&&x.fillRect(-.5*Z,-.5*Z,Z,Z,x.fillStyle=h),x.restore(x.fillText(e,0,0))},C=(e,t)=>(b=0,S.map((i,h)=>b|=e==h%W&&t==(h/W|0)),T.map(i=>b|=e==i[0]&&t==i[1]),b),P=e=>{for(;C(A=Math.random()*W|0,B=Math.random()*H|0)||!t.length&&A==X;);},P()),s=T.length,h=OS13k.GetTrophy("Shedding Snake","High Score"),s-20||OS13k.Trophy("🍎","Shedding Snake","20 Apples!"),C(X,Y)?G||(OS13k.PlaySeed(G=178,3),s>h&&OS13k.Trophy("🐍","Shedding Snake","High Score",s)):(x.fillRect(0,0,c.width=W*Z,c.height=H*Z),frame%7==0&&(i=OS13k.Input(window),(i.x||i.y)&&(d=i.x>0?3:i.x<0?1:i.y>0?2:0)%2!=D%2&&(D=d),Q&&(Q--,OS13k.PlaySeed(128,.1)),T.push([X,Y]),X-A||B-Y||P(OS13k.PlaySeed(169),T.push([X,Y]),T.map(e=>S[e[0]+e[1]*W]=1),Q=T.length),T.shift(),D%2?X=(X+(D-1?1:-1)+W)%W:Y=(Y+(D?-1:1)+H)%H),x.textAlign="center",x.textBaseline="middle",x.font=Z+'px"',x.fillStyle="#fff",S.map((e,t)=>F("✖️",t%W,t/W|0,"#ddd")),T.map(e=>F("✖️",e[0],e[1],"#693")),F("🍎",A,B),F("🐸",X,Y,0,D),x.font='90px"',x.lineWidth=9,x.strokeText(a=T.length?"Score: "+s:"🐍 High Score: "+h,c.width/2,80),x.fillText(a,c.width/2,80))</iframe>
 
 <iframe name=Ziano><style>body{background:#111;color:#fff;user-select:none;text-align:center}</style><span id=B></span>🌱 <input oninput=P(0,R()) style=width:240 id=S><p>🔊 <input onchange=R() style=width:99 type=range id=V> 🐇 <input onchange=R() style=width:99 type=range id=L> 🐢<script>OS13k=parent.OS13k,R=e=>{for(onblur(D=[]),i=5;--i;D[i]=OS13k.SeedSamples(S.value,.1+L.value/9,1,0,OS13k.Note(12*i-33)));},P=e=>e<0||A[e]||((A[e]=OS13k.PlaySamples(D[2+e/12|0],2)).detune.value=e%12*100,A[e].gain.gain.value=V.value/50),X=e=>A[e]&&(A[e].gain.gain.linearRampToValueAtTime(V.value/50,t=A[e].context.currentTime+.02),A[e].gain.gain.linearRampToValueAtTime(A[e]=0,t+.1)),onunload=onblur=e=>A.map((e,a)=>X(a)),R(A=[]),onkeydown=e=>document.activeElement==S||P(OS13k.PianoKey(e)),onkeyup=e=>X(OS13k.PianoKey(e))</script></iframe>
 
@@ -189,8 +186,7 @@ programStubs =
 [
     ['🙉',,,defaultFlags|dweet,"Don't Fall"],
     ['🏂🏻',,,defaultFlags|dweet,"Bogus Slopes"],
-    ['🐍',800,600,defaultFlags|dweet,"Shedding Snake"],
-    ['4x4',800,440,,"Four Fours"],
+    ['🐍',800,600,defaultFlags|dweet,"Shedding Snake"]
 ]],
 ];
 
@@ -448,7 +444,7 @@ class _OS13k
     // create and update an input object for keyboard and mouse control
     Input(inputWindow)
     {
-        let inputCopy;
+        let inputCopy, Pressed = (k)=> inputCopy.keydown[k] || inputCopy.keypress[k];
         if (inputWindow.document.OS13kInput)
         {
             // make copy of last frame input
@@ -456,10 +452,10 @@ class _OS13k
 
             // get direction from wasd or arrow keys
             inputCopy.x = inputCopy.y = 0;
-            inputCopy.keydown[87] | inputCopy.keydown[38] && ++inputCopy.y; // up
-            inputCopy.keydown[83] | inputCopy.keydown[40] && --inputCopy.y; // down
-            inputCopy.keydown[68] | inputCopy.keydown[39] && ++inputCopy.x; // right
-            inputCopy.keydown[65] | inputCopy.keydown[37] && --inputCopy.x; // left
+            Pressed(87) | Pressed(38) && ++inputCopy.y; // up
+            Pressed(83) | Pressed(40) && --inputCopy.y; // down
+            Pressed(68) | Pressed(39) && ++inputCopy.x; // right
+            Pressed(65) | Pressed(37) && --inputCopy.x; // left
         }
 
         // create or clear input object
@@ -811,7 +807,7 @@ class OS13kProgramMenu extends HTMLElement
             windowOpenY = copyProgram.i.y + titlebarHeight,
             copyProgram.i.C)
             :
-            '// Auto detects HTML or Dweet. You can drop files here too! ✌️😄\n' +
+            '// Auto detects HTML or Dweet. ✌️😄\n' +
             'for(x.fillRect(0,0,i=s=2e3,s);i--;x.globalAlpha=.1)\n' +
             'x.clearRect((S(i)*1e9-t*i/9)%s,i*9%s,i%9,i%9)';
 
@@ -1093,14 +1089,14 @@ class OS13kWindow extends HTMLElement
         // create each element for code options
         let
         screenshotButton = this.screenshot = CodeOption('', 'button', '📷'),
-        iconInput = CodeOption('Icon ', 'input', '', 'width:50'),
-        nameInput = CodeOption('Name ', 'input'),
-        folderInput = CodeOption('Folder ', 'input'),
+        iconInput = CodeOption(' Icon ', 'input', '', 'width:50'),
+        nameInput = CodeOption(' Name ', 'input'),
+        folderInput = CodeOption(' Folder ', 'input'),
         nextLine = CodeOption('', 'br'),
-        widthInput = CodeOption('Size ', 'input', '', 'width:50', 'number'),
+        widthInput = CodeOption(' Size ', 'input', '', 'width:50', 'number'),
         heightInput = CodeOption('x', 'input', '', 'width:50', 'number'),
-        sleepInput = this.allowSleep = CodeOption('Sleep ', 'input', '', '', 'checkbox'),
-        liveEditInput = this.liveEdit = CodeOption('Live Edit ', 'input', '', '', 'checkbox'),
+        sleepInput = this.allowSleep = CodeOption(' Sleep ', 'input', '', '', 'checkbox'),
+        liveEditInput = this.liveEdit = CodeOption(' Live Edit ', 'input', '', '', 'checkbox'),
         saveButton = CodeOption('', 'button', 'Save'),
         copyButton = CodeOption('', 'button', 'Copy'),
         deleteButton = CodeOption('', 'button', 'Delete'),
@@ -1645,20 +1641,8 @@ oncontextmenu = e=> !1;
 ///////////////////////////////////////////////////////////////////////////////
 // Drag and Drop
 
-// allow drag and drop code into editor
-ondrop = e=>
-{
-    let reader = new FileReader();
-    reader.onload = f=> e.target.SetActive(1, 0, e.target.SetCode(f.target.result, 1));
-
-    // read file, set code, and set active
-    e.dataTransfer.files.length && e.target.program && e.target.program.userProgram &&
-        reader.readAsText(e.dataTransfer.files[0]); 
-    return !1;
-}
-
-// prevent default drop events
-ondragover = ()=> !1;
+// ignore drag and drop events
+ondrop = ondragover = ()=> !1;
 
 ///////////////////////////////////////////////////////////////////////////////
 // ZzFXMicro - Zuper Zmall Zound Zynth
