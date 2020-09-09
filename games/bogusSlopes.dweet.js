@@ -23,3 +23,4 @@ x.fillText(d=OS13k.GetTrophy('Bogus Slopes','High Score'),c.width-9,99)
 s>99&&OS13k.Trophy('⭐','Bogus Slopes','100!')
 X>0&&(OS13k.PlaySeed(370,5),s>d&&OS13k.Trophy('🏂🏻','Bogus Slopes','High Score',s))
 Z&&frame%(U>2?10:20)==0&&OS13k.PlaySeed(53,1,1,.01,OS13k.Note(10-Y/100|0))
+// by KilledByAPixel

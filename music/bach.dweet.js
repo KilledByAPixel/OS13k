@@ -13,3 +13,4 @@ K/=1.01
 x.fillStyle=R(F*K)
 for(X=-5;X<5;X=X+.01)
 Y=(1-(X)**2)*2**-((X+F/199+S(t+F))**2),x.clearRect((X+5)*192,600+Y*120*(S(F+S(X*4)/2)+C(F*t)/4)*K,2,999)
+// by Rodrigo Siqueira

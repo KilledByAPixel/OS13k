@@ -1,3 +1,5 @@
+// Don't Fall - by Tomxor
+
 t||(A=B=P=8,a=b=p=0);
 i=OS13k.Input(window);
 a=-i.x/2;

@@ -1,3 +1,6 @@
+// original 1k demo by Niklas Berg https://js1024.fun/demos/2020#24
+// OS13k remaster by KilledByAPixel
+
 if(!t) // init
 {
   T = []   // tail
