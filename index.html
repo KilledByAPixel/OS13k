@@ -11,7 +11,7 @@ https://github.com/KilledByAPixel/OS13k
 <title>OS13k - A Tiny JavaScript OS</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?v271></script>
+<script src=programs.js?v272></script>
 <meta charset=utf-8>
 
 <!-- HTML above is OPTIONAL -->
@@ -1480,38 +1480,43 @@ class OS13kWindow extends HTMLElement
                                 b + '++OS13kL>1e5&&(e=>{throw"Timed out!"})()' +
                                 (c == ')' ? '' : ',') + c : a ) : iframeText;
 
-                // show error messages from user code init
-                program.userProgram && (onerror = (...parameters)=>this.SetErrorText(...parameters));
+                // show error messages from dweets
+                onerror = (...parameters)=>
+                {
+                    this.SetErrorText(...parameters);
+                    return true;
+                };
 
                 // create dweet or shader program
-                try {
-                    iframeContent.eval(
-                        `OS13k=parent.OS13k;x=c.getContext` +
-                        (program.isShader ? // preserve buffer for user programs for screenshot
-                            `('webgl2'${program.userProgram ? ',{preserveDrawingBuffer:!0}' : ''});` +
-                            `X=Y=Z=W=0;` +
-                            `onmousemove=e=>e.buttons&&(X=e.x,Y=c.height-e.y);` +
-                            `onmousedown=e=>(X=Z=e.x,Y=W=c.height-e.y);` +
-                            `onmouseup=e=>Z=W=0;` +
-                            `s=OS13k.CreateShader(c,\`${ code }\`);` +
-                            `OS13kU=t=>` +
-                            `OS13k.RenderShader(c,s,t/1e3,frame++,X,Y,Z,W,c.width=innerWidth,c.height=innerHeight)`
-                            :
-                            `('2d');` +
-                            `zzfx=parent.zzfx;` +
-                            `S=Math.sin;C=Math.cos;T=Math.tan;` +
-                            `R=(r,g,b,a=1)=>\`rgba(\${0|r},\${0|g},\${0|b},\${a})\`;` +
-                            `u=t=>{\n${ code }\n};` +
-                            `OS13kU=t=>t>OS13kF-2&&` + 
-                                `u(((t=frame++/60)*60|0==frame-1)&&t>0?t+1e-6:t,` +
-                                `OS13kL=0,` +
-                                `OS13kF=Math.max(OS13kF+100/6,t))`) +
-                            `;(OS13kA=t=>(requestAnimationFrame(OS13kA),` +
-                                (program.flags & awake || program.info.allowSleep == 0 ? '' : 
-                                    `t<1e3|parent.document.activeElement==OS13kWindow&&`) +
-                                    `OS13kU(t)))` +
-                            `(frame=OS13kF=0)`);
-                } catch (e) { this.SetErrorText(e); }
+                iframeContent.eval(
+                    `OS13k=parent.OS13k;x=c.getContext` +
+                    (program.isShader ? // preserve buffer for user programs for screenshot
+                        `('webgl2'${program.userProgram ? ',{preserveDrawingBuffer:!0}' : ''});` +
+                        `X=Y=Z=W=0;` +
+                        `onmousemove=e=>e.buttons&&(X=e.x,Y=c.height-e.y);` +
+                        `onmousedown=e=>(X=Z=e.x,Y=W=c.height-e.y);` +
+                        `onmouseup=e=>Z=W=0;` +
+                        `s=OS13k.CreateShader(c,\`${ code }\`);` +
+                        `OS13kU=t=>` +
+                        `OS13k.RenderShader(c,s,t/1e3,frame++,X,Y,Z,W,c.width=innerWidth,c.height=innerHeight)`
+                        :
+                        `('2d');` +
+                        `zzfx=parent.zzfx;` +
+                        `S=Math.sin;C=Math.cos;T=Math.tan;` +
+                        `R=(r,g,b,a=1)=>\`rgba(\${0|r},\${0|g},\${0|b},\${a})\`;` +
+                        `u=t=>{\n${ code }\n};` +
+                        `OS13kU=t=>t>OS13kF-2&&` + 
+                            `u(((t=frame++/60)*60|0==frame-1)&&t>0?t+1e-6:t,` +
+                            `OS13kL=0,` +
+                            `OS13kF=Math.max(OS13kF+100/6,t))`) +
+                        `;(OS13kA=t=>(requestAnimationFrame(OS13kA),` +
+                            (program.flags & awake || program.info.allowSleep == 0 ? '' : 
+                                `t<1e3|parent.document.activeElement==OS13kWindow&&`) +
+                                `OS13kU(t)))` +
+                        `(frame=OS13kF=0)`);
+
+                // set error handling back to normal
+                onerror = null;
             }
             
             // mouse down on iframe to load unsafe code, and call normal mousedown
@@ -1579,7 +1584,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             this.iframe.onload = ()=> LoadFrame();
-            this.iframe.src = program.src + '?v271';
+            this.iframe.src = program.src + '?v272';
         }
     }
         

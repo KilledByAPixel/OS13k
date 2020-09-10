@@ -2,7 +2,9 @@
 <title>OS13k</title>
 <div style=display:none>
 
-<iframe name=Help><h2><i>Welcome to OS13k!</i></h2><p>OS13k is a tiny operating system designed for JS13k.<p>Play JS13k games to earn trophies and unlock music. <a href=https://github.com/KilledByAPixel/OS13k target=_blank>More info on GitHub.</a><p>✌️😄 ❤️ OS13k Team</iframe>
+<iframe name=Help><h2><i>Welcome to OS13k!</i></h2><p>OS13k is a tiny operating system designed for JS13k.<p>Play JS13k games to earn trophies and unlock music.<p>✌️😄❤️ OS13k Team</iframe>
+
+<iframe name=4O4>for(x.fillRect(0,0,X=w=c.width=600,w);X-=6;)for(r=X**2.3%w,Y=h=r*t&504;Y;x.fillText(r*Y&1?4:0,X,Y-=8))x.fillStyle=R(250+Y-h,b=Y-h||w,b)</iframe>
 
 <iframe name=Settings><style>body{background:#111;color:#fff;user-select:none;text-align:center}</style>Volume <input type=range id=V oninput=s() style=width:99> Music <input type=range id=M oninput=s() style=width:99><p>System Sounds <input type=checkbox id=Y oninput=s()> Speech <input type=checkbox id=S oninput=s()> Popups <input type=checkbox id=P oninput=s()> <p>Background <input id=C type=color oninput=s()> <input id=D type=color oninput=s()> <input id=T oninput=s()><script>s=e=>parent.OS13k.SaveSettings(V.value/100,M.value/100,S.checked,P.checked,Y.checked,D.value,C.value,T.value),s(i=parent.OS13k.Settings(),V.value=100*i.v,M.value=100*i.m,S.checked=i.s,P.checked=i.p,Y.checked=i.o,C.value=i.d,D.value=i.c,T.value=i.t)</script></iframe>
 
@@ -16,11 +18,11 @@
 
 <iframe name=Visualizer>for(x.fillRect(0,0,2e3,2e3),x.fillStyle="#0003",t?x.lineWidth=9:h=[],x.strokeStyle="#fff",i=32;i--;x.beginPath(x.strokeStyle=`hsl(${-99-i*360/32} 99%${9+m/2}%)`,x.stroke()))for(m=199*OS13k.GetAnalyserData(i),j=5;j--;)x.arc(960,540,256+(j+1&2?1:-1)*m,a=2*((2&j)/2-8.5+i)*Math.PI/32,a);x.drawImage(c,-40,-20,2e3,1120)</iframe>
 
-<iframe name="Don't Fall">for(t||(A=B=P=8,a=b=p=0),i=OS13k.Input(window),a=-i.x/2,k=i.y,b-=.006,A-=a,B-=b,r=.2-B/240,P-=r,B+=r,c.width=512,i=3e3;X=63&i,Y=i>>6,i--;x.fillRect(8*X,8*Y,8,8))y=Y/3+B+P,z=X/3+4*(y>>4),G=T(y+z^z-y),M=G>5,A^X|B^Y|!M||(OS13k.PlaySeed(96*G,p+k*k,.3),b=k?p/3:.2,p=k?0:p>1?1:p+G%2/12),y-=P/2,z+=A/3,g=T(y+z^z-y),m=t<32?12+g%8+Y-B:(G^g)+Y-B&31,x.fillStyle=`hsl(${M*G*30+m}deg 99%${50*M+m*(1-S(t/16)**3)/2}%`;x.font=16+16*p+"px a",x.fillText(k?"🙉":"🐵",8*A-8-8*p,8*B),B<48&&OS13k.Trophy([..."🐢🦒🦉🦇🦜🕊🐒🦅"][y=32-y>>5],"Don't Fall",16*y+"ft")</iframe>
+<iframe name="Don't Fall">for(t||(A=B=P=8,a=b=p=0),i=OS13k.Input(window),a=-i.x/2,k=i.y,b-=.006,A-=a,B-=b,r=.2-B/240,P-=r,B+=r,c.width=512,i=3e3;X=63&i,Y=i>>6,i--;x.fillRect(8*X,8*Y,8,8))y=Y/3+B+P,z=X/3+4*(y>>4),G=T(y+z^z-y),M=G>5,A^X|B^Y|!M||(OS13k.PlaySeed(96*G,p+k*k,.3),b=k?p/3:.2,p=k?0:p>1?1:p+G%2/12),y-=P/2,z+=A/3,g=T(y+z^z-y),m=t<32?12+g%8+Y-B:(G^g)+Y-B&31,x.fillStyle=`hsl(${M*G*30+m}deg 99%${50*M+m*(1-S(t/16)**3)/2}%`;x.font=16+16*p+"px a",x.fillText(k?"🙉":"🐵",8*A-8-8*p,8*B),B<48&&OS13k.Trophy([..."🐢🦒🦉🦇🦜🕊🐒🦅"][y=32-y>>5],"Don't Fall",16*y+"ft")// by tomxor</iframe>
 
-<iframe name="Bogus Slopes">i=OS13k.Input(window),t||(T=U=V=F=0,W=[],Y=700,X=-Y),X>0||(x.fillStyle="#ccc8",x.fillRect(0,0,2e3,2e3),x.font='9em"',x.textAlign="center",x.textBaseline="middle",x.scale(-1,1),F=Math.min(F+.2,Math.min(20+T/5e4,30)),Z=U>1,W.push((60*t|0)%Math.max(9,Z?30:20-T/1e4|0)?{t:"●",x:X,y:Y,c:`hsl(${T} 99%${Z?50:100}%)`}:{t:[..."🌲🌳⭐"][2*Math.random()+(Math.random()<.05)|0],x:-2200,y:79+900*Math.random()}),W=W.filter(t=>(z="⭐"==t.t,x.fillStyle=t.c||R(),x.fillText("●"==t.t||U<1||z?t.t:"🌮",t.x+=F*(z?.7:1),t.y),t.x<99&&("●"==t.t||(Math.hypot(X-t.x,Y-t.y)>99?1:(OS13k.PlaySeed(z?169:Z?22:121),z?U=4:Z?U=U>2?U:2:(F=9,U=-3),0))))),Y+=V=.95*V+.5-1.5*i.mousedown,x.fillText(U>1.5&&4*t%1<.5?"":"🏂🏻",X=Math.max(X-(U*=.99),-960),Y>1e3?(V=0,Y=1e3):Y<99?(V=0,Y=99):Y),x.scale(-1,1),x.textAlign="left",x.fillStyle=R(),x.fillText(s=(T+=F)/500|0,9,99),x.textAlign="right",x.fillStyle=R(255,0,0,9-t),x.fillText(d=OS13k.GetTrophy("Bogus Slopes","High Score"),c.width-9,99),s>99&&OS13k.Trophy("⭐","Bogus Slopes","100!"),X>0&&(OS13k.PlaySeed(370,5),s>d&&OS13k.Trophy("🏂🏻","Bogus Slopes","High Score",s)),Z&&frame%(U>2?10:20)==0&&OS13k.PlaySeed(53,1,1,.01,OS13k.Note(10-Y/100|0)))</iframe>
+<iframe name="Bogus Slopes">i=OS13k.Input(window),t||(T=U=V=F=0,W=[],Y=700,X=-Y),X>0||(x.fillStyle="#ccc8",x.fillRect(0,0,2e3,2e3),x.font='9em"',x.textAlign="center",x.textBaseline="middle",x.scale(-1,1),F=Math.min(F+.2,Math.min(20+T/5e4,30)),Z=U>1,W.push((60*t|0)%Math.max(9,Z?30:20-T/1e4|0)?{t:"●",x:X,y:Y,c:`hsl(${T} 99%${Z?50:100}%)`}:{t:[..."🌲🌳⭐"][2*Math.random()+(Math.random()<.05)|0],x:-2200,y:79+900*Math.random()}),W=W.filter(t=>(z="⭐"==t.t,x.fillStyle=t.c||R(),x.fillText("●"==t.t||U<1||z?t.t:"🌮",t.x+=F*(z?.7:1),t.y),t.x<99&&("●"==t.t||(Math.hypot(X-t.x,Y-t.y)>99?1:(OS13k.PlaySeed(z?169:Z?22:121),z?U=4:Z?U=U>2?U:2:(F=9,U=-3),0))))),Y+=V=.95*V+.5-1.5*i.mousedown,x.fillText(U>1.5&&4*t%1<.5?"":"🏂🏻",X=Math.max(X-(U*=.99),-960),Y>1e3?(V=0,Y=1e3):Y<99?(V=0,Y=99):Y),x.scale(-1,1),x.textAlign="left",x.fillStyle=R(),x.fillText(s=(T+=F)/500|0,9,99),x.textAlign="right",x.fillStyle=R(255,0,0,9-t),x.fillText(d=OS13k.GetTrophy("Bogus Slopes","High Score"),c.width-9,99),s>99&&OS13k.Trophy("⭐","Bogus Slopes","100!"),X>0&&(OS13k.PlaySeed(370,5),s>d&&OS13k.Trophy("🏂🏻","Bogus Slopes","High Score",s)),Z&&frame%(U>2?10:20)==0&&OS13k.PlaySeed(53,1,1,.01,OS13k.Note(10-Y/100|0)))// by KBAP</iframe>
 
-<iframe name="Shedding Snake">t||(T=[],S=[],W=32,H=24,X=W>>1,Y=H>>1,Z=50,G=Q=D=0,F=(e,t,i,h,l)=>{x.save(),x.translate((t+.5)*Z,(i+.5)*Z),l&&x.rotate(l*Math.PI/2),h&&x.fillRect(-.5*Z,-.5*Z,Z,Z,x.fillStyle=h),x.restore(x.fillText(e,0,0))},C=(e,t)=>(b=0,S.map((i,h)=>b|=e==h%W&&t==(h/W|0)),T.map(i=>b|=e==i[0]&&t==i[1]),b),P=e=>{for(;C(A=Math.random()*W|0,B=Math.random()*H|0)||!t.length&&A==X;);},P()),s=T.length,h=OS13k.GetTrophy("Shedding Snake","High Score"),s-20||OS13k.Trophy("🍎","Shedding Snake","20 Apples!"),C(X,Y)?G||(OS13k.PlaySeed(G=178,3),s>h&&OS13k.Trophy("🐍","Shedding Snake","High Score",s)):(x.fillRect(0,0,c.width=W*Z,c.height=H*Z),frame%7==0&&(i=OS13k.Input(window),(i.x||i.y)&&(d=i.x>0?3:i.x<0?1:i.y>0?2:0)%2!=D%2&&(D=d),Q&&(Q--,OS13k.PlaySeed(128,.1)),T.push([X,Y]),X-A||B-Y||P(OS13k.PlaySeed(169),T.push([X,Y]),T.map(e=>S[e[0]+e[1]*W]=1),Q=T.length),T.shift(),D%2?X=(X+(D-1?1:-1)+W)%W:Y=(Y+(D?-1:1)+H)%H),x.textAlign="center",x.textBaseline="middle",x.font=Z+'px"',x.fillStyle="#fff",S.map((e,t)=>F("✖️",t%W,t/W|0,"#ddd")),T.map(e=>F("✖️",e[0],e[1],"#693")),F("🍎",A,B),F("🐸",X,Y,0,D),x.font='90px"',x.lineWidth=9,x.strokeText(a=T.length?"Score: "+s:"🐍 High Score: "+h,c.width/2,80),x.fillText(a,c.width/2,80))</iframe>
+<iframe name="Shedding Snake">t||(T=[],S=[],W=32,H=24,X=W>>1,Y=H>>1,Z=50,G=Q=D=0,F=(e,t,i,h,l)=>{x.save(),x.translate((t+.5)*Z,(i+.5)*Z),l&&x.rotate(l*Math.PI/2),h&&x.fillRect(-.5*Z,-.5*Z,Z,Z,x.fillStyle=h),x.restore(x.fillText(e,0,0))},C=(e,t)=>(b=0,S.map((i,h)=>b|=e==h%W&&t==(h/W|0)),T.map(i=>b|=e==i[0]&&t==i[1]),b),P=e=>{for(;C(A=Math.random()*W|0,B=Math.random()*H|0)||!t.length&&A==X;);},P()),s=T.length,h=OS13k.GetTrophy("Shedding Snake","High Score"),s-20||OS13k.Trophy("🍎","Shedding Snake","20 Apples!"),C(X,Y)?G||(OS13k.PlaySeed(G=178,3),s>h&&OS13k.Trophy("🐍","Shedding Snake","High Score",s)):(x.fillRect(0,0,c.width=W*Z,c.height=H*Z),frame%7==0&&(i=OS13k.Input(window),(i.x||i.y)&&(d=i.x>0?3:i.x<0?1:i.y>0?2:0)%2!=D%2&&(D=d),Q&&(Q--,OS13k.PlaySeed(128,.1)),T.push([X,Y]),X-A||B-Y||P(OS13k.PlaySeed(169),T.push([X,Y]),T.map(e=>S[e[0]+e[1]*W]=1),Q=T.length),T.shift(),D%2?X=(X+(D-1?1:-1)+W)%W:Y=(Y+(D?-1:1)+H)%H),x.textAlign="center",x.textBaseline="middle",x.font=Z+'px"',x.fillStyle="#fff",S.map((e,t)=>F("✖️",t%W,t/W|0,"#ddd")),T.map(e=>F("✖️",e[0],e[1],"#693")),F("🍎",A,B),F("🐸",X,Y,0,D),x.font='90px"',x.lineWidth=9,x.strokeText(a=T.length?"Score: "+s:"🐍 High Score: "+h,c.width/2,80),x.fillText(a,c.width/2,80))// by nkholski & KBAP</iframe>
 
 <iframe name=Ziano><style>body{background:#111;color:#fff;user-select:none;text-align:center}</style><span id=B></span>🌱 <input oninput=P(0,R()) style=width:240 id=S><p>🔊 <input onchange=R() style=width:99 type=range id=V> 🐇 <input onchange=R() style=width:99 type=range id=L> 🐢<script>OS13k=parent.OS13k,R=e=>{for(onblur(D=[]),i=5;--i;D[i]=OS13k.SeedSamples(S.value,.1+L.value/9,1,0,OS13k.Note(12*i-33)));},P=e=>e<0||A[e]||((A[e]=OS13k.PlaySamples(D[2+e/12|0],2)).detune.value=e%12*100,A[e].gain.gain.value=V.value/50),X=e=>A[e]&&(A[e].gain.gain.linearRampToValueAtTime(V.value/50,t=A[e].context.currentTime+.02),A[e].gain.gain.linearRampToValueAtTime(A[e]=0,t+.1)),onunload=onblur=e=>A.map((e,a)=>X(a)),R(A=[]),onkeydown=e=>document.activeElement==S||P(OS13k.PianoKey(e)),onkeyup=e=>X(OS13k.PianoKey(e))</script></iframe>
 
@@ -170,6 +172,7 @@ programStubs =
 [
 ['❌',,,closeAll,'Close All'],
 ['<b><span style=color:#0f0>?',300,210,resize,'Help','Check here to see help, code, or edit user programs.\n\nHave fun! ✌️😄'],
+['🙀',,,defaultFlags|dweet,"4O4"],
 ['⚙️',,,,'System',,
 [
     ['🏆',,,full|resize|sticky,'Trophy Case'],
@@ -181,14 +184,14 @@ programStubs =
 [
     ['🎵',400,330,sticky,'Music Player'],
     ['👁️',,,awake|full|resize|code|dweet,'Visualizer'],
-    ['🎹',350,99,reload,'Ziano','Keyboard = Play Piano Notes']
+    ['🎹',350,99,reload,'Ziano','Keyboard = Play Piano Notes\nSeed = Change Sound']
 ]],
 ['🎮',,,,'Games',,
 [
     ['🙉',,,defaultFlags|dweet,"Don't Fall"],
     ['🏂🏻',,,defaultFlags|dweet,"Bogus Slopes"],
     ['🐍',800,600,defaultFlags|dweet,"Shedding Snake"]
-]],
+]]
 ];
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1252,7 +1255,7 @@ class OS13kWindow extends HTMLElement
 
         // show error messages
         iframeContent.onerror = (...parameters)=>this.SetErrorText(...parameters);
-        onerror = (...parameters)=>this.SetErrorText(...parameters);
+        onerror = (...parameters)=>{ this.SetErrorText(...parameters); return true; }
 
         // only allow screnshots from special programs 
         this.screenshot.disabled = !program.isDweet | !codeIsSafe;
@@ -1271,31 +1274,29 @@ class OS13kWindow extends HTMLElement
                 'align-items:center';
 
             // create dweet program
-            try {
-                iframeContent.eval(
-                    `OS13k=parent.OS13k;x=c.getContext('2d');` +
-                        `zzfx=parent.zzfx;` +
-                        `S=Math.sin;C=Math.cos;T=Math.tan;` +
-                        `R=(r,g,b,a=1)=>\`rgba(\${0|r},\${0|g},\${0|b},\${a})\`;` +
-                        `u=t=>{\n${ 
+            iframeContent.eval(
+                `OS13k=parent.OS13k;x=c.getContext('2d');` +
+                    `zzfx=parent.zzfx;` +
+                    `S=Math.sin;C=Math.cos;T=Math.tan;` +
+                    `R=(r,g,b,a=1)=>\`rgba(\${0|r},\${0|g},\${0|b},\${a})\`;` +
+                    `u=t=>{\n${ 
 
-                        // loop protection for user dweets
-                        program.userProgram ? code.replace(
-                            /(for\s*\([^;]*;[^;]*;|while\s*\()\s*(\S)/g, (a, b, c)=> 
-                                b && c && !b.match(/\sof\s|\sin\s/g) ? 
-                                    b + '++OS13kL>1e5&&(e=>{throw"Timed out!"})()' +
-                                    (c == ')' ? '' : ',') + c : a ) : code
-                        }\n};` +
-                        `OS13kU=t=>t>OS13kF-2&&` + 
-                            `u(((t=frame++/60)*60|0==frame-1)&&t>0?t+1e-6:t,` +
-                            `OS13kL=0,` +
-                            `OS13kF=Math.max(OS13kF+100/6,t));` +
-                        `(OS13kA=t=>(requestAnimationFrame(OS13kA),` +
-                            (program.F & awake || program.i.allowSleep == 0 ? '' : 
-                                't<1e3|parent.document.activeElement==OS13kWindow&&') +
-                                `OS13kU(t)))` +
-                        `(frame=OS13kF=0)`);
-            } catch (e) { this.SetErrorText(e); }
+                    // loop protection for user dweets
+                    program.userProgram ? code.replace(
+                        /(for\s*\([^;]*;[^;]*;|while\s*\()\s*(\S)/g, (a, b, c)=> 
+                            b && c && !b.match(/\sof\s|\sin\s/g) ? 
+                                b + '++OS13kL>1e5&&(e=>{throw"Timed out!"})()' +
+                                (c == ')' ? '' : ',') + c : a ) : code
+                    }\n};` +
+                    `OS13kU=t=>t>OS13kF-2&&` + 
+                        `u(((t=frame++/60)*60|0==frame-1)&&t>0?t+1e-6:t,` +
+                        `OS13kL=0,` +
+                        `OS13kF=Math.max(OS13kF+100/6,t));` +
+                    `(OS13kA=t=>(requestAnimationFrame(OS13kA),` +
+                        (program.F & awake || program.i.allowSleep == 0 ? '' : 
+                            't<1e3|parent.document.activeElement==OS13kWindow&&') +
+                            `OS13kU(t)))` +
+                    `(frame=OS13kF=0)`);
         }
 
         // mouse down on iframe to load unsafe code, and call normal mousedown
