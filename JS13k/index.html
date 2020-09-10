@@ -703,7 +703,7 @@ CreateUserFolder = (parentStubs, stub, userFolderName, oldStubs)=>
    programInfos.map(i=> i.C != undefined && i.U == userFolderName &&
 
         // add stubs to folder, check if it already existed first
-        folderStubs.push(oldStubs.find(stub => stub[6] == i.D) ||
+        folderStubs.push(oldStubs.find(stub => stub[7] == i.D) ||
             [i.I,i.W,i.H,defaultFlags|code,i.N,,,i.D,i.U])
         );
 

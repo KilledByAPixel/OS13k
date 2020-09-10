@@ -1010,8 +1010,8 @@ class OS13kProgramMenu extends HTMLElement
         let stub = copyProgram ? 
             [copyProgram.icon,, copyProgram.width, copyProgram.height, defaultFlags|code, 
                 copyProgram.name + '+', , ,++nextUserProgramId, copyProgram.userFolder] :
-            ['✋',,,,defaultFlags|code,,,,++nextUserProgramId, userFolder];
-        let program = stub[-1] = new OS13kProgram(...stub);
+            ['✋',,,,defaultFlags|code,,,,++nextUserProgramId, userFolder],
+            program = stub[-1] = new OS13kProgram(...stub);
         
         // add to menu program infos
         this.programStubs.push(stub);
