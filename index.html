@@ -11,7 +11,7 @@ https://github.com/KilledByAPixel/OS13k
 <title>OS13k - A Tiny JavaScript OS</title>
 <link rel=icon type=image/x-icon href='favicon.ico'/>
 <meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?v274></script>
+<script src=programs.js?v275></script>
 <meta charset=utf-8>
 
 <!-- HTML above is OPTIONAL -->
@@ -99,6 +99,7 @@ body
 }
 #background
 {
+    opacity:0;
     position:absolute;
     width:100%;
     height:100%;
@@ -806,7 +807,7 @@ Update = time=>
     lastActiveFrame = activeFrame;
 
     // fade in desktop after loading, convert opacity to number
-    document.body.style.opacity = OS13k.Clamp(!loading*.02 + document.body.style.opacity*1);
+    background.style.opacity = document.body.style.opacity = OS13k.Clamp(!loading*.02 + document.body.style.opacity*1);
 
     // update trophy count
     trophyTrayIcon.innerHTML = trophies.length + '🏆';
@@ -1576,7 +1577,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             this.iframe.onload = ()=> LoadFrame();
-            this.iframe.src = program.src + '?v274';
+            this.iframe.src = program.src + '?v275';
         }
     }
         
@@ -1708,7 +1709,7 @@ class OS13kWindow extends HTMLElement
         // set full screen
         this.iframeContent.focus();
         this.iframeWrapper.webkitRequestFullScreen ? this.iframeWrapper.webkitRequestFullScreen() :
-            this.iframeWrapper.mozRequestFullScreen ? this.iframeWrapper.mozRequestFullScreen() : 0;
+            this.iframeWrapper.requestFullscreen ? this.iframeWrapper.requestFullscreen() : 0;
         
         OS13k.Trophy('🕹️','OS13k','Pro Gamer','Went Full Screen');
     }

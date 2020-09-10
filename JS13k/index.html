@@ -8,7 +8,7 @@
 
 <iframe name=Settings><style>body{background:#111;color:#fff;user-select:none;text-align:center}</style>Volume <input type=range id=V oninput=s() style=width:99> Music <input type=range id=M oninput=s() style=width:99><p>System Sounds <input type=checkbox id=Y oninput=s()> Speech <input type=checkbox id=S oninput=s()> Popups <input type=checkbox id=P oninput=s()> <p>Background <input id=C type=color oninput=s()> <input id=D type=color oninput=s()> <input id=T oninput=s()><script>s=e=>parent.OS13k.SaveSettings(V.value/100,M.value/100,S.checked,P.checked,Y.checked,D.value,C.value,T.value),s(i=parent.OS13k.Settings(),V.value=100*i.v,M.value=100*i.m,S.checked=i.s,P.checked=i.p,Y.checked=i.o,C.value=i.d,D.value=i.c,T.value=i.t)</script></iframe>
 
-<iframe name="Trophy Case"><style>body{background:#232}</style>&nbsp;<script>OS13kReload=()=>{for(t of(this.document.body.innerHTML="",parent.OS13k.Trophies()))this.document.body.innerHTML+=`<div style='display:inline-block;font-family:arial;padding:9;overflow:hidden;text-align:center;background:linear-gradient(#eee,#888);width:120;height:120;margin:9;font-size:18;box-shadow:5px 5px 9px;border:2px solid;border-radius:29px'title='${i=t[0]||"🏆"} ${n=t[2]}\n${g=t[1]}\n${m=t[3]}'onclick='parent.OS13k.Speak(\`${n}\`,"ja",1)'><div style='padding:3;white-space:nowrap;font-size:28;text-shadow:2px 2px 4px'>${i}</div><div><b>${n}</b><br><i>${g}</i><br><div style=font-size:14>`+m},OS13kReload()</script></iframe>
+<iframe name="Trophy Case"><style>body{background:#232}</style><body><script>OS13kReload=()=>{for(t of(this.document.body.innerHTML="",parent.OS13k.Trophies()))this.document.body.innerHTML+=`<div style='display:inline-block;font-family:arial;padding:9;overflow:hidden;text-align:center;background:linear-gradient(#eee,#888);width:120;height:120;margin:9;font-size:18;box-shadow:5px 5px 9px;border:2px solid;border-radius:29px'title='${i=t[0]||"🏆"} ${n=t[2]}\n${g=t[1]}\n${m=t[3]}'onclick='parent.OS13k.Speak(\`${n}\`,"ja",1)'><div style='padding:3;white-space:nowrap;font-size:28;text-shadow:2px 2px 4px'>${i}</div><div><b>${n}</b><br><i>${g}</i><br><div style=font-size:14>`+m},OS13kReload()</script></iframe>
 
 <iframe name="Sticky Note"><body style=background:#ff8;font-family:cursive;font-size:23 id=b contenteditable=true spellcheck=false><script>b.focus();b.innerHTML=localStorage.OS13kN||'';b.oninput=e=>localStorage.OS13kN=b.innerHTML;OS13kReload=e=>b.innerHTML=localStorage.OS13kN='';</script></iframe>
 
@@ -80,7 +80,7 @@ body
 <div id=PU style=float:right></div>
 <div id=PM style=position:absolute></div>
 <div id=M></div>
-<div class=F id=B style=position:absolute;width:100%;height:100%;color:#0002;font-family:impact;font-size:30vw;font-weight:900;position:absolute></div>
+<div class=F id=B style=position:absolute;width:100%;height:100%;opacity:0;color:#0002;font-family:impact;font-size:30vw;font-weight:900;position:absolute></div>
 <div id=D>
 <div class=F style="position:absolute;z-index:10000;width:100%;background:linear-gradient(#888,#333);box-shadow:0px 1px 9px;border:2px solid;left:-2">
 <div id=FS style=flex:1></div>
@@ -262,7 +262,7 @@ class _OS13k
             'ja');                             // language 
 
         // save and reload trophy window
-        OS13k.Save(trophyTrayIcon.program.window && trophyTrayIcon.program.window.Reload());
+        OS13k.Save(trophyTrayIcon.program.w && trophyTrayIcon.program.w.Reload());
     }
     
     // get message, 0 if no trophy
@@ -594,7 +594,7 @@ Update = time=>
     lastActiveFrame = activeFrame;
 
     // fade in desktop, convert opacity to number
-    document.body.style.opacity = OS13k.Clamp(.02 + document.body.style.opacity*1);
+    B.style.opacity = document.body.style.opacity = OS13k.Clamp(.02 + document.body.style.opacity*1);
 
     // update trophy count
     trophyTrayIcon.innerHTML = trophies.length + '🏆';
@@ -1440,8 +1440,7 @@ class OS13kWindow extends HTMLElement
         
         // set full screen
         this.iframeContent.focus();
-        this.iframeWrapper.webkitRequestFullScreen ? this.iframeWrapper.webkitRequestFullScreen() :
-            this.iframeWrapper.mozRequestFullScreen ? this.iframeWrapper.mozRequestFullScreen() : 0;
+        this.iframeWrapper.requestFullscreen && this.iframeWrapper.requestFullscreen();
     }
     
     ShowCode(silent)
