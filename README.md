@@ -169,6 +169,6 @@ Add an icon config to programs.js to register your program, examples...
 
 Most of the OS was created by me, Frank Force, but there were many other people helping out. Thank you to everyone for their efforts, I could not have done it alone! Please let me know if I forgot anyone...
 
-Keith Clark, Tomxor, Katkip, Jaburns, Xem, Pavel, Rebecca König, Cantelope, DaSpider, Lionleaf, Yurume, Magna, Rodrigo Siqueira, Thomas Brierley, Nicholas Ortenzio, Yuanchuan, Jani Ylikangas, Martinn Kleppe, Erik Sombroek
+Keith Clark, Tomxor, Niklas Berg, Katkip, Jaburns, Xem, Pavel, Rebecca König, Cantelope, DaSpider, Lionleaf, Yurume, Magna, Rodrigo Siqueira, Thomas Brierley, Nicholas Ortenzio, Yuanchuan, Jani Ylikangas, Martinn Kleppe, Erik Sombroek
 
 ![OS13k Image](/favicon.ico) 
