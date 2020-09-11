@@ -1594,7 +1594,7 @@ onmousedown = e=>
             return !1;
 
         // check for right mouse button
-        if (e.button & 2)
+        if (e.button & 2 && e.target != M)
         {
             // set target active, use load icon if no valid target
             (e.target.SetActive ? e.target : loadIcon).SetActive(1, 1, 0);
