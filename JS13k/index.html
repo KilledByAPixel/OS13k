@@ -423,8 +423,11 @@ class _OS13k
     // convert a string to a music data array, will throw error if invalid
     StringToMusic(string, validate)
     {
+        // get rid of metadata
+        string = string.replace(/{[^}]+}/g, '');
+
         // check if safe to eval and get music data
-        let music = string.replace(/null|[[\],\de\.-]/g, '') || eval(string.replace(/null/g, undefined)); 
+        let music = string.replace(/null|[[\],\de\. -]/g, '') || eval(string.replace(/null/g, undefined)); 
 
         // try to generate music to check if valid
         validate && zzfxM(...music, 1);
