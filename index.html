@@ -813,12 +813,13 @@ Update = time=>
     background.style.opacity = document.body.style.opacity = OS13k.Clamp(!loading*.02 + document.body.style.opacity*1);
 
     // update trophy count
-    trophyTrayIcon.innerHTML = trophies.length + '🏆';
+    let trophyString = trophies.length + '🏆';
+    trophyString != trophyTrayIcon.innerHTML && (trophyTrayIcon.innerHTML = trophyString);
     
     // update time
     clockTrayIcon.title = Date();
-    clockTrayIcon.innerHTML = clockTrayIcon.title.
-        replace(/.* (\d+):(\d+).*/, (a,b,c)=> (b%12||12)+':'+c);
+    let timeString = clockTrayIcon.title.replace(/.* (\d+):(\d+).*/, (a,b,c)=> (b%12||12)+':'+c);
+    timeString != clockTrayIcon.innerHTML && (clockTrayIcon.innerHTML = timeString);
     
     // show popups after startup is finished and there was input
     if (!finishedStartup | !hadInput) return;
@@ -2027,7 +2028,7 @@ zzfxG = (volume = 1, randomness = .05, frequency = 220, attack = 0, sustain = 0,
 zzfxM = (instruments, patterns, sequence, BPM = 125, validate) => 
 {
     let instrumentParameters, i, j, k, sample, patternChannel, isSequenceEnd,
-        notFirstBeat, stop, instrument, pitch, attenuation, pan, 
+        notFirstBeat, stop, instrument, pitch, attenuation, pan = 0,
         outSampleOffset, sampleOffset, nextSampleOffset, sampleBuffer = [], 
         channelIndex = 0, hasMore = 1, channelBuffers = [[],[]], 
         sampleCache = {}, beatLength = defaultSampleRate / BPM * 60 >> 2;
