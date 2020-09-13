@@ -1,2206 +1,2563 @@
 <!--
 
-OS13k is a tiny operating system designed for JS13k.
-It has native support for Shadertoys, Dweets, ZzFX, trophies, and more.
-https://github.com/KilledByAPixel/OS13k
+🎵🔨 NoteCraft by Frank Force
+https://github.com/KilledByAPixel/NoteCraft
 
-❤️ OS13k Team ✌️😄
+todo
+- smaler save format, group by type
+- save i instead of x/y
 
 -->
-
-<title>OS13k - A Tiny JavaScript OS</title>
-<link rel=icon type=image/x-icon href='favicon.ico'/>
-<meta name=viewport content='width=device-width,initial-scale=1,user-scalable=0'>
-<script src=programs.js?v275></script>
 <meta charset=utf-8>
-
-<!-- HTML above is OPTIONAL -->
-
 <style>
+*
+{
+    font-family:monospace;
+    font-size:20
+}
 body
 {
-    opacity:0;
     margin:0;
     overflow:hidden;
-    font-family:arial;
-    font-size:22;
     user-select:none;
     white-space:nowrap;
-    background:#000;
+    color:#fff;
 }
-#menu
+.menuButton
+{
+    box-sizing:border-box;
+    width:90;
+    height:30;
+    background:#ccc;
+    color:#000;
+    border:2px solid #000;
+    border-radius:6px;
+    display:inline-block;
+    text-align:center;
+    vertical-align:middle;
+    padding:0;
+}
+.menuButton:active  { background:#faa; }
+.menuButton:hover  { background:#ffa; }
+input
+{
+    background:#ccc;
+    width:80;
+    height:25;
+    margin:4;
+    text-align:center;
+    border-radius:6px;
+}
+.toolbar
+{
+    position:absolute;
+    background:#222;
+    border-bottom:4px solid #555;
+    border-right:4px solid #555;
+    border-bottom-right-radius:30px;
+}
+.toolbarTop
 {
     display:flex;
-    flex-direction:column;
-    background:#000;
+    align-items:center;
 }
-.programMenu { background:linear-gradient(#fff,#888); }
-#menu, .programMenu
+.toolbarEditControls
 {
-    visibility:hidden;
-    position:absolute;
-    z-index:20000;
-    box-shadow:5px 5px 9px;
-    border:2px solid;
+    display:flex;
+    margin-left:8;
 }
-.program
+.playControl
 {
-    font-size:18;
-    height:18;
-    padding:4;
-}
-.activeWindow { border:3px solid#aaa; }
-#taskbar
-{
-    position:absolute;
-    z-index:10000;
-    width:100%;
-    background:linear-gradient(#888,#333);
-    box-shadow:0px 1px 9px;
-    border:2px solid;
-    left:-2;
-}
-.taskbarIcon { width:50; height:40; text-shadow:1px 1px 3px#000; overflow:hidden; }
-.programActive,
-.taskbarIconActive         { background:linear-gradient(#ff8,#fff); }
-.taskbarIcon:hover         { background:linear-gradient(#fff,#44f); }
-#tray
-{
-    margin:2;
-    padding-left:9;
-    padding-right:9;
-    color:#fff;
-    background:linear-gradient(#000,#333);
-    border:1px solid;
-    border-radius:6px;
-    text-shadow:1px 1px 3px#000;
-}
-.trayIcon       { padding:2; }
-.trayIcon:hover { background:#fff3; }
-.popup
-{
-    position:relative;
-    z-index:10000;
-    width:200;
-    padding:8;
-    white-space:normal;
-    text-align:center;
-    background:linear-gradient(#eee,#888);
-    box-shadow:9px 9px 19px;
-    border:2px solid;
+    display:inline-block;
+    width:40;
+    height:40;
+    font-size:28;
+    margin:3;
     border-radius:9px;
+    text-align:center;
 }
-.trophyIcon
+.songTimeDisplay
 {
-    padding:9;
-    font-size:40;
-    text-shadow:2px 2px 4px;
-    white-space:nowrap;
+    text-align:center;
+    white-space:pre;
 }
-#background
+.beatDisplay
 {
-    opacity:0;
-    position:absolute;
+    width:56;
+    height:56;
+    background:#0ff;
+    border:4px solid #000;
+    border-radius:50%;
+    margin:0;
+    overflow:hidden;
+    margin-left:6;
+    margin-right:6;
+}
+.beatDisplayMarker
+{
+    width:10;
+    height:10;
+    border:3px solid #000;
+    background:#222;
+    border-radius:50%;
+    position: relative;
+    left:22;
+    top:4;
+}
+.beatDisplaySpinner
+{
     width:100%;
     height:100%;
-    color:#0002;
-    font-family:impact;
-    font-size:30vw;
-    font-weight:900;
+}
+.watermark
+{
     position:absolute;
-}
-.program, #taskbar, .taskbarIcon, #background, #tray
-{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-}
-</style>
-<div id=background></div>
-<div id=desktop>
-<div id=taskbar>
-<div id=taskbarSpace style=flex:1></div>
-<div id=tray></div>
-</div>
-<div id=popups style=float:right></div>
-<div id=programsMenu style=position:absolute></div>
-<div id=menu></div>
-<iframe id=windowTemplate style=display:none>
-<style>
-:host
-{
-    visibility:hidden;
-    position:absolute;
-    background:#000;
-    box-shadow:5px 5px 9px;
-    border:3px solid#222;
-    border-radius:6px;
-    overflow:hidden;
-}
-input, button, span { margin:4; }
-textarea            { padding:9; }
-span                { white-space:nowrap; }
-.titlebar
-{
-    height:34;
-    font-size:24;
-    display:flex;
-    align-items:center;
-    white-space:nowrap;
-    background:linear-gradient(#ccc,#444);
-    border-bottom:3px solid;
-}
-.titlebarActive       { background:linear-gradient(#eee,#88f); }
-.titlebarActiveUser   { background:linear-gradient(#eee,#8f8); }
-.titlebarActiveSticky { background:linear-gradient(#eee,#f88); }
-.titlebarSticky       { background:linear-gradient(#ccc,#844); }
-#name                 { width:100%; overflow:hidden; cursor:grab; }
-#icon           
-{ 
-    display:inline;
-    text-shadow:1px 1px 3px#000;
-    margin-left:9;
-    margin-right:9;
+    bottom:8;
+    right:8;
+    font-size:16;
+    color:#fff5;
     pointer-events:none;
 }
-#frame
+.loadingMessage
 {
-    width:100%;
-    height:100%;
-    background:#fff;
-    border:none;
-    visibility:hidden;
-}
-#codeText
-{
-    height:199;
+    font-size:4em;
     background:#000;
-    color:#fff;
-}
-#errorText
-{
-    background:#000;
-    color:#f00;
-}
-#codeOptions
-{
-    background:#111;
-    color:#fff;
-    font-size:16;
-    overflow:auto;
-}
-#codeText, #errorText, #codeOptions
-{
+    z-index:100;
+    position:fixed;
+    left:0;
+    top:300;
     width:100%;
-    resize:none;
-    outline:0;
-    border-top:2px solid;
+    padding:20px;
+    text-align:center;
+    outline:9px solid #222;
+    display:none;
 }
-</style>
-</iframe>
+.instrumentButton0 { background:hsl(0,60%,60%); }
+.instrumentButton1 { background:hsl(90,60%,60%); }
+.instrumentButton2 { background:hsl(180,60%,60%); }
+.instrumentButton3 { background:hsl(270,60%,60%); }
+.menu
+{
+    margin:8;
+    padding:8;
+    height:100;
+    background:#000;
+    border:1px solid #fff;
+    border-radius:2px;
+    display:none;
+    overflow-x:auto;
+}
+.level:hover
+{
+    color:#000;
+    background:#2c2;
+}
+</style><body>
+<script src=JSONCrush.js?3></script>
+<script src=levelData.js?3></script>
 <script>
 
-'use strict';
+'use strict'
 
-///////////////////////////////////////////////////////////////////////////////
-// OS13k Debug (remove from minified)
-
-let OS13kVersion = 81;
-{
-    // version check, clear local storage if older
-    if (localStorage.OS13k && localStorage.OS13kVersion != OS13kVersion)
-    {
-        alert('OS13k version out of date! System reset in 3, 2, 1...');
-
-        // save what we can
-        let save = 0;//localStorage.OS13kVersion >= 70 ? localStorage.OS13k : 0;
-        localStorage.clear();
-        if (save)
-          localStorage.OS13k = save;
-    }
-
-    localStorage.OS13kVersion = OS13kVersion;
-
-    // load default programs if none found
-    if (window.programStubs === undefined)
-    {
-        alert('No programs found!')
-        var sticky = 2**0, reload = 2**1, awake = 2**2, full = 2**3, resize= 2**4, code = 2**5,
-        closeAll = 2**7, newUserProgram = 2**8, deleteUserPrograms = 2**9,
-        defaultFlags = full|reload|resize, defaultWidth = 720, defaultHeight = 405,
-        programStubs = [[,'❌',,,closeAll,'Close All']];
-    }
-} // debug stuff
-
-///////////////////////////////////////////////////////////////////////////////
-// Minification Stuff
-
-{
 // ==ClosureCompiler==
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // @language_out ECMASCRIPT_2019
-// @js_externs OS13k.Clamp, OS13k.Percent, OS13k.Lerp, OS13k.Hash
-// @js_externs OS13k.Random, OS13k.randomSeed, iframeContent.OS13kReload
-// @js_externs OS13k.Trophies, OS13k.Trophy, OS13k.GetTrophy
-// @js_externs OS13k.PlaySamples, OS13k.Note, OS13k.PianoKey
-// @js_externs OS13k.PlayMusic, OS13k.GetAnalyser, OS13k.GetAnalyserData
-// @js_externs OS13k.Speak, OS13k.StopSpeech, OS13k.PlaySeed
-// @js_externs OS13k.SeedSamples, OS13k.SeedParameters
-// @js_externs OS13k.Settings, OS13k.SaveSettings, OS13k.Input
-// @js_externs OS13k.CreateShader, OS13k.RenderShader
-// @js_externs OS13k.KeyDirection, OS13k.StripHTML, OS13k.StringToMusic, OS13k.Popup
-// @js_externs localStorage.OS13k, localStorage.OS13kVersion, OS13k, source.gain
-// @js_externs iframeContent, iframeContent.OS13k, iframeContent.OS13kWindow
-// @js_externs iframeContent.zzfx, zzfx, zzfxG, zzfxM
-// @js_externs settings.v, settings.m, settings.s, settings.p, settings.o
-// @js_externs settings.c, settings.d, settings.t, settings.f
-// @js_externs window.document.OS13kInput.x
-// @js_externs window.document.OS13kInput.y
-// @js_externs window.document.OS13kInput.keypress
-// @js_externs window.document.OS13kInput.mousepress
-// @js_externs window.document.OS13kInput.keydown
-// @js_externs window.document.OS13kInput.mousedown
-// @js_externs window.document.OS13kInput.mousex
-// @js_externs window.document.OS13kInput.mousey
-// @output_file_name OS13k.min.js
+// @output_file_name MusicAutomata.min.js
 // ==/ClosureCompiler==
 
-// Minification Steps
-// 1. Remove touch support and optional code
-// 2. Paste programs directly below here
-// 3. Remove optional stuff listed below
-// 4. Verify that it works the same
-// 5. HTML Minifier http://minifycode.com/html-minifier/
-// 6. Google Closure https://closure-compiler.appspot.com/home
-// 7. JavaScript Minifier https://javascript-minifier.com/
-// 8. Zip
-// 9. Advzip "advzip -z -4 -i 1000 OS13kMin.zip"
-
-// Rework stuff marked OPTIONAL for final build
-// - all files must be packed together to save space
-// - smaller webgl names r10215
-// - move css into code, get rid of names
-// - remove system trophies
-// - remove console messages
-
-} // Minification Stuff
+const debug = 0;
+const saveInstruments = 1;
 
 ///////////////////////////////////////////////////////////////////////////////
-// OS13k Client Interface
+// Helper Functions 
 
-class _OS13k
+function Clamp   (a, max=1, min=0)       { return a < min ? min : a > max ? max : a; }
+function Percent (v, a, b)               { return b-a ? Clamp((v-a)/(b-a)) : 0; }
+function Lerp    (p, a, b)               { return a + Clamp(p) * (b-a); }
+function HSLA    (h=0, s=0, l=0, a=1)    { return `hsla(${h*360},${s*100}%,${l*100}%,${a})`; }
+
+function NoteFrequency(offset, root=440) { return root * 2 ** (offset / 12); }
+function NoteName(n=0) { n+=keyOffset; return "CCDDEFFGGAAB"[n%12|0]  + ('02579'.indexOf(n%12-1) < 0 ? '' : '#') + (n < 12 ? '' : n/12|0); }
+function AttenuationName(a=0) { return (10-a || '') + '0%'; }
+function JSONStringifyNoNull(o)          { return JSON.stringify(o).replace(/null/g, ''); }
+
+function GetDirectionXY(direction)
 {
-
-/////////////////////////////////////////////////////////////////////////////
-// OS13k Math
-
-    Clamp   (a, max=1, min=0) { return a < min ? min : a > max ? max : a; }
-    Percent (v, a, b)         { return b-a ? OS13k.Clamp((v-a)/(b-a)) : 0; }
-    Lerp    (p, a, b)         { return a + OS13k.Clamp(p) * (b-a); }
-
-    // convert string to hash value like Java's hashCode()
-    Hash    (s)               { return [...s].reduce((a,c)=> c.charCodeAt()+a*31|0, 0); }
-    
-    // seeded random numbers - Xorshift
-    Random(max=1, min=0)
+    const side = direction & 2 ? 1 : -1;
+    return [direction & 1 ? -side : 0, direction & 1 ? 0 : side];
+}
+ 
+///////////////////////////////////////////////////////////////////////////////
+// Sound Object
+ 
+class Sound
+{
+    Play(instrument, key, gain, pan)
     {
-        OS13k.randomSeed ^= OS13k.randomSeed << 13;
-        OS13k.randomSeed ^= OS13k.randomSeed >> 17; // note: >>> would use the full 32 bit range
-        return OS13k.Lerp(Math.abs(OS13k.randomSeed ^= OS13k.randomSeed << 5) % 1e9 / 1e9, min, max);
-    }
-
-/////////////////////////////////////////////////////////////////////////////
-// OS13k Trophies
-    
-    // award player with trophy
-    Trophy(icon, game, name, message)
-    {
-        // replace commas and apostrophes
-        let key, Clean = string=> OS13k.StripHTML(string||'', maxWordLength).replace(/[,`]/g, ''),
-        
-            // init trophy data
-            trophyData = 
-            [
-                icon = Clean(icon), 
-                game = Clean(game), 
-                name = Clean(name),
-                message = Clean(message),
-                key = icon + ',' + game + ',' + name
-            ],
-
-            // find in trophy list
-            i = trophies.findIndex(e=> e[4] == key);
-
-        // skip if same message
-        if (i >=0 && trophies[i][3] == message) return;
-        
-        // add or update trophy list
-        i < 0 ? trophies.unshift( trophyData ) : trophies[i] = trophyData;
-
-        // save trophy
-        localStorage['OS13kTrophy,' + key] = message;
-
-        // use game as name if there is no name
-        name || (name = game, game = '');
-
-        // add trophy popup
-        OS13k.Popup(`<div class=trophyIcon>${   // popup html
-                icon || '🏆' }</div><div><b>${ // icon
-                name }</b><br><i>${            // name
-                game }</i></div>` +            // game
-                message,                       // message
-            name + '. ' + game,                // speak
-            'ja');                             // language 
-
-        // save and reload trophy window
-        OS13k.Save(trophyTrayIcon.program.window && trophyTrayIcon.program.window.Reload());
-    }
-    
-    // get message, 0 if no trophy
-    GetTrophy(game, name) 
-    { 
-        let trophy = trophies.find(e=> e[1]==game & e[2]==name); 
-        return trophy ? trophy[3] : 0; 
-    }
-    
-    // get trophy list
-    Trophies() { return trophies; }
-    
-/////////////////////////////////////////////////////////////////////////////
-// OS13k Audio
-
-    // play seed sound
-    PlaySeed(seed, lengthScale=1, volume=1, randomness=.05, frequency, isMusic)
-    { return OS13k.PlaySamples(OS13k.SeedSamples(...arguments), isMusic); }
-    
-    // get seed samples
-    SeedSamples(...parameters)
-    { return zzfxG(...OS13k.SeedParameters(...parameters)); }
-    
-    // get zzfx sound parameters from seed
-    SeedParameters(seed, lengthScale=1, volume=1, randomness=.05, frequency)
-    {
-        // use default params if no seed
-        if (!seed)
-            return [volume, randomness, frequency || OS13k.Note(-21), 0, lengthScale];
-
-        // check if seed is a number
-        if (parseFloat(seed = (seed+'').trim()) != seed)
+        if (this.source && this.instrument == instrument && this.key == key)
         {
-            // seed is not number, check if zzfx string and apply overrides
-            if (seed.slice(0,9) == 'zzfx(...[')
-                return seed.slice(9).split(',').map((p,i)=>
-                    !i ? volume :
-                    i==1 ? randomness :
-                    i==2 && frequency ? frequency :
-                    p.length ? parseFloat(p) : undefined);
-            
-            // use hash string as seed 
-            seed = OS13k.Hash(seed);
+            // only change gain if same instrument & note
+            this.gain.gain.value = gain;
+            return;
         }
 
-        // set seed
-        OS13k.randomSeed = seed;
-     
-        // helper functions
-        let R=()=>OS13k.Random(), C=()=>R()<.5?R():0, S=e=>C()?e:-e,
-        
-            // randomize sound length
-            attack  = R()**3/4*lengthScale,
-            decay   = R()**3/4*lengthScale,
-            sustain = R()**3/4*lengthScale,
-            release = R()**3/4*lengthScale,
-            length  = attack + decay + sustain + release,
-            f = R()**2*2e3;
-        
-        // generate random sound
-        return [
-           volume,           // volume
-           randomness,       // randomness
-           frequency || f,   // frequency
-           attack,           // attack
-           sustain,          // sustain
-           release,          // release
-           R()*5|0,          // shape
-           R()**2*3,         // shapeCurve
-           C()**3*S(99),     // slide
-           C()**3*S(99),     // deltaSlide
-           C()**2*S(1e3),    // pitchJump
-           R()**2 * length,  // pitchJumpTime
-           C() * length,     // repeatTime
-           C()**4,           // noise
-           C()**3*S(9),      // modulation
-           C()**4,           // bitCrush
-           C()**3/2,         // delay
-           1 - C(),          // sustain volume
-           decay,            // decay
-           C()**4            // tremolo
-        ];
-    }
-    
-    // play audio sample data
-    PlaySamples(samples, isMusic, sampleRate=defaultSampleRate)
-    { return OS13k.PlaySamplesArray([samples], isMusic, sampleRate); }
-    
-    // play array of audio sample data, connect analyser to gain if isMusic > 1 for instruments
-    PlaySamplesArray(samplesArray, isMusic, sampleRate=defaultSampleRate)
-    {
-        // create buffer and source
-        let buffer = audioContext.createBuffer(samplesArray.length, samplesArray[0].length, sampleRate),
-            source = audioContext.createBufferSource();
+        // stop old sound
+        this.Stop();
 
-        // copy samples to buffer and play
-        samplesArray.map((d,i)=> buffer.getChannelData(i).set(d));
-        source.buffer = buffer;
-
-        // create custom gain node
-        let sourceOut = source;
-        source.gain || source.connect(sourceOut = source.gain = audioContext.createGain());
-        sourceOut.connect(isMusic ? gainMusic : gain);
-        
-        // connect analyser and start
-        isMusic && (isMusic > 1 ? sourceOut : source).connect(musicAnalyser);
-        source.start();
-        return source;
-    }
-    
-    PlayMusic(song) 
-    { 
-        // catch errors when playing music
-        try { return OS13k.PlaySamplesArray(zzfxM(...song), 1); }
-        catch(e) { console.log(e); }
-    }
-    
-    GetAnalyser() { return analyserCanvas; }
-    GetAnalyserData(e) { return analyserData[e] ? analyserData[e] : 0; }
-    
-    // convert a string to a music data array, will throw error if invalid
-    StringToMusic(string, validate)
-    {
-        // get rid of metadata
-        string = string.replace(/{[^}]+}/g, '');
-
-        // check if safe to eval and get music data
-        let music = string.replace(/null|[[\],\de\. -]/g, '') || eval(string.replace(/null/g, undefined)); 
-
-        // try to generate music to check if valid
-        validate && zzfxM(...music, 1);
-        return music;
-    }
-    
-    // get frequency of a note on a musical scale
-    Note(semitoneOffset=0, rootNoteFrequency=440)
-    { return rootNoteFrequency * 2**(semitoneOffset/12); }
-
-    PianoKey(event)
-    {
-        let k = 'ZSXDCVGBHNJM,L.;/Q2W3ER5T6Y7UI9O0P[=]'      // map key to note
-            .indexOf(event.key && event.key.toUpperCase());  // find the key and check for invalid key
-        return k - 5 * (k > 16);                             // offset second row of keys
-    }
-
-    // speak text
-    Speak(text, language='en', stopSpeech, volume=1, rate=1, pitch=1)
-    {
-        // common languages (not supported by all browsers)
-        // it - italian,  fr - french, de - german,  es - spanish, pl - polish
-        // ja - japanese, hi - hindi,  ru - russian, zh - chinese, ko - korean
-    
-        // set utterance parameters
-        let utterance = new SpeechSynthesisUtterance(text);
-        utterance.volume = volume * gain.gain.value * 2;
-        utterance.rate = rate;
-        utterance.pitch = pitch;
-        utterance.lang = language;
-
-        // stop speech if set
-        stopSpeech && StopSpeech();
-
-        // play speech if allowed
-        settings.s & finishedStartup && speechSynthesis && speechSynthesis.speak(utterance);
-    }
-
-/////////////////////////////////////////////////////////////////////////////
-// OS13k Shaders
-
-    // create pixel shader
-    CreateShader(canvas, code)
-    {
-        // get webgl context
-        const x = canvas.getContext('webgl2'),
-        
-            // use hardcoded glsl constants to save space
-            xVERTEX_SHADER       = 35633,
-            xARRAY_BUFFER        = 34962,
-            xSTATIC_DRAW         = 35044,
-            xBYTE                = 5120,
-            xFRAGMENT_SHADER     = 35632,
-            xCOMPILE_STATUS      = 35713,
-            xTEXTURE_2D          = 3553,
-            xUNPACK_FLIP_Y_WEBGL = 37440,
-            xTEXTURE_MIN_FILTER  = 10241,
-            xLINEAR              = 9729;
-
-        if (!x)
-            return;
-
-        // create a simple pass through vertex shader
-        let vertexShader = x.createShader(xVERTEX_SHADER);
-        x.shaderSource(vertexShader, '#version 300 es\nin vec4 c;void main(){gl_Position=c;}');
-        x.compileShader(vertexShader);
-        
-        // check vertex shader for errors
-        //if (!x.getShaderParameter(vertexShader, x.COMPILE_STATUS))
-        //    throw x.getShaderInfoLog(vertexShader);
-        
-        // create shadertoy compatible pixel shader
-        let pixelShader = x.createShader(xFRAGMENT_SHADER);
-        let shaderProgramCode = 
-            `#version 300 es\n` +
-            `precision mediump float;` +
-            `uniform float iTime;` +
-            `uniform int iFrame;` +
-            `uniform vec4 iMouse;` +
-            `uniform vec3 iResolution;` +
-            `uniform sampler2D iChannel0;` +
-            `out vec4 OS13kcolor;\n` +
-            `${code}` +
-            `\nvoid main()` +
-            `{mainImage(OS13kcolor,gl_FragCoord.xy);` +
-            `OS13kcolor.a=1.;}`;
-        x.shaderSource(pixelShader, shaderProgramCode);
-        x.compileShader(pixelShader);
-
-        // check pixel shader for errors
-        if (!x.getShaderParameter(pixelShader, xCOMPILE_STATUS))
-            throw x.getShaderInfoLog(pixelShader);
-        
-        // create vertex buffer that is a big triangle
-        x.bindBuffer(xARRAY_BUFFER, x.createBuffer());
-        x.bufferData(xARRAY_BUFFER, new Int8Array([-3,1,1,-3,1,1]), xSTATIC_DRAW);
-        x.enableVertexAttribArray(0);
-        x.vertexAttribPointer(0, 2, xBYTE, 0, 0, 0);
-
-        // create texture
-        x.bindTexture(xTEXTURE_2D, x.createTexture());
-        x.texParameteri(xTEXTURE_2D, xTEXTURE_MIN_FILTER, xLINEAR);
-        x.pixelStorei(xUNPACK_FLIP_Y_WEBGL, 1);
-        
-        // create shader program
-        let shaderProgram = x.createProgram();
-        x.attachShader(shaderProgram, vertexShader);
-        x.attachShader(shaderProgram, pixelShader);
-        x.linkProgram(shaderProgram);
-        x.useProgram(shaderProgram);
-        return shaderProgram;
-    }
-    
-    // render a pixel shader
-    RenderShader(canvas, shaderProgram, time, frame, X, Y, Z, W)
-    {
-        // get webgl context
-        const x = canvas.getContext('webgl2'),
-        
-            // use hardcoded glsl constants to save space
-            xRGBA          = 6408,
-            xUNSIGNED_BYTE = 5121,
-            xTRIANGLE_FAN  = 6,
-            xTEXTURE_2D    = 3553;
-        
-        if (!x)
-            return;
-
-        // set uniforms
-        x.uniform3f(x.getUniformLocation(shaderProgram, 'iResolution'), canvas.width, canvas.height, 1);
-        x.uniform1f(x.getUniformLocation(shaderProgram, 'iTime'), time);
-        x.uniform1f(x.getUniformLocation(shaderProgram, 'iFrame'), frame);
-        x.uniform1i(x.getUniformLocation(shaderProgram, 'iChannel0'), 0);
-        x.uniform4f(x.getUniformLocation(shaderProgram, 'iMouse'), X, Y, Z, W);
-        
-        // set vieport and render shader
-        x.viewport(0, 0, canvas.width, canvas.height);
-        x.drawArrays(xTRIANGLE_FAN, 0, 3);
-        
-        // set texture to newly rendered image
-        x.texImage2D(xTEXTURE_2D, 0, xRGBA, xRGBA, xUNSIGNED_BYTE, canvas);
-    }
-    
-/////////////////////////////////////////////////////////////////////////////
-// OS13k Text
-    
-    // remove html tags from a string and clamp length
-    StripHTML(string, maxLength)
-    { return (string+'').substring(0, maxLength || string.length).replace(/<.*>/g, ''); }
-
-    Popup(html, speak, language)
-    {
-        // create popup
-        let popup = popups.appendChild(document.createElement('div'));
-        popup.className = 'popup';
-        popup.innerHTML = '<div style=pointer-events:none>' + html;
-        popup.speak = speak;
-        popup.speakLanguage = language;
-        popup.style.visibility = 'hidden';
-    }
-
-/////////////////////////////////////////////////////////////////////////////
-// OS13k Input
-
-    // create and update an input object for keyboard and mouse control
-    Input(inputWindow)
-    {
-        let inputCopy, Pressed = (k)=> inputCopy.keydown[k] || inputCopy.keypress[k];
-        if (inputWindow.document.OS13kInput)
+        // cache sound sample
+        let soundSamples = soundCache[[this.instrument = instrument, this.key = key]];
+        if (!soundSamples)
         {
-            // make copy of last frame input
-            inputCopy = {...inputWindow.document.OS13kInput};
-
-            // get direction from wasd or arrow keys
-            inputCopy.x = inputCopy.y = 0;
-            Pressed(87) | Pressed(38) && ++inputCopy.y; // up
-            Pressed(83) | Pressed(40) && --inputCopy.y; // down
-            Pressed(68) | Pressed(39) && ++inputCopy.x; // right
-            Pressed(65) | Pressed(37) && --inputCopy.x; // left
+            const instrumentParameters = [...instruments[instrument]];
+            instrumentParameters[2] = NoteFrequency(key + keyOffset, instrumentParameters[2]); 
+            soundSamples = soundCache[[instrument, key]] = zzfxG(...instrumentParameters);
         }
-
-        // create or clear input object
-        let input = inputWindow.document.OS13kInput =
-        {
-            x: 0, y: 0,
-            keypress: [], mousepress: [],
-            keydown:   inputWindow.document.OS13kInput ? inputWindow.document.OS13kInput.keydown : [],
-            mousedown: inputWindow.document.OS13kInput ? inputWindow.document.OS13kInput.mousedown : [],
-            mousex:    inputWindow.document.OS13kInput ? inputWindow.document.OS13kInput.mousex : 0,
-            mousey:    inputWindow.document.OS13kInput ? inputWindow.document.OS13kInput.mousey : 0,
-            wheel : 0
-        };
-
-        // input functions
-        inputWindow.onkeydown   = e=> e.repeat || (input.keydown[e.keyCode] = input.keypress[e.keyCode] = 1);
-        inputWindow.onkeyup     = e=> input.keydown[e.keyCode] = 0;
-        inputWindow.onmousedown = e=> (input.mousedown[e.button] = input.mousepress[e.button] = 1, e.button != 1);
-        inputWindow.onmouseup   = e=> input.mousedown[e.button] = 0;
-        inputWindow.onmousemove = e=> (input.mousex = e.x, input.mousey = e.y);
-        inputWindow.onblur      = e=> (input.keydown = [], input.mousedown = []);
-        inputWindow.onwheel     = e=> input.wheel = e.deltaY;
-
-        // return last frame input
-        return inputCopy || input;
+        
+        // play sound and set gain and pan
+        (this.source = zzfxS(...soundSamples))
+            .connect(this.gain = zzfxX.createGain())
+            .connect(this.pan = zzfxX.createStereoPanner())
+            .connect(volumeGain);
+        this.SetGain(gain);
+        this.SetPan(pan);
+        this.source.start();
     }
-    
-/////////////////////////////////////////////////////////////////////////////
-// OS13k Seralization
-    
-    Save()
+
+    SetGain(gain) { this.source && (this.gain.gain.value = gain); }
+    SetPan(pan)   { this.source && (this.pan.pan.value = pan); }
+
+    Stop(delaySeconds = .02)
     {
-        // save data if finished startup
-        finishedStartup && (localStorage.OS13k = JSON.stringify
-        ([
-            trophies,
-            settings,
-            programInfos,
-            startProgramId,
-            nextUserProgramId
-        ]));
-        
-        // volume
-        gain.gain.value = settings.v;
-        gainMusic.gain.value = settings.m;
-           
-        // stop speech if not enabled or sound muted
-        settings.s && settings.v || StopSpeech();
-        
-        // background
-        background.style.background = `linear-gradient(${settings.c},${settings.d})`;
-        background.innerText = settings.t;
-        
-        // filter
-        background.style.filter = desktop.style.filter = settings.f;
+        const source = this.source;
+        if (!source)
+            return;
+
+        // unset and ramp off sound
+        this.source = 0;
+        this.gain.gain.linearRampToValueAtTime(this.gain.gain.value, zzfxX.currentTime);
+        this.gain.gain.linearRampToValueAtTime(0, zzfxX.currentTime + delaySeconds);
+        setTimeout(e=>source.stop(), delaySeconds*1e3);
     }
-    
-    SaveSettings(volume, musicVolume, speech, popups, systemSounds, color1, color2, text, filter)
-    {
-        // set settings and save
-        OS13k.Save(settings = {
-            v:gain.gain.value = volume,
-            m:gainMusic.gain.value = musicVolume,
-            s:speech,
-            p:popups,
-            o:systemSounds,
-            c:color1,
-            d:color2,
-            t:text,
-            f:filter
-        });
-    }
-    
-    Settings() { return settings; }
-}; // _OS13k
-var OS13k = new _OS13k;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
-// OS13k System Functions and Consts - handles non client facing features of OS13k
+// Cell Object
 
-const taskbarHeight = 44, titlebarHeight = 37, programHeight = 26, 
-      startOpenOffset = 99, popupTime = 3, defaultVolume = .3, 
-      maxWordLength = 32, defaultSampleRate = 44100, analyserWaitTime = 1e4,
+const CELL_TYPE_BLOCK      = 0;
+const CELL_TYPE_POWER      = 1;
+const CELL_TYPE_NOTE       = 2;
+const CELL_TYPE_CONTROL    = 3;
+const CELL_TYPE_KILL       = 4;
+const CELL_TYPE_COPY       = 5;
+const CELL_TYPE_ROTATE     = 6;
+const CELL_TYPE_POWER_LINE = 7;
+const CELL_TYPE_COUNT      = 8;
 
-    // system sounds
-    soundOpen       = 87,
-    soundClose      = 92,
-    soundGrabStart  = 45,
-    soundGrabEnd    = 66,
-    soundMenu       = -9,
-    soundActive     = 66,
-    soundShrink     = 75,
-    soundGrow       = 61,
-    soundFullScreen = -9,
-    soundHelp       = 22,
-    soundCode       = 16,
-    soundReload     = -5,
-    soundProgram    = 6,
-    soundSave       = 6;
+const cellTypeInfo = 
+[
+//   name        data  power
+    ['Block',     4,    0],
+    ['Power',     5,    1],
+    ['Play Note', 4,    1],
+    ['Control',   4,    0],
+    ['Remove',    1,    1],
+    ['Copy',      5,    1],
+    ['Rotate',    2,    1],
+    ['Power Line',5,    1]
+];
 
-///////////////////////////////////////////////////////////////////////////////
-// Global Variables
+const CELL_CONTROL_SEMI_TONE    = 0;
+const CELL_CONTROL_ATTENUATE_10 = 1;
+const CELL_CONTROL_OCTAVE       = 2;
+const CELL_CONTROL_ATTENUATE_50 = 3;
+const CELL_MAX_DATA_COUNT       = 5;
 
-let grabWindow, grabOffsetX, grabOffsetY, finishedStartup, nextUserProgramId = 0,
-    activeWindow, activeProgram, activeTaskbarIcon, loadIcon, allCodeIsSafe,
-    analyserCanvas = document.createElement('canvas'), analyserData = [], lastMusicTime = -analyserWaitTime,
-    lastActiveFrame, topZ = 0, loading = 0, hadInput = 0,
-    windowOpenX = startOpenOffset, windowOpenY = startOpenOffset + taskbarHeight,
-    startProgram, startProgramId, programInfos = [], trophies = [],
-    trophyTrayIcon, settingsTrayIcon, clockTrayIcon, musicTrayIcon, stickyNoteTrayIcon,
-
-    // volume, music, speech, popups, color1, color2, text, filter
-    settings = {v:.3, m:.3, s:1, p:1, o:1, c:'#222233', d:'#332222', t:'OS13k', f:''},
-
-    // init web audio
-    audioContext = new (window.AudioContext||webkitAudioContext),
-    gain = audioContext.createGain(), 
-    gainMusic = audioContext.createGain(), 
-    musicAnalyser = audioContext.createAnalyser(),
-
-
-// main update loop
-Update = time=>
+function CellDataCount(type)
 {
-    // request new animation frame
-    requestAnimationFrame(Update);
-    
-    // update startup routine
-    loading | finishedStartup || OS13k.Save(
+    return cellTypeInfo[type][1];
+}
+function UsesPower(type)
+{
+    return cellTypeInfo[type][2];
+}
 
-        // create analyser canvas
-        musicTrayIcon.prepend(analyserCanvas),
-        analyserCanvas.style = 'width:16;height:16;margin:2;pointer-events:none;display:none',
-
-        // load start program
-        self == top && startProgram && startProgram.Open(), finishedStartup = 1);
-        
-    // check if iframe became new active element
-    let activeElement = document.activeElement,
-        activeFrame = activeElement.shadowRoot && activeElement.shadowRoot.activeElement == activeElement.iframe ? 
-        activeElement.iframe : 0;
-            
-    // if a new frame took focus, set window active and that we had input
-    activeFrame && lastActiveFrame != activeFrame && activeElement.SetActive(hadInput = 1);
-        
-    // set last active frame
-    lastActiveFrame = activeFrame;
-
-    // fade in desktop after loading, convert opacity to number
-    background.style.opacity = document.body.style.opacity = OS13k.Clamp(!loading*.02 + document.body.style.opacity*1);
-
-    // update trophy count
-    let trophyString = trophies.length + '🏆';
-    trophyString != trophyTrayIcon.innerHTML && (trophyTrayIcon.innerHTML = trophyString);
-    
-    // update time
-    clockTrayIcon.title = Date();
-    let timeString = clockTrayIcon.title.replace(/.* (\d+):(\d+).*/, (a,b,c)=> (b%12||12)+':'+c);
-    timeString != clockTrayIcon.innerHTML && (clockTrayIcon.innerHTML = timeString);
-    
-    // show popups after startup is finished and there was input
-    if (!finishedStartup | !hadInput) return;
-    
-    // get analyser data
-    let frequencyData = new Uint8Array(musicAnalyser.fftSize = 512),
-        context = analyserCanvas.getContext('2d');
-    musicAnalyser.getByteFrequencyData(frequencyData);
-    analyserCanvas.width = analyserCanvas.height = 32;
-
-    // render analyser
-    for(let i = 0; i < 32; )
+class Cell
+{
+    constructor(x, y, type = 0, data = 0)
     {
-        // get frequency band volume and adjust for loudness
-        let volume = (frequencyData[i+3] / 255)**3 * (1 + Math.log10((i+3) * defaultSampleRate / 1024 ));
+        this.SetXY(x, y);
+        this.type = type; 
+        this.data = data;
+        this.angle = 0;
+        this.updateCount = 0;
+        this.Reset();
+    }
 
-        // draw loudness bar
-        context.fillStyle = `hsl(${-99-59*volume} 99%50%)`;
-        context.fillRect(i, 31, 1, -7*volume);
-        
-        // set anaylzer data, normalize between 0-1
-        analyserData[i++] = OS13k.Clamp(volume / 5);
+    Reset()
+    {
+        this.powered = this.type == CELL_TYPE_POWER;
+        this.key = this.attenuation = 0;
+        this.spawnFrame = this.notePowerFrame = this.moveFrame = -1;
+    }
 
-        // save how long there has been no music
-        lastMusicTime = volume ? time : lastMusicTime;
+    SetXY(x, y)
+    {
+        this.lastX = this.x = x;
+        this.lastY = this.y = y;
     }
     
-    // set analyser visibility
-    analyserCanvas.style.display = time - lastMusicTime < analyserWaitTime ? '' : 'none';
-    
-    // update popups, use copy to prevent skipping if removed
-    let offsetY = 0;
-    [...popups.children].map((popup,i)=>
+    Destroy()
     {
-        // speak popup
-        popup.speak && OS13k.Speak(popup.speak, popup.speakLanguage);
-        popup.speak = 0;
-        
-        if (!settings.p)
-            popups.removeChild(popup);
-        else if (!document.fullscreenElement)
+        this.sound && this.sound.Stop();
+        SetCellObject(this.x, this.y);
+    }
+    
+    PlaySound(force)
+    {
+        if (this.type != CELL_TYPE_NOTE && !force)
+            return;
+
+        if (++frameSoundCount > 8) // limit max sounds per frame of music
+            return;
+
+        if (simulate)
+            simulatePlayEvents.push([this, this.key, this.attenuation]);
+        else
         {
-            // move popup up, set to bottom if it was invisible
-            let y = popup.style.visibility ? innerHeight : parseInt(popup.style.top) + offsetY - 9;
-            popup.style.visibility = '';
-            
-            if (y < taskbarHeight)
+            const gain = 1 - this.attenuation/10;
+            const pan = this.x/(cellsWidth-1)*2-1;
+            if (!this.sound)
+                this.sound = new Sound();
+            this.sound.Play(this.type == CELL_TYPE_NOTE ? this.data : 0, this.key, gain, pan);
+            auditionMode && this.sound.Stop(.5);
+        }
+    }
+
+    StopSound()
+    {
+        if (simulate)
+            simulateStopEvents.push(this);
+        else
+            this.sound && this.sound.Stop();
+    }
+
+    Audition()
+    {
+        // if control, play attached notes or sound instrument 1 if no attached
+        // else play any powred notes (reset and se power)
+
+        frameSoundCount = 0;
+        //this.powered = 0;
+        cellObjects.map(c=>c&&c.Reset());
+        cellObjects.map(c=>c&&c.UpdatePowerPre());
+        this.SetPowered();
+
+        auditionMode = 1;
+        this.UpdateControl();
+        auditionMode = 0;
+        cellObjects.map(c=>c&&c.UpdateControl());
+
+        auditionMode = 1;
+        cellObjects.map(c=>c&&c.UpdateNotes());
+
+        // force play control notes if no sound
+        this.type == CELL_TYPE_CONTROL && !frameSoundCount && this.PlaySound(1);
+
+        auditionMode = 0;
+    }
+    
+    BuildUpdateList()
+    {
+        this.lastX = this.x;
+        this.lastY = this.y;
+        ++this.updateCount;
+
+        this.moveDirectionList = [];
+        if (this.type == CELL_TYPE_POWER && this.powered && this.data < 4) // powered mover
+            updateListCells.push(this);
+        else if (this.type == CELL_TYPE_COPY) // copier
+        {
+            this.spawnActive = 0;
+            if (!this.powered)
+                this.preventSpawn = 0;
+            else
             {
-                // stop popup below taskbar
-                y = taskbarHeight;
-
-                // fade out popup if at top
-                if (!i && (popup.style.opacity = (popup.style.opacity || popupTime) - .01) < 0)
+                if (!this.preventSpawn)
                 {
-                    // remove when invisible and adjust for height
-                    offsetY += popup.getBoundingClientRect().height;
-                    popups.removeChild(popup);
+                    this.preventSpawn = 1;
+                    this.spawnActive = 1;
                 }
+                updateListCells.push(this);
             }
-
-            // set popup position
-            popup.style.top = y;
         }
-    });
-},
-
-RebuildMenu = ()=>
-{
-    // combine old stubs for reference to flat array
-    let oldStubs = [],
-        getOldStubs = stubs => stubs.map( stub => stub[7] ? getOldStubs(stub[7]) : oldStubs.push(stub));
-    getOldStubs(programStubs);
-
-    // remove user folder if it exists
-    loadIcon && loadIcon.windowOrMenu.lastChild && (
-      loadIcon.windowOrMenu.removeChild(loadIcon.windowOrMenu.lastChild), 
-      programStubs.pop());
-
-    CreateUserFolder(programStubs, ['😀',,,,,'User Programs'], '', oldStubs);
-    loadIcon.windowOrMenu.Rebuild();
-},
-
-CreateUserFolder = (parentStubs, stub, userFolderName, oldStubs)=>
-{
-    let folderStubs = 
-    [
-        ['📌',,,,newUserProgram,'New User Program',,,,userFolderName],
-        ['⚠️',,,,deleteUserPrograms, userFolderName ? `Delete User Folder ${userFolderName}` : 'Delete User Programs',,,,userFolderName]
-    ];
-    
-    // add subfolders
-    let folderNames = [];
-    userFolderName || programInfos.map(i=> i.code != undefined && i.userFolder && 
-        !folderNames.includes(i.userFolder) && 
-            CreateUserFolder(folderStubs,['📁',,,,,i.userFolder], i.userFolder, oldStubs, folderNames.push(i.userFolder)));
-       
-    // add stubs for programs in this folder
-   programInfos.map(i=> i.code != undefined && i.userFolder == userFolderName &&
-
-        // add stubs to folder, check if it already existed first
-        folderStubs.push(oldStubs.find(stub => stub[8] == i.id) ||
-            [i.icon,,i.width,i.height,defaultFlags|code,i.name,,,i.id,i.userFolder])
-        );
-
-    // set folder stubs and add to parent stubs
-    stub[7] = folderStubs;
-    parentStubs.push(stub);
-},
-
-// close all menus
-CloseMenus = ()=>
-{
-    // hide all menus
-    [...programsMenu.children].map(e=>e.style.visibility = menu.style.visibility = '');
-    
-    // unselect active program
-    activeProgram && (activeProgram.className = 'program');
-},
-
-// try to give trophy if key is valid
-CheckForTrophy = (key, keyParts = key ? key.split(',') : [])=>
-    keyParts.shift() == 'OS13kTrophy' &&
-        (keyParts.length = 3, OS13k.Trophy(...keyParts, localStorage[key])),
-
-// stop any current or queued speech
-StopSpeech = ()=> speechSynthesis && speechSynthesis.cancel(),
-
-// play system sound if enabled
-SystemSound = (...parameters)=> finishedStartup & hadInput & settings.o && OS13k.PlaySeed(...parameters);
-
-///////////////////////////////////////////////////////////////////////////////
-// OS13kProgramMenu - holds a list of programs
-
-class OS13kProgramMenu extends HTMLElement
-{
-	constructor(stubs, parentMenu)
-    {
-		super();
-        
-        // add to programs menu
-        this.className    = 'programMenu';
-        this.parentMenu   = parentMenu;
-        this.programStubs = stubs;
+        else if (this.type == CELL_TYPE_ROTATE && this.powered)
+        {
+            // update rotators
+            for(let i = 4; i--;)
+            {
+                const d = GetDirectionXY(i);
+                const cell = GetCell(this.x + d[0], this.y +d[1]);
+                cell && cell.Rotate(this.data ? -1 : 1);
+            }
+        }
     }
-    
-    Rebuild(y = 0)
+
+    AddToMoveList(direction)
     {
-        // add programs to menu
-        for(let stub of this.programStubs)
+        let i = this.moveDirectionList.indexOf(direction);
+        i < 0 && this.moveDirectionList.push(direction);
+    }   
+
+    MoveTestRecurse(direction, isSelf)
+    {
+        if (this.moveTestID == moveTestID)
+            return; // blocked by reursion, movement looped on self
+        this.moveTestID = moveTestID;
+
+        if (this.type == CELL_TYPE_BLOCK && (this.data > 2 || this.data == ((direction & 1) + 1)))
+            return; // soild wall or one way slider
+
+        if (this.type == CELL_TYPE_COPY && this.preventSpawn && !isSelf)
+            return; // can't push copier that is spawning
+
+        if (this.powered && this.type == CELL_TYPE_ROTATE)
+            return; // can't push powered rotator
+
+        if (this.powered && this.type == CELL_TYPE_KILL)
+            return true; // powered kill blocks can always be moved into
+          
+        if (this.powered && this.type == CELL_TYPE_POWER && this.data < 4)
         {
-            // create program and menu
-            let program = stub[-1] = stub[-1] || new OS13kProgram(...stub);  
-            program.programMenu = program.folder ? new OS13kProgramMenu(program.folder, this) : this;
+            // change direction to move direction
+            direction = this.data;
         }
 
-        // clear programs menu
-        this.innerHTML = '';
-        programsMenu.appendChild(this);
-  
-        // add programs to menu
-        this.programStubs.map(stub=> this.appendChild(stub[-1]));
-        
-        // set position
-        this.style.top  = y;
-        this.style.left = this.parentMenu && this.parentMenu.getBoundingClientRect().right;
+        // try to move
+        let directionXY = GetDirectionXY(direction);
+        let x = this.x + directionXY[0];
+        let y = this.y + directionXY[1];
+        if (!IsValidCell(x,y))
+            return;
 
-        // add folders after programs so width is correct
-        this.programStubs.map(stub=>
+        // get object at target pos
+        let target = GetCell(x, y);
+        if (target && target.type == CELL_TYPE_ROTATE && target.powered)
         {
-            // rebuild child program menus
-            stub[-1].programMenu != this && stub[-1].programMenu.Rebuild(y);
+            // rotate direction against powered rotators
+            direction = (direction + (target.data ? 3 : 1))%4;
+            directionXY = GetDirectionXY(direction);
+            x = this.x + directionXY[0];
+            y = this.y + directionXY[1];
+            if (!IsValidCell(x,y)) 
+                return;
             
-            // add program height as we move down list
-            y += programHeight;
-        });
+            // get new target
+            target = GetCell(x, y);
+        }
+
+        if (!target || target.MoveTestRecurse(direction))
+        {
+            // target could move, add to list
+            this.AddToMoveList(direction);
+            return true;
+        }
     }
 
-    SetActive()
+    MoveTest(direction)
     {
-        // close menus so they can reopen with this active
-        CloseMenus();
-        
-        // set parent active
-        this.parentMenu && this.parentMenu.SetActive();
-        
-        // make visible
-        this.style.visibility = 'visible';
+        moveTestID++; // prevent infinte recursion
+        return this.MoveTestRecurse(direction, 1);
     }
 
-    NewUserProgram(copyProgram, userFolder)
+    UpdateTestCopy()
     {
-        // create new program
-        let stub = copyProgram ? 
-            [copyProgram.icon,, copyProgram.width, copyProgram.height, defaultFlags|code, 
-                copyProgram.name + '+', , ,++nextUserProgramId, copyProgram.userFolder] :
-            ['✋',,,,defaultFlags|code,,,,++nextUserProgramId, userFolder],
-            program = stub[-1] = new OS13kProgram(...stub);
-        
-        // add to menu program infos
-        this.programStubs.push(stub);
+        const TestCopy = (direction)=>
+        {
+            let copyDirection = (direction + 2)%4;
+            const copyDirectionXY = GetDirectionXY(copyDirection);
+            const x = this.x + copyDirectionXY[0];
+            const y = this.y + copyDirectionXY[1];
 
-        // set code, copy if passed in, use default if none found
-        program.info.code = copyProgram ? (
-            program.info.scale = copyProgram.info.scale,
-            windowOpenX = copyProgram.info.x,
-            windowOpenY = copyProgram.info.y + titlebarHeight,
-            copyProgram.info.code)
-            :
-            '// Auto detects HTML, Dweet, or Shadertoy! You can drop files here too. ✌️😄\n' +
-            'for(x.fillRect(0,0,i=s=2e3,s);i--;x.globalAlpha=.1)\n' +
-            'x.clearRect((S(i)*1e9-t*i/9)%s,i*9%s,i%9,i%9)';
+            const copyObject = GetCell(x, y);
+            if (!copyObject)
+                return;
 
-        // mark code as safe, open, and show code, prevent iframe focus so code can be focused
-        program.Open(program.userProgram = allCodeIsSafe = 1);
-        program.window.ShowCode(1);
-        program.window.codeText.focus();
-        
-        // set menu and rebuild menus
-        RebuildMenu(program.programMenu = this);
-        return program;
+            if (copyObject.type == CELL_TYPE_KILL && copyObject.powered)
+                return; // can't copy powered kill block
+
+            if (copyObject.type == CELL_TYPE_BLOCK && copyObject.data == 3)
+                return; // cant copy solid wall
+
+            copyObject.copyFrame = frame;
+            unpowerSet.add(copyObject);
+            if (!this.MoveTest(direction))
+                return;
+
+            // add to copy list
+            this.copyList[copyDirection] = copyObject;
+        }
+
+        if (this.type != CELL_TYPE_COPY)
+            return;
+
+        // doesn't matter it has power (may be lose power from another coppier), but already set to spawn
+        this.copyList = [];
+
+        // dont upadate if prevent spawning unless this is the spawn frame
+        if (this.preventSpawn && !this.spawnActive)
+            return;
+
+        if (this.data < 4)
+            TestCopy(this.data); // single direction copy
+        else
+            for(let i=4;i--;) TestCopy(i);  // multi direction copy
     }
 
-} // OS13kProgramMenu
-customElements.define('m-', OS13kProgramMenu);
-
-///////////////////////////////////////////////////////////////////////////////
-// OS13kProgram - stores program info and handles loading from folders
-    
-class OS13kProgram extends HTMLElement
-{
-	constructor(icon='💠', src='', width=defaultWidth, height=defaultHeight, flags, name='', help='', folder, userProgramId, userFolder)
+    UpdateTestPowerMove()
     {
-        super();
+        if (this.type != CELL_TYPE_POWER || !this.powered)
+            return;
 
-        // split source by . to get extension
-        let srcParts = src.split('.');
-        
-        // split source by / to get filename to convert camel case to nice name
-        let srcCleanName = srcParts[0].split('/').pop().replace(/([a-z](?=[A-Z]))/g, '$1 ');
-        name = name || srcCleanName && (srcCleanName[0].toUpperCase() + srcCleanName.slice(1));
-        
-        // check for special extensions
-        this.isDweet =  srcParts[1] == 'dweet';
-        this.isShader = srcParts[1] == 'shader';
-
-        // set code only if help not shown or if has extension and not disabled
-        this.code = !(this.help = help) && (flags & code || ((this.isDweet | this.isShader) && flags == undefined));
-
-        // set icon data
-        this.className  = 'program';
-        this.src        = src;
-        this.width      = width;
-        this.height     = height;
-        this.folder     = folder;
-        this.id         = userProgramId || name;
-        this.userFolder = userFolder;
-        this.flags      = flags = flags || defaultFlags;
-
-        // set the program name and id
-        this.SetName(icon, name);
-        
-        // load saved program data
-        this.Load();
-        
-        // save special programs
-        name == 'Music Player' && musicTrayIcon.SetProgram(this);
-        name == 'Trophy Case'  && trophyTrayIcon.SetProgram(this);
-        name == 'Settings'     && settingsTrayIcon.SetProgram(this);
-        name == 'Sticky Note'  && stickyNoteTrayIcon.SetProgram(this);
-        name == 'Clock'        && clockTrayIcon.SetProgram(this);
-        
-        // open help if it has not been opened yet
-        name == 'Help' & this.info.open == undefined && (startProgram = this);
-        
-        // check if sticky open or start program
-        this.flags & sticky ? this.info.open && this.Open() : this.id == startProgramId && (startProgram = this);
+        // if it wasnt powered down by a copier
+        this.MoveTest(this.data);
     }
 
-    SetName(icon, name)
+    IncrementMoveTarget(direction)
     {
-        // icon
-        this.icon = icon;
-        this.innerHTML = '<span style="pointer-events:none;width:45;text-shadow:1px 1px 3px#000;text-align:center;overflow:hidden">' + icon;
-        
-        // name and folder
-        this.innerHTML += `<div style=flex:1;padding-right:9;pointer-events:none>${
-                this.name = OS13k.StripHTML(name) || 'User Program ' + this.id
-            }</div>` + (this.folder? '▶' : '');
+        // try to move
+        let directionXY = direction >= 0 ? GetDirectionXY(direction) : [0,0];
+        let x = this.x + directionXY[0];
+        let y = this.y + directionXY[1];
+        if (!IsValidCell(x,y))
+            return;
+
+        const target = GetCell(x, y);
+        if (target && target.type == CELL_TYPE_KILL)
+            return;
+
+        const v = cellMoveTargets[x+cellsWidth*y];
+        cellMoveTargets[x+cellsWidth*y] = v ? v + 1 : 1;
     }
-    
+
+    // for all objects
+    UpdateCollisionDetect()
+    {
+        if (this.type == CELL_TYPE_COPY && this.spawnActive)
+        {
+            // increment current pos and all move directions in move array
+            this.moveDirectionList.map(direction=>this.IncrementMoveTarget(direction));
+            this.IncrementMoveTarget(-1);
+            return;
+        }
+
+        if (this.moveDirectionList.length == 1)
+        {
+            this.IncrementMoveTarget(this.moveDirectionList[0])
+            return;
+        }
+
+        // no move direction, or more then 1
+        this.IncrementMoveTarget(-1);
+    }
+
+    // powered movers
     Move()
     {
-        // set container program menu active 
-        this.programMenu.SetActive();
-        
-        // set active
-        this.className = 'program programActive';
-        activeProgram !=this && SystemSound(soundProgram, 0);
-        activeProgram = this;
-    }
-    
-    Open()
-    {
-        if (this.window)
-        {        
-            // set window to be active and clamp
-            this.window.SetActive(1, 1);
-        }
-        else if (this.flags & newUserProgram)
+        if (this.moveFrame == frame)
+            return this.x != this.lastX || this.y != this.lastY; // return true if it moved
+        this.moveFrame = frame; // prevent another move
+
+        if (this.type == CELL_TYPE_KILL && this.powered)
+            return true; // kill blocks don't really move, they just eat everything
+
+        if (!this.moveDirectionList || this.moveDirectionList.length != 1)
+            return false; // collision: multiple move directions or no move
+
+        let directionXY = GetDirectionXY(this.moveDirectionList[0]);
+        let x = this.x + directionXY[0];
+        let y = this.y + directionXY[1];
+
+        if (cellMoveTargets[x +cellsWidth*y] > 1)
+            return false; // collision, move target is used
+
+        // get new target
+        let target = GetCell(x, y);
+        if (target && target.powered && target.type == CELL_TYPE_KILL)
         {
-            // create user program with default code
-            this.programMenu.NewUserProgram(undefined, this.userFolder);
-        }
-        else if (this.flags & deleteUserPrograms && confirm(this.name + '?'))
-        {
-            // close windows with matching folder
-            [...desktop.children].map(child=> child.Close && (this.userFolder ?
-                child.program.info.userFolder == this.userFolder : child.program.info.code != undefined) && child.Close());
-            
-            // remove user program infos
-            programInfos = programInfos.filter(info=> info.code == undefined || this.userFolder && info.userFolder != this.userFolder);
-            
-            // rebuild menu and play sound
-            RebuildMenu(OS13k.Save(SystemSound(soundClose, 4)));
-        }
-        else if (this.flags & closeAll)
-        {
-            // close all windows if no src or folder and play sound
-            [...desktop.children].map(child=> child.Close && child.Close());
-
-            // reset window open position
-            windowOpenX = startOpenOffset;
-            windowOpenY = startOpenOffset + taskbarHeight;
-
-            OS13k.Trophy('☕','OS13k','Coffee Is For Closers','Closed All');
-        }
-        else if (this.src || this.userProgram)
-        {
-            // get saved window position
-            let x = this.info.x, y = this.info.y;
-            
-            // update window open positions if no position was set
-            x || (
-                x = windowOpenX,
-                y = windowOpenY,
-                (windowOpenX += titlebarHeight) > 400 && (windowOpenX =  windowOpenY = startOpenOffset),
-                (windowOpenY += titlebarHeight) > 300 && (windowOpenY =  windowOpenY = startOpenOffset + taskbarHeight));
-            
-            // open window
-            this.window = new OS13kWindow(this, x, y);
-
-            // update info and save
-            this.Save();
-        }
-    }
-    
-    SetActive() { this.Open(); }
-    
-    Toggle() { activeWindow && activeWindow == this.window ? this.window.Close() : this.Open(); }
-    
-    Load() 
-    {
-        // load saved program info from local storage
-        let i = programInfos.findIndex(e=> e.id == this.id);
-        this.info = i < 0 ? {} : programInfos[i];
-
-        // check for user code
-        this.userProgram = this.info.code != undefined;
-    }
-
-    // save program info and reset settings when closed if non sticky
-    Save(open = 1)
-    {
-        // build save info
-        this.info = 
-        {
-            open,
-            id: this.id,
-            x: open | this.flags & sticky ? parseInt(this.window.style.left) : 0,
-            y: parseInt(this.window.style.top),
-            scale: open | this.flags & sticky ? this.window.scale : 1,
-
-            // user program info
-            name: this.name,
-            icon: this.icon,
-            width: this.width,
-            height: this.height,
-            code: this.info.code,
-            allowSleep: this.userProgram? this.window.allowSleep.checked : 1,
-            liveEdit: this.window.liveEdit.checked,
-            userFolder: this.userFolder
-        }
-        
-        // add to programs info and save
-        let i = programInfos.findIndex(e=> e.id == this.id);
-        OS13k.Save(i < 0 ? programInfos.push(this.info) : programInfos[i] = this.info);
-    }
-    
-} // OS13kProgram
-customElements.define('p-', OS13kProgram);
-
-///////////////////////////////////////////////////////////////////////////////
-// OS13kWindow - window to a running program, handles program loading
-
-class OS13kWindow extends HTMLElement
-{
-	constructor(program, x, y)
-    {
-		super();
-
-        // add to desktop
-        desktop.appendChild(this);
-        
-        // save settings
-        this.program = program;
-        this.style.left = x;
-        this.style.top = y;
-        this.menu = 1;
-        this.activeCount = 0;
-        
-        // shadow root
-		this.attachShadow({mode: 'open'});
-        this.shadowRoot.innerHTML = windowTemplate.textContent;
-        
-        // title bar
-        this.titlebar = this.shadowRoot.appendChild(document.createElement('div'));
-        this.titlebar.id = 'titlebar';
-
-        // create title bar buttons
-        let AddTitlebarIcon=(title, svg, hover, shape='path')=>
-        {
-            this.titlebar.innerHTML += 
-            `<style>#${title.split(' ')[0]}:hover{background:#${hover}</style>` + 
-            `<div id=${title.split(' ')[0]} title=${title}>` +
-            `<svg viewBox='0 0 10 10'style=height:100%;width:28;pointer-events:none><${
-                shape} stroke=#000 fill=none ${svg} />`;
-        }
-        program.flags & resize && 
-            AddTitlebarIcon('Grow', 'd="M2 5L8 5M5 8L5 2"', '0f0',
-            AddTitlebarIcon('Shrink', 'd="M2 5L8 5"', '0ff'));
-        program.flags & full && AddTitlebarIcon('Full Screen', 'x=1 y=2 width=8 height=6', 'fff', 'rect');
-        program.help && AddTitlebarIcon('Help', 'd="M5 8L8 2L2 2L5 8L8 2"', '0ff');
-        program.code && AddTitlebarIcon('Code', 'd="M5 2L8 8L2 8L5 2L8 8"', 'f0f');
-        program.flags & reload && AddTitlebarIcon('Reload', 'cx=5 cy=5 r=3', 'ff0', 'circle');
-            AddTitlebarIcon('Close', 'd="M2 2L8 8M8 2L2 8"', 'f00');
-
-        // title bar name
-        this.titlebar.prepend(this.name = document.createElement('div'));
-        this.name.id = 'name';
-        let SetName = ()=>
-        {
-            // icon and name
-            this.name.innerHTML = `<span id=icon>${program.icon}`;
-            this.name.innerHTML += program.name;
-        }
-        SetName();
-
-        // create content wrapper
-        this.iframeWrapper = this.shadowRoot.appendChild(document.createElement('div'));
-        this.iframeWrapper.style.background = '#000';
-
-        // create code/help display
-        this.codeDisplay = this.shadowRoot.appendChild(document.createElement('div'));
-        this.codeDisplay.style.display = 'none';
-
-        // create code/help display
-        this.codeText = this.codeDisplay.appendChild(document.createElement('textarea'));
-        this.codeText.id = 'codeText';
-          
-        // use custom code  
-        program.userProgram ? this.codeText.value = program.info.code : this.codeText.readOnly = 1;
-        this.codeText.spellcheck = 0;
-
-        // init custom code options
-        this.codeOptions = this.codeDisplay.appendChild(document.createElement('div'));
-        this.codeOptions.id = 'codeOptions';
-        this.codeOptions.style.display =  program.userProgram ? '' : 'none';
-        this.codeOptions.style.paddingLeft = 9;
-
-        // build the code options
-        const CodeOption = (text, tagName, innerHTML='', style, type)=>
-        {
-            text && this.codeOptions.appendChild(document.createTextNode(text));
-            let e = this.codeOptions.appendChild(document.createElement(tagName));
-            e.innerHTML = innerHTML;
-            e.style = style;
-            e.type = type;
-            return e;
+            // destroy if moved into powered kill block
+            this.Destroy();
+            return true;
         }
 
-        // create each element for code options
-        let
-        screenshotButton = this.screenshot = CodeOption('', 'button', '📷'),
-        iconInput = CodeOption(' Icon ', 'input', '', 'width:50'),
-        nameInput = CodeOption(' Name ', 'input'),
-        folderInput = CodeOption(' Folder ', 'input'),
-        nextLine = CodeOption('', 'br'),
-        widthInput = CodeOption(' Size ', 'input', '', 'width:50', 'number'),
-        heightInput = CodeOption('x', 'input', '', 'width:50', 'number'),
-        sleepInput = this.allowSleep = CodeOption(' Sleep ', 'input', '', '', 'checkbox'),
-        liveEditInput = this.liveEdit = CodeOption(' Live Edit ', 'input', '', '', 'checkbox'),
-        saveButton = CodeOption('', 'button', 'Save'),
-        copyButton = CodeOption('', 'button', 'Copy'),
-        deleteButton = CodeOption('', 'button', 'Delete'),
-        byteSizeSpan = this.codeSize = CodeOption('', 'span', program.info.code && program.info.code.length),
-        link = CodeOption(' Bytes', 'a'),
-        canvas = CodeOption('', 'canvas', '', 'display:none'),
-        canvasContext = canvas.getContext('2d');
-
-        // set checkboxes
-        sleepInput.checked = program.info.allowSleep != !1;
-        liveEditInput.checked = program.info.liveEdit != !1;
-        
-        // error text
-        this.errorText = this.codeDisplay.appendChild(document.createElement('textarea'));
-        this.errorText.id = 'errorText';
-        this.errorText.readOnly = !0;
-        
-        // save button
-        saveButton.onmousedown = ()=>
-            link.click(SystemSound(soundSave),
-            link.href = URL.createObjectURL(new Blob([this.codeText.value])),
-            link.download = 'OS13k_' + program.name);
-        
-        // copy button
-        copyButton.onmousedown = (e)=> { program.programMenu.NewUserProgram(program); e.stopPropagation();}
-
-        // delete button
-        deleteButton.onmousedown = ()=>
+        if (!target || target.Move())
         {
-            // close, remove, and rebuild (must close first)
-            this.Close();
-            RebuildMenu(OS13k.Save(programInfos = programInfos.filter(info=> info.id != program.id)));
-        }
+            // apply move
+            SetCellObject(this.x, this.y);
+            cellObjects[x + cellsWidth*y] = this;
+            this.x = x;
+            this.y = y;
 
-        // screenshot button
-        screenshotButton.onmousedown = ()=>
-        {
-            // wrap in try block in case canvas doesnt exist
-            try {
-                link.click(
-                    // copy to a white canvas before saving
-                    SystemSound(soundSave),
-                    canvasContext.fillRect(0, 0, 
-                        canvas.width  = this.iframeContent.c.width, 
-                        canvas.height = this.iframeContent.c.height,
-                        canvasContext.fillStyle = '#fff'),
-                        canvasContext.drawImage(this.iframeContent.c, 0, 0),
-                    link.href = canvas.toDataURL('image/png'),
-                    link.download = 'OS13k_Image_' + program.name);
-            } catch(e) {} // ignore screenshot errors
-        }
-
-        // get elements by id
-        iconInput.value   = program.icon;
-        nameInput.value   = program.name;
-        widthInput.value  = program.width;
-        heightInput.value = program.height;
-        program.userFolder != undefined && (folderInput.value = program.userFolder);
-
-        // set new icon and name when changed
-        iconInput.oninput = nameInput.oninput =
-        liveEditInput.oninput = e=>
-        program.Save(
-            SetName(this.taskbarIcon.
-            SetName(program.
-            SetName(OS13k.StripHTML(iconInput.value), nameInput.value))));
-
-        folderInput.oninput = e=>
-            RebuildMenu(program.Save(program.userFolder = OS13k.StripHTML(folderInput.value.trim())));
-
-        // size options
-        widthInput.onchange =
-        heightInput.onchange = e=>
-        {
-            program.width = widthInput.value = OS13k.Clamp(widthInput.value, defaultWidth, 99);
-            program.height = heightInput.value = OS13k.Clamp(heightInput.value, program.width*2, 99);
-
-            // update to new size and clamp to desktop
-            this.Resize(1);
-            this.SetActive(1, 1);
-        }
-
-        // allow sleep button
-        sleepInput.oninput = e=> this.Reload(1, program.Save());
-
-        // resize window size to fit inner width while preserving aspect
-        let width = program.flags & resize ? 
-            Math.min(program.width*(program.info.scale||1), innerWidth-6) :
-            program.width;
-            
-        // set window width, height, and scale while preserving aspect ratio
-        this.style.width = width;
-        this.iframeWrapper.style.height = width * program.height / program.width;
-        this.scale = width / program.width;
-        
-        // announce game when first opened
-        OS13k.Speak(program.name);
-        
-        // update loading and create iframe
-        this.CreateFrame(loading += !finishedStartup);
-    }
-
-    SetErrorText(message, source, line, col, e)
-    {
-        this.errorText.value = e ? e + (e && e.stack ? ` (${(line-1) + ':' + col})` : '') : message;
-        this.errorText.style.display = this.errorText.value ? '' : 'none';
-        console.log(this.errorText.value);
-        return !0;
-    }
-    
-    CreateFrame()
-    {
-        let LoadFrame = ()=>
-        {
-            // check if code is safe to execute
-            let codeIsSafe = !this.program.userProgram | allCodeIsSafe,
-
-                // only dweets and shadertoys can do screenshots
-                hasExtension = program.isDweet | program.isShader,
-
-                // get iframe content and document (will fail if cross site)       
-                iframeDocument = iframeContent.document,
-                iframeText = program.userProgram ? program.info.code :
-                hasExtension ? iframeDocument.body.innerText : iframeDocument.body.innerHTML;
-            
-            this.screenshot.disabled = !hasExtension | !codeIsSafe;
-
-            // set code/help display if not user program
-            program.userProgram || (this.codeText.value = program.help || iframeText);
-
-            // pass OS13k constants to iframe
-            iframeContent.OS13k = OS13k;
-            iframeContent.OS13kWindow = this;
-            iframeContent.zzfx = zzfx;
-
-            // check for extensions
-            if (!codeIsSafe)
+            if (this.sound)
             {
-                iframeDocument.body.style.background = '#111';  
-                iframeDocument.body.innerHTML = '';
+                // update pan
+                const pan = this.x/(cellsWidth-1)*2-1;
+                this.sound.SetPan(pan);
             }
-            else if (hasExtension) 
-            {
-                // create canvas
-                iframeDocument.body.innerHTML = 
-                    `<style>canvas{width:100%;background:${ 
-                        program.isShader ? '#000' : '#fff' }}</style><canvas id=c width=1920 height=1080>`;
+            return true;
+        }
+    }
 
-                // set body style
-                iframeDocument.body.style =
-                    'background:#111;' +
-                    'overflow:hidden;' +
-                    'margin:0;' +
-                    'display:flex;' +
-                    'align-items:center';
-                    
-                // loop protection for user dweets
-                let code = program.userProgram && !program.isShader? 
-                    iframeText.replace(
-                        /(for\s*\([^;]*;[^;]*;|while\s*\()\s*(\S)/g, (a, b, c)=> 
-                            b && c && !b.match(/\sof\s|\sin\s/g) ? 
-                                b + '++OS13kL>1e5&&(e=>{throw"Timed out!"})()' +
-                                (c == ')' ? '' : ',') + c : a ) : iframeText;
-                try
+    // actual movement and collision detect part 2, for all objects in update list
+    UpdateMovement()
+    {
+        if (this.type == CELL_TYPE_POWER && this.powered)
+        {
+            if (!this.Move())
+                this.powered = 0;
+        }
+        else if (this.type == CELL_TYPE_COPY)
+        {
+            this.moveDirectionList.map(direction=>
+            {
+                let copyDirection = (direction + 2)%4;
+                let copyObject = this.copyList[copyDirection];
+                if (copyObject)
                 {
-                    // create dweet or shader program
-                    iframeContent.eval(
-                        `OS13k=parent.OS13k;x=c.getContext` +
-                        (program.isShader ? // preserve buffer for user programs for screenshot
-                            `('webgl2'${program.userProgram ? ',{preserveDrawingBuffer:!0}' : ''});` +
-                            `X=Y=Z=W=0;` +
-                            `onmousemove=e=>e.buttons&&(X=e.x,Y=c.height-e.y);` +
-                            `onmousedown=e=>(X=Z=e.x,Y=W=c.height-e.y);` +
-                            `onmouseup=e=>Z=W=0;` +
-                            `s=OS13k.CreateShader(c,\`${ code }\`);` +
-                            `OS13kU=t=>` +
-                            `OS13k.RenderShader(c,s,t/1e3,frame++,X,Y,Z,W,c.width=innerWidth,c.height=innerHeight)`
-                            :
-                            `('2d');` +
-                            `zzfx=parent.zzfx;` +
-                            `S=Math.sin;C=Math.cos;T=Math.tan;` +
-                            `R=(r,g,b,a=1)=>\`rgba(\${0|r},\${0|g},\${0|b},\${a})\`;` +
-                            `u=t=>{\n${ code }\n};` +
-                            `OS13kU=t=>t>OS13kF-2&&` + 
-                                `u(((t=frame++/60)*60|0==frame-1)&&t>0?t+1e-6:t,` +
-                                `OS13kL=0,` +
-                                `OS13kF=Math.max(OS13kF+100/6,t))`) +
-                            `;(OS13kA=t=>(requestAnimationFrame(OS13kA),` +
-                                (program.flags & awake || program.info.allowSleep == 0 ? '' : 
-                                    `t<1e3|parent.document.activeElement==OS13kWindow&&`) +
-                                    `OS13kU(t)))` +
-                            `(frame=OS13kF=0)`);
-                } catch (e) { this.SetErrorText(e); }
-            }
-            
-            // mouse down on iframe to load unsafe code, and call normal mousedown
-            codeIsSafe || (iframeContent.onmousedown = e=> (this.Reload(allCodeIsSafe = 1), onmousedown(e)));
-            
-            // prevent iframes context menu and drop events
-            iframeContent.ondrop = iframeContent.ondragover = iframeContent.oncontextmenu = ()=> !1;
-            
-            // add taskbar icon if it doesnt exist and set active
-            this.taskbarIcon || (this.taskbarIcon = new OS13kTaskbarIcon(program, this)).SetActive();
-
-            // make visible
-            this.style.visibility = this.iframe.style.visibility = 'visible';
-            
-            // update loading
-            loading && --loading;
-
-            // listen for reload from iframe, prevent infnite recursion
-            program.userProgram && (this.iframe.onload = ()=> reloadCount++ && this.Reload(1, 0));
-
-            // release grab window since this one will be in front
-            grabWindow && onmouseup();
+                    let directionXY = GetDirectionXY(direction);
+                    let x = this.x + directionXY[0];
+                    let y = this.y + directionXY[1];
+                    
+                    // get new target
+                    let target = GetCell(x, y);
+                    if (cellMoveTargets[x + cellsWidth*y] == 1 && (!target || target.Move()))
+                        this.CopyObject(direction, copyObject);
+                }
+            });
         }
-        
-        // remove old iframe if it exists
-        this.iframe && this.iframeWrapper.removeChild(this.iframe);
+    }
+    
+    CopyObject(spawnDirection, copyObject)
+    {
+        const spawnDirectionXY = GetDirectionXY(spawnDirection);
+        const x = this.x + spawnDirectionXY[0];
+        const y = this.y + spawnDirectionXY[1];
 
-        // create iframe
-        this.iframe = this.iframeWrapper.appendChild(document.createElement('iframe')); 
-        let iframeContent = this.iframeContent = this.iframe.contentWindow,
-            program = this.program,
-            reloadCount = 0;
-        this.iframe.id = 'frame';
-        
-        // load src and force pages to be refreshed
-        if (program.userProgram)
+        if (GetCell(x, y)) // spawn blocked
+            return;
+
+        const newCell = new Cell(...copyObject.GetInfoArray());
+        SetCellObject(x, y, newCell);
+        newCell.spawnFrame = frame;
+        newCell.lastX = this.x;
+        newCell.lastY = this.y;
+    }
+
+    UpdatePowerPre()
+    {
+        this.wasPowered = this.powered;
+        this.powered = 0;
+        this.updatedControl = 0;
+    }
+
+    UpdatePower()
+    {
+        // update powere even if it was powered down this frame
+        this.type == CELL_TYPE_POWER && this.wasPowered && this.SetPowered();
+    }
+
+    UpdateControl()
+    {
+        // update key and attenuation
+        if (this.updatedControl || this.type != CELL_TYPE_CONTROL)
+            return;
+
+        // use fill routine to get connections
+        let cellUpdated = [], updatedCells = [], value = 0, foundSmall = 0,
+        UpdateControlCells = (x, y, wasControl = 1)=>
         {
-            // clear error text
-            this.errorText.style.display = 'none';
+            const cell = GetCell(x, y);
+            if (!cell || cellUpdated[x + cellsWidth * y])
+                return;
 
-            // allow code editing, check for alt+enter to reload
-            this.codeText.onkeydown = e=> !e.altKey || e.keyCode == 13 && this.SetCode(this.codeText.value);
-            this.codeText.oninput = e=> this.liveEdit.checked && this.SetCode(this.codeText.value);
+            const isControl = cell.type == CELL_TYPE_CONTROL && (this.type==CELL_TYPE_NOTE || cell.data%2 == this.data%2);
+            if (!isControl && cell.type != CELL_TYPE_NOTE)
+                return;
 
-            // set on error now to catch errors on load
-            iframeContent.onerror = (...parameters)=>this.SetErrorText(...parameters);
+            if (!wasControl && !isControl)
+                return;
 
-            // set code
-            iframeContent.document.open();
-            allCodeIsSafe && iframeContent.document.write(program.info.code);
-            iframeContent.document.close();
-           
-            // get type of user code, html, shadertoy, or dweet
-            program.info.code.trim()[0] != '<' ?
-                program.isDweet = !(program.isShader = program.info.code.search(/void\s+mainImage/) >= 0) :
-                program.isDweet = program.isShader = 0;
+            if (cell.type == CELL_TYPE_NOTE || isControl)
+            {
+                cell.updatedControl = 1;
+                cellUpdated[x + cellsWidth * y] = 1;
+                updatedCells.push(cell);
+                if (isControl)
+                {
+                    if (!foundSmall && cell.data < 2) // skip the first small control
+                        foundSmall = 1;
+                    else
+                        value += cell.data < 2 ? 1 : cell.data - 2 ? 5 : 12;
+                }
 
-            // show error messages from user code
-            iframeContent.onerror = (...parameters)=>this.SetErrorText(...parameters);
 
-            // load the iframe
-            LoadFrame();
+                UpdateControlCells(x+1, y, isControl);
+                UpdateControlCells(x-1, y, isControl);
+                UpdateControlCells(x, y-1, isControl);
+                UpdateControlCells(x, y+1, isControl);
+            }
+        }
+
+        UpdateControlCells(this.x, this.y);
+        updatedCells.map( cell=> 
+        {
+            this.data % 2 ? cell.attenuation = Math.min(value, 10) : cell.key = value 
+            if (cell.type == CELL_TYPE_NOTE && auditionMode)
+            {
+                cell.powered = 1;
+                cell.PlaySound();
+            }
+        });
+    }
+
+    UpdateNotes()
+    {
+        if (this.type != CELL_TYPE_NOTE)
+            return;
+        
+        if (!this.powered)
+        {
+            this.StopSound();
+            return;
+        }
+
+        // flash when note plays
+        let UpdateControlCells = (x, y, wasControl = 1)=>
+        {
+            const cell = GetCell(x, y);
+            if (!cell || cell.notePowerFrame == frame)
+                return;
+
+            const isControl = cell.type == CELL_TYPE_CONTROL && (this.type==CELL_TYPE_NOTE || cell.data%2 == this.data%2);
+            if (!isControl && cell.type != CELL_TYPE_NOTE)
+                return;
+
+            if (!wasControl && !isControl)
+                return;
+
+            if (cell.type == CELL_TYPE_NOTE || isControl)
+            {
+                cell.notePowerFrame = frame;
+
+                UpdateControlCells(x+1, y, isControl);
+                UpdateControlCells(x-1, y, isControl);
+                UpdateControlCells(x, y-1, isControl);
+                UpdateControlCells(x, y+1, isControl);
+            }
+        }
+
+        UpdateControlCells(this.x, this.y, 1);
+
+        if (IsPlaying() || auditionMode)
+            this.PlaySound();
+    }
+    
+    SetPowered()
+    {
+        if (this.type == CELL_TYPE_BLOCK || this.type == CELL_TYPE_CONTROL)
+            return; // cant be powered
+
+        if (this.type == CELL_TYPE_COPY && this.spawnActive)
+            return; // cant power copiers while spawning
+
+        if (this.powered)
+            return; // already powered
+        this.powered = 1;
+
+        if (this.type == CELL_TYPE_POWER_LINE && this.data < 4)
+        {
+            // one direction power transfer
+            const d = GetDirectionXY(this.data);
+            const cell = GetCell(this.x + d[0], this.y +d[1]);
+            cell && cell.SetPowered();
+            return;
+        }
+        else if (this.type != CELL_TYPE_POWER && this.type != CELL_TYPE_POWER_LINE)
+            return; // no need to update more
+
+        // transfer power or rotate
+        for(let i = 4; i--;)
+        {
+            const d = GetDirectionXY(i);
+            const cell = GetCell(this.x + d[0], this.y +d[1]);
+            cell && cell.SetPowered();
+        }
+    }
+    
+    Render(mode)
+    {
+        if (mode && (this.x < screenMinX | this.y < screenMinY | this.x > screenMaxX | this.y > screenMaxY))
+            return; // cull offscreen objects
+
+        if (mode == 1 && this.updateCount || mode == 3 && !this.updateCount) // new objects
+            return;
+            
+        const iconRender = !mode;
+        const percent = iconRender ? 1 : stepPercent;
+        const x = Lerp(percent, this.lastX, this.x);
+        const y = Lerp(percent, this.lastY, this.y);
+        let set = this.powered;
+        if (this.type == CELL_TYPE_COPY && this.preventSpawn ||             // active copier
+                this.type == CELL_TYPE_POWER && this.copyFrame == frame)    // object lost power due to active copier
+            set = 2;
+
+        if (this.type == CELL_TYPE_ROTATE)
+        {
+            const turnSpeed = set ? 4 : 1;
+            this.angle += turnSpeed*(this.data ? 1 : -1) * deltaTime * bpm * bpmToStepsPerSecond/8;
+        }
+        else
+            this.angle = 0;
+        const scale = this.type == CELL_TYPE_KILL && set ? Lerp(.5+Math.cos(2*Math.PI*percent)/2, .8, 1) : 1;
+
+        // set alpha when fading in
+        context.globalAlpha = this.spawnFrame == frame ? percent : 1;
+
+        if (scale == 1 && !this.angle)
+        {
+            // faster render with no scale or rotate
+            context.drawImage(tilesCanvas, tilesScale*2*(this.data+CELL_MAX_DATA_COUNT*set)*cellSize, tilesScale*2*this.type*cellSize, 
+                tilesScale*cellSize, tilesScale*cellSize, cellSize*x, cellSize*y, cellSize, cellSize);
         }
         else
         {
-            // load source
-            this.iframe.onload = ()=> LoadFrame();
-            this.iframe.src = program.src + '?v275';
+            context.save();
+            context.scale(cellSize, cellSize);
+            context.translate(x+.5, y+.5);
+            context.rotate(Math.PI * this.angle);
+            context.drawImage(tilesCanvas, tilesScale*2*(this.data+CELL_MAX_DATA_COUNT*set)*cellSize, tilesScale*2*this.type*cellSize, 
+                tilesScale*cellSize, tilesScale*cellSize, -scale/2, -scale/2, scale, scale);
+            context.restore();
         }
-    }
-        
-    SetCode(code, setText)
-    {
-        // set code when changed
-        setText && (this.codeText.value = code);
-        this.program.info.code = code;
-        this.codeSize.innerHTML = code.length;
-        this.program.Save();
 
-        // mark code as safe and reset iframe
-        this.CreateFrame(allCodeIsSafe = 1);
-    }
-    
-    Open(target, x, y)
-    {
-        // set active if not copy button
-        target.id != 'C' && this.SetActive();
+        const lightWeightMode0 = !iconRender && renderScale < 1;
+        const lightWeightMode1 = !iconRender && renderScale <= .5;
+        const lightWeightMode2 = !iconRender && renderScale <= .25;
         
-        // set grab window if name is target
-        if (target == this.name)
+        // draw extra info
+        context.textAlign = 'center';
+        context.textBaseline = 'middle';
+        if (this.type == CELL_TYPE_NOTE)
         {
-            // set grab window and play sound
-            grabWindow = this;
-            SystemSound(soundGrabStart)
-            
-            // use grabbing cursor
-            document.body.style.cursor = 'grabbing';
-            
-            // prevent anything from getting focus white grabbing
-            desktop.style.pointerEvents = 'none';
-
-            // save grab offset
-            grabOffsetX = x - parseInt(this.style.left);
-            grabOffsetY = y - parseInt(this.style.top);
-            return;
-        }
-        
-        // check for title bar buttons
-        target.id == 'Full'        && this.FullScreen();
-        target.id == 'Reload'      && this.Reload();
-        target.id == 'Close'       && this.Close();
-        target.id == 'Shrink'      && this.Resize(this.scale - .2, soundShrink);
-        target.id == 'Grow'        && this.Resize(this.scale + .2, soundGrow);
-        (target.id == 'Help' | target.id == 'Code') && this.ShowCode();
-    }
-    
-    Resize(scale, sound)
-    {
-        // get new width and fix window offset
-        let wNew = OS13k.Clamp(this.program.width * scale, 1920, 170);
-        this.style.left = parseInt(this.style.left) + parseInt(this.style.width) - wNew;
-        
-        // set new size
-        this.style.width = wNew;
-        this.iframeWrapper.style.height = this.program.height * (this.scale = wNew / this.program.width);
-    
-        // update program info and play sound
-        this.program.Save();
-        sound && SystemSound(sound);
-    }
-    
-    SetActive(active=1, clamp, focus=1)
-    {
-        // close menus when window is set active
-        CloseMenus();
-        
-        // set style, dim non active windows
-        this.className = active? 'activeWindow' : '';
-        this.titlebar.className = 'titlebar titlebar' + 
-            (active? 'Active' : '') + 
-            (this.program.flags & sticky ? 'Sticky' : this.program.userProgram ? 'User' : '');
-        this.iframeWrapper.style.filter = active || this.program.flags & awake ? 
-            '' : 'saturate(.7)brightness(.7';
-
-        // check if active
-        if (!active) return;
-
-        // clamp window to screen
-        let rect = this.getBoundingClientRect();
-        clamp && (
-            this.style.left = OS13k.Clamp(rect.x, innerWidth - rect.width, 0,
-            this.style.top = OS13k.Clamp(rect.y, Math.max(taskbarHeight, innerHeight - rect.height), taskbarHeight)));
-
-        // set focus to iframe using timeout
-        loading || focus &&
-            setTimeout(e=> document.activeElement != this && this.iframeContent && this.iframeContent.focus(lastActiveFrame = this.iframe));
-
-        if (activeWindow != this)
-        {
-            // deactivate old window and set this one active and play sound
-            activeWindow && activeWindow.SetActive(0);
-            activeWindow = this;
-            SystemSound(this.activeCount++ ? soundActive : soundOpen);
-
-            // move z to top
-            this.style.zIndex = ++topZ;
-
-            // show menu buttons
-            let MenuButton = (text, onmousedown)=>
+            if (!iconRender && !lightWeightMode0)
             {
-                let button = menu.appendChild(document.createElement('button'));
-                button.innerText = text;
-                button.onmousedown = onmousedown;
+                // show connections
+                const leftCell = GetCell(this.x-1, this.y);
+                const upCell  = GetCell(this.x, this.y-1);
+                const w = .08;
+                if (leftCell && leftCell.type == CELL_TYPE_CONTROL)
+                    FillRect(x-w, y+.2, 2*w, .6, '#fff');
+                if (upCell && upCell.type == CELL_TYPE_CONTROL)
+                    FillRect(x+.2, y-w, .6, 2*w, '#fff');
             }
-            menu.innerHTML = '';
-            this.program.flags & full &&   MenuButton('Full Screen', ()=> this.FullScreen());
-            this.program.code &&           MenuButton('Code',        ()=> this.ShowCode());
-            this.program.help &&           MenuButton('Help',        ()=> this.ShowCode());
-            this.program.flags & resize && MenuButton('Reset Size',  ()=> this.SetActive(1, 1, this.Resize(1, soundGrow)));
-            this.program.flags & reload && MenuButton('Reload',      ()=> this.Reload());
-            MenuButton('Close', ()=> this.Close());
 
-            // set taskbar icon active if it exists
-            this.taskbarIcon && this.taskbarIcon.SetActive(active, clamp, focus);
-            
-            // save start program if finished startup and not sticky
-            finishedStartup & !(this.program.flags & sticky) && OS13k.Save(startProgramId = this.program.id);
+            context.fillStyle = '#fff';
+            context.strokeStyle = '#000';
+            context.lineWidth = 3;
+
+            if (iconRender || !lightWeightMode2)
+            {
+                if (this.attenuation)
+                {
+                    context.font = '900 ' + cellSize*.4 + 'px arial';
+                    const noteName = NoteName(this.key);
+                    lightWeightMode0 || context.strokeText(noteName, (x+.5)*cellSize, (y+.34)*cellSize, cellSize*.8);
+                    context.fillText(noteName, (x+.5)*cellSize, (y+.34)*cellSize, cellSize*.8);
+
+                    const attenuationName = AttenuationName(this.attenuation);
+                    lightWeightMode0 || context.strokeText(attenuationName, (x+.5)*cellSize, (y+.75)*cellSize, cellSize*.8);
+                    context.fillText(attenuationName, (x+.5)*cellSize, (y+.75)*cellSize, cellSize*.8);
+                }
+                else
+                {
+                    context.font = '900 ' + cellSize*.8 + 'px arial';
+                    const noteName = NoteName(this.key);
+                    lightWeightMode0 || context.strokeText(noteName, (x+.5)*cellSize, (y+.57)*cellSize, cellSize*.8);
+                    context.fillText(noteName, (x+.5)*cellSize, (y+.57)*cellSize, cellSize*.8);
+                }
+            }
         }
-    }
-    
-    FullScreen()
-    {
-        // reload code if it wasnt safe yet and set it is safe and play sound
-        (!this.program.userProgram | allCodeIsSafe) || this.Reload(allCodeIsSafe = 1);
-        SystemSound(soundFullScreen);
-        
-        // set full screen
-        this.iframeContent.focus();
-        this.iframeWrapper.webkitRequestFullScreen ? this.iframeWrapper.webkitRequestFullScreen() :
-            this.iframeWrapper.requestFullscreen ? this.iframeWrapper.requestFullscreen() : 0;
-        
-        OS13k.Trophy('🕹️','OS13k','Pro Gamer','Went Full Screen');
-    }
-    
-    ShowCode(silent)
-    {
-        // toggle showing code and play sound
-        this.codeDisplay.style.display = (this.showCode = !this.showCode) ? 'inline' : 'none';
-        silent || SystemSound(this.program.help ? soundHelp : soundCode);
-
-        this.program.help || OS13k.Trophy('👨‍💻','OS13k','Hacker','Viewed Code');
-    }
-    
-    Reload(silent, clamp=1)
-    {
-        // update program info and play sound
-        this.program.userProgram && (this.program.info.code = this.codeText.value);
-        this.program.Save();
-        silent || SystemSound(soundReload);
-        
-        // reload program or reload iframe and set invisible
-        this.iframeContent &&
-            this.iframeContent.OS13kReload ?
-            this.iframeContent.OS13kReload() :
-            this.program.userProgram ?
-                this.SetCode(this.program.info.code) :
-            this.CreateFrame(this.iframe.style.visibility = '');
-    }
-    
-    Close()
-    {
-        // remove start program if closed and play sound
-        this.program.id == startProgramId && (startProgramId = '');
-        SystemSound(soundClose);
-            
-        // save info and set closed
-        this.program.Save(0);
-        
-        // invalidate window after info is saved
-        this.program.window = 0;
-        
-        // remove taskbar icon and self
-        this.taskbarIcon.remove();
-        this.remove();
-    }
-} // OS13kWindow
-customElements.define('w-', OS13kWindow);
-
-///////////////////////////////////////////////////////////////////////////////
-// OS13kTaskbarIcon - icon on taskbar for opened programs
-
-class OS13kTaskbarIcon extends HTMLElement
-{
-	constructor(program, windowOrMenu)
-    {
-        super();
-        
-        // create icon
-        this.className = 'taskbarIcon';
-        this.menu = this.windowOrMenu = windowOrMenu;
-        this.SetName(this.program = program);
-        
-        // add to taskbar
-        taskbarSpace.before(this);
-    }
-
-    SetName()
-    {
-        this.innerHTML = '<div style=pointer-events:none>' + (this.program.icon || '💠');
-        this.title = this.program.name;
-    }
-    
-    Open() { this.SetActive(); }
-    
-    SetActive(active=1, clamp=1, focus=1)
-    {
-        // set window active and clamp
-        active && this.windowOrMenu.SetActive(1, clamp, focus);
-    
-        // load icon cant be active taskbar item
-        if (this == loadIcon)
-            return SystemSound(soundMenu, .3);
-        
-        // set active style
-        this.className = 'taskbarIcon ' + (active ? 'taskbarIconActive' : '');
-        
-        // if active, unselect old taskbar icon and set this active
-        active && activeTaskbarIcon != this && (activeTaskbarIcon && activeTaskbarIcon.SetActive(0), activeTaskbarIcon = this);
-    }
-    
-} // OS13kTaskbarIcon
-customElements.define('i-', OS13kTaskbarIcon);
-
-///////////////////////////////////////////////////////////////////////////////
-// OS13kTrayIcon - icon on taskbar tray for OS shortcuts
-
-class OS13kTrayIcon extends HTMLElement
-{
-	constructor()
-    {
-		super();
-        
-        // create tray icon and add it
-        this.className = 'trayIcon';
-        tray.appendChild(this);
-    }
-    
-    SetProgram(program)
-    {
-        // set program, title, and icon
-        this.program = program;
-        this.title = program.name;
-        this.innerHTML = program.icon;
-    }
-    
-    Open() { this.program.Toggle(); }
-} // OS13kTrayIcon
-customElements.define('t-', OS13kTrayIcon);
-
-///////////////////////////////////////////////////////////////////////////////
-// Mouse Input
-
-onmousedown = e=>
-{
-    // get orignal target
-    const originalTarget = e.composedPath()[0];
-
-    // check if load icon is target while programs menu was visible
-    if (e.target == loadIcon && e.target.windowOrMenu.style.visibility)
-    {
-        // close menus because they were open
-        CloseMenus();
-        
-        // reactivate active window
-        activeWindow && activeWindow.SetActive();
-        
-        // prevent main document from taking focus
-        return !1;
-    }
-    
-    // close menus and reset program menu position, and set there has been input
-    CloseMenus(programsMenu.style.left = 0, programsMenu.style.top = taskbarHeight, hadInput = 1);
-
-    // prevent stuck grab (from tabbing to another window while grabbing)
-    if (grabWindow) return onmouseup(e);
-    
-    // check if not left mouse button
-    if (e.button)
-    {
-        // dont allow right click on buttons
-        if (originalTarget.localName == 'button')
-            return !1;
-
-        // check for right mouse button
-        if (e.button & 2 && e.target != menu)
+        else if (this.type == CELL_TYPE_CONTROL)
         {
-            // set target active, use load icon if no valid target
-            (e.target.SetActive ? e.target : loadIcon).SetActive(1, 1, 0);
+            if (iconRender) // icon display values
+            {
+                if (this.data % 2)
+                    this.attenuation = this.data>1 ? 5 : 0;
+                else
+                    this.key = this.data ? 12 : 0;
+            }
+            else if (!lightWeightMode0)
+            {
+                // show connections
+                const leftCell = GetCell(this.x-1, this.y);
+                const upCell  = GetCell(this.x, this.y-1);
+                const w = .08;
+                if (leftCell && (leftCell.type == CELL_TYPE_CONTROL && leftCell.data % 2 == this.data % 2 || leftCell.type == CELL_TYPE_NOTE))
+                    FillRect(x-w, y+.2, 2*w, .6, '#fff');
+                if (upCell && (upCell.type == CELL_TYPE_CONTROL && upCell.data % 2 == this.data % 2 || upCell.type == CELL_TYPE_NOTE))
+                    FillRect(x+.2, y-w, .6, 2*w, '#fff');
+            }
 
-            // get which menu to open
-            let targetMenu = e.target.menu ? (SystemSound(soundMenu, .1), menu) : programsMenu;
+            if (iconRender || !lightWeightMode1)
+            {
+                const text = this.data%2 ? AttenuationName(this.attenuation) : NoteName(this.key);
+                context.fillStyle = '#000'
+                context.font = cellSize/(this.data<2?3:2) + 'px arial';
+                context.fillText(text, (x+.5)*cellSize, (y+.51)*cellSize, cellSize*.8);
+            }
 
-            // show context menu
-            targetMenu.style.left = e.x;
-            targetMenu.style.top  = e.y;
-            e.target != loadIcon && (targetMenu.style.visibility = 'visible');
+            // flash when note plays
+            frame == this.notePowerFrame && FillRect(x, y, 1, 1, '#fff8');
         }
+        else if (this.type == CELL_TYPE_BLOCK && this.data == 3 && !iconRender && !lightWeightMode0)
+        {
+            // show connections
+            const leftCell = GetCell(this.x-1, this.y);
+            const upCell  = GetCell(this.x, this.y-1);
+            if (leftCell && leftCell.type == this.type && leftCell.data == this.data)
+                FillRect(x-.5, y+.3, 1, .4, '#000');
+            if (upCell && upCell.type == this.type && upCell.data == this.data)
+                FillRect(x+.3, y-.5, .4, 1, '#000');
+        }
+    }
+
+    Rotate(direction)
+    {
+        const mirror = direction == 2;
+        if (mirror && this.type == CELL_TYPE_ROTATE)
+            this.data = this.data ? 0 : 1;
+        if ((this.type == CELL_TYPE_POWER || this.type == CELL_TYPE_COPY|| this.type == CELL_TYPE_POWER_LINE) && this.data < 4)
+        {
+            if (mirror)
+            {
+                if (this.data%2)
+                    this.data = (this.data + 2) % 4;
+            }
+            else
+               this.data = (this.data + 4 + direction) % 4;
+        }
+        else if (this.type == CELL_TYPE_BLOCK && this.data && this.data < 3)
+            this.data = 1 + (this.data + 1 + direction) % 2;
+    }
+
+    GetInfoArray() { return [this.x, this.y, this.type, this.data]; }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Cell control
+
+function ClearLevel()
+{
+    cellObjects = [];
+    instruments = defaultInstruments;
+    bpm = defaultBPM;
+    keyOffset = 0;
+    songName = '';
+
+    InitLevel();
+}
+
+/*function Randomize()
+{
+    ClearLevel();
+
+    const probabilities =
+    [
+        2,  // CELL_TYPE_BLOCK
+        1,  // CELL_TYPE_POWER
+        10, // CELL_TYPE_NOTE
+        20, // CELL_TYPE_CONTROL
+        1,  // CELL_TYPE_KILL
+        2,  // CELL_TYPE_COPY
+        2,  // CELL_TYPE_ROTATE
+        5,  // CELL_TYPE_POWER_LINE
+    ];
+    const totalProbability = probabilities.reduce((p,c)=>p+=c);
+
+    let maxCells = cellsWidth * cellsHeight;
+    let x = Math.random()*cellsWidth | 0;
+    let y = Math.random()*cellsHeight | 0;
+    for(let i = maxCells / 4 | 0; i--;)
+    {
+        let type = 0, p = Math.random()*totalProbability;
+        for(; type < probabilities.length && p > 0; ++type)
+            p -= probabilities[type];
+
+        const cell = SetCell(x, y, --type);
+        cell.data = Math.random()*CellDataCount(type) | 0;
+
+        x = Clamp(x + Math.random() * 5 - 2 | 0, cellsWidth-1);
+        y = Clamp(y + Math.random() * 5 - 2 | 0, cellsHeight-1);
+    }
+}*/
+
+function IsValidCell(x, y) { return x >= 0 && x < cellsWidth && y >= 0 && y < cellsHeight; }
+function GetCell(x, y)     { return IsValidCell(x, y) && cellObjects[x + cellsWidth*y]; }
+function SetCell(x, y, type = -1, data = 0)
+{
+    if (!IsValidCell(x, y))
+        return;
+
+    if (type >= 0)
+        return cellObjects[x + cellsWidth*y] = new Cell(x, y, type, data);
+    else
+        delete cellObjects[x + cellsWidth*y];
+}
+
+function SetCellObject(x, y, object)
+{
+    if (!IsValidCell(x, y))
+        return;
+        
+    if (object)
+    {
+        object.SetXY(x, y);
+        return cellObjects[x + cellsWidth*y] = object;
+    }
+    else
+        delete cellObjects[x + cellsWidth*y];
+}
+
+function GetCellPosFromScreenPos(x, y) 
+{ return [Math.floor((x/renderScale-renderOffsetX) / cellSize), Math.floor((y/renderScale-renderOffsetY) / cellSize)]; }
+
+///////////////////////////////////////////////////////////////////////////////
+// Input
+
+function CopyCells(remove = 0)
+{
+    copyCells = [];
+    copyCellsWidth = selectAreaMaxX - selectAreaMinX + 1;
+
+    for(let y = selectAreaMinY; y <= selectAreaMaxY; ++y)
+    for(let x = selectAreaMinX; x <= selectAreaMaxX; ++x)
+    {
+        const cell = GetCell(x, y);
+        copyCells.push([x-selectAreaMinX, y-selectAreaMinY, cell ? cell.type : -1, cell && cell.data]);
+        remove && SetCell(x, y); // remove old cells if cut
+    }
+    InitCells();
+}
+
+function PasteCells(x, y, rotateDirection=0)
+{
+    if (copyCells)
+    {
+        let pasted = 0;
+        copyCells.map(c=>
+        {
+            if (IsValidCell(c[0] + x, c[1] + y))
+                pasted = 1;
+
+            let cell = SetCell(c[0] + x, c[1] + y, c[2], c[3]);
+            if (cell)
+            {
+                cell.Rotate(rotateDirection);
+            }
+        });
+
+        if (pasted)
+        {
+            const copyCellsHeight = copyCells.length / copyCellsWidth;
+            selectAreaMinX = Clamp(x, cellsWidth-1);
+            selectAreaMinY = Clamp(y, cellsHeight-1);
+            selectAreaMaxX = Clamp(x + copyCellsWidth-1, cellsWidth-1);
+            selectAreaMaxY = Clamp(y + copyCellsHeight-1, cellsHeight-1);
+            hasAreaSelect = 1;
+            InitCells();
+        }
+        else
+        {
+            hasAreaSelect = 0; // did not copy anything
+        }
+    }
+    Save();
+}
+
+function UpdateInput()
+{
+    let keyDown_control = keysDown[17];
+    let keyDown_shift = keysDown[16];
+    let keyDown_tab = keysDown[9];
+    canvasHasMouse = document.body == document.activeElement && canvas == document.elementFromPoint(mouseX, mouseY);
+    
+    ///////////////////////////////////////////////////////////////////////////////
+    // input update
+    if (keysPressed[32]) // space = toggle edit
+        ToggleEdit();
+
+    const wasDrawing = drawing;
+    const wasAreaSelecting = areaSelecting;
+    const wasUsingEyedropper = usingEyedropper;
+    drawing = 0;
+    areaSelecting = 0;
+    erasing = 0;
+    usingEyedropper = 0;
+    dragging = 0;
+
+    if (mouseDown == 2 || keyDown_tab) // pan = middle mouse
+    {
+        dragging = 1;
+        if (mouseDown)
+        {
+            if (mousePressed)
+            {
+                dragStartX = mouseX/renderScale - renderOffsetX;
+                dragStartY = mouseY/renderScale - renderOffsetY;
+            }
+
+            renderOffsetX = mouseX/renderScale - dragStartX;
+            renderOffsetY = mouseY/renderScale - dragStartY;
+        }
+    }
+    if (mouseWheel | keysPressed[40] | keysPressed[38]) // zoom = mouse wheel or up/down
+    {   
+        // zoom towards edit object
+        renderOffsetX = renderScale * (renderOffsetX / cellSize + editObject.x + .5);
+        renderOffsetY = renderScale * (renderOffsetY / cellSize + editObject.y + .5);
+        let renderScaleScale = keysPressed[40] ? .75 : keysPressed[38] ? 1/.75 : mouseWheel > 0 ? .9 : 1/.9;
+        renderScale = Clamp(renderScale*renderScaleScale, 4, .1);
+        renderOffsetX = cellSize * (renderOffsetX / renderScale - editObject.x - .5);
+        renderOffsetY = cellSize * (renderOffsetY / renderScale - editObject.y - .5);
+    }
+
+    const editObjectPos = GetCellPosFromScreenPos(mouseX, mouseY);
+    editObject.SetXY(editObjectPos[0], editObjectPos[1]);
+    canvas.style.cursor = dragging ? 'grab' : '';
+
+    // play mode shortcuts
+    for(let mode = 0; mode < PLAY_MODE_COUNT; mode++)
+    {
+        if (keysPressed[mode + 49])
+        {
+            SetPlayMode(mode);
+            break;
+        }
+    }
+
+    if (!IsEditing())
+        return;
+
+    if (keyDown_control) // control down
+    {
+        if (keysPressed[90]) // undo = Z
+            Undo();
+        else if (keysPressed[89]) // redo = Y
+            Redo();
+        else if (keysPressed[67] || keysPressed[88]) // copy = C, cut = X
+            CopyCells(keysDown[88]);
+        else if (keysPressed[86] && copyCells) // V = paste
+            PasteCells(editObject.x, editObject.y);
+        else if (keysPressed[83]) // save = S
+            ButtonSave();
+        else if (keysPressed[86]) // load = V
+            ButtonLoad();
     }
     else
     {
-        // open or reactivate window if no valid target
-        e.target.Open ? e.target.Open(originalTarget, e.x, e.y) : activeWindow && activeWindow.SetActive();
+        // wasd movement
+        const moveX = keysPressed[68] ? 1 : keysPressed[65] ? -1 : 0;
+        const moveY = keysPressed[83] ? 1 : keysPressed[87] ? -1 : 0;
         
-        // allow event to contiue only if input
-        return e.target == loadIcon || /input|textarea/.test(originalTarget.localName);
+        if (moveX || moveY)
+        {
+            if (hasAreaSelect)
+            {
+                CopyCells(1);
+                selectAreaMinX += moveX;
+                selectAreaMinY += moveY;
+                PasteCells(selectAreaMinX, selectAreaMinY);
+
+                if (!hasAreaSelect)
+                    copyCells = 0;
+            }
+        }
+        else if (keysPressed[84]) // T = Spread
+        {
+            if (hasAreaSelect)
+            {
+                CopyCells(1);
+
+                // apply rotate
+                const copyCellsHeight = copyCells.length / copyCellsWidth;
+                const oldCopyCells = [...copyCells];
+                const w = copyCellsWidth*2-1;
+                const h = copyCellsHeight*2-1;
+
+                copyCells = [];
+                for(let y = 0; y < h; y++)
+                for(let x = 0; x < w; x++)
+                {
+                    if (x%2 || y%2)
+                    {
+                        copyCells[x+w*y] = [x, y, -1, 0];
+                        continue;
+                    }
+
+                    let cell = oldCopyCells[(x>>1)+copyCellsWidth*(y>>1)];
+                    cell[0] = x;
+                    cell[1] = y;
+                    copyCells[x+w*y] = cell;
+                }
+                copyCellsWidth = w;
+                copyCells.length = w * h;
+
+                PasteCells(selectAreaMinX, selectAreaMinY);
+            }
+
+        }
+        else if (keysPressed[82] || keysPressed[69] || keysPressed[81]) // X/Z=rotate Q=mirror
+        {
+            const direction = keysPressed[81] ? 2 : keysPressed[82] ? 1 : -1
+            if (hasAreaSelect)
+            {
+                CopyCells(1);
+
+                // apply rotate
+                const copyCellsHeight = copyCells.length / copyCellsWidth;
+                copyCells.map(c=>
+                {
+                    let x, y;
+                    if (direction == 2)
+                    {
+                        x = copyCellsWidth - c[0] - 1;
+                        y = c[1];
+                    }
+                    else if (direction == 1)
+                    {
+                        x = copyCellsHeight - c[1] - 1;
+                        y = c[0];
+                    }
+                    else
+                    {
+                        x = c[1];
+                        y = copyCellsWidth - c[0] - 1;
+                    }
+                    c[0] = x;
+                    c[1] = y;
+                });
+                if (direction < 2)
+                    copyCellsWidth = copyCellsHeight;
+
+                PasteCells(selectAreaMinX, selectAreaMinY, direction);
+            }
+            else
+            {
+                let cell = GetCell(editObject.x, editObject.y)
+                if (cell)
+                    cell.Rotate(direction);
+            }
+        }
+    }
+
+    if (canvasHasMouse)
+    {
+        if (keyDown_shift) // shift = area select
+        {
+            areaSelecting = 1;
+            const hadAreaSelect = hasAreaSelect;
+
+            const x = Clamp(editObject.x, cellsWidth-1);
+            const y = Clamp(editObject.y, cellsHeight-1);
+
+            if (mousePressed == 1 || mousePressed == 3 || (mouseDown == 1 || mouseDown == 3) && !hadAreaSelect)
+            {
+                selectAreaStartX = x;
+                selectAreaStartY = y;
+                hasAreaSelect = 1;
+            }
+            if (mouseDown == 1 || mouseDown == 3 || hasAreaSelect && !hadAreaSelect)
+            {
+                selectAreaMinX = Math.min(selectAreaStartX, x);
+                selectAreaMinY = Math.min(selectAreaStartY, y);
+                selectAreaMaxX = Math.max(selectAreaStartX, x);
+                selectAreaMaxY = Math.max(selectAreaStartY, y);
+            }
+        }
+        else if ((mouseDown == 1 || mouseDown == 3 && keyDown_control || mouseButtons == 3)) // normal drawing/erasing mode
+        {
+            drawing = 1;
+            hasAreaSelect = 0;
+            
+            let cell = GetCell(editObject.x, editObject.y);
+            if (keyDown_control || mouseButtons == 3)  // erase mode
+            {
+                SetCell(editObject.x, editObject.y);
+                IsPlaying() || InitCells();
+                erasing = 1;
+            }
+            else if (!cell || cell.type != editObject.type || cell.data != editObject.data) // draw mode
+            {
+                cell = SetCell(editObject.x, editObject.y, editObject.type, editObject.data);
+                if (cell)
+                {
+                    IsPlaying() || InitCells();
+                    cell.angle = editObject.angle;
+                    cell.Audition();
+                    InitCells();
+                }
+            }
+        }
+        else if (mouseDown == 3) // audition sound = right mouse
+        {
+            // only if mouse over new cell
+            usingEyedropper = 1;
+            if (lastEditX != editObject.x || lastEditY != editObject.y || mousePressed)
+            {
+                
+                const cell = GetCell(editObject.x, editObject.y);
+                if (cell)
+                {
+                    cell.Audition();
+                    SetEditObject(cell.type, cell.data);
+                }
+                else
+                {
+                    InitCells(1);
+                }
+            }
+        }
+    }
+
+    if (!areaSelecting && wasAreaSelecting)
+        SaveUndo();
+
+    if (!drawing && wasDrawing)
+    {
+        // exit draw mode
+        drawing = 0;
+        Save();
+    }
+    
+    if (!usingEyedropper && wasUsingEyedropper)
+        InitCells();
+
+    lastEditX = editObject.x;
+    lastEditY = editObject.y;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Update
+
+function LoadLevel(levelID)
+{
+    SetPlayMode();
+    LoadSaveData(levelData[levelID]);
+    InitLevel();
+}
+
+function InitLevel()
+{
+    // hide menu
+    menu.style.display = '';
+    hasAreaSelect = 0;
+    SetPlayMode();
+    UpdateUI();
+    InitCells();
+    Save();
+}
+
+function InitCells(noPower)
+{
+    soundCache = {};
+    stepPercent = 0;
+    frame = 0;
+    frameSoundCount = 0;
+    cellObjects.map(c=>c&&c.Reset());
+    cellObjects.map(c=>c&&c.UpdatePowerPre());
+    noPower || cellObjects.map(c=>c&&c.UpdatePower());
+    cellObjects.map(c=>c&&c.UpdateControl());
+    IsPlaying() && cellObjects.map(c=>c&&c.UpdateNotes());
+}
+
+function UpdateFrame()
+{
+    frame++;
+    frameSoundCount = 0;
+
+    // build update list
+    updateListCells = [];
+    cellObjects.map(c=>c&&c.BuildUpdateList());
+
+    // clear move target array, tracks how many things are set to move onto each cell, if more then 1 its a collision
+    cellMoveTargets = [];
+
+    // test movement
+    unpowerSet = new Set();
+    updateListCells.map(c=>c.UpdateTestCopy());
+    unpowerSet.forEach(c =>c.powered = 0 );
+
+    updateListCells.map(c=>c.UpdateTestPowerMove());
+
+    //now each object has a list of directions it wants to be moved in
+    //- for spawning coppiers, the move list is for spawning movement, not self movement
+
+    // collision detect, filter objects moving in multiple directions, get overlapping move targets positions
+    cellObjects.map(c=>c&&c.UpdateCollisionDetect());
+
+    // actual movement and collision detect part 2
+    updateListCells.map(c=>c.UpdateMovement());
+
+    // update everything else
+    cellObjects.map(c=>c&&c.UpdatePowerPre());
+    cellObjects.map(c=>c&&c.UpdatePower());
+    cellObjects.map(c=>c&&c.UpdateControl());
+    cellObjects.map(c=>c&&c.UpdateNotes());
+}
+
+function Update(animationTime = 0)
+{
+    requestAnimationFrame(Update);
+
+    if (!--wantsToShare)
+    {
+        loadingMessageDisplay.style.display = 'none';
+
+        const crushed = JSONCrush(GetSaveString());
+        const url = new URL(window.location.href);
+        //url.searchParams.append('c', crushed);
+        url.search = '&c=' + crushed;
+        
+        try { 
+            navigator['clipboard']['writeText'](url.toString()); alert('👍 Link coppied!') 
+        }
+        catch (e) { alert(errorMessage); }
+    }
+
+    if (!hasFocus && document.hasFocus())
+    {
+        // todo: prevent stuck input
+        keysPressed = [];
+        keysDown = [];
+        mouseDown = mouseButtons = mousePressed = mouseWheel = 0;
+    }
+    hasFocus = document.hasFocus();
+
+    UpdateInput();
+
+    // update time
+    deltaTime = Math.min(.1, (animationTime - lastTime)/1e3);
+    lastTime = animationTime;
+    deltaTime *= GetPlaySpeed();
+    stepPercent += bpm*bpmToStepsPerSecond*deltaTime;
+
+    // update frame
+    if (IsEditing() || IsPaused() || IsStepping() && pauseStep)
+    {
+        stepPercent = Math.min(stepPercent, 1);
+        if (stepPercent == 1 && pauseStep)
+        {
+            SetPlayMode(PLAY_MODE_PAUSE);
+            pauseStep = 0;
+        }
+    }
+    else if (stepPercent > 1)
+    {
+        UpdateFrame();
+        stepPercent = Math.min(stepPercent-1,1);
+
+        if (IsStepping())
+            pauseStep = 1;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // render
+
+    canvas.width = innerWidth;
+    canvas.height = innerHeight;
+    
+    // prevent center from moving too far away
+    renderOffsetX = Clamp(renderOffsetX, canvas.width/2/renderScale, canvas.width/2/renderScale-cellsWidth*cellSize);
+    renderOffsetY = Clamp(renderOffsetY, canvas.height/2/renderScale, canvas.height/2/renderScale-cellsHeight*cellSize);
+
+    context.fillStyle = '#112'
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.scale(renderScale, renderScale);
+    context.translate(renderOffsetX, renderOffsetY);
+
+    [screenMinX, screenMinY] = GetCellPosFromScreenPos(0,0);
+    [screenMaxX, screenMaxY] = GetCellPosFromScreenPos(innerWidth, innerHeight);
+
+    // background
+    FillRect(0, 0, cellsWidth, cellsHeight, '#080808');
+    
+    // draw grid
+    for(let i = 0; i < cellsWidth/4; ++i)
+        FillRect(i*4, 0, 1, cellsHeight, '#111');
+    for(let i = 0; i < cellsHeight/4; ++i)
+        FillRect(0, i*4, cellsWidth, 1, '#111');
+
+    // draw lines around cells
+    context.fillStyle = '#000';
+    for(let i = 0; i <= cellsWidth; ++i)
+        context.fillRect(i*cellSize-1, 0, 2, cellsHeight*cellSize);
+    for(let i = 0; i <= cellsHeight; ++i)
+        context.fillRect(0, i*cellSize-1, cellsWidth*cellSize, 2);
+
+    // render cells
+    cellObjects.map(c=>c&&c.Render(1)); // render newly spawned first
+    cellObjects.map(c=>c&&c.Render(2)); // render all others
+
+    if (IsEditing())
+    {
+        // check if mouse is over canvas or ui
+        if (hasFocus && (canvasHasMouse || drawing) && !dragging && !areaSelecting && IsValidCell(editObject.x, editObject.y)) // edit object
+        {
+            FillRect(editObject.x-.1, editObject.y-.1, 1.2, 1.2, 0, .1,
+                usingEyedropper ? '#0ff' : erasing ? '#f00' : '#fff');
+            //usingEyedropper || erasing || editObject.Render();
+        }
+
+        if (hasAreaSelect) // select box
+        {
+            const minX = Math.min(selectAreaMinX, selectAreaMaxX);
+            const minY = Math.min(selectAreaMinY, selectAreaMaxY);
+            const maxX = Math.max(selectAreaMinX, selectAreaMaxX);
+            const maxY = Math.max(selectAreaMinY, selectAreaMaxY);
+            FillRect(minX-.1, minY-.1, maxX-minX + 1.2, maxY-minY + 1.2, 0, .1, '#0f0');
+        }
+    }
+    
+    ///////////////////////////////////////////////////////////////////////////////
+    // update html / css
+
+    rotateIcons.map( (i, j)=> i.style.transform = `rotate(${animationTime/2e3*(j? -1 : 1)}rad)`)
+    
+    const songBeat = Math.max(0,(frame + stepPercent-1));
+    beatDisplaySpinner.style.transform = `rotate(${songBeat*Math.PI/4}rad)`;
+
+    const songTime = songBeat/bpm/bpmToStepsPerSecond;
+    const seconds = songTime%60|0;
+    songTimeDisplay.innerText = (songTime/60|0) +':' + (seconds>9?'':'0') + seconds;
+
+    // watermark and fps
+    const frameFPSTimeNew = performance.now();
+    fps = fps*.9 + .1 * (1e3/(frameFPSTimeNew - frameFPSTime));
+    frameFPSTime = frameFPSTimeNew;
+    watermarkDisplay.innerText = (debug? (fps|0) + ' FPS ' : '') + programName + ' v' + programVersion;
+
+    // context.drawImage(tilesCanvas, 0, 0); // test render tiles
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // clean up frame
+
+    keysPressed = [];
+    mousePressed = mouseWheel = 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Save / Load
+
+const C_Frequency = 261.6255653005986;
+
+const defaultInstruments = 
+[
+    [2,0,C_Frequency,,1,,1,,,,,,.2,,,,.01,.5,.01,.2],  // lead
+    [,0,C_Frequency/2,,1,,,2,,,.5,,,,,.1,,.4,.05],     // bass
+    [1.3,0,C_Frequency/4,,.02,,,1.5,,,,,,5,,,,.7,.02], // kick
+    [.5,0,260,,,.04,,,,,,,.1,99,,,,2,.005,.2],         // hat
+];
+
+function GetSaveString(saveCamera = 1)
+{
+    const cellsSave = IsPlaying() ? cellSavedObjects : cellObjects;
+
+    const cellsData = [];
+    cellsSave.map((cell, i)=>
+    {
+        cell && cellsData.push(...cell.GetInfoArray());
+    });
+
+    return JSON.stringify(
+    [
+        dataVersion,
+        songName,
+        bpm,
+        keyOffset,
+        renderOffsetX|0,
+        renderOffsetY|0,
+        saveCamera ? renderScale*1e3|0 : 0,
+        saveInstruments ? instruments : 0,
+        0, // not used, old cell ids
+        cellsData,
+        cellsWidth,
+        cellsHeight
+    ]);
+}
+
+function LoadSaveString(dataString)
+{
+    LoadSaveData(JSON.parse(dataString, (key, value) => value === null ? undefined : value));
+}
+
+function LoadSaveData(data)
+{
+    let version = data[0];
+
+    let renderOffsetXNew, renderOffsetYNew, renderScaleNew, cellData, cellIDs;
+
+    if (version != dataVersion)
+    {
+        /*const oldVersion = data.shift();
+        if (oldVersion > 0 && oldVersion < 4)
+        {
+            cellData = version;
+            [bpm, keyOffset, cellsWidth, cellsHeight, songName, instruments, renderScaleNew, renderOffsetXNew, renderOffsetYNew] = data;
+        }
+        else*/
+        {
+            alert(errorMessage);
+            ClearLevel()
+            return;
+        }
+    }
+
+    // convert old powerlines to multi directional
+    //version <= 2 && cellObjects.map(cell=>cell && cell.type == CELL_TYPE_POWER_LINE && (cell.data = 4));
+    
+    let cellsData = [];
+    let cellsIDs = [];
+
+    [version, songName, bpm, keyOffset, renderOffsetXNew, renderOffsetYNew, renderScaleNew, instruments, cellsIDs, cellData, cellsWidth, cellsHeight] = data;
+
+    cellObjects = [];
+    
+    for(let j = 0; j < cellData.length;)
+        SetCell(cellData[j++], cellData[j++], cellData[j++], cellData[j++]);
+    instruments || (instruments = defaultInstruments);
+    
+    if (renderScaleNew)
+    {
+        renderScale = renderScaleNew / 1e3;
+        renderOffsetX = renderOffsetXNew;
+        renderOffsetY = renderOffsetYNew;
+    }
+
+    InitCells();
+    UpdateUI();
+}
+
+function Save()
+{
+    SaveInternal();
+    SaveUndo();
+}
+
+function SaveInternal()
+{
+    localStorage[programName + 'Save'] = JSON.stringify([
+        dataGlobalVersion,
+        volume
+    ]);
+    localStorage[programName + 'SaveLevel'] = GetSaveString();
+}
+
+function Load() // only happens on startup
+{
+    // load save data
+    try
+    {
+        const saveObject = JSON.parse(localStorage[programName + 'Save']);
+        if (saveObject[0] == dataGlobalVersion)
+        {
+            volume = saveObject[1];
+        }
+    }
+    catch(e) 
+    {
+        // load demo
+    }
+    
+    const url = new URL(window.location.href);
+    try
+    {
+        // try to load crushed url
+        const crushedString = url.searchParams.get('c');
+        LoadSaveString(JSONUncrush(crushedString));
+        InitLevel();
+    }
+    catch(e)
+    {
+        try
+        {
+            LoadSaveString(localStorage[programName + 'SaveLevel']);
+            InitLevel();
+        }
+        catch (e) { 
+            LoadLevel(0);
+        }
+    }
+
+    // get rid of search in url
+    url.search = '';
+    window.history.pushState(null,null,url.toString());
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Play Controls
+
+function IsEditing()      { return playMode == PLAY_MODE_STOP; }
+function IsPlaying()      { return playMode > PLAY_MODE_STOP; }
+function IsPaused()       { return IsEditing() || playMode == PLAY_MODE_PAUSE; }
+function IsStepping()     { return playMode == PLAY_MODE_STEP; }
+function ToggleEdit()     { SetPlayMode(IsEditing()); }
+function GetPlaySpeed()   { return playMode == PLAY_MODE_FAST ? 8 : IsPlaying() ? 1 : 1/4; }
+
+function SetPlayMode(playModeNew = 0)
+{
+    if (playMode == playModeNew)
+        return;
+
+    if (playMode >= 0) // enable color transition
+        beatDisplay.style.transition = '.5s';
+
+    const wasPlaying = IsPlaying();
+    const playModeOld = playMode;
+    playMode = playModeNew;
+    
+    // set buttons style
+    playModes.map((mode, i)=>
+    {
+        const e = mode[3];
+        const isActive = i == playMode;
+        e.style.background = isActive ? mode[1] : '#555';
+        e.style.border = '4px solid ' + (isActive ? '#fff' : '#000');
+        
+        // set beat display color
+        if (isActive) 
+            beatDisplay.style.background = i==0? '#888' : e.style.background;
+    });
+
+    if (wasPlaying != IsPlaying())
+    {
+        // make/load copy of cells while playing
+        if (wasPlaying)
+            cellObjects.map(c=>c && c.Destroy());
+        else
+            cellSavedObjects = cellObjects.map(c=>c && (new Cell(...c.GetInfoArray())));
+
+        cellObjects = cellSavedObjects.map(c=>c && (new Cell(...c.GetInfoArray())));
+        InitCells();
     }
 }
 
-onmousemove = e=>
+///////////////////////////////////////////////////////////////////////////////
+// UI
+
+const PLAY_MODE_STOP  = 0;
+const PLAY_MODE_PLAY  = 1;
+const PLAY_MODE_PAUSE = 2;
+const PLAY_MODE_STEP  = 3;
+const PLAY_MODE_FAST  = 4;
+const PLAY_MODE_COUNT = 5;
+
+const playModes = 
+[
+    ['⏹️', '#f00', 'Stop'],
+    ['▶️', '#0f0', 'Play'],
+    ['⏸️', '#ff0', 'Pause'],
+    ['⏯️', '#0ff', 'Step'],
+    ['⏩', '#f0f', 'Fast Forward'],
+];
+
+const objectIconToolbar = 
+[
+    [1,0],[1,1],[1,2],[1,3],[1,4], // CELL_TYPE_POWER
+    [7,0],[7,1],[7,2],[7,3],[7,4], // CELL_TYPE_POWER_LINE
+    [6,1],                         // CELL_TYPE_ROTATE
+    [3,2],[3,0],                   // CELL_TYPE_CONTROL
+    [2,0],[2,1],                   // CELL_TYPE_NOTE
+
+    [5,0],[5,1],[5,2],[5,3],[5,4], // CELL_TYPE_COPY
+    [0,0],[0,1],[0,2],[0,3],       // CELL_TYPE_BLOCK
+    [4,0],                         // CELL_TYPE_KILL
+    [6,0],                         // CELL_TYPE_ROTATE
+    [3,3],[3,1],                   // CELL_TYPE_CONTROL
+    [2,2],[2,3],                   // CELL_TYPE_NOTE
+];
+
+function SetEditObject(type, data)
 {
-    // update grab position
-    grabWindow ? grabWindow.style.left = e.x - grabOffsetX : 0;
-    grabWindow ? grabWindow.style.top  = e.y - grabOffsetY : 0;
-    
-    // handle mouse move
-    e.target.Move && e.target.Move();
+    editObject.type = type;
+    editObject.data = data;
+    editObject.Reset();
+
+    // update toolbar selection
+    objectIconToolbar.map(i=>{
+        const selected = i[0] == type && i[1] == data;
+        i[2].style.border = selected ? '4px solid #f00' : '2px solid #000';
+        i[2].style.padding = selected ? 2 : 4;
+        i[2].style.background = selected? '#ccc' : '#444';
+    });
 }
 
-onmouseup = e=>
+function UpdateUI()
 {
-    const originalTarget = e.composedPath()[0];
-    originalTarget.parentElement == popups && originalTarget.remove(SystemSound(soundClose));
+    inputSongName.value = songName;
+    inputBPM.value = bpm = Clamp(bpm|0, inputBPM.max = 360, inputBPM.min = 30);
+    inputKey.value = keyOffset = Clamp(keyOffset|0, inputKey.max = 60, inputKey.min = 0);
+    inputVolume.value = volume*100;
+    iconVolume.innerHTML = volume > .5 ? '🔊' : volume > .1 ? '🔉' : volume ? '🔈' : '🔇'
+    document.title = programIcon + ' ' + programName + ' - ' + (songName ? songName : programSubName);
 
-    // set grab window active, no clamp, and set cursor to default, unset grab
-    grabWindow && (grabWindow.program.Save(),
-    SystemSound(soundGrabEnd),
-    grabWindow.SetActive(1, 0),
-        document.body.style.cursor = desktop.style.pointerEvents = grabWindow = '');
+    if (volumeGain)
+        volumeGain.gain.value = volume;
+
+    BuildToolbarIcons();
 }
 
-// prevent default right click context menu
-oncontextmenu = e=> !1;
+function CreateElement(tag, parent, className='', style='', innerHTML='', title='')
+{
+    const e = parent.appendChild(document.createElement(tag));
+    e.className = className;
+    e.style = style;
+    e.innerHTML = innerHTML;
+    e.title = title;
+    return e;
+}
+
+function BuildToolbarIcons()
+{
+    const iconsToolbar = CreateElement('div', toolbarEditControls);
+    objectIconToolbar.map((objectIcon, i)=>
+    {
+        const type = objectIcon[0];
+        const data = objectIcon[1];
+
+        // get or create div and canvas for icons
+        if (!objectIcon[2])
+        {
+            objectIcon[2] = CreateElement('div', iconsToolbar, '', 'display:inline-block');
+            objectIcon[3] = CreateElement('canvas', objectIcon[2], '', '', '', GetCellTypeDescription(...objectIcon));
+
+            // keep track of the icons that rotate
+            type == CELL_TYPE_ROTATE && rotateIcons.push(objectIcon[3]);
+        }
+
+        // render the icon
+        const iconCanvas = objectIcon[3];
+        context = iconCanvas.getContext('2d');
+        iconCanvas.height = iconCanvas.width = cellSize;
+        const cell = new Cell(0, 0, type, data);
+        cell.Render();
+
+        // select event
+        iconCanvas.onmousedown = iconCanvas.onmouseover = e=> drawing || dragging || e.buttons && SetEditObject(type, data);
+
+        // next row
+        (i==objectIconToolbar.length/2-1) && CreateElement('br', iconsToolbar);
+    });
+
+    context = canvas.getContext('2d');
+}
+
+function BuildHTML()
+{
+    let body = document.body, e;
+
+    // main elements
+    toolbar = CreateElement('div', body, 'toolbar');
+
+    toolbarTop = CreateElement('div', toolbar, 'toolbarTop');
+    toolbarEditControls = CreateElement('div', toolbar, 'toolbarEditControls');
+    canvas = CreateElement('canvas', body);
+    downloadLink = CreateElement('a', body, '', 'display:none');
+    inputFile = CreateElement('input', body, '', 'display:none');
+    inputFile.type = 'file';
+    inputFile.accept = extension;
+
+    BuildTiles();
+    BuildToolbarIcons();
+
+    // watermark
+    watermarkDisplay = CreateElement('div', body, 'watermark');
+
+    // top toolbar
+    inputSongName = CreateElement('input', toolbarTop, '', 'font-size:30;height:50;width:530');
+    inputSongName.placeholder = 'Song Name';
+    inputSongName.onchange = e=> Save(UpdateUI(songName = e.target.value));
+
+    const toolbarSettings = CreateElement('div', toolbarTop,'','margin-right:4;margin-left:4;text-align:center');
+
+    e = CreateElement('span', toolbarSettings, '', '', 'BPM');
+    inputBPM = e = CreateElement('input', toolbarSettings, '', '');
+    e.onchange = e=> Save(UpdateUI(bpm = e.target.value));
+    e.type = 'number';
+
+    CreateElement('br', toolbarSettings);
+    e = CreateElement('span', toolbarSettings, '', '', 'Key');
+    inputKey = e = CreateElement('input', toolbarSettings, '', '');
+    e.onchange = e=> Save(UpdateUI(keyOffset = e.target.value));
+    e.type = 'number';
+
+    // instrument select
+    const instrumentsToolbar = CreateElement('div', toolbarTop, '', 'margin-right:8');
+    for(let i = 0; i < 4; ++i)
+    {
+        e = CreateElement('div', instrumentsToolbar, `instrumentButton${i} menuButton`, 'width:30', i+1);
+        e.title = `Instrument ${i+1} Paremeters`;
+        e.onmousedown =e=>
+        {
+            zzfx(...instruments[i]);
+            let code = prompt(`🎹 Instrument ${i+1} ZzFX Code`, `zzfx(...${JSONStringifyNoNull(instruments[i])})`);
+            if (!code)
+                return;
+
+            code = code.split('[')[1];
+            if (!code)
+            {
+                alert(errorMessage);
+                return;
+            }
+
+            // split up parameters
+            instruments[i] = code.split(',').map(p=>p.length? parseFloat(p) : undefined);
+            zzfx(...instruments[i]);
+            alert('Instrument Loaded!');
+        }
+        i-1 || CreateElement('br', instrumentsToolbar);
+    }
+
+    // buttons
+    const buttonsToolbar = CreateElement('div', toolbarTop, '', '');
+    [
+        ['Save',    ButtonSave,     'Save to disk'],
+        ['Load',    ButtonLoad,     'Load from disk (you can also drag and drop)'],
+        ['New',     ButtonClear,    'Start a new song'],
+        ['Share',   ButtonShare,    'Share a compressed link'],
+        ['Export',  ButtonExport,   'Export to ZzFXM and OS13k'],
+        ['Demos',   ButtonMenu,     'Load a demo'],
+    ]
+    .map((button,i)=>{
+        e = CreateElement('div', buttonsToolbar, 'menuButton', '', button[0]);
+        e.onmousedown = button[1];
+        e.title = button[2];
+        i-2 || CreateElement('br', buttonsToolbar);
+    });
+
+    // beat display circle
+    const beatDisplayWrapper = CreateElement('div', toolbarEditControls);
+    beatDisplay = CreateElement('div', beatDisplayWrapper, 'beatDisplay');
+    beatDisplay.onmousedown=e=>ToggleEdit();
+    beatDisplaySpinner = CreateElement('div', beatDisplay, 'beatDisplaySpinner');
+    beatDisplaySpinner.title = 'Toggle Play [Space]'
+    e = CreateElement('div', beatDisplaySpinner, 'beatDisplayMarker');
+    songTimeDisplay = CreateElement('div', beatDisplayWrapper, 'songTimeDisplay');
+
+    // play controls
+    const playControlToolbarWrapper = CreateElement('div', toolbarEditControls);
+    const playControlToolbar = CreateElement('div', playControlToolbarWrapper);
+    playModes.map((mode, i)=>
+    {
+        mode[3] = e = CreateElement('div', playControlToolbar, 'playControl', '', mode[0], mode[2] + ` [${i+1}]`);
+        e.onmousedown = e=> SetPlayMode(i);
+    });
+
+    // volume
+    const volumeSettings = CreateElement('div', playControlToolbarWrapper, '', 'display:flex');
+    iconVolume = CreateElement('div', volumeSettings, '', 'width:30');
+    inputVolume = e = CreateElement('input', volumeSettings, '', 'width:230;margin:0');
+    e.oninput = e=> {volume = Clamp(e.target.value|0,100,0)/100, UpdateUI()};
+    e.onchange = e=> Save(e.target.blur());
+    e.type = 'range';
+
+    // load message
+    loadingMessageDisplay = CreateElement('div', body, 'loadingMessage');
+
+    // menu
+    menu = CreateElement('div', toolbar, 'menu');
+
+    levelData.map((level, i)=>
+    {
+        e = CreateElement('div', menu, 'level', '', level[1]);
+        e.onmousedown = e=>LoadLevel(i);
+    });
+
+    cellObjects = [];
+    UpdateUI();
+    SetEditObject(CELL_TYPE_NOTE, 0);
+    SetPlayMode();
+
+    context = canvas.getContext('2d');
+}
+
+function GetCellTypeDescription(type, data)
+{
+    let description = cellTypeInfo[type][0];
+
+    if (type == CELL_TYPE_BLOCK)
+    {
+        description = [
+            'Push',
+            'Horzontial Push',
+            'Vertical Push',
+            'Solid'
+        ][data] + ' ' + description;
+    }
+    else if (type == CELL_TYPE_POWER)
+        description += data < 4 ? ' Mover' : ' Stationary';
+    else if (type == CELL_TYPE_CONTROL && data%2)
+        description = (data>1? 'Half Attenuate ' : 'Attenuate ') + description;
+    else if (type == CELL_TYPE_CONTROL)
+        description = (data? 'Octave Key ' : 'Semitone Key ') + description;
+    else if (type == CELL_TYPE_COPY)
+        description += (data < 4 ? ' Direction' : ' All Directions');
+    else if (type == CELL_TYPE_ROTATE)
+        description += (data ? ' CW' : ' CCW');
+    return description;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
-// Drag and Drop
+// UI Buttons
+
+function RemoveFocus() { document.activeElement && document.activeElement.blur(); }
+
+function ButtonSave()
+{
+    RemoveFocus();
+    UpdateUI();
+    downloadLink.href = URL.createObjectURL(new Blob([GetSaveString()]));
+    downloadLink.download = (songName || 'Song') + extension;
+    downloadLink.click();
+}
+
+function LoadFile(file)
+{
+    const reader = new FileReader();
+    reader.onload = e=>
+    {
+        try
+        {
+            SetPlayMode();
+            LoadSaveString(e.target.result);
+            InitLevel();
+        }
+        catch(e) 
+        {
+            alert(errorMessage);
+            
+            cellsWidth = defaultCellsWidth;
+            cellsHeight = defaultCellsHeight;
+            
+            ClearLevel();
+        }
+        Save();
+        inputFile.value = ''; // reset input so same file can be reloaded
+    }
+    file && reader.readAsText(file);
+}
 
 // allow drag and drop code into editor
+ondragover = e=> false;
 ondrop = e=>
 {
-    let reader = new FileReader();
-    reader.onload = f=> e.target.SetActive(1, 0, e.target.SetCode(f.target.result, 1));
-
-    // read file, set code, and set active
-    e.dataTransfer.files.length && e.target.program && e.target.program.userProgram &&
-        reader.readAsText(e.dataTransfer.files[0]); 
-    return !1;
+    LoadFile(e.dataTransfer.files[0]); 
+    return false;
 }
 
-// prevent default drop events
-ondragover = ()=> !1;
+function ButtonLoad()
+{
+    inputFile.onchange=e=>LoadFile(e.target.files[0]);
+    inputFile.click();
+} 
+
+function ButtonClear()
+{
+    SetPlayMode();
+    let levelSize = prompt('📐 Level Size?', 101);
+
+    if (!levelSize)
+        return;
+
+    levelSize = Clamp(levelSize|0, 1000, 25);
+    cellsWidth = levelSize;
+    cellsHeight = levelSize;
+
+    ClearLevel();
+}
+
+function ButtonShare()
+{
+    if (!wantsToShare) // prevent double clicking button
+        return;
+    loadingMessageDisplay.style.display = 'block';
+    loadingMessageDisplay.innerHTML = '🗜️ Compressing URL...';
+    wantsToShare = 2;
+}
+
+function ButtonExport()
+{
+    let beatCount = prompt("🥁 Export How many beats?", bpm);
+    beatCount = Clamp(beatCount, bpm*10);
+    if (!beatCount)
+        return;
+
+    Export(beatCount);
+}
+
+function ButtonMenu()
+{
+    menu.style.display = menu.style.display ? '' : 'block';
+}
 
 ///////////////////////////////////////////////////////////////////////////////
-// ZzFXMicro - Zuper Zmall Zound Zynth
+// Rendering
 
-// play a zzfx sound
-var zzfx = (...parameters)=> OS13k.PlaySamples(zzfxG(...parameters)),
+const tilesScale = 2;
 
-// generate zzfx samples
-zzfxG = (volume = 1, randomness = .05, frequency = 220, attack = 0, sustain = 0, release = .1, shape = 0, shapeCurve = 1, slide = 0, deltaSlide = 0, pitchJump = 0, pitchJumpTime = 0, repeatTime = 0, noise = 0, modulation = 0, bitCrush = 0, delay = 0, sustainVolume = 1, decay = 0, tremolo = 0, buffer = [])=>
+function BuildTiles()
 {
-    attack = 99 + attack * defaultSampleRate;
-    release = release * defaultSampleRate;
-    sustain *= defaultSampleRate;
-    decay *= defaultSampleRate;
-    delay *= defaultSampleRate;
-    
-    // init parameters and helper functions
-    let PI2 = Math.PI*2,
-    sign = v=> v>0? 1 : -1,
-    length = OS13k.randomSeed = OS13k.Clamp(attack + decay + sustain + release + delay, 9*defaultSampleRate) | 0,
-    startSlide = slide *= 500 * PI2 / defaultSampleRate**2,
-    startFrequency = frequency *= (1 + randomness*2*Math.random() - randomness) * PI2 / defaultSampleRate,
-    modPhase = sign(modulation) * PI2/4,
-    t=0, tm=0, i=0, j=1, r=0, c=0, s=0, f;
+    // create a canvas with each tile
+    tilesCanvas = tilesCanvas || CreateElement('canvas', document.body, '', 'display:none');
+    tilesCanvas.height = tilesScale * 2 * CELL_TYPE_COUNT * cellSize;
+    tilesCanvas.width = tilesScale * 2 * 3 * CELL_MAX_DATA_COUNT * cellSize;
 
-    repeatTime = repeatTime * defaultSampleRate | 0;
-    pitchJumpTime *= defaultSampleRate;
-    pitchJump *= PI2 / defaultSampleRate;
-    deltaSlide *= 500 * PI2 / defaultSampleRate**3;
-    for(modulation *= PI2 / defaultSampleRate;
-    
-        // loop and generate waveform, combine with buffer if passed in
-        i < length; buffer[i] = (buffer[i++] || 0) + s)
+    context = tilesCanvas.getContext('2d');
+    context.scale(tilesScale, tilesScale);
+    for(let type = 0; type < CELL_TYPE_COUNT; ++type)
+    for(let data = 0; data < CellDataCount(type); ++data)
+    for(let set = 0; set < 3; ++set)
     {
-        if (!(++c%(bitCrush*100|0)))                     // bit crush
+        // render cell
+        const x = 2*(data + set*CELL_MAX_DATA_COUNT);
+        const y = 2*type;
+
+        // get color
+        let hue = 0, saturation = 1, lightness = .5;
+        if (type == CELL_TYPE_BLOCK && data < 3)
+            saturation = .2, hue = .1, lightness = .4;
+        else if (type == CELL_TYPE_BLOCK)
+            saturation = 0, lightness = 0;
+        else if (type == CELL_TYPE_POWER)
+            hue = 1/6;
+        else if (type == CELL_TYPE_CONTROL)
         {
-            s = shape? shape>1? shape>2? shape>3?        // wave shape
-                Math.sin((t%PI2)**3) :                   // 4 noise
-                Math.max(Math.min(Math.tan(t),1),-1):    // 3 tan
-                1-(2*t/PI2%2+2)%2:                       // 2 saw
-                1-4*Math.abs(Math.round(t/PI2)-t/PI2):   // 1 triangle
-                Math.sin(t);                             // 0 sin
-
-            s = (repeatTime ?
-                    1 - tremolo + tremolo*Math.sin(2*Math.PI*i/repeatTime) // tremolo
-                    : 1) *
-                sign(s)*(Math.abs(s)**shapeCurve) *          // curve 0=square, 2=pointy
-                volume * (                                   // envelope
-                    i < attack ? i/attack :                  // attack
-                    i < attack + decay ?                     // decay
-                    1-((i-attack)/decay)*(1-sustainVolume) : // decay falloff
-                    i < attack + decay + sustain ?           // sustain
-                    sustainVolume :                          // sustain volume
-                    i < length - delay ?                     // release
-                    (length - i - delay)/release *           // release falloff
-                    sustainVolume :                          // release volume
-                0);                                          // post release
-
-            s = delay ?                                      // delay
-                s/2 + (delay > i ? 0 :
-                (i<length-delay? 1 : (length-i)/delay) *     // release delay 
-                buffer[i - delay|0]/2) : s;                  // sample delay
+            saturation = data<2 ? .2 : .7;
+            lightness = set ? .9 : .7;
+            hue = data % 2? .05 : .55;
         }
+        else if (type == CELL_TYPE_NOTE)
+            hue = data/instrumentCount, lightness = set ? .7 : .3;
+        else if (type == CELL_TYPE_COPY)
+            hue = 5/6, lightness = set ? .6 : .3;
+        else if (type == CELL_TYPE_ROTATE)
+            hue = 3/6, lightness = set ? .6 : .3;
+        else if (type == CELL_TYPE_POWER_LINE)
+            hue = 2/6, lightness = set ? .6 : .3;
+        else if (type == CELL_TYPE_KILL)
+            lightness =  set ? .5 : .2;
 
-        f = (frequency += slide += deltaSlide) *     // frequency
-            Math.sin(tm * modulation - modPhase);    // modulation
+        const solid = type == CELL_TYPE_BLOCK && data > 2;
+        const strokeColor = solid ? '#888' : set ? '#fff' : '#000';
+        const outlineWidth = solid ? .2 : set ? .1 : .05;
+        const color = HSLA(hue, saturation, lightness);
 
-        t += f - f*noise*(1 - (Math.sin(i)+1)*1e9%2);     // noise
-        tm += f - f*noise*(1 - (Math.sin(i)**2+1)*1e9%2); // modulation noise
-
-        if (j && ++j > pitchJumpTime)       // pitch jump
+        // outline and fill
+        if (type == CELL_TYPE_BLOCK || type == CELL_TYPE_NOTE || type == CELL_TYPE_CONTROL || type == CELL_TYPE_POWER_LINE)
+            FillRect(x, y, 1, 1, color, outlineWidth, strokeColor);
+        else if (type == CELL_TYPE_KILL)
         {
-            frequency += pitchJump;         // apply pitch jump
-            startFrequency += pitchJump;    // also apply to start
-            j = 0;                          // reset pitch jump time
+            // kill octagon
+            context.fillStyle = color;
+            context.strokeStyle = '#ff0';
+            context.lineWidth = 2;
+
+            context.beginPath();
+            for(let i = 9; i--; )
+            {
+                const angle = 2 * Math.PI * (i+.5) / 8;
+                context.arc((x+.5)*cellSize, (y+.5)*cellSize, cellSize*.5, angle, angle);
+            }
+            context.fill();
+            context.stroke();
         }
+        else
+            FillCircle(x+.5, y+.5, .5, color, outlineWidth, strokeColor);
 
-        if (repeatTime && !(++r % repeatTime)) // repeat
+        // type data
+        if (type == CELL_TYPE_POWER || type == CELL_TYPE_COPY || type == CELL_TYPE_POWER_LINE)
         {
-            frequency = startFrequency;     // reset frequency
-            slide = startSlide;             // reset slide
-            j = j || 1;                     // reset pitch jump time
+            // direction arrow
+            context.strokeStyle = '#000';
+            context.fillStyle = set>1 ? HSLA(0, 1, .5) :  HSLA(hue, saturation, set ? .9 : .1);
+            context.lineWidth = 2;
+
+            const noDirection = data > 3; // use diamond if non directional
+            context.beginPath();
+            for(let i = 5+noDirection; i--; )
+            {
+                const angle = (data+3)/4*Math.PI*2 + 2 * Math.PI * (i-1) / (3+noDirection);
+                context.arc((x+.5)*cellSize, (y+.5)*cellSize, cellSize*.3, angle, angle);
+            }
+            context.fill();
+            context.stroke();
+        }
+        else if (type == CELL_TYPE_BLOCK)
+        {
+            if (data == 2) // vertical
+                FillRect((x+.5) - 1/8, y, 1/4, 1, '#000');
+            else if (data == 1) // horizontal
+                FillRect(x, (y+.5) - 1/8, 1, 1/4, '#000');
+        }
+        else if (type == CELL_TYPE_ROTATE)
+        {
+            let w = .7, h = .25, w2 = .6, h2 = .15, c = HSLA(hue, saturation, set ? 1 : .8);
+            context.save();
+            context.translate((x+.5)*cellSize, (y+.5)*cellSize);
+            FillRect(-w/2, -h/2, w, h, '#000');
+            FillRect(-h/2, -w/2, h, w, '#000');
+            FillRect(-w2/2, -h2/2, w2, h2, c);
+            FillRect(-h2/2, -w2/2, h2, w2, c);
+            context.restore();
         }
     }
-    
-    return buffer;
-},
+
+    context = canvas.getContext('2d');
+}
+
+function FillRect(x, y, w, h, fillStyle, lineWidth = 0, strokeStyle = '#fff')
+{
+    context.save();
+    context.scale(cellSize, cellSize);
+    if (fillStyle)
+    {
+        context.fillStyle = fillStyle;
+        context.fillRect(x, y, w, h);
+    }
+    if (lineWidth)
+    {
+        context.lineWidth = lineWidth
+        context.strokeStyle = strokeStyle;
+        context.strokeRect(x+lineWidth/2, y+lineWidth/2, w-lineWidth, h-lineWidth);
+    }
+    context.restore();
+}
+
+function FillCircle(x, y, r, fillStyle, lineWidth = 0, strokeStyle = '#fff')
+{
+    context.save();
+    context.scale(cellSize, cellSize);
+    context.beginPath();
+    context.arc(x, y, r-lineWidth/2, 0, 7);
+    if (fillStyle)
+    {
+        context.fillStyle = fillStyle;
+        context.fill();
+    }
+    if (lineWidth)
+    {
+        context.lineWidth = lineWidth
+        context.strokeStyle = strokeStyle;
+        context.stroke();
+    }
+    context.restore();
+}
 
 ///////////////////////////////////////////////////////////////////////////////
-//! ZzFXM (v2.0.2) | (C) Keith Clark & Frank Force | MIT | https://github.com/keithclark/ZzFXM
+// Undo / Redo
 
-zzfxM = (instruments, patterns, sequence, BPM = 125, validate) => 
+function SaveUndo()
 {
-    let instrumentParameters, i, j, k, sample, patternChannel, isSequenceEnd,
-        notFirstBeat, stop, instrument, pitch, attenuation, pan = 0,
-        outSampleOffset, sampleOffset, nextSampleOffset, sampleBuffer = [], 
-        channelIndex = 0, hasMore = 1, channelBuffers = [[],[]], 
-        sampleCache = {}, beatLength = defaultSampleRate / BPM * 60 >> 2;
+    if (undo.length > maxUndos)
+        undo.shift();
 
-    // for each channel in order until there are no more
-    for(; hasMore; channelIndex++)
+    undo.push([GetSaveString(0), hasAreaSelect, selectAreaMinX, selectAreaMinY, selectAreaMaxX, selectAreaMaxY]);
+    redo = [];
+}
+
+function LoadUndoObject(u)
+{
+    let saveString;
+    [saveString, hasAreaSelect, selectAreaMinX, selectAreaMinY, selectAreaMaxX, selectAreaMaxY] = u;
+    LoadSaveString(saveString);
+}
+
+function Undo()
+{
+    hasAreaSelect = 0;
+    if (undo.length <= 1)
+        return;
+        
+    redo.push(undo.pop());
+    LoadUndoObject(undo[undo.length-1]);
+    SaveInternal();
+}
+
+function Redo()
+{
+    hasAreaSelect = 0;
+    if (!redo.length)
+        return;
+
+    const s = redo.pop();
+    LoadUndoObject(undo[undo.push(s)-1]);
+    SaveInternal();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Export to ZzFXM
+
+let simulate = 0;
+let simulateStopEvents;
+let simulatePlayEvents;
+function Export(beatCount)
+{
+    SetPlayMode(PLAY_MODE_STOP);
+
+    // simulate playback
+    simulate = 1;
+    let tracks = [];  // [zzfxmTrack, instrument, activeCell, key, attenuation]
+
+    while(frame < 4*beatCount-1)
     {
-        // reset current values
-        sampleBuffer = [hasMore = notFirstBeat = outSampleOffset = 0];
+        simulateStopEvents = [];
+        simulatePlayEvents = [];
 
-        // for each pattern in sequence
-        sequence.map((patternIndex, sequenceIndex) => 
+        IsPlaying() ? UpdateFrame() : SetPlayMode(PLAY_MODE_PLAY);
+        
+        // process stop events
+        simulateStopEvents.map(cell=>
         {
-            // get pattern for current channel, use empty 1 note pattern if none found
-            patternChannel = patterns[patternIndex][channelIndex] || [0, 0, 0];
+            // get cell for track
+            let track = tracks.find(e=>e[2] == cell);
+            if (!track)
+                return;
 
-            // check if there are more channels
-            hasMore |= !!patterns[patternIndex][channelIndex];
+            const trackPattern = track[0];
+            trackPattern[frame] = -1;
 
-            // get next offset, use the length of first channel
-            nextSampleOffset = outSampleOffset + (patterns[patternIndex][0].length - 2 - !notFirstBeat) * beatLength;
+            track[2] = 0; // unset track cell
+        });
 
-            // for each beat in pattern, plus one extra if end of sequence
-            isSequenceEnd = sequenceIndex == sequence.length - 1;
-            for (i = 2, k = outSampleOffset; i < patternChannel.length + isSequenceEnd; notFirstBeat = ++i)
+        // process play/change events
+        simulatePlayEvents.map(e=>
+        {
+            const cell        = e[0];
+            const instrument  = cell.data;
+            const key         = 12 + e[1];
+            const attenuation = e[2]/10;
+
+            // get cell for track
+            let track = tracks.find(e=>e[2] == cell);
+            if (!track)
             {
-                // stop if end, different instrument, or new note
-                stop = i == patternChannel.length + isSequenceEnd - 1 && isSequenceEnd || 
-                    instrument != (patternChannel[0] || 0) | patternChannel[i] | 0;
-
-                // fill buffer with samples for previous beat, most cpu intensive part
-                if (!validate)
-                for(j = 0; j < beatLength && notFirstBeat; 
-
-                    // fade off attenuation at end of beat if stopping note, prevents clicking
-                    j++ > beatLength - 99 && stop ? attenuation += (attenuation < 1) / 99 : 0
-                )
+                // find avilable track with no cell and same instrument
+                track = tracks.find(e=>!e[2] && e[1] == instrument);
+                if (!track)
                 {
-                    // copy sample to stereo buffers with panning
-                    sample = (1-attenuation) * sampleBuffer[sampleOffset++] / 2 || 0;
-                    channelBuffers[0][k] = (channelBuffers[0][k]   || 0) - sample * pan + sample;
-                    channelBuffers[1][k] = (channelBuffers[1][k++] || 0) + sample * pan + sample;
-                }
-
-                // set up for next note
-                if (patternChannel[i])
-                {
-                    // set attenuation and pan
-                    attenuation = patternChannel[i] % 1;
-                    pan = patternChannel[1] || 0;
-
-                    if (patternChannel[i] | 0)
-                    {
-                        // get cached sample
-                        sampleBuffer = sampleCache
-                            [[
-                                instrument = patternChannel[sampleOffset = 0] || 0, 
-                                pitch = patternChannel[i] | 0
-                            ]] = 
-                            sampleCache[[instrument, pitch]] ||
-                        (
-                            // add sample to cache
-                            instrumentParameters = [...instruments[instrument]],
-                            instrumentParameters[2] *= 2 ** ((pitch - 12) / 12),
-                            pitch > 0 ? zzfxG(...instrumentParameters) : []
-                        );
-                    }
+                    // add new track
+                    tracks.push([[], instrument, cell, -1, -1]);
+                    track = tracks[tracks.length-1];
                 }
             }
 
-            // update the sample offset
-            outSampleOffset = nextSampleOffset;
+            const trackPattern     = track[0]; 
+            const trackInstrument  = track[1];
+            const trackCell        = track[2];
+            const trackKey         = track[3];
+            const trackAttenuation = track[4];
+
+            if (key == trackKey && cell == trackCell)
+            {
+                // change attenuation only
+                trackPattern[frame] = Clamp(attenuation, .999); // can't be 1
+            }
+            else
+            {
+                trackPattern[frame] = key + Clamp(attenuation, .999);
+            }
+
+            track[2] = cell;
+            track[3] = key;
+            track[4] = attenuation;
         });
     }
 
-    return channelBuffers;
+    SetPlayMode(PLAY_MODE_STOP);
+    simulate = 0;
+
+    // build zzfxm data
+    const zzfxmPatterns = [];
+    tracks.map(track=>
+    {
+        const instrument = track[1];
+        let pattern = track[0];
+        pattern.unshift(0);          // pan
+        pattern.unshift(instrument); // instrument
+
+        zzfxmPatterns.push(pattern);
+    });
+
+    // set all patterns to be same length
+    const longestPattern = zzfxmPatterns.reduce((a,c)=>Math.max(c.length, a), 0);
+    zzfxmPatterns.map(pattern=>pattern.length = longestPattern);
+
+    // sort patterns by instrument
+    zzfxmPatterns.sort((a,b)=>a[0] - b[0]);
+
+    const zzfxmString = JSONStringifyNoNull([instruments, [zzfxmPatterns], [0], bpm]);
+    downloadLink.href = URL.createObjectURL(new Blob([zzfxmString]));
+    downloadLink.download = (songName || 'Song') + '.txt';
+    downloadLink.click();
+
+    // share to zzfx
+    localStorage['OS13kMusic,NoteCraft - '+songName] = zzfxmString;
+    localStorage['OS13kTrophy,🎵🔨,NoteCraft,Exporter'] = 'Exported to OS13k';
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// Start OS13k!
+// Audio
 
-// load save data
-if (localStorage.OS13k)
-    [trophies, settings, programInfos, startProgramId, nextUserProgramId] = JSON.parse(localStorage.OS13k);
+function CreateAudioContext()
+{ 
+    if (zzfxX)
+        return;
+        
+    zzfxX = new(top.AudioContext||webkitAudioContext); 
+    volumeGain = zzfxX.createGain();
+    volumeGain.connect(zzfxX.destination);
+    volumeGain.gain.value = volume;
+}
 
-// save and update settings
-OS13k.Save();
+const zzfxV = .5;    // volume
+const zzfxR = 44100; // sample rate
+let zzfxX;
 
-// setup audio
-gain.connect(audioContext.destination);
-gainMusic.connect(audioContext.destination);
+// play zzfx sound
+function zzfx(...parameters) { return zzfxP(...zzfxG(...parameters)); }
 
-// create tray icons
-trophyTrayIcon     = new OS13kTrayIcon();
-musicTrayIcon      = new OS13kTrayIcon();
-settingsTrayIcon   = new OS13kTrayIcon();
-stickyNoteTrayIcon = new OS13kTrayIcon();
-clockTrayIcon      = new OS13kTrayIcon();
+// create source
+function zzfxS(...samples)
+{    
+    CreateAudioContext();
 
-// create load program taskbar icon and add folders/programs
-RebuildMenu(loadIcon = new OS13kTaskbarIcon({icon:'💾', name:'Load'}, new OS13kProgramMenu(programStubs)));
+    // create buffer and source
+    const buffer = zzfxX.createBuffer(1, samples.length, zzfxR);
+    const source = zzfxX.createBufferSource();
 
-// welcome message
-OS13k.Trophy('👋','','Welcome to OS13k!');
+    // copy samples to buffer
+    buffer.getChannelData(0).set(samples);
+    source.buffer = buffer;
+    return source;
+}
 
-// search local storage for new trophies (from other JS13k games)1
-for (let key in localStorage) CheckForTrophy(key);
+// play samples
+function zzfxP(...samples)
+{    
+    // create and start source
+    const source = zzfxS(...samples);
+    source.connect(volumeGain);
+    source.start();
+    return source;
+}
 
-// listen for trophies from other windows
-onstorage = e=> CheckForTrophy(e.key);
-
-// stop spech if page is unloaded
-onunload = e=> StopSpeech();
-
-// try to update startup and kick off first update
-Update();
+// generate zzfx sound
+const zzfxG=(C=1,h=.05,p=220,d=0,t=0,q=.1,r=0,D=1,u=0,E=0,x=0,F=0,g=0,y=0,z=0,G=0,c=0,v=1,k=0,A=0)=>{let b=2*Math.PI;d=99+d*zzfxR;q=99+q*zzfxR;t*=zzfxR;k*=zzfxR;c*=zzfxR;g=g*zzfxR|0;let l=d+k+t+q+c|0,H=u*=500*b/zzfxR**2;h=p*=(1+2*h*Math.random()-h)*b/zzfxR;let I=(0<z?1:-1)*b/4,f=0,B=0,a=0,J=0,K=0,e=0,m=1,w=[],n;for(;a<l;w[a++]=e)++K%(100*G|0)||(e=r?1<r?2<r?3<r?Math.sin((f%b)**3):Math.max(Math.min(Math.tan(f),1),-1):1-(2*f/b%2+2)%2:1-4*Math.abs(Math.round(f/b)-f/b):Math.sin(f),
+e=(0<e?1:-1)*Math.abs(e)**D*(g?1-A+A*Math.sin(2*Math.PI*a/g):1)*C*zzfxV*(a<d?a/d:a<d+k?1-(a-d)/k*(1-v):a<d+k+t?v:a<l-c?(l-a-c)/q*v:0),e=c?e/2+(c>a?0:(a<l-c?1:(a-l)/c)*w[a-c|0]/2):e),n=(p+=u+=500*E*b/zzfxR**3)*Math.sin(B*z*b/zzfxR-I),f+=n-n*y*(1-1E9*(Math.sin(a)+1)%2),B+=n-n*y*(1-1E9*(Math.sin(a)**2+1)%2),m&&++m>F*zzfxR&&(p+=x*b/zzfxR,h+=x*b/zzfxR,m=0),!g||++J%g||(p=h,u=H,m=m||1);return w}
 
 ///////////////////////////////////////////////////////////////////////////////
-// Mobile Support OPTIONAL
 
-// save if user was touching
-let wasTouching;
-    
-if (window.ontouchstart !== undefined)
+const programIcon = '🎵🔨';
+const programName = 'NoteCraft';
+const programSubName = 'Musical Cellular Automata';
+const programVersion = '1.03';
+const errorMessage = '👾 I am Error.';
+const dataVersion = 6;
+const dataGlobalVersion = 2;
+const maxUndos = 99;
+const defaultBPM = 100;
+const defaultCellsWidth = 57, defaultCellsHeight = 57;
+const instrumentCount = 4;
+
+let instruments, cellObjects, cellSavedObjects;
+let cellsWidth = defaultCellsWidth, cellsHeight = defaultCellsHeight;
+let cellSize = 32;
+let bpm = defaultBPM;
+let keyOffset = 0;
+let bpmToStepsPerSecond = 4/60;
+let lastTime = 0;
+let frame = -1;
+let pauseStep = 0;
+let editObject = new Cell(0,0);
+let mouseDown, mousePressed, mouseButtons, mouseX=0, mouseY=0, mouseWheel;
+let dragStartX, dragStartY;
+let playMode = -1;
+let deltaTime = 0;
+let auditionMode, frameSoundCount;
+let soundCache;
+let keysDown = [], keysPressed = [];
+let canvas, tilesCanvas, context, menu;
+let stepPercent;
+let inputBPM, inputVolume, iconVolume, inputKey, inputSongName;
+let downloadLink, inputFile, rotateIcons = [];
+let songName = '', extension = '.nc';
+let selectAreaStartX, selectAreaStartY, selectAreaMinX, selectAreaMinY, selectAreaMaxX, selectAreaMaxY;
+let renderOffsetX = 0, renderOffsetY = 0, renderScale = 1;
+let copyCells, copyCellsWidth;
+let areaSelecting, hasAreaSelect, drawing, dragging, usingEyedropper, erasing;
+let undo = [], redo = [];
+let toolbar, toolbarEditControls, toolbarTop, beatDisplay, beatDisplaySpinner, songTimeDisplay;
+let fps = 0, frameFPSTime = 0, watermarkDisplay;
+let hasFocus = 0;
+let screenMinX, screenMinY, screenMaxX, screenMaxY;
+let unpowerSet;
+let canvasHasMouse;
+let wantsToShare = 0;
+let loadingMessageDisplay;
+
+let lastEditX, lastEditY;
+
+let moveTestID = 0;
+let cellMoveTargets, updateListCells;
+
+// volume gain
+let volume = .5;
+let volumeGain;
+
+BuildHTML();
+
+///////////////////////////////////////////////////////////////////////////////
+// Input
+
+// mouse
+canvas.onmousedown = e=> {mousePressed = mouseDown = e.button + 1; mouseButtons = e.buttons;}
+onmouseup = canvas.onmouseup = e=> {mouseDown = 0; mouseButtons = e.buttons;}
+onmousemove = e=> { mouseX = e.x; mouseY = e.y; }
+oncontextmenu = e=> false;
+
+document.addEventListener('wheel', e=> 
 {
-    // remove hovers, they get stuck on mobile
-    let RemoveHovers = e=>
-    {
-        [...e.styleSheets].map(sheet=> {
-        for(let i = sheet.rules.length; i--; )
-            sheet.rules[i].selectorText &&
-            sheet.rules[i].selectorText.match('hover') &&
-            sheet.deleteRule(i)});
-    }
-    RemoveHovers(document);
-                
-    // handle touch event
-    let ProcessTouch = e=>
-    {
-        // check if touching
-        let touching = e.touches.length;
-        if (touching)
-        {
-            // set event pos
-            e.x = e.touches[0].clientX;
-            e.y = e.touches[0].clientY;
+    e.ctrlKey && e.preventDefault();
 
-            // pass event to mousemove and give focus to main window
-            onmousemove(e);
-        }
+    if (e.target == canvas)
+        mouseWheel = e.deltaY;
 
-        // pass event to mouse down, prevent closing folders
-        touching & !wasTouching & !e.target.folder && e.target != loadIcon && onmousedown(e);
+}, { passive: false });
 
-        // pass event to mouse up
-        !touching & wasTouching && onmouseup(e);
-
-        // set was touching
-        wasTouching = touching;
+// keyboard
+onkeydown = e=> 
+{
+    if (e.keyCode == 9  || e.ctrlKey || e.altKey) // prevent tab & control
+        e.preventDefault();
         
-        // remove hovers from active window
-        activeWindow && RemoveHovers(activeWindow.shadowRoot);
+    if (e.target.localName == 'input')
+        return;
         
-        // prevent default if not edit area
-        let originalTarget = e.originalTarget || e.path[0];
-        
-        // allow event to contiue only if input
-        return !e.cancelable || e.target == loadIcon || /input|textarea|button/.test(originalTarget.localName);
-    }
-    
-    // set touch events
-    ontouchstart = ontouchmove = ontouchend = ontouchcancel = ProcessTouch;
+    e.repeat || (keysDown[e.keyCode] = keysPressed[e.keyCode] =  1);
 };
+
+onkeyup = e=> keysDown[e.keyCode] = 0;
+
+Load();
+Update();
 
 </script>
