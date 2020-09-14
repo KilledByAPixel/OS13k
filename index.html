@@ -1330,13 +1330,13 @@ class OS13kWindow extends HTMLElement
         canvasContext = canvas.getContext('2d');
 
         // set checkboxes
-        sleepInput.checked = program.info.allowSleep != !1;
-        liveEditInput.checked = program.info.liveEdit != !1;
+        sleepInput.checked = program.info.allowSleep != false;
+        liveEditInput.checked = program.info.liveEdit != false;
         
         // error text
         this.errorText = this.codeDisplay.appendChild(document.createElement('textarea'));
         this.errorText.id = 'errorText';
-        this.errorText.readOnly = !0;
+        this.errorText.readOnly = true;
         
         // save button
         saveButton.onmousedown = ()=>
@@ -1428,7 +1428,7 @@ class OS13kWindow extends HTMLElement
         this.errorText.value = e ? e + (e && e.stack ? ` (${(line-1) + ':' + col})` : '') : message;
         this.errorText.style.display = this.errorText.value ? '' : 'none';
         console.log(this.errorText.value);
-        return !0;
+        return true;
     }
     
     CreateFrame()
@@ -1490,7 +1490,7 @@ class OS13kWindow extends HTMLElement
                     iframeContent.eval(
                         `OS13k=parent.OS13k;x=c.getContext` +
                         (program.isShader ? // preserve buffer for user programs for screenshot
-                            `('webgl2'${program.userProgram ? ',{preserveDrawingBuffer:!0}' : ''});` +
+                            `('webgl2'${program.userProgram ? ',{preserveDrawingBuffer:true}' : ''});` +
                             `X=Y=Z=W=0;` +
                             `onmousemove=e=>e.buttons&&(X=e.x,Y=c.height-e.y);` +
                             `onmousedown=e=>(X=Z=e.x,Y=W=c.height-e.y);` +
@@ -1520,7 +1520,7 @@ class OS13kWindow extends HTMLElement
             codeIsSafe || (iframeContent.onmousedown = e=> (this.Reload(allCodeIsSafe = 1), onmousedown(e)));
             
             // prevent iframes context menu and drop events
-            iframeContent.ondrop = iframeContent.ondragover = iframeContent.oncontextmenu = ()=> !1;
+            iframeContent.ondrop = iframeContent.ondragover = iframeContent.oncontextmenu = ()=> false;
             
             // add taskbar icon if it doesnt exist and set active
             this.taskbarIcon || (this.taskbarIcon = new OS13kTaskbarIcon(program, this)).SetActive();
@@ -1851,7 +1851,7 @@ onmousedown = e=>
         activeWindow && activeWindow.SetActive();
         
         // prevent main document from taking focus
-        return !1;
+        return false;
     }
     
     // close menus and reset program menu position, and set there has been input
@@ -1865,7 +1865,7 @@ onmousedown = e=>
     {
         // dont allow right click on buttons
         if (originalTarget.localName == 'button')
-            return !1;
+            return false;
 
         // check for right mouse button
         if (e.button & 2 && e.target != menu)
@@ -1915,7 +1915,7 @@ onmouseup = e=>
 }
 
 // prevent default right click context menu
-oncontextmenu = e=> !1;
+oncontextmenu = e=> false;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Drag and Drop
@@ -1929,11 +1929,11 @@ ondrop = e=>
     // read file, set code, and set active
     e.dataTransfer.files.length && e.target.program && e.target.program.userProgram &&
         reader.readAsText(e.dataTransfer.files[0]); 
-    return !1;
+    return false;
 }
 
 // prevent default drop events
-ondragover = ()=> !1;
+ondragover = ()=> false;
 
 ///////////////////////////////////////////////////////////////////////////////
 // ZzFXMicro - Zuper Zmall Zound Zynth
