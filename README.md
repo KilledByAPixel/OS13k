@@ -3,7 +3,7 @@ OS13k is a tiny operating system that fits in a 13 kb zip file.
 
 It includes native support for Shadertoys, Dweets, ZzFX sounds, music, trophies, touch input, and much more.
 
-# [Live Demo](https://killedbyapixel.github.io/OS13k) -  [JS13k Build](https://killedbyapixel.github.io/OS13k/JS13k) - [Discord](https://discord.gg/n8vxUcZ)
+# [Live Demo](https://killedbyapixel.github.io/OS13k) -  [JS13k Submission](https://js13kgames.com/entries/os13k) - [Discord](https://discord.gg/n8vxUcZ)
 
 ## What is OS13k?
 - OS13k is a tiny web based pseudo OS and game engine designed for creative coding purposes
