@@ -167,8 +167,16 @@ Add an icon config to programs.js to register your program, examples...
 
 ## Contribuitors
 
-Most of the OS was created by me, Frank Force, but there were many other people helping out. Thank you to everyone for their efforts, I could not have done it alone! Please let me know if I forgot anyone...
+Most of the OS was created by myself, but there were many other people helping out. Thank you to everyone for their efforts, I could not have done it alone!
 
-Keith Clark, Tomxor, Niklas Berg, Katkip, Jaburns, Xem, Pavel, Rebecca König, Cantelope, DaSpider, Lionleaf, Yurume, Magna, Rodrigo Siqueira, Thomas Brierley, Nicholas Ortenzio, Yuanchuan, Jani Ylikangas, Martinn Kleppe, Erik Sombroek
+- Keith Clark - ZzFXM
+- Tomxor - Don't Fall
+- Niklas Berg - Shedding Snake
+- Pavel - Visualizer and 404
+- Rodrigo Siqueira - Sticky Note
+
+Additional help by...
+
+- Katkip, Jaburns, Xem, Rebecca König, Cantelope, DaSpider, Lionleaf, Yurume, Magna, Thomas Brierley, Nicholas Ortenzio, Yuanchuan, Jani Ylikangas, Martinn Kleppe, Erik Sombroek
 
 ![OS13k Image](/favicon.ico) 
