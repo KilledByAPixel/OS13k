@@ -50,7 +50,6 @@ Add an icon config to programs.js to register your program, examples...
  - When a new trophy is unlocked or the message is changed a popup will automatically appear
  - Total trophy count is shown in the taskbar and the trophy case shows all unlocked trophies
  - *You can use tophies to store data!* Use OS13k.GetTrophy to get a trophy message
- - *Keep your trophy names and messages short, experiment with fun ideas and icons!*
 
 ### Trophy Functions
  - OS13k.Trophy(game='', icon='', name='', message='') - Unlock a trophy
@@ -66,7 +65,7 @@ Add an icon config to programs.js to register your program, examples...
 - OS13k.Note(semitoneOffset=0, rootNoteFrequency=440) - Get frequency of a note on a musical scale
 - OS13k.Speak(text, language='en', stopSpeech, volume=1, rate=1, pitch=1) - Play speech of the text
 - Seeds can also be strings (will be hashed) or full ZzFX sounds
-- An extra custom gain node is created for every sound, use sound.gain.gain.value to change
+- A custom gain node is created for every sound, use sound.gain.gain.value to change
 
 ### Music
 - [ZzFXM by Keith Clark](https://github.com/keithclark/ZzFXM) is the music player
@@ -84,7 +83,6 @@ Add an icon config to programs.js to register your program, examples...
  - OS13k automatically checks localStorage and display popups for new trophies and songs from other games
  - This is possible because all JS13k games share the same local storage! Pretty cool right?
  - You can test locally by pasting your trophy code into the OS13k's console app
- - *Don't spam the trophy system, lets agree to a max of 10 trophies per game*
 
 ### System Calls
 - The OS13k object is set in your program after load, if you need it on load use parent.OS13k
@@ -147,23 +145,6 @@ Add an icon config to programs.js to register your program, examples...
  - User Dweets has loop protection to help prevent freeze ups, though it can still occur
  - Press Alt+Enter to reload when live edit is disabled
  - User programs will not run until clicked to prevent executing bad code
-
-## Minification Tips
-- The goal is to fit as much as possible into 13 kilobytes so everything must be small and clean
-- For inclusion in the JS13k build, programs need be around 100-500 bytes when minified
-- *Always remember, this will be zipped! Don't over golf your code.*
-- There is much less overhead for common functions calls and html tags then program logic
-- Try to limit your use of non repeated text strings, those compresses the worst, try using emojis
-- Don't compress your code, let zip do the work for us
-- For the OS13k core system we are using [Google Closer](https://closure-compiler.appspot.com/home) and [Terser](https://xem.github.io/terser-online)
-
- ## Resources
- - [Dwitter](https://www.dwitter.net/) - Many ideas for tiny programs we can repurpose
- - [The Dweetabase](http://dweetabase.3d2k.com/) - An offline searable database of every dweet
- - [Shadertoy](https://www.shadertoy.com/) - There are many amazing tiny shaders [(check out the 2TC tag)](https://www.shadertoy.com/results?query=2TC)
- - [JS1k](https://js1k.com/) - A resource for tiny programs
- - [JS13k](https://js13kgames.com/) - This is the contest we are entering
--  [Emojipedia](https://emojipedia.org/) - Emoji reference
 
 ## Contribuitors
 
