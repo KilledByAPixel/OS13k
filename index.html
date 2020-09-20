@@ -201,13 +201,33 @@ span                { white-space:nowrap; }
 }
 </style>
 </iframe>
+<script>
 
-<script src=OS13kProgramMenu.js></script>
-<script src=OS13kProgram.js></script>
-<script src=OS13kWindow.js></script>
-<script src=OS13kTaskbarIcon.js></script>
-<script src=OS13kTrayIcon.js></script>
-<script src=OS13kZzFX.js></script>
-<script src=OS13kInput.js></script>
-<script src=OS13kProgramStubs.js?v277></script>
-<script src=OS13k.js></script>
+///////////////////////////////////////////////////////////////////////////////
+// OS13k Version Check
+
+const OS13kVersion = 81;
+const OS13kPageCacheVersion = 300; // force pages to be refreshed
+{
+    // version check, clear local storage if older
+    if (localStorage.OS13k && localStorage.OS13kVersion != OS13kVersion)
+    {
+        alert('OS13k version out of date! System reset in 3, 2, 1...');
+
+        delete localStorage.OS13k;
+        //localStorage.clear();
+    }
+
+    localStorage.OS13kVersion = OS13kVersion;
+}
+
+</script>
+<script src=OS13k\OS13kProgramMenu.js></script>
+<script src=OS13k\OS13kProgram.js></script>
+<script src=OS13k\OS13kWindow.js></script>
+<script src=OS13k\OS13kTaskbarIcon.js></script>
+<script src=OS13k\OS13kTrayIcon.js></script>
+<script src=OS13k\OS13kZzFX.js></script>
+<script src=OS13k\OS13kInput.js></script>
+<script src=OS13k\OS13kProgramStubs.js?v300></script>
+<script src=OS13k\OS13k.js></script>

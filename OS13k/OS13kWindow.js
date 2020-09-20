@@ -360,7 +360,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             this.iframe.onload = ()=> LoadFrame();
-            this.iframe.src = program.src + '?v277';
+            this.iframe.src = program.src + '?v' + OS13kPageCacheVersion;
         }
     }
         

@@ -42,26 +42,7 @@
 
 } // Minification Stuff
 
-///////////////////////////////////////////////////////////////////////////////
-// OS13k Debug (remove from minified)
 
-const OS13kVersion = 81;
-{
-    // version check, clear local storage if older
-    if (localStorage.OS13k && localStorage.OS13kVersion != OS13kVersion)
-    {
-        alert('OS13k version out of date! System reset in 3, 2, 1...');
-
-        // save what we can
-        let save = 0;//localStorage.OS13kVersion >= 70 ? localStorage.OS13k : 0;
-        localStorage.clear();
-        if (save)
-          localStorage.OS13k = save;
-    }
-
-    localStorage.OS13kVersion = OS13kVersion;
-
-} // debug stuff
 
 ///////////////////////////////////////////////////////////////////////////////
 // OS13k Client Interface
@@ -727,7 +708,6 @@ StopSpeech = ()=> speechSynthesis && speechSynthesis.cancel(),
 
 // play system sound if enabled
 SystemSound = (...parameters)=> finishedStartup & hadInput & settings.o && OS13k.PlaySeed(...parameters);
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // Start OS13k!
