@@ -74,16 +74,6 @@ Add an icon config to programs.js to register your program, examples...
 - OS13k.GetAnalyserData(i) - returns index into a 32 length array of frequency volumes normalized between 0-1
 - OS13k.StringToMusic(string, validate) - Converts a string to a music array and checks if valid
 
- ### Any JS13k game can add trophies and music, even if not part of OS13k!
- - *To add a trophy or music track, just save a special key to localStorage!*
- - The smallest way to add a single trophy (like for winning) is localStorage['OS13kTrophy,Icon,GameName'] = ''
- - For more control use localStorage['OS13kTrophy,Icon,Game Name,Trophy Name'] = Message
- - You can change the message to update the trophy, like a highscore for example
- - Music works the same way, use localStorage['OS13kMusic,Song Name'] = JSON.stringify(song)
- - OS13k automatically checks localStorage and display popups for new trophies and songs from other games
- - This is possible because all JS13k games share the same local storage! Pretty cool right?
- - You can test locally by pasting your trophy code into the OS13k's console app
-
 ### System Calls
 - The OS13k object is set in your program after load, if you need it on load use parent.OS13k
 - zzfx also becomes available after your program loads and can be called directly
@@ -146,6 +136,16 @@ Add an icon config to programs.js to register your program, examples...
  - Press Alt+Enter to reload when live edit is disabled
  - User programs will not run until clicked to prevent executing bad code
 
+ ### Any JS13k game can add trophies and music, even if not part of OS13k!
+ - *To add a trophy or music track, just save a special key to localStorage!*
+ - The smallest way to add a single trophy (like for winning) is localStorage['OS13kTrophy,Icon,GameName'] = ''
+ - For more control use localStorage['OS13kTrophy,Icon,Game Name,Trophy Name'] = Message
+ - You can change the message to update the trophy, like a highscore for example
+ - Music works the same way, use localStorage['OS13kMusic,Song Name'] = JSON.stringify(song)
+ - OS13k automatically checks localStorage and display popups for new trophies and songs from other games
+ - This is possible because all JS13k games share the same local storage! Pretty cool right?
+ - You can test locally by pasting your trophy code into the OS13k's console app
+ 
 ## Contribuitors
 
 Most of the OS was created by myself, but there were many other people helping out. Thank you to everyone for their efforts, I could not have done it alone!
