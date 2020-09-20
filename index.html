@@ -221,6 +221,45 @@ const OS13kPageCacheVersion = 300; // force pages to be refreshed
     localStorage.OS13kVersion = OS13kVersion;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// Minification Notes
+
+// 1. Combine all js files into index.html
+// 2. HTML Minifier http://minifycode.com/html-minifier/
+// 3. Google Closure https://closure-compiler.appspot.com/home
+// 4. JavaScript Minifier https://javascript-minifier.com/
+// 5. Zip
+// 6. Advzip "advzip -z -4 -i 1000 OS13kMin.zip"
+
+// ==ClosureCompiler==
+// @compilation_level ADVANCED_OPTIMIZATIONS
+// @language_out ECMASCRIPT_2019
+// @js_externs OS13k.Clamp, OS13k.Percent, OS13k.Lerp, OS13k.Hash
+// @js_externs OS13k.Random, OS13k.randomSeed, iframeContent.OS13kReload
+// @js_externs OS13k.Trophies, OS13k.Trophy, OS13k.GetTrophy
+// @js_externs OS13k.PlaySamples, OS13k.Note, OS13k.PianoKey
+// @js_externs OS13k.PlayMusic, OS13k.GetAnalyser, OS13k.GetAnalyserData
+// @js_externs OS13k.Speak, OS13k.StopSpeech, OS13k.PlaySeed
+// @js_externs OS13k.SeedSamples, OS13k.SeedParameters
+// @js_externs OS13k.Settings, OS13k.SaveSettings, OS13k.Input
+// @js_externs OS13k.CreateShader, OS13k.RenderShader
+// @js_externs OS13k.KeyDirection, OS13k.StripHTML, OS13k.StringToMusic, OS13k.Popup
+// @js_externs localStorage.OS13k, localStorage.OS13kVersion, OS13k, source.gain
+// @js_externs iframeContent, iframeContent.OS13k, iframeContent.OS13kWindow
+// @js_externs iframeContent.zzfx, zzfx, zzfxG, zzfxM
+// @js_externs settings.v, settings.m, settings.s, settings.p, settings.o
+// @js_externs settings.c, settings.d, settings.t, settings.f
+// @js_externs window.document.OS13kInput.x
+// @js_externs window.document.OS13kInput.y
+// @js_externs window.document.OS13kInput.keypress
+// @js_externs window.document.OS13kInput.mousepress
+// @js_externs window.document.OS13kInput.keydown
+// @js_externs window.document.OS13kInput.mousedown
+// @js_externs window.document.OS13kInput.mousex
+// @js_externs window.document.OS13kInput.mousey
+// @output_file_name OS13k.min.js
+// ==/ClosureCompiler==
+
 </script>
 <script src=OS13k\OS13kProgramMenu.js></script>
 <script src=OS13k\OS13kProgram.js></script>
