@@ -619,6 +619,7 @@ RebuildMenu = ()=>
 
 CreateUserFolder = (parentStubs, stub, userFolderName, oldStubs)=>
 {
+    // create folder
     let folderStubs = 
     [
         ['📌',,,,newUserProgram,'New User Program',,,,userFolderName],

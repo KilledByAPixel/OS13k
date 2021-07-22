@@ -8,11 +8,12 @@ awake    = 2**2, // prevent sleep and dim when not active
 full     = 2**3, // show full screen button
 resize   = 2**4, // show resize buttons (apect ratio maintained)
 code     = 2**5, // show code button (cant show code if help is set)
+shortcut = 2**6, // show shortcut icon on the desktop
 
 // system flags
-closeAll   = 2**6,         // close all open windows
-newUserProgram = 2**7,     // create new user program
-deleteUserPrograms = 2**8, // remove all user programs
+closeAll   = 2**7,         // close all open windows
+newUserProgram = 2**8,     // create new user program
+deleteUserPrograms = 2**9, // remove all user programs
 
 // defaults
 defaultFlags = full|reload|resize,
@@ -69,6 +70,9 @@ class OS13kProgram extends HTMLElement
         
         // check if sticky open or start program
         this.flags & sticky ? this.info.open && this.Open() : this.id == startProgramId && (startProgram = this);
+        
+        // create desktop shortcut icon
+        this.flags & shortcut && new OS13kDesktopIcon(this);
     }
 
     SetName(icon, name)

@@ -53,6 +53,26 @@ body
     padding:4;
 }
 .activeWindow { border:3px solid#aaa; }
+.desktopIcon 
+{ 
+    width:99;
+    height:99;
+    margin:9;
+    padding:9;
+    font-size:15;
+    color:#fff;
+    text-shadow:1px 1px 3px#000; 
+    overflow:hidden;
+    text-align:center;
+    white-space:normal;
+}
+.desktopIcon:hover         { background:linear-gradient(#fff,#ff8); }
+.desktopIconIcon
+{ 
+    font-size:32;
+    margin:9;
+    pointer-events:none;
+}
 #taskbar
 {
     position:absolute;
@@ -128,6 +148,7 @@ body
 <div id=popups style=float:right></div>
 <div id=programsMenu style=position:absolute></div>
 <div id=menu></div>
+<div id=desktopIcons style=position:absolute;top:60;display:flex;flex-wrap:wrap>
 <iframe id=windowTemplate style=display:none>
 <style>
 :host
@@ -261,12 +282,13 @@ const OS13kPageCacheVersion = 300; // force pages to be refreshed
 // ==/ClosureCompiler==
 
 </script>
-<script src=OS13k\OS13kProgramMenu.js></script>
-<script src=OS13k\OS13kProgram.js></script>
-<script src=OS13k\OS13kWindow.js></script>
-<script src=OS13k\OS13kTaskbarIcon.js></script>
-<script src=OS13k\OS13kTrayIcon.js></script>
-<script src=OS13k\OS13kZzFX.js></script>
-<script src=OS13k\OS13kInput.js></script>
-<script src=OS13k\OS13kProgramStubs.js?v301></script>
-<script src=OS13k\OS13k.js></script>
+<script src=OS13k\OS13kProgramMenu.js?v302></script>
+<script src=OS13k\OS13kProgram.js?v302></script>
+<script src=OS13k\OS13kWindow.js?v302></script>
+<script src=OS13k\OS13kTaskbarIcon.js?v302></script>
+<script src=OS13k\OS13kTrayIcon.js?v302></script>
+<script src=OS13k\OS13kDesktopIcon.js?v302></script>
+<script src=OS13k\OS13kZzFX.js?v302></script>
+<script src=OS13k\OS13kInput.js?v302></script>
+<script src=OS13k\OS13kProgramStubs.js?v302></script>
+<script src=OS13k\OS13k.js?v302></script>
