@@ -67,7 +67,7 @@ const programStubs =
     ['🕰️','shaders/timeGate.shader.txt'],
     ['👨‍💻','shaders/infinityMatrix.shader.txt'],
 ]],
-['<b>III',,,,defaultFlags|shortcut,'Dweets',,
+['<b style=color:#000;background:#fff>&nbspIII&nbsp',,,,defaultFlags|shortcut,'Dweets',,
 [
     ['🌌','dweets/blackHole.dweet.js'],
     ['🌊','dweets/underwaterCavern.dweet.js'],
