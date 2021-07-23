@@ -64,7 +64,7 @@ setInterval(_=> // main game loop
     frame += enemyCount ? 1 : wave;
 
     // player shoot
-    frame%9 || player.r && enemyCount && (OS13k.PlaySeed(2,0,.5,.5), MakeObject(TYPE_Bullet, player.x, player.y, 19, Math.sin(frame*frame)/3, -9, 0));
+    frame%9 || player.r && enemyCount && MakeObject(TYPE_Bullet, player.x, player.y, 19, Math.sin(frame*frame)/3, -9, 0);
     
     // create sorted list of enemy types for this wave
     seed = wave*wave;                               // set seed
@@ -131,7 +131,7 @@ setInterval(_=> // main game loop
 
             // enemy shoot
             o.t > TYPE_Enemy_Pawn &                                   // check if shooty enemy
-            Rand(99) < 1 && 
+            Rand(99) < 1 && player.r &&
             (
                 OS13k.PlaySeed(270, .2+(o.t-TYPE_Enemy)/3),
                 MakeObject(                                           // spawn bullet
@@ -188,8 +188,8 @@ setInterval(_=> // main game loop
                 Math.hypot(o.x-p.x, o.y-p.y) < p.r*2 & // overlapping
                 p.e &&                                 // is enemy
                 MakeObject(TYPE_Explosion, o.x, o.y, 25, 0, o.r = 0, 4, --p.h     // bullet hit effect, damage enemy
-                ? OS13k.PlaySeed(75, .5) : MakeObject(TYPE_Explosion, p.x, p.y, p.r*2, 0, p.r = 0, 2, 
-                    OS13k.PlaySeed(205, .1+(p.t-TYPE_Enemy)/3)))   // make explosion, kill enemy
+                ? OS13k.PlaySeed(75, .5) : (OS13k.PlaySeed(205, .2+(p.t-TYPE_Enemy)/3),
+                    MakeObject(TYPE_Explosion, p.x, p.y, p.r*2, 0, p.r = 0, 2 )))   // make explosion, kill enemy
             );
 
         //c.beginPath(c.strokeStyle='red',c.arc(o.x,o.y,o.r,0,9),c.stroke()); // show hit box

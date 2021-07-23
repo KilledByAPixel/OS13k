@@ -56,7 +56,7 @@ const programStubs =
     ['4x4','games/4x4.html',800,440,,'Four Fours'],
     ['🛣️','games/bogusRoadsMini.dweet.js'],
     ['💗','games/myHeartJumped.dweet.js'],
-    ['🦋','games/batafuraiko.html',1280,720,defaultFlags|shortcut,,'Use mouse to fly.\nYou have 1 life to survive 9 waves.\nReload to start over.'],
+    ['🦋','games/batafuraiko.html?1',1280,720,defaultFlags|shortcut,,'Use mouse to fly.\nYou have 1 life to survive 9 waves.\nReload to start over.'],
 ]],
 ['<span style=color:#f40><b>𝓢',,,,defaultFlags|shortcut,'Shader Toys',,
 [
