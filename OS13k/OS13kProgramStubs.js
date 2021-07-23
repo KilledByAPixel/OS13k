@@ -57,13 +57,14 @@ const programStubs =
     ['🛣️','games/bogusRoadsMini.dweet.js'],
     ['💗','games/myHeartJumped.dweet.js'],
     ['🦋','games/batafuraiko.html?1',1280,720,defaultFlags|shortcut,,'Use mouse to fly.\nYou have 1 life to survive 9 waves.\nReload to start over.'],
+    ['⌛','games/sandbox.dweet.js'],
 ]],
 ['<span style=color:#f40><b>𝓢',,,,defaultFlags|shortcut,'Shader Toys',,
 [
     ['𝓩𝔃','shaders/zzartLandscape.shader.txt',,,,'ZzArt Landscape'],
     ['<span style=color:#f00>☯','shaders/infiniteYinYangs.shader.txt'],
     ['🌀','shaders/vogelSpiral.shader.txt'],
-    ['◣','shaders/sierpinskiTowers.shader.txt'],
+    ['◣◣','shaders/sierpinskiTowers.shader.txt'],
     ['🕰️','shaders/timeGate.shader.txt'],
     ['👨‍💻','shaders/infinityMatrix.shader.txt'],
 ]],
@@ -84,5 +85,8 @@ const programStubs =
     ['🏙️','dweets/cityOfShadows.dweet.js'],
     ['🩸','dweets/bloodstream.dweet.js'],
     ['📓','dweets/notebook.dweet.js'],
+    ['🌴','dweets/palmTreeSunset.dweet.js'],
+    ['🌆','dweets/oceanCity.dweet.js'],
+    ['☸️','dweets/buddhabrot.dweet.js'],
 ]]
 ];

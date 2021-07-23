@@ -1,0 +1,2 @@
+for(w=2e3,k=z=99;k<w;x.fillRect(j?i*20:0,j?j>2?400+j*46-S(i/j*5+t*j)*j:z+i**5%299+i*b:i*9,j?20:w,a?w:9))i=k%z,j=k++>>7,a=j-2,b=j!=1,f=j||i,x.fillStyle=R(q=a?f*9+b*S(f*f+t)*39:w,j*j+q-z,j?j*25:z)
+// by KilledByAPixel https://www.dwitter.net/d/22807

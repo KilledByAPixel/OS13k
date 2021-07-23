@@ -1,0 +1,2 @@
+for(j=z=450;j--;h=i)for(i=z,q=j%2?A=T(B=T(T=Math.random)*4-2)*3-2:X,X=A,Y=B;X*i--;q||x.fillRect(t?Y*z+960:0,t?X*z+740:0,W=t?(x.fillStyle=`hsl(${h/2},99%,50%,.2`,1):2e3,W))X=X*X-Y*Y+(Y=2*X*Y+B,A)
+// by KilledByAPixel https://www.dwitter.net/d/18243
