@@ -55,13 +55,17 @@ const programStubs =
     ['🌲','games/hueJumper.html',,,defaultFlags|shortcut,,'Reach checkpoints to get more time.\nThe road ends at 1000.\n\nMouse = Turn\nClick = Brake\nDouble Click = Jump\n\nBy Frank Force'],
     ['4x4','games/4x4.html',800,440,,'Four Fours'],
     ['🛣️','games/bogusRoadsMini.dweet.js'],
-    ['🦋','games/batafuraiko.html',1280,720,defaultFlags|shortcut],
+    ['💗','games/myHeartJumped.dweet.js'],
+    ['🦋','games/batafuraiko.html',1280,720,defaultFlags|shortcut,,'Use mouse to fly.\nYou have 1 life to survive 9 waves.\nReload to start over.'],
 ]],
 ['<span style=color:#f40><b>𝓢',,,,defaultFlags|shortcut,'Shader Toys',,
 [
     ['𝓩𝔃','shaders/zzartLandscape.shader.txt',,,,'ZzArt Landscape'],
     ['<span style=color:#f00>☯','shaders/infiniteYinYangs.shader.txt'],
     ['🌀','shaders/vogelSpiral.shader.txt'],
+    ['◣','shaders/sierpinskiTowers.shader.txt'],
+    ['🕰️','shaders/timeGate.shader.txt'],
+    ['👨‍💻','shaders/infinityMatrix.shader.txt'],
 ]],
 ['<b>III',,,,defaultFlags|shortcut,'Dweets',,
 [
@@ -72,5 +76,13 @@ const programStubs =
     ['■','dweets/automaticBreakout.dweet.js'],
     ['❤️','dweets/colorZoom.dweet.js'],
     ['🔺','dweets/triFractal.dweet.js'],
+    ['⛏️','dweets/lavaCave.dweet.js'],
+    ['👉💧','dweets/touchWater.dweet.js'],
+    ['🏃‍♀️','dweets/runningMan.dweet.js'],
+    ['🔥','dweets/heatWaves.dweet.js'],
+    ['🦠','dweets/simbiotic.dweet.js'],
+    ['🏙️','dweets/cityOfShadows.dweet.js'],
+    ['🩸','dweets/bloodstream.dweet.js'],
+    ['📓','dweets/notebook.dweet.js'],
 ]]
 ];

@@ -1,0 +1,2 @@
+for(w=c.width&=j=10368;j;)S((X=j%w/64*++T-T)/9^((Y=t*60-j/8e3*T+T/2)/9|0)**3)*30+70>T||x.fillRect(j%w,--j>>7,1,1,x.fillStyle=R(v=((L=T>90)?455:255-T*T/20)+S(X&Y^T)*(19+L*255),L?v/3:v,!L*v),T=40)
+// by KilledByAPixel https://www.dwitter.net/d/23089

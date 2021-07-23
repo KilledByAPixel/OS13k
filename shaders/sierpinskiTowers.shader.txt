@@ -1,0 +1,9 @@
+// Sierpinski Towers by Frank Force - https://www.shadertoy.com/view/7ljGzR
+
+void mainImage(out vec4 c,vec2 p)
+{
+  ivec4 b;
+  for(;(b.x^b.y&b.z)%200 > b.z-9;)
+    b = ivec4((p/5e2-.5)*c.a + iTime/.1, c+=.1);
+  c = vec4(b*b.x%2) + c/2e2;
+}

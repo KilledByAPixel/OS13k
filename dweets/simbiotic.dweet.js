@@ -1,0 +1,2 @@
+for(c.width|=0,w=i=570;i--;T[i]=t?X:70*C(a=i/91),R[i]=t?Y:22*S(2*a),x.lineTo(989+X*9,w-Y*9))for(X=T[i],Y=R[i],j=w;j--;X+=s*A,Y+=s*B)A=X-T[j],B=Y-R[j],s=((i-j+w)%w)**2-1?(A*A+B*B<9)/9:-.1;x.fill()
+// by KilledByAPixel https://www.dwitter.net/d/23224

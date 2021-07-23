@@ -1,0 +1,76 @@
+//////////////////////////////////////////////////////////////////////////////////
+// Time Gate - Copyright 2019 Frank Force https://www.shadertoy.com/view/WlfSRs
+// License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
+//////////////////////////////////////////////////////////////////////////////////
+
+#define PI (3.14159265359)
+#define time (PI*iTime) // 4 second loop
+
+void mainImage( out vec4 fragColor, in vec2 fragCoord )
+{
+    // uv between -.5 - .5
+	vec2 uv = fragCoord/iResolution.xy;
+	uv -= vec2(.5);
+    
+    // square aspect
+    uv.x *= iResolution.x/iResolution.y;
+
+    vec3 c1; // blue part
+    float s; // stripes
+    {
+        // angle & distance
+        float a = atan(uv.x,uv.y);
+        float d = length(uv);
+
+        // waves
+        d += 0.1;
+        d += .3*pow(d,2.5)*sin(a*18.);
+        d = pow(d,0.005);
+        d *= 5999.;
+
+        // rings
+        d = .5+.5*sin(d-2.0*8.*time);
+
+        // thicker at center
+        float b = pow(d, 1.0);
+
+        // fade at sides
+        b *= 1.0-length(uv);
+
+        // thin stripes at sides
+        s = 1.0+1.0*length(uv)*sin(a*300.);
+        b *= s;
+        
+        // color
+        c1 = vec3(0,0,b);
+    }
+	
+	vec3 c2; // pink/cyan part
+	{
+		float y = uv.y;
+		float x = uv.x;
+		
+		// skew
+		x -= sin(y*6.)/9.;
+
+		// perspective
+		x /= pow(y+sign(y),6.0);
+
+		// waves
+		float a = pow(abs(y)+.03,0.1)*32.;
+		x += 0.03*sin(a-time);
+
+		// stripes
+		x = sin(x*30.);
+
+		// color - cycle pink and cyan
+		float b = pow(abs(x), 20.0);    
+		float p = sin(time/2.)*.5+.5;
+		c2 = vec3(b*p,b*(1.-p),b*.9);
+       	
+		// apply inverse stripes
+		c2 /= s;
+	}
+
+	fragColor = vec4(c1+c2*.5,1.0);
+}

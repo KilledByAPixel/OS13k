@@ -1,0 +1,2 @@
+with(x)C(a=t*9|0,fillStyle=a?'#0ff1':'#f55',t?fillRect(a?0:8,a?9*a+7:0,a?2e3:1,a?1:2e3):scale(7,7))>.8|t%8<.1?beginPath():lineTo(t%8*29+S(z=t*39*C(a**3))*3+9,14+9*(t>>3)-2*C(z)*S(a)),stroke()
+// by KilledByAPixel https://www.dwitter.net/d/22084

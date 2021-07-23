@@ -1,0 +1,2 @@
+with(x)for(c.width|=i=4,scale(62,50);i--;beginPath(stroke()))Y=5+S(t*8)/4,l=(r,a=0)=>lineTo(X+=r*C(a),Y+=r*S(a)),l(X=8),q=i<2,l(q?3:7,2),l(r=4-q,a=C(b=t*4+22*i)/2-5+q),l(r,a+(q?-1:1)*(C(b-2)+1))
+// by KilledByAPixel https://www.dwitter.net/d/22741
