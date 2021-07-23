@@ -195,11 +195,39 @@ class OS13kWindow extends HTMLElement
         this.iframeWrapper.style.height = width * program.height / program.width;
         this.scale = width / program.width;
         
-        // announce game when first opened
+        // announce program when first opened
         OS13k.Speak(program.name);
+
+        // create folder or iframe
+        if (program.folder)
+        {
+            this.iframeWrapper.style.background = 'linear-gradient(#888,#333)';  
+            this.iframeWrapper.style.display = 'flex';
+            this.iframeWrapper.style.flexWrap = 'wrap';
+            this.iframeWrapper.style.overflowY = 'auto';
+            this.iframeWrapper.style.alignContent = 'flex-start';
+            //this.iframeWrapper.innerHTML = 
+             //   '<div id=desktopIcons style=pointer-events:none;display:flex;flex-wrap:wrap>';
+            // add icons to folder
+            program.folder.map( stub=>
+            {
+                this.iframeWrapper.appendChild(new OS13kDesktopIcon(stub[-1]));
+            });
         
-        // update loading and create iframe
-        this.CreateFrame(loading += !finishedStartup);
+            // add taskbar icon if it doesnt exist and set active
+            this.taskbarIcon || (this.taskbarIcon = new OS13kTaskbarIcon(program, this)).SetActive();
+
+            // release grab window since this one will be in front
+            grabWindow && onmouseup();
+            
+            // make visible
+            this.style.visibility = 'visible';
+        }
+        else 
+        {
+            // update loading and create iframe
+            this.CreateFrame(loading += !finishedStartup);
+        }
     }
 
     SetErrorText(message, source, line, col, e)
@@ -378,6 +406,12 @@ class OS13kWindow extends HTMLElement
     
     Open(target, x, y)
     {
+        if (target.Open)
+        {
+            target.Open(target, x, y);
+            return;
+        }
+
         // set active if not copy button
         target.id != 'C' && this.SetActive();
         

@@ -14,9 +14,6 @@ class OS13kDesktopIcon extends HTMLElement
         this.program = program;
         this.innerHTML = '<div class=desktopIconIcon>' + program.icon;
         this.innerHTML += this.title = program.name;
-
-        // add to desktop
-        desktopIcons.appendChild(this);
     }
     
     Open() { this.program.Open(); }

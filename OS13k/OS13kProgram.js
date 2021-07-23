@@ -72,7 +72,7 @@ class OS13kProgram extends HTMLElement
         this.flags & sticky ? this.info.open && this.Open() : this.id == startProgramId && (startProgram = this);
         
         // create desktop shortcut icon
-        this.flags & shortcut && new OS13kDesktopIcon(this);
+        this.flags & shortcut && desktopIcons.appendChild(new OS13kDesktopIcon(this));
     }
 
     SetName(icon, name)
@@ -133,7 +133,7 @@ class OS13kProgram extends HTMLElement
 
             OS13k.Trophy('☕','OS13k','Coffee Is For Closers','Closed All');
         }
-        else if (this.src || this.userProgram)
+        else if (this.src || this.userProgram || this.folder)
         {
             // get saved window position
             let x = this.info.x, y = this.info.y;
