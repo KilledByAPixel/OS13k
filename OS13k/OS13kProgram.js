@@ -100,6 +100,10 @@ class OS13kProgram extends HTMLElement
     
     Open()
     {
+        // hack: prevent user folders from opening in window
+        if (this.folder && this.folder[0] && this.folder[0][4] & newUserProgram)
+            return;
+            
         if (this.window)
         {        
             // set window to be active and clamp
