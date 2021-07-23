@@ -12,7 +12,7 @@ class OS13kDesktopIcon extends HTMLElement
         // create tray icon and add it
         this.className = 'desktopIcon';
         this.program = program;
-        this.innerHTML = '<div class=desktopIconIcon>' + program.icon;
+        this.innerHTML = '<div class=desktopIconIcon>' + (program.folder ? '📁' : program.icon);
         this.innerHTML += this.title = program.name;
     }
     
