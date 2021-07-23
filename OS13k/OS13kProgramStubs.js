@@ -9,10 +9,10 @@ const programStubs =
 ['<b><span style=color:#0f0>?','help.html',300,300,resize|shortcut,,'Check here to see help, code, or edit user programs.\n\nHave fun! ✌️😄'],
 ['⚙️',,,,,'System',,
 [
-    ['🏆','system/trophyCase.html',,,full|resize|sticky,,'View all your trophies here.\nAny JS13k game can add trophies, play to win more!'],
-    ['✏️','system/stickyNote.html',300,263,sticky|reload|sticky,,'Ctrl+B = Bold\nCtrl+I = Italic\nCtrl+U = Underline\nReload = Clear'],
-    ['🕰️','system/clock.dweet.js',198,198,sticky|code|awake|sticky],
-    ['🎚️','system/settings.html',470,190,sticky|sticky],
+    ['🏆','system/trophyCase.html',,,full|resize|sticky|shortcut,,'View all your trophies here.\nAny JS13k game can add trophies, play to win more!'],
+    ['✏️','system/stickyNote.html',300,263,sticky|reload|sticky|shortcut,,'Ctrl+B = Bold\nCtrl+I = Italic\nCtrl+U = Underline\nReload = Clear'],
+    ['🕰️','system/clock.dweet.js',198,198,sticky|code|awake|sticky|shortcut],
+    ['🎚️','system/settings.html',470,190,sticky|sticky|shortcut],
     ['📁',,,,,'Test',,
     [
         [,'system/systemTest.html',600,370,defaultFlags|code],
@@ -25,12 +25,12 @@ const programStubs =
     ['⌛','apps/timer.html',400,139,reload|shortcut],
     ['👾','apps/spriteGenerator.html',,,defaultFlags|shortcut],
     ['📈','apps/grapher.html',,,defaultFlags|shortcut,,'Enter an function of x to see the graph.\n\nMouse = Show Values\nWheel = Zoom'],
-    ['📸','apps/camera.html',640,480],
+    ['📸','apps/camera.html',640,480,defaultFlags|shortcut],
     ['<span style=color:#0f0;background:#000;font-family:monospace>JS>','apps/console.html',,,defaultFlags|shortcut]
 ]],
 ['🎶',,,,,'Music',,
 [
-    ['🎵','music/musicPlayer.html',400,330,sticky,,'OS13k can play music using the tiny ZzFXM format.\nJS13k games can add their music to your library.\nPlay games to collect more music.'],
+    ['🎵','music/musicPlayer.html',400,330,sticky|shortcut,,'OS13k can play music using the tiny ZzFXM format.\nJS13k games can add their music to your library.\nPlay games to collect more music.'],
     ['👁️','music/visualizer.dweet.js',,,awake|full|resize|code|shortcut],
     ['🎹','music/piano.html',520,510,reload|shortcut],
     ['🥁','music/sequencer.html',800,,defaultFlags|shortcut,,'Keyboard = Note\nUp/Down = Volume\nSpace = Stop\nEnter = End'],
