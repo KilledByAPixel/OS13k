@@ -211,9 +211,6 @@ class OS13kWindow extends HTMLElement
         
             // add taskbar icon if it doesnt exist and set active
             this.taskbarIcon || (this.taskbarIcon = new OS13kTaskbarIcon(program, this)).SetActive();
-
-            // release grab window since this one will be in front
-            grabWindow && onmouseup();
             
             // make visible
             this.style.visibility = 'visible';
@@ -479,7 +476,7 @@ class OS13kWindow extends HTMLElement
             this.style.top = OS13k.Clamp(rect.y, Math.max(taskbarHeight, innerHeight - rect.height), taskbarHeight)));
 
         // set focus to iframe using timeout
-        loading || focus &&
+        if (focus && !loading)
             setTimeout(e=> document.activeElement != this && this.iframeContent && this.iframeContent.focus(lastActiveFrame = this.iframe));
 
         if (activeWindow != this)
