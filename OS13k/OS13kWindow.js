@@ -58,7 +58,6 @@ class OS13kWindow extends HTMLElement
 
         // create content wrapper
         this.iframeWrapper = this.shadowRoot.appendChild(document.createElement('div'));
-        this.iframeWrapper.style.background = '#000';
 
         // create code/help display
         this.codeDisplay = this.shadowRoot.appendChild(document.createElement('div'));
@@ -201,13 +200,9 @@ class OS13kWindow extends HTMLElement
         // create folder or iframe
         if (program.folder)
         {
-            this.iframeWrapper.style.background = 'linear-gradient(#888,#333)';  
-            this.iframeWrapper.style.display = 'flex';
-            this.iframeWrapper.style.flexWrap = 'wrap';
-            this.iframeWrapper.style.overflowY = 'auto';
-            this.iframeWrapper.style.alignContent = 'flex-start';
-            //this.iframeWrapper.innerHTML = 
-             //   '<div id=desktopIcons style=pointer-events:none;display:flex;flex-wrap:wrap>';
+            // set class name
+            this.iframeWrapper.className = 'folder';
+
             // add icons to folder
             program.folder.map( stub=>
             {
@@ -225,6 +220,9 @@ class OS13kWindow extends HTMLElement
         }
         else 
         {
+            // set background color to black
+            this.iframeWrapper.style.background = '#000';
+
             // update loading and create iframe
             this.CreateFrame(loading += !finishedStartup);
         }
