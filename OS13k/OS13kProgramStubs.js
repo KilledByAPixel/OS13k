@@ -22,7 +22,7 @@ const programStubs =
 ]],
 ['🛠️',,,,resize|shortcut,'Apps',,
 [
-    ['🌐','apps/webBrowser.html',,,defaultFlags|shortcut],
+    ['🌐','apps/webBrowser.html',,,defaultFlags|shortcut,,'Tiny web browser with history controls.\nSome websites will prevent opening in an frame like this.'],
     ['⌛','apps/timer.html',400,139,reload|shortcut],
     ['👾','apps/spriteGenerator.html'],
     ['📈','apps/graphingCalculator.html',,,defaultFlags|shortcut,,'Enter a math equation or function of x to see the graph.\n\nMouse = Show Values\nWheel = Zoom'],

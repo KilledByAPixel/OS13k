@@ -2,12 +2,11 @@
 <div style='height:28;display:flex;align-items:center;background:#ccc;border-bottom:2px solid'>&nbsp;
 <button onclick=window.history.go(-1)><b>🡠</b></button>
 <button onclick=window.history.go(1)><b>🡢</b></button>
-<button onclick=F.contentWindow.location.reload()><b>⭮</b></button>
 &nbsp;http://&nbsp;<input style=width:100% id=I value=www.bing.com onchange=reload()>
 </div>
 <iframe id=F style='width:100%;height:calc(100% - 30px);border:0'></iframe>
 <script>
 I.onkeydown = e=> (e.keyCode == 13) ? reload() : 0
-reload=_=> F.src='https://'+I.value
+reload=_=> {F.src='';F.src='https://'+I.value}
 reload()
 </script>
