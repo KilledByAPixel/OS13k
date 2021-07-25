@@ -10,8 +10,9 @@ A-=a;B-=b;
 r=.2-B/240;
 P-=r;B+=r;
 
-for(c.width=512,i=3e3;X=i&63,Y=i>>6,i--;x.fillRect(X*8,Y*8,8,8))
-
+for(c.width=512,i=3e3;i--;x.fillRect(X*8,Y*8,8,8))
+X=i&63,
+Y=i>>6,
 y=Y/3+B+P,
 z=X/3+(y>>4)*4,
 G=T(y+z^z-y),
