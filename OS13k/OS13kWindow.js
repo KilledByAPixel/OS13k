@@ -197,6 +197,9 @@ class OS13kWindow extends HTMLElement
         // announce program when first opened
         OS13k.Speak(program.name);
 
+        // add taskbar icon if it doesnt exist and set active
+        this.taskbarIcon || (this.taskbarIcon = new OS13kTaskbarIcon(program, this)).SetActive();
+        
         // create folder or iframe
         if (program.folder)
         {
@@ -206,14 +209,8 @@ class OS13kWindow extends HTMLElement
             // add icons to folder
             program.folder.map( stub=>
             {
-                this.iframeWrapper.appendChild(new OS13kDesktopIcon(stub[-1]));
+                this.iframeWrapper.appendChild(new OS13kDesktopIcon(stub[-1], this));
             });
-        
-            // add taskbar icon if it doesnt exist and set active
-            this.taskbarIcon || (this.taskbarIcon = new OS13kTaskbarIcon(program, this)).SetActive();
-            
-            // make visible
-            this.style.visibility = 'visible';
         }
         else 
         {
@@ -323,12 +320,9 @@ class OS13kWindow extends HTMLElement
             
             // prevent iframes context menu and drop events
             iframeContent.ondrop = iframeContent.ondragover = iframeContent.oncontextmenu = ()=> false;
-            
-            // add taskbar icon if it doesnt exist and set active
-            this.taskbarIcon || (this.taskbarIcon = new OS13kTaskbarIcon(program, this)).SetActive();
 
             // make visible
-            this.style.visibility = this.iframe.style.visibility = 'visible';
+            this.iframe.style.visibility = 'visible';
             
             // update loading
             loading && --loading;
