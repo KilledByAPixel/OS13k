@@ -1,7 +1,7 @@
 'use strict'
 
 ///////////////////////////////////////////////////////////////////////////////
-// Add programs here, format... [src, icon, width, height, flags, name, help, folder]
+// Add programs here, format... [icon, src, width, height, flags, name, help, folder]
 
 const programStubs = 
 [

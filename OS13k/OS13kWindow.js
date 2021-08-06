@@ -395,7 +395,7 @@ class OS13kWindow extends HTMLElement
     
     Open(target, x, y)
     {
-        if (target.Open)
+        if (target.Open && target != this)
         {
             target.Open(target, x, y);
             return;
