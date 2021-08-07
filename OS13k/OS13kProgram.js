@@ -38,6 +38,7 @@ class OS13kProgram extends HTMLElement
         // check for special extensions
         this.isDweet =  srcParts[1] == 'dweet';
         this.isShader = srcParts[1] == 'shader';
+        this.isExternal = src.startsWith('http');
 
         // set code only if help not shown or if has extension and not disabled
         this.code = !(this.help = help) && (flags & code || ((this.isDweet | this.isShader) && flags == undefined));

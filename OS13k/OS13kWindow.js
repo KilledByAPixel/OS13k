@@ -373,6 +373,23 @@ class OS13kWindow extends HTMLElement
             // load the iframe
             LoadFrame();
         }
+        else if (program.isExternal)
+        {
+            // if external url
+            this.iframe.src = program.src;
+        
+            // prevent iframes context menu and drop events
+            iframeContent.ondrop = iframeContent.ondragover = iframeContent.oncontextmenu = ()=> false;
+
+            // make visible
+            this.iframe.style.visibility = 'visible';
+            
+            // update loading
+            loading && --loading;
+
+            // release grab window since this one will be in front
+            grabWindow && onmouseup();
+        }
         else
         {
             // load source
@@ -537,7 +554,7 @@ class OS13kWindow extends HTMLElement
         silent || SystemSound(soundReload);
         
         // reload program or reload iframe and set invisible
-        this.iframeContent &&
+        !this.program.isExternal && this.iframeContent &&
             this.iframeContent.OS13kReload ?
             this.iframeContent.OS13kReload() :
             this.program.userProgram ?

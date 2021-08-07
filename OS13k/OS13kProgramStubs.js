@@ -62,7 +62,7 @@ const programStubs =
 ]],
 ['<b style=color:#000;background:#fff>&nbspIII&nbsp',,,,resize|shortcut,'Dweets',,
 [
-    ['🔎','dweets/dweetView.dweet.js'],
+    ['🔎','https://dweetview.3d2k.com'],
     ['🌌','dweets/blackHole.dweet.js'],
     ['🌊','dweets/underwaterCavern.dweet.js'],
     ['🚌','dweets/cityTraffic.dweet.js'],
@@ -90,5 +90,17 @@ const programStubs =
     ['◣◣','shaders/sierpinskiTowers.shader.txt'],
     ['🕰️','shaders/timeGate.shader.txt'],
     ['👨‍💻','shaders/infinityMatrix.shader.txt'],
+]],
+['📼',,,,resize|shortcut,'Videos',,
+[
+    ['🐈','https://www.youtube.com/embed/dpuqKAWISN0',,,,'Alien Cat vs Super Dog'],
+    ['🛣️','https://www.youtube.com/embed/txcH9sB9UTM',,,,'Bogus Roads Trailer'],
+    ['<span style=color:#00a>π√','https://www.youtube.com/embed/i4Z8TMFQGJ0',,,,'π√ (Piroot) Trailer'],
+    ['💫','https://www.youtube.com/embed/d69sIsu3kGQ',,,,'Dual Axis Illusion'],
+    ['🔲','https://www.youtube.com/embed/nbZyXP7SCEg',,,,'Squaresville Sifteo Cubes'],
+    ['🌳','https://www.youtube.com/embed/GxgwprJVs9c',,,,'Go Bonsai'],
+    ['🦷','https://www.youtube.com/embed/hQ0b8qYoRIE',,,,'Byte Beat Trio'],
+    ['<span style=color:#0f0>F','https://www.youtube.com/embed/lA8xqr14QIY',,,,'Frank Engine Demo'],
+    ['🌆','https://www.youtube.com/embed/vnx8kI4EcVc',,,,'Dwitter Coding Demo'],
 ]]
 ];
