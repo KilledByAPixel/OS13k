@@ -99,7 +99,6 @@ const programStubs =
     ['💫','https://www.youtube.com/embed/d69sIsu3kGQ',,,,'Dual Axis Illusion'],
     ['🔲','https://www.youtube.com/embed/nbZyXP7SCEg',,,,'Squaresville Sifteo Cubes'],
     ['🌳','https://www.youtube.com/embed/GxgwprJVs9c',,,,'Go Bonsai'],
-    ['🦷','https://www.youtube.com/embed/hQ0b8qYoRIE',,,,'Byte Beat Trio'],
     ['<span style=color:#0f0>F','https://www.youtube.com/embed/lA8xqr14QIY',,,,'Frank Engine Demo'],
     ['🌆','https://www.youtube.com/embed/vnx8kI4EcVc',,,,'Dwitter Coding Demo'],
 ]]
