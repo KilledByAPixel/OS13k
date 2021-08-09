@@ -488,7 +488,7 @@ let grabWindow, grabOffsetX, grabOffsetY, finishedStartup, nextUserProgramId = 0
     trophyTrayIcon, settingsTrayIcon, clockTrayIcon, musicTrayIcon, stickyNoteTrayIcon,
 
     // volume, music, speech, popups, color1, color2, text, filter
-    settings = {v:.3, m:.3, s:1, p:1, o:1, c:'#222233', d:'#332222', t:'OS13k', f:''},
+    settings = {v:.2, m:.2, s:1, p:1, o:1, c:'#222233', d:'#332222', t:'OS13k', f:''},
 
     // init web audio
     audioContext = new (window.AudioContext||webkitAudioContext),
@@ -524,8 +524,8 @@ Update = time=>
     // set last active frame
     lastActiveFrame = activeFrame;
 
-    // fade in desktop after loading, convert opacity to number
-    background.style.opacity = document.body.style.opacity = OS13k.Clamp(!loading*.02 + document.body.style.opacity*1);
+    // fade in desktop after loading
+    document.body.style.opacity = OS13k.Clamp(!loading * time/1e3);
 
     // update trophy count
     let trophyString = trophies.length + '🏆';
@@ -540,7 +540,7 @@ Update = time=>
     if (!finishedStartup | !hadInput) return;
     
     // get analyser data
-    let frequencyData = new Uint8Array(musicAnalyser.fftSize = 512),
+    let frequencyData = new Uint8Array(musicAnalyser.fftSize = 256),
         context = analyserCanvas.getContext('2d');
     musicAnalyser.getByteFrequencyData(frequencyData);
     analyserCanvas.width = analyserCanvas.height = 32;
@@ -549,7 +549,7 @@ Update = time=>
     for(let i = 0; i < 32; )
     {
         // get frequency band volume and adjust for loudness
-        let volume = (frequencyData[i+3] / 255)**3 * (1 + Math.log10((i+3) * defaultSampleRate / 1024 ));
+        let volume = (frequencyData[i*2] / 255)**3 * (1 + Math.log10((i*2) * defaultSampleRate / 1024 ));
 
         // draw loudness bar
         context.fillStyle = `hsl(${-99-59*volume} 99%50%)`;
