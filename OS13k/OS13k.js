@@ -525,7 +525,7 @@ Update = time=>
     lastActiveFrame = activeFrame;
 
     // fade in desktop after loading
-    document.body.style.opacity = OS13k.Clamp(!loading * time/1e3);
+    document.body.style.opacity = OS13k.Clamp(!loading*.02 + document.body.style.opacity*1);
 
     // update trophy count
     let trophyString = trophies.length + '🏆';
