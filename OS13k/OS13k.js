@@ -549,7 +549,7 @@ Update = time=>
     for(let i = 0; i < 32; )
     {
         // get frequency band volume and adjust for loudness
-        let volume = (frequencyData[i*2] / 255)**3 * (1 + Math.log10((i*2) * defaultSampleRate / 1024 ));
+        let volume = (frequencyData[i*2+3] / 255)**3 * (1 + Math.log10((i*2+3) * defaultSampleRate / 1024 ));
 
         // draw loudness bar
         context.fillStyle = `hsl(${-99-59*volume} 99%50%)`;
