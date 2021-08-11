@@ -32,13 +32,13 @@ programStubs =
 [
     ['🏆',,,full|resize|sticky,'Trophy Case'],
     ['✏️',300,263,sticky|reload,'Sticky Note','Ctrl+B = Bold\nCtrl+I = Italic\nCtrl+U = Underline\nReload = Clear'],
-    ['🕰️',198,198,sticky|code|awake|dweet,'Clock'],
+    ['🕰️',198,198,sticky|awake|dweet,'Clock'],
     ['🎚️',470,130,sticky,'Settings']
 ]],
 ['🎶',,,shortcut,'Music',,
 [
     ['🎵',400,330,sticky,'Music Player'],
-    ['👁️',,,awake|full|resize|code|dweet,'Visualizer']
+    ['👁️',,,awake|full|resize|dweet,'Visualizer']
 ]],
 ['🎮',,,shortcut,'Games',,
 [
