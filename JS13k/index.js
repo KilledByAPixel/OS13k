@@ -1472,8 +1472,8 @@ onmousedown = e=>
         // open or reactivate window if no valid target
         e.target.Open ? e.target.Open(originalTarget, e.x, e.y) : activeWindow && activeWindow.SetActive();
         
-        // allow event to contiue
-        return e.target == loadIcon;
+        // allow event to contiue only if input
+        return e.target == loadIcon || /input|textarea/.test(originalTarget.localName);
     }
 }
 
