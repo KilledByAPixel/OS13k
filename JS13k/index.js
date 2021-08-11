@@ -18,7 +18,7 @@ dweet    = 2**7, // is it a dweet?
 closeAll   = 2**8,         // close all open windows
 
 // defaults
-defaultFlags = full|reload|resize,
+defaultFlags = full|reload|resize|shortcut,
 defaultWidth = 720, defaultHeight = 405, // 16:9 aspect
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -27,20 +27,20 @@ defaultWidth = 720, defaultHeight = 405, // 16:9 aspect
 programStubs = 
 [
 ['❌',,,closeAll,'Close All'],
-['<b><span style=color:#0f0>?',300,210,resize,'Help','Check here to see help or view code for some programs.\n\nHave fun! ✌️😄'],
-['⚙️',,,,'System',,
+['<b><span style=color:#0f0>?',300,210,resize|shortcut,'Help','Check here to see help or view code for some programs.\n\nHave fun! ✌️😄'],
+['⚙️',,,shortcut,'System',,
 [
     ['🏆',,,full|resize|sticky,'Trophy Case'],
     ['✏️',300,263,sticky|reload,'Sticky Note','Ctrl+B = Bold\nCtrl+I = Italic\nCtrl+U = Underline\nReload = Clear'],
     ['🕰️',198,198,sticky|code|awake|dweet,'Clock'],
     ['🎚️',470,130,sticky,'Settings']
 ]],
-['🎶',,,,'Music',,
+['🎶',,,shortcut,'Music',,
 [
     ['🎵',400,330,sticky,'Music Player'],
     ['👁️',,,awake|full|resize|code|dweet,'Visualizer']
 ]],
-['🎮',,,,'Games',,
+['🎮',,,shortcut,'Games',,
 [
     ['🙉',,,defaultFlags|dweet,"Don't Fall"],
     ['🏂🏻',,,defaultFlags|dweet,"Bogus Slopes"],
@@ -466,6 +466,9 @@ class OS13kProgram extends HTMLElement
 
         // set code only if help not shown or if has extension
         this.code = !(this.help = help) && (flags & code || this.isDweet);
+
+        // set all folders to be resizable
+        flags |= folder && resize;
 
         // set icon data
         this.className  = 'program';

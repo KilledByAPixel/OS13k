@@ -7,7 +7,7 @@ const programStubs =
 [
 ['❌',,,,closeAll,'Close All'],
 ['<b><span style=color:#0f0>?','help.html',300,350,resize|shortcut,,'Check here to see help, code, or edit user programs.\n\nHave fun! ✌️😄'],
-['⚙️',,,,resize|shortcut,'System',,
+['⚙️',,,,shortcut,'System',,
 [
     ['🏆','system/trophyCase.html',,,full|resize|sticky,,'View all your trophies here.\nAny JS13k game can add trophies, play to win more!'],
     ['✏️','system/stickyNote.html',300,263,sticky|reload|sticky,,'Ctrl+B = Bold\nCtrl+I = Italic\nCtrl+U = Underline\nReload = Clear'],
@@ -20,7 +20,7 @@ const programStubs =
         ['✌️😄','index.html',,,,'Meta OS13k'],
     ]],
 ]],
-['🛠️',,,,resize|shortcut,'Apps',,
+['🛠️',,,,shortcut,'Apps',,
 [
     ['🌐','apps/webBrowser.html',,,defaultFlags|shortcut,,'Tiny web browser with history controls.\nMany websites will prevent opening in a frame like this.'],
     ['⌛','apps/timer.html',400,139,reload|shortcut],
@@ -29,7 +29,7 @@ const programStubs =
     ['📸','apps/camera.html',640,480],
     ['<span style=color:#0f0;background:#000;font-family:monospace>JS>','apps/console.html']
 ]],
-['🎶',,,,resize|shortcut,'Music',,
+['🎶',,,,shortcut,'Music',,
 [
     ['🎵','music/musicPlayer.html',400,330,sticky,,'OS13k can play music using the tiny ZzFXM format.\nJS13k games can add their music to your library.\nPlay games to collect more music.'],
     ['👁️','music/visualizer.dweet.js',,,awake|full|resize|code],
@@ -42,7 +42,7 @@ const programStubs =
     ['🦗','music/smallSeeds.html',520,340,full|reload,,'This is a special tool for devs.\nUse smaller seeds to save space.\nYou can also tab through the list.'],
     ['𝐙𝐙','music/zzfxSoundBoard.html',700,420,,'ZzFX Sound Board'],
 ]],
-['🎮',,,,resize|shortcut,'Games',,
+['🎮',,,,shortcut,'Games',,
 [
     ['💖','games/bounceBack.html',1280,720,defaultFlags|shortcut,,"When life gets you down, it's never too late to... BOUNCE BACK!\n\nWASD = Move\nMouse = Aim\nClick = Throw\nShift = Dash\n\nBy Frank Force"],
     ['🐍','games/sheddingSnake.dweet.js',800,600,defaultFlags|shortcut,,"Eat apples to grow and don't hit your skin!\n\nBy Niklas Berg and Frank Force"],
@@ -60,7 +60,7 @@ const programStubs =
     ['🦋','games/batafuraiko.html',,,defaultFlags|shortcut,,'Use mouse to fly.\nYou have 1 life to survive 9 waves.\nReload to start over.'],
     ['⛱️','games/sandbox.dweet.js'],
 ]],
-['<b style=color:#000;background:#fff>&nbspIII&nbsp',,,,resize|shortcut,'Dweets',,
+['<b style=color:#000;background:#fff>&nbspIII&nbsp',,,,shortcut,'Dweets',,
 [
     ['🔎','https://dweetview.3d2k.com'],
     ['🌌','dweets/blackHole.dweet.js'],
@@ -82,7 +82,7 @@ const programStubs =
     ['🌆','dweets/oceanCity.dweet.js'],
     ['☸️','dweets/buddhabrot.dweet.js'],
 ]],
-['<span style=color:#f40><b>𝓢',,,,resize|shortcut,'Shader Toys',,
+['<span style=color:#f40><b>𝓢',,,,shortcut,'Shader Toys',,
 [
     ['𝓩𝔃','shaders/zzartLandscape.shader.txt',,,,'ZzArt Landscape'],
     ['<span style=color:#f00>☯','shaders/infiniteYinYangs.shader.txt'],
@@ -91,7 +91,7 @@ const programStubs =
     ['🕰️','shaders/timeGate.shader.txt'],
     ['👨‍💻','shaders/infinityMatrix.shader.txt'],
 ]],
-['📼',,,,resize|shortcut,'Videos',,
+['📼',,,,shortcut,'Videos',,
 [
     ['🐈','https://www.youtube.com/embed/dpuqKAWISN0',,,,'Alien Cat vs Super Dog'],
     ['🛣️','https://www.youtube.com/embed/txcH9sB9UTM',,,,'Bogus Roads Trailer'],

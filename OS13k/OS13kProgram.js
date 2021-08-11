@@ -43,6 +43,9 @@ class OS13kProgram extends HTMLElement
         // set code only if help not shown or if has extension and not disabled
         this.code = !(this.help = help) && (flags & code || ((this.isDweet | this.isShader) && flags == undefined));
 
+        // set all folders to be resizable
+        flags |= folder && resize;
+
         // set icon data
         this.className  = 'program';
         this.src        = src;
