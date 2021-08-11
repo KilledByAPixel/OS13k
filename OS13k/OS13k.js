@@ -395,7 +395,7 @@ class _OS13k
         inputWindow.onkeyup     = e=> input.keydown[e.keyCode] = 0;
         inputWindow.onmousedown = e=> (input.mousedown[e.button] = input.mousepress[e.button] = 1, e.button != 1);
         inputWindow.onmouseup   = e=> input.mousedown[e.button] = 0;
-        inputWindow.onmousemove = e=> (input.mousex = e.x, input.mousey = e.y);
+        inputWindow.onmousemove = e=> (input.mousex = OS13k.Clamp(e.x/inputWindow.innerWidth), input.mousey = OS13k.Clamp(e.y/inputWindow.innerHeight));
         inputWindow.onblur      = e=> (input.keydown = [], input.mousedown = []);
         inputWindow.onwheel     = e=> input.wheel = e.deltaY;
 
