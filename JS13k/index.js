@@ -758,7 +758,6 @@ class OS13kWindow extends HTMLElement
                     }\n};` +
                     `OS13kU=t=>t>OS13kF-2&&` + 
                         `u(((t=frame++/60)*60|0==frame-1)&&t>0?t+1e-6:t,` +
-                        `OS13kL=0,` +
                         `OS13kF=Math.max(OS13kF+100/6,t));` +
                     `(OS13kA=t=>(requestAnimationFrame(OS13kA),` +
                         (program.flags & awake || program.info.allowSleep == 0 ? '' : 
