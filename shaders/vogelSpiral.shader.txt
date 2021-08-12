@@ -1,3 +1,4 @@
+// Vogel Spiral By Frank Force
 #define M iMouse
 #define R iResolution
 #define T iTime

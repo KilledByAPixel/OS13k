@@ -1,3 +1,4 @@
+// ZzArt Landscape By Frank Force
 vec3 SmoothHSV(vec3 c) { vec3 rgb = clamp(abs(mod(c.x*6.+vec3(0,4,2),6.)-3.)-1.,0.,1.); return c.z * mix( vec3(1), rgb*rgb*(3.-2.*rgb), c.y); }
 vec4 lengthA(vec4 a)      { return vec4(length(a)); }
 vec4 asinA(vec4 a)        { return asin(clamp(a,-1.,1.)); }

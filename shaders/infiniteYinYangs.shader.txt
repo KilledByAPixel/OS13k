@@ -1,3 +1,4 @@
+// Infinte Yin Yangs By Frank Force
 #define T iTime
 #define R iResolution
 #define P(i)vec2(-(step(.5,fract(3.7*sin(i)))-.5)*sin(A(i)),(step(.5,fract(3.7*sin(i)))-.5)*cos(A(i)))
