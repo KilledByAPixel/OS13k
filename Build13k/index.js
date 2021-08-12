@@ -38,13 +38,16 @@ programStubs =
 ['🎶',,,shortcut,'Music',,
 [
     ['🎵',400,330,sticky,'Music Player'],
-    ['👁️',,,awake|full|resize|dweet,'Visualizer']
+    ['👁️',,,awake|full|resize|dweet,'Visualizer'],
+    ['🎹',350,99,reload|shortcut,'Ziano','Keyboard = Play Piano Notes\nSeed = Change Sound'],
+    ['🦈',320,89,reload|shortcut,'Byte Beat Player','Enter a funtion and length in seconds to generate music.'],
 ]],
 ['🎮',,,shortcut,'Games',,
 [
-    ['🙉',,,defaultFlags|dweet,"Don't Fall"],
-    ['🏂🏻',,,defaultFlags|dweet,"Bogus Slopes"],
-    ['🐍',800,600,defaultFlags|dweet,"Shedding Snake"]
+    ['🙉',,,defaultFlags|dweet,'Don\'t Fall'],
+    ['🏂🏻',,,defaultFlags|dweet,'Bogus Slopes'],
+    ['🐍',800,600,defaultFlags|dweet,'Shedding Snake'],
+    ['🛣️',,,defaultFlags|dweet,'Bogus Roads Mini'],
 ]]
 ];
 
@@ -254,6 +257,13 @@ class _OS13k
     // get frequency of a note on a musical scale
     Note(semitoneOffset=0, rootNoteFrequency=440)
     { return rootNoteFrequency * 2**(semitoneOffset/12); }
+
+    PianoKey(event)
+    {
+        let k = 'ZSXDCVGBHNJM,L.;/Q2W3ER5T6Y7UI9O0P[=]'      // map key to note
+            .indexOf(event.key && event.key.toUpperCase());  // find the key and check for invalid key
+        return k - 5 * (k > 16);                             // offset second row of keys
+    }
 
     // speak text
     Speak(text, language='en', stopSpeech, volume=1, rate=1, pitch=1)
