@@ -22,7 +22,7 @@ It includes native support for Shadertoys, Dweets, ZzFX sounds, music, trophies,
 - Mobile/touch support
 
 ## Programming Info
-- OS13k stores it's list of programs in OS13kProgramStubs.js
+- OS13k stores it's list of programs in programs.js
 - For fast iteration when developing, most recent active window is opened on startup
 
 Add an icon config to programs.js to register your program, examples...
