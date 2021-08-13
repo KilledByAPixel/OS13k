@@ -52,7 +52,9 @@ programStubs =
 
 programs = 
 {
-'Help':'<h2><i>Welcome to OS13k!</i></h2><p>OS13k is a tiny operating system designed for JS13k.<p>Play JS13k games to earn trophies and unlock music.<p>✌️😄❤️ OS13k Team',
+'Help':
+
+'<h2><i>Glory to OS13k!</i></h2><p>The OS13k is tiny control system made by workers of great nation for JS13k.<p>All citizens are asked to submit little programs for inclusion.<p>😎🤚🚩 Ministry of OS13k<p>Project Links...<ul><li><a href=https://github.com/KilledByAPixel/OS13k target=_blank>GitHub</a><li><a href=https://discord.gg/n8vxUcZ target=_blank>Discord</a></ul>',
 'Marathon':`
 c.style.filter='invert('
 I=OS13k.Input(window)
