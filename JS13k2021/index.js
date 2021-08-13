@@ -39,11 +39,11 @@ programStubs =
 [
     ['📻',400,330,sticky,'Music Player'],
     ['👁️',,,awake|full|resize|dweet,'Visualizer'],
-    ['📯',,,defaultFlags|dweet,'Zeremin','Mouse = Play\nWheel = Change Sound']
+    ['📯',,,defaultFlags|dweet,'Zeremin']
 ]],
 ['🕹️',,,shortcut,'Games',,
 [
-    ['🏃',,,defaultFlags|dweet,'Marathon','Click = Jump']
+    ['🏃',,,defaultFlags|dweet,'Marathon']
 ]]
 ],
 
@@ -55,7 +55,7 @@ programs =
 'Help':
 
 '<h2><i>Glory to OS13k!</i></h2><p>The OS13k is tiny control system made by workers of great nation for JS13k.<p>All citizens are asked to submit little programs for inclusion.<p>😎🤚🚩 Ministry of OS13k<p>Project Links...<ul><li><a href=https://github.com/KilledByAPixel/OS13k target=_blank>GitHub</a><li><a href=https://discord.gg/n8vxUcZ target=_blank>Discord</a></ul>',
-'Marathon':`
+'Marathon':`// Click = Jump
 c.style.filter='invert('
 I=OS13k.Input(window)
 for(F=T,t?T+=P:P=Y=V=T=Q=1,i=9,c.width=300;i--?H=R:0;x.fillRect(j*47-T,R=99-C(j*j)*15,44,1e3))j=i+T/47|0
@@ -67,7 +67,8 @@ for(j=4,l=(r,a)=>x.lineTo(X+=r*C(a),y+=r*S(a));j--;x.beginPath(x.stroke()))i=j%4
 j>99&&OS13k.Trophy('🎖️','Marathon','100!')
 if((F/47|0)-(T/47|0))OS13k.PlaySeed(3,0)
 `,
-'Zeremin':`
+'Zeremin':`// Mouse = Play
+// Wheel = Change Sound
 c.style.filter='invert('
 I=OS13k.Input(window)
 t?I.wheel?S+=I.wheel>0?-1:1:0:S=0
