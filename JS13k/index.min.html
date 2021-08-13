@@ -1,0 +1,218 @@
+<title>OS13k</title><meta charset=utf-8><div style=display:none>
+
+<iframe name=Help><h2><i>Welcome to OS13k!</i></h2><p>OS13k is a tiny operating system designed for JS13k.<p>Play JS13k games to earn trophies and unlock music.<p>✌️😄❤️ OS13k Team</iframe>
+
+<iframe name=Settings><style>body{background:#111;color:#fff;user-select:none;text-align:center}</style>Volume <input type=range id=V oninput=s() style=width:99> Music <input type=range id=M oninput=s() style=width:99><p>System Sounds <input type=checkbox id=Y oninput=s()> Speech <input type=checkbox id=S oninput=s()> Popups <input type=checkbox id=P oninput=s()> <p>Background <input id=C type=color oninput=s()> <input id=D type=color oninput=s()> <input id=T oninput=s()><script>s=e=>parent.OS13k.SaveSettings(V.value/100,M.value/100,S.checked,P.checked,Y.checked,D.value,C.value,T.value),s(i=parent.OS13k.Settings(),V.value=100*i.v,M.value=100*i.m,S.checked=i.s,P.checked=i.p,Y.checked=i.o,C.value=i.d,D.value=i.c,T.value=i.t)</script></iframe>
+
+<iframe name="Trophy Case"><style>body{background:#232}</style><body><script>OS13kReload=()=>{for(t of(this.document.body.innerHTML="",parent.OS13k.Trophies()))this.document.body.innerHTML+=`<div style='display:inline-block;font-family:arial;padding:9;overflow:hidden;text-align:center;background:linear-gradient(#eee,#888);width:120;height:120;margin:9;font-size:18;box-shadow:5px 5px 9px;border:2px solid;border-radius:29px'title='${i=t[0]||"🏆"} ${n=t[2]}\n${g=t[1]}\n${m=t[3]}'onclick='parent.OS13k.Speak(\`${n}\`,"ja",1)'><div style='padding:3;white-space:nowrap;font-size:28;text-shadow:2px 2px 4px'>${i}</div><div><b>${n}</b><br><i>${g}</i><br><div style=font-size:14>`+m},OS13kReload()</script></iframe>
+
+<iframe name="Sticky Note"><body style=background:#ff8;font-family:cursive;font-size:23 id=b contenteditable=true spellcheck=false><script>b.focus();b.innerHTML=localStorage.OS13kN||'';b.oninput=e=>localStorage.OS13kN=b.innerHTML;OS13kReload=e=>b.innerHTML=localStorage.OS13kN='';</script></iframe>
+
+<iframe name=Clock>D=Date(L=(t,e,l,o=-6)=>x.fillRect(-e/2,o,e,l,x.rotate(-a+(a=Math.PI*(2*t-1)))));if(c.title!=D){document.hasFocus()&&OS13k.PlaySeed(6,.1,1,.01);c.title=D;c.style.background='#111';c.width=198;x.translate(99,99);D=D.slice(16,24).split`:`;for(a=i=0;61>i++;L(i/60,2,i%5?3:8,88))x.fillStyle='#fff';L(D[0]%12/12+D[1]/720,6,59);L(D[1]/60,3,85);x.fillStyle='#f00';L(D[2]/60,2,99)}</iframe>
+
+<iframe name=Ziano><style>body{background:#111;color:#fff;user-select:none;text-align:center}</style><span id=B></span>🌱 <input oninput=P(0,R()) style=width:240 id=S><p>🔊 <input onchange=R() style=width:99 type=range id=V> 🐇 <input onchange=R() style=width:99 type=range id=L> 🐢<script>OS13k=parent.OS13k,R=e=>{for(onblur(D=[]),i=5;--i;D[i]=OS13k.SeedSamples(S.value,.1+L.value/9,1,0,OS13k.Note(12*i-33)));},P=e=>e<0||A[e]||((A[e]=OS13k.PlaySamples(D[2+e/12|0],2)).detune.value=e%12*100,A[e].gain.gain.value=V.value/50),X=e=>A[e]&&(A[e].gain.gain.linearRampToValueAtTime(V.value/50,t=A[e].context.currentTime+.02),A[e].gain.gain.linearRampToValueAtTime(A[e]=0,t+.1)),onunload=onblur=e=>A.map((e,a)=>X(a)),R(A=[]),onkeydown=e=>document.activeElement==S||P(OS13k.PianoKey(e)),onkeyup=e=>X(OS13k.PianoKey(e))</script></iframe>
+
+<iframe name="Byte Beat Player"><style>body{background:#111;color:#fff;user-select:none;text-align:center}</style>ƒ(t) <input id=I value='t&t>>7' title=Function><p>Seconds <input style=width:99 id=L type=number value=30 min=1 max=120> <button onmousedown=P()>►</button> <button onmousedown=A&&A.stop()>◼</button><script>A=0;P=e=>{A&&A.stop();l=(L.value=OS13k.Clamp(L.value,120))* 44100;s=[];try {eval('f=t=>'+ I.value);for(i=0;i<l;s[i]=OS13k.Clamp(f(i++))- .5);A=OS13k.PlaySamples(s,1);} catch(e){}};onunload=e=>A&&A.stop()</script></iframe>
+
+<iframe name="Bogus Roads Mini">t?T+=2:T=X=0;c.width=99;X=OS13k.Input(window).mousex*99;for(i=5;i--;(Y>50&&(X-q)**2<30)?(F>OS13k.GetTrophy('Bogus Roads Mini','High Score')&&OS13k.Trophy('🛣️','Bogus Roads Mini','High Score',F),T=0):x.fillRect(X=X<1?1:X>89?89:X,50,6,9))x.fillText(F=5*((j=T-i*14)/70|0)+i,q=45+45*C(F**3),Y=j%70-7,7)</iframe>
+
+<iframe name="Music Player"><style>body{background:#111;color:#fff;user-select:none;text-align:center;overflow-x:hidden;white-space:nowrap}</style><div id=N style=font-size:27;font-family:arial>&nbsp;</div><div id=F style=height:9></div><br><button onmousedown=P()>Play</button> <button onmousedown=X&&X.stop(X=0)>Stop</button> <button onmousedown=A()>Load</button> <button onmousedown=R()>Delete</button><br><br>Volume <input type=range id=V> Loop <input type=checkbox id=O checked><br><canvas id=C style=width:350;height:29></canvas><br><select id=S size=9 style=width:350;background:#000;color:#fff><script>OS13k=parent.OS13k,X=E=D=T=0,Y=Q=-1,U=e=>{requestAnimationFrame(U),!--Y&&Q>=0?(l=L[Q],T=0,Q=-1,(X=OS13k.PlayMusic(l.d))?X.gain.gain.value=V.value/99:alert`⚠️ Error!`):Y<-1&&(C.getContext`2d`.drawImage(OS13k.GetAnalyser(),0,0,C.width=32,C.height=32),F.innerText=X?(X.gain.gain.value=V.value/99,d=X.buffer.duration,T+=(e-D)/1e3,X.loop=O.checked?1:T>d?X=0:0,W(T%d)+"/"+W(d)):(N.innerText="ZzFXM Player","")),D=e},B=e=>{for(e in i=S.selectedIndex,S.innerHTML="",Z=0,L=[],localStorage)I(e);L.sort((e,n)=>e.n.localeCompare(n.n)).map(e=>S.innerHTML+="<option>"+e.n),S.selectedIndex=OS13k.Clamp(E?L.findIndex(e=>e.k==E):i,S.length-1,E=0),localStorage.OS13kM=JSON.stringify(K)},I=e=>{if(p=e.split`,`,f=p.shift(),"OS13kMusic"==f.substring(0,10)){n=p[0]?p[0]:"Untitled","U"==f[10]?Z=Math.max(Z,f.substring(11)):K.indexOf(e)<0&&(OS13k.Popup("🎵 New Music<br><b>"+n,n),K.push(e));try{(d=OS13k.StringToMusic(localStorage[e]))&&L.push({d:d,k:e,n:n})}catch(e){}}},P=e=>{X&&X.stop(),Y=2,(Q=S.selectedIndex)<0||(N.innerText=L[Q].n,F.innerText="Loading...")},A=e=>{try{OS13k.StringToMusic(d=prompt`ZzFXM Data`,1),B(localStorage[E=`OS13kMusicU${Z+1},`+prompt`Name`.replace(/,/g,"")]=d)}catch(e){alert`⚠️ Error!`}},R=e=>confirm(`⚠️ Delete ${L[S.selectedIndex].n}?`)&&B(localStorage[L[S.selectedIndex].k]=0),W=e=>(e/60|0)+((e=e%60|0)<=9?":0":":")+e,localStorage["OS13kMusic,OS13k - Depp Loop"]=JSON.stringify([[[,0,77,,,.7,2,.41,,,,,,,,.06],[,0,43,.01,,.3,2,,,,,,,,,.02,.01],[,0,170,.003,,.008,,.97,-35,53,,,,,,.1],[.8,0,270,,,.12,3,1.65,-2,,,,,4.5,,.02],[,0,86,,,,,.7,,,,.5,,6.7,1,.05],[,0,2200,,,.04,3,2,,,800,.02,,4.8,,.01,.1]],[[[1,-1,21,21,33,21,21,33,21,21,33,21,21,33,21,21,33,33,21,21,33,21,21,33,21,21,33,21,21,33,21,21,33,33,21,21,33,21,21,33,21,21,33,21,21,33,21,21,33,33,21,21,33,21,21,33,21,21,33,21,21,33,21,21,33,33],[3,1,24,,,,,,,,27,,,,,,,,,,,,,,,,27,,,,24,,,,24,,,,,,,,27,,,,,,,,,,,,,,,,24,,24,,24,,,,],[1,-1,21,,,,,,,,,,,,,,,,,,,,,,,,,,,,24,,,,23,,,,,,,,,,,,,,,,,,,,,,,,24,,23,,21,,,,],[,1,21,,,,,,,,,,,,,,,,,,,,,,,,,,,,24,,,,23,,,,,,,,,,,,,,,,,,,,,,,,24,,23,,21,,,,],[5,1,,,34,34,34,,,,,,34,34,,,,,34,,,,34,34,,,,,34,,,,34,,,,34,34,34,,,,,,34,,,,,,34,34,,,34,34,,,,,,,,,34,34],[4,1,,,,,,,24,,,,,,24,,24,,,,24,,,,24,,,,,,,,,,,,,,,,24,,,,,,24,,24,,,,24,,,,24,,,,,,,,,,]]],[0]]),K=localStorage.OS13kM?JSON.parse(localStorage.OS13kM):[],U(B(onunload=e=>X&&X.stop()))</script></iframe>
+
+<iframe name=Visualizer>for(x.fillRect(0,0,2e3,2e3),x.fillStyle="#0003",t?x.lineWidth=9:h=[],x.strokeStyle="#fff",i=32;i--;x.beginPath(x.strokeStyle=`hsl(${-99-i*360/32} 99%${9+m/2}%)`,x.stroke()))for(m=199*OS13k.GetAnalyserData(i),j=5;j--;)x.arc(960,540,256+(j+1&2?1:-1)*m,a=2*((2&j)/2-8.5+i)*Math.PI/32,a);x.drawImage(c,-40,-20,2e3,1120)</iframe>
+
+<iframe name="Don't Fall">for(t||(A=B=P=8,a=b=p=0),i=OS13k.Input(window),a=-i.x/2,k=i.y,b-=.006,A-=a,B-=b,r=.2-B/240,P-=r,B+=r,c.width=512,i=3e3;X=63&i,Y=i>>6,i--;x.fillRect(8*X,8*Y,8,8))y=Y/3+B+P,z=X/3+4*(y>>4),G=T(y+z^z-y),M=G>5,A^X|B^Y|!M||(OS13k.PlaySeed(96*G,p+k*k,.3),b=k?p/3:.2,p=k?0:p>1?1:p+G%2/12),y-=P/2,z+=A/3,g=T(y+z^z-y),m=t<32?12+g%8+Y-B:(G^g)+Y-B&31,x.fillStyle=`hsl(${M*G*30+m}deg 99%${50*M+m*(1-S(t/16)**3)/2}%`;x.font=16+16*p+"px a",x.fillText(k?"🙉":"🐵",8*A-8-8*p,8*B),B<48&&OS13k.Trophy([..."🐢🦒🦉🦇🦜🕊🐒🦅"][y=32-y>>5],"Don't Fall",16*y+"ft")</iframe>
+
+<iframe name="Bogus Slopes">i=OS13k.Input(window),t||(T=U=V=F=0,W=[],Y=700,X=-Y),X>0||(x.fillStyle="#ccc8",x.fillRect(0,0,2e3,2e3),x.font='9em"',x.textAlign="center",x.textBaseline="middle",x.scale(-1,1),F=Math.min(F+.2,Math.min(20+T/5e4,30)),Z=U>1,W.push((60*t|0)%Math.max(9,Z?30:20-T/1e4|0)?{t:"●",x:X,y:Y,c:`hsl(${T} 99%${Z?50:100}%)`}:{t:[..."🌲🌳⭐"][2*Math.random()+(Math.random()<.05)|0],x:-2200,y:79+900*Math.random()}),W=W.filter(t=>(z="⭐"==t.t,x.fillStyle=t.c||R(),x.fillText("●"==t.t||U<1||z?t.t:"🌮",t.x+=F*(z?.7:1),t.y),t.x<99&&("●"==t.t||(Math.hypot(X-t.x,Y-t.y)>99?1:(OS13k.PlaySeed(z?169:Z?22:121),z?U=4:Z?U=U>2?U:2:(F=9,U=-3),0))))),Y+=V=.95*V+.5-1.5*i.mousedown,x.fillText(U>1.5&&4*t%1<.5?"":"🏂🏻",X=Math.max(X-(U*=.99),-960),Y>1e3?(V=0,Y=1e3):Y<99?(V=0,Y=99):Y),x.scale(-1,1),x.textAlign="left",x.fillStyle=R(),x.fillText(s=(T+=F)/500|0,9,99),x.textAlign="right",x.fillStyle=R(255,0,0,9-t),x.fillText(d=OS13k.GetTrophy("Bogus Slopes","High Score"),c.width-9,99),s>99&&OS13k.Trophy("⭐","Bogus Slopes","100!"),X>0&&(OS13k.PlaySeed(370,5),s>d&&OS13k.Trophy("🏂🏻","Bogus Slopes","High Score",s)),Z&&frame%(U>2?10:20)==0&&OS13k.PlaySeed(53,1,1,.01,OS13k.Note(10-Y/100|0)))</iframe>
+
+<iframe name="Shedding Snake">t||(T=[],S=[],W=32,H=24,X=W>>1,Y=H>>1,Z=50,G=Q=D=0,F=(e,t,i,h,l)=>{x.save(),x.translate((t+.5)*Z,(i+.5)*Z),l&&x.rotate(l*Math.PI/2),h&&x.fillRect(-.5*Z,-.5*Z,Z,Z,x.fillStyle=h),x.restore(x.fillText(e,0,0))},C=(e,t)=>(b=0,S.map((i,h)=>b|=e==h%W&&t==(h/W|0)),T.map(i=>b|=e==i[0]&&t==i[1]),b),P=e=>{for(;C(A=Math.random()*W|0,B=Math.random()*H|0)||!t.length&&A==X;);},P()),s=T.length,h=OS13k.GetTrophy("Shedding Snake","High Score"),s-20||OS13k.Trophy("🍎","Shedding Snake","20 Apples!"),C(X,Y)?G||(OS13k.PlaySeed(G=178,3),s>h&&OS13k.Trophy("🐍","Shedding Snake","High Score",s)):(x.fillRect(0,0,c.width=W*Z,c.height=H*Z),frame%7==0&&(i=OS13k.Input(window),(i.x||i.y)&&(d=i.x>0?3:i.x<0?1:i.y>0?2:0)%2!=D%2&&(D=d),Q&&(Q--,OS13k.PlaySeed(128,.1)),T.push([X,Y]),X-A||B-Y||P(OS13k.PlaySeed(169),T.push([X,Y]),T.map(e=>S[e[0]+e[1]*W]=1),Q=T.length),T.shift(),D%2?X=(X+(D-1?1:-1)+W)%W:Y=(Y+(D?-1:1)+H)%H),x.textAlign="center",x.textBaseline="middle",x.font=Z+'px"',x.fillStyle="#fff",S.map((e,t)=>F("✖️",t%W,t/W|0,"#ddd")),T.map(e=>F("✖️",e[0],e[1],"#693")),F("🍎",A,B),F("🐸",X,Y,0,D),x.font='90px"',x.lineWidth=9,x.strokeText(a=T.length?"Score: "+s:"🐍 High Score: "+h,c.width/2,80),x.fillText(a,c.width/2,80))</iframe>
+
+</div><style>
+body
+{
+opacity:0;
+margin:0;
+overflow:hidden;
+font-family:arial;
+font-size:22;
+user-select:none;
+white-space:nowrap;
+background:#000;
+}
+#menu
+{
+display:flex;
+flex-direction:column;
+background:#000;
+}
+.programMenu { background:linear-gradient(#fff,#888); }
+#menu, .programMenu
+{
+visibility:hidden;
+position:absolute;
+z-index:20000;
+box-shadow:5px 5px 9px;
+border:2px solid;
+}
+.program
+{
+font-size:18;
+height:18;
+padding:4;
+}
+.activeWindow { border:3px solid#aaa; }
+.desktopIcon 
+{ 
+width:99;
+height:99;
+padding:9;
+font-size:15;
+color:#fff;
+text-shadow:1px 1px 3px#000; 
+overflow:hidden;
+text-align:center;
+white-space:normal;
+}
+.desktopIcon:hover         { background:linear-gradient(#ff8,#fff); }
+.desktopIconIcon           { color:#000; font-size:36; margin:4; pointer-events:none; }
+#taskbar
+{
+position:absolute;
+z-index:10000;
+width:100%;
+background:linear-gradient(#888,#333);
+box-shadow:0px 1px 9px;
+border:2px solid;
+left:-2;
+}
+.taskbarIcon { width:50; height:40; text-shadow:1px 1px 3px#000; overflow:hidden; }
+.programActive,
+.taskbarIconActive         { background:linear-gradient(#ff8,#fff); }
+.taskbarIcon:hover         { background:linear-gradient(#fff,#44f); }
+#tray
+{
+margin:2;
+padding-left:9;
+padding-right:9;
+color:#fff;
+background:linear-gradient(#000,#333);
+border:1px solid;
+border-radius:6px;
+text-shadow:1px 1px 3px#000;
+}
+.trayIcon       { padding:2; }
+.trayIcon:hover { background:#fff3; }
+.popup
+{
+position:relative;
+z-index:10000;
+width:200;
+padding:8;
+white-space:normal;
+text-align:center;
+background:linear-gradient(#eee,#888);
+box-shadow:9px 9px 19px;
+border:2px solid;
+border-radius:9px;
+}
+.trophyIcon
+{
+padding:9;
+font-size:40;
+text-shadow:2px 2px 4px;
+white-space:nowrap;
+}
+#background
+{
+position:absolute;
+width:100%;
+height:100%;
+color:#0003;
+font-family:impact;
+font-size:28vw;
+font-weight:900;
+position:absolute;
+}
+.program, #taskbar, .taskbarIcon, #background, #tray
+{
+display:flex;
+align-items:center;
+justify-content:center;
+}
+</style><div id=background></div><div id=desktop><div id=taskbar><div id=taskbarSpace style=flex:1></div><div id=tray></div></div><div id=popups style=float:right></div><div id=programsMenu style=position:absolute></div><div id=menu></div><div id=desktopIcons style=position:absolute;top:60;display:flex;flex-wrap:wrap><iframe id=windowTemplate style=display:none><style>
+:host
+{
+position:absolute;
+background:#000;
+box-shadow:5px 5px 9px;
+border:3px solid#222;
+border-radius:6px;
+overflow:hidden;
+}
+.desktopIcon 
+{ 
+width:99;
+height:99;
+padding:9;
+font-size:15;
+color:#fff;
+text-shadow:1px 1px 3px#000; 
+overflow:hidden;
+text-align:center;
+white-space:normal;
+}
+.desktopIcon:hover   { background:linear-gradient(#ff8,#fff); }
+.desktopIconIcon    { color:#000; font-size:36; margin:4; pointer-events:none; }
+input, button, span { margin:4; }
+textarea            { padding:9; }
+span                { white-space:nowrap; }
+.titlebar
+{
+height:34;
+font-size:24;
+display:flex;
+align-items:center;
+white-space:nowrap;
+background:linear-gradient(#ccc,#444);
+border-bottom:3px solid;
+}
+.titlebarActive       { background:linear-gradient(#eee,#88f); }
+.titlebarActiveSticky { background:linear-gradient(#eee,#f88); }
+.titlebarSticky       { background:linear-gradient(#ccc,#844); }
+.folder
+{
+background:linear-gradient(#888,#333);
+display:flex;
+flex-wrap:wrap;
+align-content:flex-start;
+overflow-y:auto;
+}
+#name { width:100%; overflow:hidden; cursor:grab; }
+#icon           
+{ 
+display:inline;
+text-shadow:1px 1px 3px#000;
+margin-left:9;
+margin-right:9;
+pointer-events:none;
+}
+#frame
+{
+width:100%;
+height:100%;
+background:#fff;
+border:none;
+visibility:hidden;
+}
+#codeText
+{
+height:199;
+background:#000;
+color:#fff;
+width:100%;
+resize:none;
+outline:0;
+border-top:2px solid;
+}
+</style></iframe>
+<script> 
+"use strict";class _OS13k{Clamp(e,t=1,n=0){return e<n?n:t<e?t:e}Percent(e,t,n){return n-t?OS13k.Clamp((e-t)/(n-t)):0}Lerp(e,t,n){return t+OS13k.Clamp(e)*(n-t)}Hash(e){return[...e].reduce((e,t)=>t.charCodeAt()+31*e|0,0)}Random(e=1,t=0){return OS13k.l^=OS13k.l<<13,OS13k.l^=OS13k.l>>17,OS13k.Lerp(Math.abs(OS13k.l^=OS13k.l<<5)%1e9/1e9,t,e)}Trophy(e,t,n,s){let i;var a=[e=(a=e=>OS13k.StripHTML(e||"",32).replace(/[,`]/g,""))(e),t=a(t),n=a(n),s=a(s),i=e+","+t+","+n],o=p.findIndex(e=>e[4]==i);0<=o&&p[o][3]==s||(o<0?p.unshift(a):p[o]=a,localStorage["OS13kTrophy,"+i]=s,n||(n=t,t=""),OS13k.Popup(`<div class=trophyIcon>${e||"🏆"}</div><div><b>${n}</b><br><i>${t}</i></div>`+s,n+". "+t,"ja"),OS13k.Save(u.g.window&&aa(u.g.window)))}GetTrophy(t,n){var e=p.find(e=>e[1]==t&e[2]==n);return e?e[3]:0}Trophies(){return p}PlaySeed(e,t=0,n,s,i,a){return OS13k.PlaySamples(OS13k.SeedSamples(...arguments),a)}SeedSamples(...e){return zzfxG(...OS13k.SeedParameters(...e))}SeedParameters(e,t=1,n=1,s=.05,i){if(!e)return[n,s,i||OS13k.Note(-21),0,t];if(parseFloat(e=(e+"").trim())!=e){if("zzfx(...["==e.slice(0,9))return e.slice(9).split(",").map((e,t)=>t?1==t?s:2==t&&i?i:e.length?parseFloat(e):void 0:n);e=OS13k.Hash(e)}OS13k.l=e,e=OS13k.Random()**3/4*t;var a=OS13k.Random()**3/4*t,o=OS13k.Random()**3/4*t,l=e+a+o+(t*=OS13k.Random()**3/4),h=2e3*OS13k.Random()**2;return[n,s,i||h,e,o,t,5*OS13k.Random()|0,3*OS13k.Random()**2,(OS13k.Random()<.5?OS13k.Random():0)**3*(OS13k.Random()<.5&&OS13k.Random()?99:-99),(OS13k.Random()<.5?OS13k.Random():0)**3*(OS13k.Random()<.5&&OS13k.Random()?99:-99),(OS13k.Random()<.5?OS13k.Random():0)**2*(OS13k.Random()<.5&&OS13k.Random()?1e3:-1e3),OS13k.Random()**2*l,(OS13k.Random()<.5?OS13k.Random():0)*l,(OS13k.Random()<.5?OS13k.Random():0)**4,(OS13k.Random()<.5?OS13k.Random():0)**3*(OS13k.Random()<.5&&OS13k.Random()?9:-9),(OS13k.Random()<.5?OS13k.Random():0)**4,(OS13k.Random()<.5?OS13k.Random():0)**3/2,1-(OS13k.Random()<.5?OS13k.Random():0),a,(OS13k.Random()<.5?OS13k.Random():0)**4]}PlaySamples(e,t,n=44100){return OS13k.PlaySamplesArray([e],t,n)}PlaySamplesArray(e,t,n=44100){let s=v.createBuffer(e.length,e[0].length,n);return n=v.createBufferSource(),e.map((e,t)=>s.getChannelData(t).set(e)),n.buffer=s,(e=n).gain||n.connect(e=n.gain=v.createGain()),e.connect(t?y:A),t&&(1<t?e:n).connect(ba),n.start(),n}PlayMusic(e){try{return OS13k.PlaySamplesArray(zzfxM(...e),1)}catch(e){console.log(e)}}GetAnalyser(){return D}GetAnalyserData(e){return ca[e]||0}StringToMusic(a,b){return a=a.replace(/{[^}]+}/g,""),a=a.replace(/null|[[\],\de\. -]/g,"")||eval(a.replace(/null/g,void 0)),b&&zzfxM(...a,1),a}Note(e=0,t=440){return t*2**(e/12)}Speak(e,t="en",n,s=1,i=1,a=1){(e=new SpeechSynthesisUtterance(e)).volume=s*A.gain.value*2,e.rate=i,e.pitch=a,e.lang=t,n&&speechSynthesis&&speechSynthesis.cancel(),settings.s&E&&speechSynthesis&&speechSynthesis.speak(e)}StripHTML(e,t){return(e+"").substring(0,t||e.length).replace(/<.*>/g,"")}Popup(e,t,n){let s=popups.appendChild(document.createElement("div"));s.className="popup",s.innerHTML="<div style=pointer-events:none>"+e,s.speak=t,s.V=n,s.style.visibility="hidden"}Input(t){let e;t.document.OS13kInput&&(e={...t.document.OS13kInput},e.x=e.y=0,(e.keydown[87]||e.keypress[87])|(e.keydown[38]||e.keypress[38])&&++e.y,(e.keydown[83]||e.keypress[83])|(e.keydown[40]||e.keypress[40])&&--e.y,(e.keydown[68]||e.keypress[68])|(e.keydown[39]||e.keypress[39])&&++e.x,(e.keydown[65]||e.keypress[65])|(e.keydown[37]||e.keypress[37])&&--e.x);let n=t.document.OS13kInput={x:0,y:0,keypress:[],mousepress:[],keydown:t.document.OS13kInput?t.document.OS13kInput.keydown:[],mousedown:t.document.OS13kInput?t.document.OS13kInput.mousedown:[],mousex:t.document.OS13kInput?t.document.OS13kInput.mousex:0,mousey:t.document.OS13kInput?t.document.OS13kInput.mousey:0,W:0};return t.onkeydown=e=>e.repeat||(n.keydown[e.keyCode]=n.keypress[e.keyCode]=1),t.onkeyup=e=>n.keydown[e.keyCode]=0,t.onmousedown=e=>(n.mousedown[e.button]=n.mousepress[e.button]=1)!=e.button,t.onmouseup=e=>n.mousedown[e.button]=0,t.onmousemove=e=>(n.mousex=OS13k.Clamp(e.x/t.innerWidth),n.mousey=OS13k.Clamp(e.y/t.innerHeight)),t.onblur=()=>(n.keydown=[],n.mousedown=[]),t.onwheel=e=>n.W=e.deltaY,e||n}Save(){E&&(localStorage.OS13k=JSON.stringify([p,settings,F,L])),A.gain.value=settings.v,y.gain.value=settings.m,settings.s&&settings.v||speechSynthesis&&speechSynthesis.cancel(),background.style.background=`linear-gradient(${settings.c},${settings.d})`,background.innerText=settings.t}SaveSettings(e,t,n,s,i,a,o,l){OS13k.Save(settings={v:A.gain.value=e,m:y.gain.value=t,s:n,p:s,o:i,c:a,d:o,t:l})}Settings(){return settings}}var OS13k=new _OS13k;function da(t,n=0){for(var s of t.N){let e=s[-1]=s[-1]||new ea(...s);e.M=e.A?new fa(e.A,t):t}t.innerHTML="",programsMenu.appendChild(t),t.N.map(e=>t.appendChild(e[-1])),t.style.top=n,t.style.left=t.I&&t.I.getBoundingClientRect().right,t.N.map(e=>{e[-1].M!=t&&da(e[-1].M,n),n+=26})}class fa extends HTMLElement{constructor(e,t){super(),this.className="programMenu",this.I=t,this.N=e}h(){ha(),this.I&&this.I.h(),this.style.visibility="visible"}}function ia(t){var e=F.findIndex(e=>e.id==t.id);t.info=e<0?{}:F[e]}customElements.define("m-",fa);class ea extends HTMLElement{constructor(e,t=720,n=405,s,i="",a="",o){super(),this.L=128&s,this.code=!(this.F=a)&&(32&s||this.L),this.className="program",this.width=t,this.height=n,this.A=o,this.id=i,this.flags=s|(o&&16)||90,this.J(e,i),ia(this),"Music Player"==i&&M(ja,this),"Trophy Case"==i&&M(u,this),"Settings"==i&&M(ka,this),"Sticky Note"==i&&M(la,this),"Clock"==i&&M(N,this),"Help"==i&null==this.info.open&&(ma=this),1&this.flags?this.info.open&&this.i():this.id==L&&(ma=this),64&this.flags&&desktopIcons.appendChild(new na(this))}J(e,t){this.icon=e,this.innerHTML='<span style="pointer-events:none;width:45;text-shadow:1px 1px 3px#000;text-align:center;overflow:hidden">'+e,this.innerHTML+=`<div style=flex:1;padding-right:9;pointer-events:none>${this.name=OS13k.StripHTML(t)}</div>`+(this.A?"▶":"")}P(){this.M.h(),this.className="program programActive",oa!=this&&O(6,0),oa=this}i(){if(this.window)this.window.h(1,1);else if(256&this.flags)[...desktop.children].map(e=>e.D&&e.D()),pa=99,P=143,OS13k.Trophy("☕","OS13k","Coffee Is For Closers","Closed All");else if(this.name||this.A){let e=this.info.x,t=this.info.y;e||(e=pa,t=P,400<(pa+=37)&&(pa=P=99),300<(P+=37)&&(P=P=143)),this.window=new qa(this,e,t),this.Save()}}h(){this.i()}Save(e=1){this.info={open:e,id:this.id,x:e|1&this.flags?parseInt(this.window.style.left):0,y:parseInt(this.window.style.top),scale:e|1&this.flags?this.window.scale:1},e=F.findIndex(e=>e.id==this.id),OS13k.Save(e<0?F.push(this.info):F[e]=this.info)}}function aa(e){O(-5),e.B&&e.B.S?e.B.S():ra(e,e.u.style.visibility="")}function ra(e){e.u&&e.j.removeChild(e.u),e.u=e.j.appendChild(document.createElement("iframe"));let t=e.B=e.u.contentWindow,n=e.g,s=t.document,i=document.getElementsByName(n.name)[0].innerHTML,a=i;e.u.style="width:100%;height:100%;background:#fff;border:none",t.OS13k=OS13k,t.OS13kWindow=e,t.zzfx=zzfx,e.H.value=n.F||i,n.L&&(i="<style>canvas{width:100%;background:#fff}</style><canvas id=c width=1920 height=1080>"),s.open(),s.write(i),s.close(),n.L&&(s.body.style="background:#111;overflow:hidden;margin:0;display:flex;align-items:center",t.eval("OS13k=parent.OS13k;x=c.getContext('2d');zzfx=parent.zzfx;S=Math.sin;C=Math.cos;T=Math.tan;R=(r,g,b,a=1)=>`rgba(${0|r},${0|g},${0|b},${a})`;"+`u=t=>{\n${a}\n};`+"OS13kU=t=>t>OS13kF-2&&u(((t=frame++/60)*60|0==frame-1)&&t>0?t+1e-6:t,OS13kF=Math.max(OS13kF+100/6,t));(OS13kA=t=>(requestAnimationFrame(OS13kA),"+(4&n.flags||0==n.info.X?"":"t<1e3|parent.document.activeElement==OS13kWindow&&")+"OS13kU(t)))(frame=OS13kF=0)")),t.oncontextmenu=()=>!1,e.C||(e.C=new sa(n,e)).h()}function ta(e){O(-9),e.B.focus(),e.j.webkitRequestFullScreen?e.j.webkitRequestFullScreen():e.j.requestFullscreen&&e.j.requestFullscreen(),OS13k.Trophy("🕹️","OS13k","Pro Gamer","Went Full Screen")}function ua(e,t,n){t=OS13k.Clamp(e.g.width*t,1920,170),e.style.left=parseInt(e.style.left)+parseInt(e.style.width)-t,e.style.width=t,e.j.style.height=e.g.height*(e.scale=t/e.g.width),e.g.Save(),n&&O(n)}function va(e){e.K.style.display=(e.U=!e.U)?"inline":"none",O(e.g.F?22:16),e.g.F||OS13k.Trophy("👨‍💻","OS13k","Hacker","Viewed Code")}customElements.define("p-",ea);class qa extends HTMLElement{constructor(e,t,n){super(),desktop.appendChild(this),this.g=e,this.style.left=t,this.style.top=n,this.R=1,this.T=0,this.attachShadow({mode:"open"}),this.shadowRoot.innerHTML=windowTemplate.textContent,this.G=this.shadowRoot.appendChild(document.createElement("div")),this.G.id="titlebar",t=(e,t,n,s="path")=>{this.G.innerHTML+=`<style>#${e.split(" ")[0]}:hover{background:#${n}</style>`+`<div id=${e.split(" ")[0]} title=${e}>`+`<svg viewBox='0 0 10 10'style=height:100%;width:28;pointer-events:none><${s} stroke=#000 fill=none ${t} />`},16&e.flags&&t("Grow",'d="M2 5L8 5M5 8L5 2"',"0f0",t("Shrink",'d="M2 5L8 5"',"0ff")),8&e.flags&&t("Full Screen","x=1 y=2 width=8 height=6","fff","rect"),e.F&&t("Help",'d="M5 8L8 2L2 2L5 8L8 2"',"0ff"),e.code&&t("Code",'d="M5 2L8 8L2 8L5 2L8 8"',"f0f"),2&e.flags&&t("Reload","cx=5 cy=5 r=3","ff0","circle"),t("Close",'d="M2 2L8 8M8 2L2 8"',"f00"),this.G.prepend(this.name=document.createElement("div")),this.name.id="name",this.name.innerHTML=`<span id=icon>${e.icon}`,this.name.innerHTML+=e.name,this.j=this.shadowRoot.appendChild(document.createElement("div")),this.K=this.shadowRoot.appendChild(document.createElement("div")),this.K.style.display="none",this.H=this.K.appendChild(document.createElement("textarea")),this.H.id="codeText",this.H.readOnly=1,this.H.spellcheck=0,t=16&e.flags?Math.min(e.width*(e.info.scale||1),innerWidth-6):e.width,this.style.width=t,this.j.style.height=t*e.height/e.width,this.scale=t/e.width,OS13k.Speak(e.name),this.C||(this.C=new sa(e,this)).h(),e.A?(this.j.className="folder",e.A.map(e=>{this.j.appendChild(new na(e[-1],this))})):(this.j.style.background="#000",ra(this))}i(e,t,n){e.i&&e!=this?e.i(e,t,n):(this.h(),e==this.name?(Q=this,O(45),document.body.style.cursor="grabbing",desktop.style.pointerEvents="none",wa=t-parseInt(this.style.left),xa=n-parseInt(this.style.top)):("Full"==e.id&&ta(this),"Reload"==e.id&&aa(this),"Close"==e.id&&this.D(),"Shrink"==e.id&&ua(this,this.scale-.2,75),"Grow"==e.id&&ua(this,this.scale+.2,61),"Help"==e.id|"Code"==e.id&&va(this)))}h(e=1,t,n=1){var s;ha(),this.className=e?"activeWindow":"",this.G.className="titlebar titlebar"+(e?"Active":"")+(1&this.g.flags?"Sticky":""),this.j.style.filter=e||4&this.g.flags?"":"saturate(.7)brightness(.7",e&&(s=this.getBoundingClientRect(),t&&(this.style.left=OS13k.Clamp(s.x,innerWidth-s.width,0,this.style.top=OS13k.Clamp(s.y,Math.max(44,innerHeight-s.height),44))),n&&E&&setTimeout(()=>document.activeElement!=this&&this.B&&this.B.focus(ya=this.u)),T!=this&&(T&&T.h(0),T=this,O(this.T++?66:87),this.style.zIndex=++za,s=(e,t)=>{let n=menu.appendChild(document.createElement("button"));n.innerText=e,n.onmousedown=t},menu.innerHTML="",8&this.g.flags&&s("Full Screen",()=>ta(this)),this.g.code&&s("Code",()=>va(this)),this.g.F&&s("Help",()=>va(this)),16&this.g.flags&&s("Reset Size",()=>this.h(1,1,ua(this,1,61))),2&this.g.flags&&s("Reload",()=>aa(this)),s("Close",()=>this.D()),this.C&&this.C.h(e,t,n),E&!(1&this.g.flags)&&OS13k.Save(L=this.g.id)))}D(){this.g.id==L&&(L=""),O(92),this.g.Save(0),this.g.window=0,this.C.remove(),this.remove()}}customElements.define("w-",qa);class sa extends HTMLElement{constructor(e,t){super(),this.className="taskbarIcon",this.R=this.O=t,this.J(this.g=e),taskbarSpace.before(this)}J(){this.innerHTML="<div style=pointer-events:none>"+(this.g.icon||"💠"),this.title=this.g.name}i(){this.h()}h(e=1,t=1,n=1){if(e&&this.O.h(1,t,n),this==U)return O(-9,.3);this.className="taskbarIcon "+(e?"taskbarIconActive":""),e&&Aa!=this&&(Aa&&Aa.h(0),Aa=this)}}function M(e,t){e.g=t,e.title=t.name,e.innerHTML=t.icon}customElements.define("i-",sa);class Z extends HTMLElement{constructor(){super(),this.className="trayIcon",tray.appendChild(this)}i(){var e=this.g;T&&T==e.window?e.window.D():e.i()}}customElements.define("t-",Z);class na extends HTMLElement{constructor(e,t){super(),this.g=e,this.window=t,this.className="desktopIcon",this.innerHTML="<div class=desktopIconIcon>"+(e.A?"📁":e.icon),this.innerHTML+=this.title=e.name}i(){this.window&&this.window.h(),this.g.i()}}customElements.define("d-",na);let Q,wa,xa,E,T,oa,Aa,U,D=document.createElement("canvas"),ca=[],Ba=-1e4,ya,za=0,Ca=0,pa=99,P=143,ma,L,F=[],p=[],u,ka,N,ja,la,settings={v:.2,m:.2,s:1,p:1,o:1,c:"#222233",d:"#332222",t:"OS13k"},v=new(window.AudioContext||webkitAudioContext),A=v.createGain(),y=v.createGain(),ba=v.createAnalyser(),Da=t=>{requestAnimationFrame(Da);var n=document.activeElement,s=n.shadowRoot&&n.shadowRoot.activeElement==n.u?n.u:0;if(s&&ya!=s&&n.h(Ca=1),ya=s,document.body.style.opacity=OS13k.Clamp(t/1e3),(n=p.length+"🏆")!=u.innerHTML&&(u.innerHTML=n),N.title=Date(),(n=N.title.replace(/.* (\d+):(\d+).*/,(e,t,n)=>(t%12||12)+":"+n))!=N.innerHTML&&(N.innerHTML=n),Ca){n=new Uint8Array(ba.fftSize=256),s=D.getContext("2d"),ba.getByteFrequencyData(n),D.width=D.height=32;for(let e=0;e<32;){var i=(n[2*e]/255)**3*(1+Math.log10(88200*e/1024));s.fillStyle=`hsl(${-99-59*i} 99%50%)`,s.fillRect(e,31,1,-7*i),ca[e++]=OS13k.Clamp(i/5),Ba=i?t:Ba}D.style.display=t-Ba<1e4?"":"none";var a=0;[...popups.children].map((t,n)=>{if(t.speak&&OS13k.Speak(t.speak,t.V),t.speak=0,settings.p){if(!document.fullscreenElement){let e=t.style.visibility?innerHeight:parseInt(t.style.top)+a-9;t.style.visibility="",e<44&&(e=44,!n&&(t.style.opacity=(t.style.opacity||3)-.01)<0&&(a+=t.getBoundingClientRect().height,popups.removeChild(t))),t.style.top=e}}else popups.removeChild(t)})}},ha=()=>{[...programsMenu.children].map(e=>e.style.visibility=menu.style.visibility=""),oa&&(oa.className="program")},Ea=(e,t=e?e.split(","):[])=>"OS13kTrophy"==t.shift()&&(t.length=3,OS13k.Trophy(...t,localStorage[e])),O=(...e)=>E&Ca&settings.o&&OS13k.PlaySeed(...e);localStorage.OS13k&&([p,settings,F,L]=JSON.parse(localStorage.OS13k)),OS13k.Save(),A.connect(v.destination),y.connect(v.destination),u=new Z,ja=new Z,ka=new Z,la=new Z,N=new Z,U=new sa({icon:"💾",name:"Load"},new fa([["❌",,,256,"Close All"],["<b><span style=color:#0f0>?",300,210,80,"Help","Check here to see help or view code for some programs.\n\nHave fun! ✌️😄"],["⚙️",,,64,"System",,[["🏆",,,25,"Trophy Case"],["✏️",300,263,3,"Sticky Note","Ctrl+B = Bold\nCtrl+I = Italic\nCtrl+U = Underline\nReload = Clear"],["🕰️",198,198,133,"Clock"],["🎚️",470,130,1,"Settings"]]],["🎶",,,64,"Music",,[["🎵",400,330,1,"Music Player"],["👁️",,,156,"Visualizer"],["🎹",350,99,66,"Ziano","Keyboard = Play Piano Notes\nSeed = Change Sound"],["🦈",320,89,66,"Byte Beat Player","Enter a funtion and length in seconds to generate music."]]],["🎮",,,64,"Games",,[["🙉",,,218,"Don't Fall"],["🏂🏻",,,218,"Bogus Slopes"],["🐍",800,600,218,"Shedding Snake"],["🛣️",,,218,"Bogus Roads Mini"]]]])),da(U.O),OS13k.Trophy("👋","","Welcome to OS13k!");for(let a in localStorage)Ea(a);onstorage=e=>Ea(e.key),onunload=()=>speechSynthesis&&speechSynthesis.cancel(),Da(),OS13k.Save(ja.prepend(D),D.style="width:16;height:16;margin:2;pointer-events:none;display:none",self==top&&ma&&ma.i(),E=1);var zzfx=(...e)=>OS13k.PlaySamples(zzfxG(...e)),zzfxG=(e=1,t=.05,n=220,s=0,i=0,a=.1,o=0,l=1,h=0,r=0,d=0,p=0,c=0,m=0,u=0,S=0,k=0,y=1,g=0,f=0,O=[])=>{s=99+44100*s,a*=44100,i*=44100,g*=44100,k*=44100;var w=2*Math.PI,v=OS13k.l=0|OS13k.Clamp(s+g+i+a+k,396900),M=h*=500*w/194481e4;t=n*=(1+2*t*Math.random()-t)*w/44100;let C=(0<u?1:-1)*w/4,b=0,x=0,R=0,T=1,L=0,H=0,I=0,E;for(c=44100*c|0,p*=44100,d*=w/44100,r*=500*w/44100**3,u*=w/44100;R<v;O[R]=(O[R++]||0)+I)++H%(100*S|0)||(I=o?1<o?2<o?3<o?Math.sin((b%w)**3):Math.max(Math.min(Math.tan(b),1),-1):1-(2*b/w%2+2)%2:1-4*Math.abs(Math.round(b/w)-b/w):Math.sin(b),I=(c?1-f+f*Math.sin(2*Math.PI*R/c):1)*(0<I?1:-1)*Math.abs(I)**l*e*(R<s?R/s:R<s+g?1-(R-s)/g*(1-y):R<s+g+i?y:R<v-k?(v-R-k)/a*y:0),I=k?I/2+(k>R?0:(R<v-k?1:(v-R)/k)*O[R-k|0]/2):I),E=(n+=h+=r)*Math.sin(x*u-C),b+=E-E*m*(1-1e9*(Math.sin(R)+1)%2),x+=E-E*m*(1-1e9*(Math.sin(R)**2+1)%2),T&&++T>p&&(n+=d,t+=d,T=0),!c||++L%c||(n=t,h=M,T=T||1);return O},zzfxM=(n,s,i,e=125,a)=>{let o,l,h,r,d,p,c,m,u,S,k,y,g=0,f,O,w,v=[],M=0,C=1,b=[[],[]],x={},R=44100/e*60>>2;for(;C;M++)v=[C=m=f=0],i.map((e,t)=>{for(p=s[e][M]||[0,0,0],C|=!!s[e][M],w=f+(s[e][0].length-2-!m)*R,c=t==i.length-1,l=2,r=f;l<p.length+c;m=++l){if(u=l==p.length+c-1&&c||S!=(p[0]||0)|p[l]|0,!a)for(h=0;h<R&&m;h++>R-99&&u&&(y+=(y<1)/99))d=(1-y)*v[O++]/2||0,b[0][r]=(b[0][r]||0)-d*g+d,b[1][r]=(b[1][r++]||0)+d*g+d;p[l]&&(y=p[l]%1,g=p[1]||0,0|p[l]&&(v=x[[S=p[O=0]||0,k=0|p[l]]]=x[[S,k]]||(o=[...n[S]],o[2]*=2**((k-12)/12),0<k?zzfxG(...o):[])))}f=w});return b};onmousedown=e=>{var t=e.composedPath()[0];return e.target==U&&e.target.O.style.visibility?(ha(),T&&T.h(),!1):(ha(programsMenu.style.left=0,programsMenu.style.top=44,Ca=1),Q?onmouseup(e):e.button?"button"!=t.localName&&void(2&e.button&&e.target!=menu&&((e.target.h?e.target:U).h(1,1,0),(t=e.target.R?(O(-9,.1),menu):programsMenu).style.left=e.x,t.style.top=e.y,e.target!=U&&(t.style.visibility="visible"))):(e.target.i?e.target.i(t,e.x,e.y):T&&T.h(),e.target==U||/input|textarea/.test(t.localName)))},onmousemove=e=>{Q&&(Q.style.left=e.x-wa),Q&&(Q.style.top=e.y-xa),e.target.P&&e.target.P()},onmouseup=e=>{(e=e.composedPath()[0]).parentElement==popups&&e.remove(O(92)),Q&&(Q.g.Save(),O(66),Q.h(1,0),document.body.style.cursor=desktop.style.pointerEvents=Q="")},oncontextmenu=()=>!1;</script> 
