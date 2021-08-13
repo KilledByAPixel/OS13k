@@ -1,260 +1,3 @@
-<title>OS13k</title><meta charset=utf-8><div style=display:none>
-
-<iframe name=Help><h2><i>Glory to OS13k!</i></h2><p>The OS13k is tiny control system made by workers of great nation for JS13k.<p>All citizens are asked to submit little programs for inclusion.<p>😎🤚🚩 Ministry of OS13k<p>
-Project Links...
-<ul>
-<li><a href=https://github.com/KilledByAPixel/OS13k target=_blank>GitHub</a>
-<li><a href=https://discord.gg/n8vxUcZ target=_blank>Discord</a>
-</ul>
-</iframe>
-
-<iframe name=Marathon>c.style.filter='invert('
-I=OS13k.Input(window)
-for(F=T,t?T+=P:P=Y=V=T=Q=1,i=9,c.width=300;i--?H=R:0;x.fillRect(j*47-T,R=99-C(j*j)*15,44,1e3))j=i+T/47|0
-x[f='fillText'](j,3,9)
-Q+=V?P/29:P/6
-Y-=V-=.06
-Y>H?Y+(V=0)>H+3?(P&&OS13k.PlaySeed(100,2),P=0,OS13k.Trophy('🏃','Marathon','High Score',j)):(Y=H,V+=I.mousepress[0]?(OS13k.PlaySeed(19,.1),2*P):0):0
-for(j=4,l=(r,a)=>x.lineTo(X+=r*C(a),y+=r*S(a));j--;x.beginPath(x.stroke()))i=j%4,q=i<2,y=Y-30,n=Q,l(X=27,7),l(q?3:7,2),l(r=4-q,a=C(n+=3*i)-5+q),l(r,a-(2*q-1)*(C(n-2)+1))
-j>99&&OS13k.Trophy('🎖️','Marathon','100!')
-if((F/47|0)-(T/47|0))OS13k.PlaySeed(3,0)</iframe>
-
-<iframe name=Controls><style>body{background:#111;color:#fff;user-select:none;text-align:center}</style>Volume <input type=range id=V oninput=s() style=width:99> Music <input type=range id=M oninput=s() style=width:99><p>System Sounds <input type=checkbox id=Y oninput=s()> Speech <input type=checkbox id=S oninput=s()> Popups <input type=checkbox id=P oninput=s()> <p>Background <input id=D type=color oninput=s()> <input id=C type=color oninput=s()> <input id=T oninput=s()><script>s=e=>parent.OS13k.SaveSettings(V.value/100,M.value/100,S.checked,P.checked,Y.checked,D.value,C.value,T.value),s(i=parent.OS13k.Settings(),V.value=100*i.v,M.value=100*i.m,S.checked=i.s,P.checked=i.p,Y.checked=i.o,C.value=i.d,D.value=i.c,T.value=i.t)</script></iframe>
-
-<iframe name="Medal Cabinet"><style>body{background:#223}</style><body><script>OS13kReload=()=>{for(t of(this.document.body.innerHTML="",parent.OS13k.Trophies()))this.document.body.innerHTML+=`<div style='display:inline-block;font-family:arial;padding:9;overflow:hidden;text-align:center;background:#eee;width:120;height:120;margin:9;font-size:18;box-shadow:9px 9px 9px;border:2px solid;border-radius:99px'title='${i=t[0]||"🎖️"} ${n=t[2]}\n${g=t[1]}\n${m=t[3]}'onclick='parent.OS13k.Speak(\`${n}\`,"ja",1)'><div style='padding:3;white-space:nowrap;font-size:28;text-shadow:2px 2px 4px'>${i}</div><div><b>${n}</b><br><i>${g}</i><br><div style=font-size:14>`+m},OS13kReload()</script></iframe>
-
-<iframe name=Notebook><body style=font-size:23 id=b contenteditable=true><script>b.focus();b.innerHTML=localStorage.OS13kN||'';b.oninput=e=>localStorage.OS13kN=b.innerHTML;OS13kReload=e=>b.innerHTML=localStorage.OS13kN='';</script></iframe>
-
-<iframe name=Clock>with(x)for(t?fillStyle='#0002':scale(1.6,3),fillRect(0,0,2e3,2e3),fillStyle='#0f0',D=99,W=68,k=8;k--;)for(p=((d=Date()[k+(i=H=16)])<':')*W;i--;)"ëÀzøÑ¹»Èûù".charCodeAt(p?d:t%1>.5?W:1)&1<<i&&fillRect(W*k*2+(i>5)*D+(B=i/3&1)*H+p/2,D+(i%3)*D+!B*H-p/2,H+B*p,H+!B*p)</iframe>
-
-<iframe name=Zeremin>c.style.filter='invert('
-I=OS13k.Input(window)
-t?I.wheel?S+=I.wheel>0?-1:1:0:S=0
-if(I.mousedown[0]||I.wheel)
-X=I.mousex*c.width,Y=I.mousey*c.height,
-x.font='1in"',
-x.fillStyle=`hsl(${Y+S*90} 99%${X/99}%`,
-x.fillText(S,X,Y),
-OS13k.PlaySeed(S,X/2e3,.4,0,OS13k.Note(9.99-Y/90|0),1)</iframe>
-
-<iframe name=Visualizer>t?x.fillRect(0,0,c.width|=0,2e3):h=[]
-for(i=32;i--;x.clearRect(60*i,1080-(h[i]=h[i]>m?h[i]-1:m),55,-9))m=5*OS13k.GetAnalyserData(i)*299,x.fillStyle=R(m/2),x.fillRect(60*i,1080,55,-m)</iframe>
-
-<iframe name="Music Player"><style>body{background:#111;color:#fff;user-select:none;text-align:center;overflow-x:hidden;white-space:nowrap}</style><div id=N style=font-size:27;font-family:arial>&nbsp;</div><div id=F style=height:9></div><br><button onmousedown=P()>Play</button> <button onmousedown=X&&X.stop(X=0)>Stop</button> <button onmousedown=A()>Load</button> <button onmousedown=R()>Delete</button><br><br>Volume <input type=range id=V> Loop <input type=checkbox id=O checked><br><canvas id=C style=width:350;height:29></canvas><br><select id=S size=9 style=width:350;background:#000;color:#fff><script>OS13k=parent.OS13k,X=E=D=T=0,Y=Q=-1,U=e=>{requestAnimationFrame(U),!--Y&&Q>=0?(l=L[Q],T=0,Q=-1,(X=OS13k.PlayMusic(l.d))?X.gain.gain.value=V.value/99:alert`⚠️ Error!`):Y<-1&&(C.getContext`2d`.drawImage(OS13k.GetAnalyser(),0,0,C.width=32,C.height=32),F.innerText=X?(X.gain.gain.value=V.value/99,d=X.buffer.duration,T+=(e-D)/1e3,X.loop=O.checked?1:T>d?X=0:0,W(T%d)+"/"+W(d)):(N.innerText="ZzFXM Player","")),D=e},B=e=>{for(e in i=S.selectedIndex,S.innerHTML="",Z=0,L=[],localStorage)I(e);L.sort((e,n)=>e.n.localeCompare(n.n)).map(e=>S.innerHTML+="<option>"+e.n),S.selectedIndex=OS13k.Clamp(E?L.findIndex(e=>e.k==E):i,S.length-1,E=0),localStorage.OS13kM=JSON.stringify(K)},I=e=>{if(p=e.split`,`,f=p.shift(),"OS13kMusic"==f.substring(0,10)){n=p[0]?p[0]:"Untitled","U"==f[10]?Z=Math.max(Z,f.substring(11)):K.indexOf(e)<0&&(OS13k.Popup("🎶 New Music<br><b>"+n,n),K.push(e));try{(d=OS13k.StringToMusic(localStorage[e]))&&L.push({d:d,k:e,n:n})}catch(e){}}},P=e=>{X&&X.stop(),Y=2,(Q=S.selectedIndex)<0||(N.innerText=L[Q].n,F.innerText="Loading...")},A=e=>{try{OS13k.StringToMusic(d=prompt`ZzFXM Data`,1),B(localStorage[E=`OS13kMusicU${Z+1},`+prompt`Name`.replace(/,/g,"")]=d)}catch(e){alert`⚠️ Error!`}},R=e=>confirm(`⚠️ Delete ${L[S.selectedIndex].n}?`)&&B(localStorage[L[S.selectedIndex].k]=0),W=e=>(e/60|0)+((e=e%60|0)<=9?":0":":")+e,localStorage["OS13kMusic,OS13k - Depp Loop"]=JSON.stringify([[[,0,77,,,.7,2,.41,,,,,,,,.06],[,0,43,.01,,.3,2,,,,,,,,,.02,.01],[,0,170,.003,,.008,,.97,-35,53,,,,,,.1],[.8,0,270,,,.12,3,1.65,-2,,,,,4.5,,.02],[,0,86,,,,,.7,,,,.5,,6.7,1,.05],[,0,2200,,,.04,3,2,,,800,.02,,4.8,,.01,.1]],[[[1,-1,21,21,33,21,21,33,21,21,33,21,21,33,21,21,33,33,21,21,33,21,21,33,21,21,33,21,21,33,21,21,33,33,21,21,33,21,21,33,21,21,33,21,21,33,21,21,33,33,21,21,33,21,21,33,21,21,33,21,21,33,21,21,33,33],[3,1,24,,,,,,,,27,,,,,,,,,,,,,,,,27,,,,24,,,,24,,,,,,,,27,,,,,,,,,,,,,,,,24,,24,,24,,,,],[1,-1,21,,,,,,,,,,,,,,,,,,,,,,,,,,,,24,,,,23,,,,,,,,,,,,,,,,,,,,,,,,24,,23,,21,,,,],[,1,21,,,,,,,,,,,,,,,,,,,,,,,,,,,,24,,,,23,,,,,,,,,,,,,,,,,,,,,,,,24,,23,,21,,,,],[5,1,,,34,34,34,,,,,,34,34,,,,,34,,,,34,34,,,,,34,,,,34,,,,34,34,34,,,,,,34,,,,,,34,34,,,34,34,,,,,,,,,34,34],[4,1,,,,,,,24,,,,,,24,,24,,,,24,,,,24,,,,,,,,,,,,,,,,24,,,,,,24,,24,,,,24,,,,24,,,,,,,,,,]]],[0]]),K=localStorage.OS13kM?JSON.parse(localStorage.OS13kM):[],U(B(onunload=e=>X&&X.stop()))</script></iframe>
-
-</div><style>
-body
-{
-opacity:0;
-margin:0;
-overflow:hidden;
-font-family:arial;
-font-size:22;
-user-select:none;
-white-space:nowrap;
-background:#000;
-}
-.programMenu
-{
-background:#eee;
-visibility:hidden;
-position:absolute;
-z-index:20000;
-box-shadow:9px 9px 9px;
-border:2px solid;
-}
-.program
-{
-font-size:18;
-height:18;
-padding:4;
-}
-.activeWindow { border:3px solid#aaa; }
-.desktopIcon 
-{ 
-width:99;
-height:99;
-padding:9;
-font-size:15;
-color:#fff;
-text-shadow:1px 1px 2px#000; 
-overflow:hidden;
-text-align:center;
-white-space:normal;
-}
-.desktopIcon:hover         { background:#ff6; }
-.desktopIconIcon           { color:#000; font-size:36; margin:4; pointer-events:none; }
-#taskbar
-{
-position:absolute;
-z-index:10000;
-width:100%;
-background:#777;
-box-shadow:0px 0px 9px;
-border:2px solid;
-left:-2;
-}
-.taskbarIcon { width:50; height:40; text-shadow:1px 1px 3px#000; overflow:hidden; }
-.programActive,
-.taskbarIconActive         { background:#99f; }
-.taskbarIcon:hover         { background:#ff6; }
-#tray
-{
-margin:2;
-padding-left:9;
-padding-right:9;
-color:#fff;
-background:#333;
-border:1px solid;
-text-shadow:1px 1px 3px#000;
-}
-.trayIcon       { padding:2; }
-.trayIcon:hover { background:#fff3; }
-.popup
-{
-position:relative;
-z-index:10000;
-width:200;
-padding:8;
-white-space:normal;
-text-align:center;
-background:#eee;
-box-shadow:9px 9px 19px;
-border:2px solid;
-}
-.trophyIcon
-{
-padding:9;
-font-size:40;
-text-shadow:1px 1px 3px;
-white-space:nowrap;
-}
-#background
-{
-position:absolute;
-width:100%;
-height:100%;
-font-family:impact;
-font-size:28vw;
-font-weight:900;
-position:absolute;
-}
-.program, #taskbar, .taskbarIcon, #background, #tray
-{
-display:flex;
-align-items:center;
-justify-content:center;
-}
-</style><div id=background></div><div id=desktop><div id=taskbar><div id=taskbarSpace style=flex:1></div><div id=tray></div></div><div id=popups style=float:right></div><div id=programsMenu style=position:absolute></div><div id=desktopIcons style=position:absolute;top:60;display:flex;flex-wrap:wrap><iframe id=windowTemplate style=display:none><style>
-:host
-{
-position:absolute;
-background:#000;
-box-shadow:9px 9px 9px;
-border:3px solid#222;
-overflow:hidden;
-}
-.desktopIcon 
-{ 
-width:99;
-height:99;
-padding:9;
-font-size:15;
-color:#fff;
-text-shadow:1px 1px 2px#000; 
-overflow:hidden;
-text-align:center;
-white-space:normal;
-}
-.desktopIcon:hover   { background:#ff4; }
-.desktopIconIcon    { color:#000; font-size:36; margin:4; pointer-events:none; }
-input, button, span { margin:4; }
-textarea            { padding:9; }
-span                { white-space:nowrap; }
-.titlebar
-{
-height:34;
-font-size:24;
-display:flex;
-align-items:center;
-white-space:nowrap;
-background:#444;
-border-bottom:3px solid;
-}
-.titlebarActive       { background:#99f; }
-.titlebarActiveSticky { background:#f77; }
-.titlebarSticky       { background:#644; }
-.folder
-{
-background:#888;
-display:flex;
-flex-wrap:wrap;
-align-content:flex-start;
-overflow-y:auto;
-}
-#name { width:100%; overflow:hidden; cursor:grab; }
-#icon           
-{ 
-display:inline;
-text-shadow:1px 1px 2px#000;
-margin-left:9;
-margin-right:9;
-pointer-events:none;
-}
-#frame
-{
-width:100%;
-height:100%;
-background:#fff;
-border:none;
-visibility:hidden;
-}
-#codeText
-{
-height:199;
-background:#000;
-color:#fff;
-width:100%;
-resize:none;
-outline:0;
-border-top:2px solid;
-}
-</style></iframe>
 <script> 
-'use strict';class _OS13k{Clamp(a,b=1,c=0){return a<c?c:a>b?b:a}Percent(a,b,c){return c-b?OS13k.Clamp((a-b)/(c-b)):0}Lerp(a,b,c){return b+OS13k.Clamp(a)*(c-b)}Hash(a){return[...a].reduce((b,c)=>c.charCodeAt()+31*b|0,0)}Random(a=1,b=0){OS13k.l^=OS13k.l<<13;OS13k.l^=OS13k.l>>17;return OS13k.Lerp(Math.abs(OS13k.l^=OS13k.l<<5)%1E9/1E9,b,a)}Trophy(a,b,c,d){let e;var f=l=>OS13k.StripHTML(l||"",32).replace(/[,`]/g,"");f=[a=f(a),b=f(b),c=f(c),d=f(d),e=a+","+b+","+c];let g=r.findIndex(l=>l[4]==e);0<=g&&r[g][3]==
-d||(0>g?r.unshift(f):r[g]=f,localStorage["OS13kTrophy,"+e]=d,c||(c=b,b=""),OS13k.Popup(`<div class=trophyIcon>${a||"\ud83c\udf96\ufe0f"}</div><div><b>${c}</b><br><i>${b}</i></div>`+d,c+". "+b,"ko"),OS13k.Save(u.g.window&&aa(u.g.window)))}GetTrophy(a,b){let c=r.find(d=>d[1]==a&d[2]==b);return c?c[3]:0}Trophies(){return r}PlaySeed(a,b=1,c=1,d=.05,e,f){return OS13k.PlaySamples(OS13k.SeedSamples(...arguments),f)}SeedSamples(...a){return zzfxG(...OS13k.SeedParameters(...a))}SeedParameters(a,b=1,c=1,d=
-.05,e){if(!a)return[c,d,e||OS13k.Note(-21),0,b];if(parseFloat(a=(a+"").trim())!=a){if("zzfx(...["==a.slice(0,9))return a.slice(9).split(",").map((p,k)=>k?1==k?d:2==k&&e?e:p.length?parseFloat(p):void 0:c);a=OS13k.Hash(a)}OS13k.l=a;a=OS13k.Random()**3/4*b;let f=OS13k.Random()**3/4*b,g=OS13k.Random()**3/4*b;b*=OS13k.Random()**3/4;let l=a+f+g+b,q=2E3*OS13k.Random()**2;return[c,d,e||q,a,g,b,5*OS13k.Random()|0,3*OS13k.Random()**2,(.5>OS13k.Random()?OS13k.Random():0)**3*(.5>OS13k.Random()&&OS13k.Random()?
-99:-99),(.5>OS13k.Random()?OS13k.Random():0)**3*(.5>OS13k.Random()&&OS13k.Random()?99:-99),(.5>OS13k.Random()?OS13k.Random():0)**2*(.5>OS13k.Random()&&OS13k.Random()?1E3:-1E3),OS13k.Random()**2*l,(.5>OS13k.Random()?OS13k.Random():0)*l,(.5>OS13k.Random()?OS13k.Random():0)**4,(.5>OS13k.Random()?OS13k.Random():0)**3*(.5>OS13k.Random()&&OS13k.Random()?9:-9),(.5>OS13k.Random()?OS13k.Random():0)**4,(.5>OS13k.Random()?OS13k.Random():0)**3/2,1-(.5>OS13k.Random()?OS13k.Random():0),f,(.5>OS13k.Random()?OS13k.Random():
-0)**4]}PlaySamples(a,b,c=44100){return OS13k.PlaySamplesArray([a],b,c)}PlaySamplesArray(a,b,c=44100){let d=v.createBuffer(a.length,a[0].length,c);c=v.createBufferSource();a.map((e,f)=>d.getChannelData(f).set(e));c.buffer=d;a=c;c.gain||c.connect(a=c.gain=v.createGain());a.connect(b?y:A);b&&(1<b?a:c).connect(ba);c.start();return c}PlayMusic(a){try{return OS13k.PlaySamplesArray(zzfxM(...a),1)}catch(b){console.log(b)}}GetAnalyser(){return D}GetAnalyserData(a){return ca[a]?ca[a]:0}StringToMusic(a,b){a=
-a.replace(/{[^}]+}/g,"");a=a.replace(/null|[[\],\de\. -]/g,"")||eval(a.replace(/null/g,void 0));b&&zzfxM(...a,1);return a}Note(a=0,b=440){return b*2**(a/12)}Speak(a,b="ru",c,d=1,e=1,f=1){a=new SpeechSynthesisUtterance(a);a.volume=d*A.gain.value*2;a.rate=e;a.pitch=f;a.lang=b;c&&speechSynthesis&&speechSynthesis.cancel();settings.s&E&&speechSynthesis&&speechSynthesis.speak(a)}StripHTML(a,b){return(a+"").substring(0,b||a.length).replace(/<.*>/g,"")}Popup(a,b,c){let d=popups.appendChild(document.createElement("div"));
-d.className="popup";d.innerHTML="<div style=pointer-events:none>"+a;d.speak=b;d.V=c;d.style.visibility="hidden"}Input(a){let b;a.document.OS13kInput&&(b={...a.document.OS13kInput},b.x=b.y=0,(b.keydown[87]||b.keypress[87])|(b.keydown[38]||b.keypress[38])&&++b.y,(b.keydown[83]||b.keypress[83])|(b.keydown[40]||b.keypress[40])&&--b.y,(b.keydown[68]||b.keypress[68])|(b.keydown[39]||b.keypress[39])&&++b.x,(b.keydown[65]||b.keypress[65])|(b.keydown[37]||b.keypress[37])&&--b.x);let c=a.document.OS13kInput=
-{x:0,y:0,keypress:[],mousepress:[],keydown:a.document.OS13kInput?a.document.OS13kInput.keydown:[],mousedown:a.document.OS13kInput?a.document.OS13kInput.mousedown:[],mousex:a.document.OS13kInput?a.document.OS13kInput.mousex:0,mousey:a.document.OS13kInput?a.document.OS13kInput.mousey:0,W:0};a.onkeydown=d=>d.repeat||(c.keydown[d.keyCode]=c.keypress[d.keyCode]=1);a.onkeyup=d=>c.keydown[d.keyCode]=0;a.onmousedown=d=>(c.mousedown[d.button]=c.mousepress[d.button]=1,1!=d.button);a.onmouseup=d=>c.mousedown[d.button]=
-0;a.onmousemove=d=>(c.mousex=OS13k.Clamp(d.x/a.innerWidth),c.mousey=OS13k.Clamp(d.y/a.innerHeight));a.onblur=()=>(c.keydown=[],c.mousedown=[]);a.onwheel=d=>c.W=d.deltaY;return b||c}Save(){E&&(localStorage.R=JSON.stringify([r,settings,F,L]));A.gain.value=settings.v;y.gain.value=settings.m;settings.s&&settings.v||speechSynthesis&&speechSynthesis.cancel();background.style.background=settings.c;background.style.color=settings.d;background.innerText=settings.t}SaveSettings(a,b,c,d,e,f,g,l){OS13k.Save(settings=
-{v:A.gain.value=a,m:y.gain.value=b,s:c,p:d,o:e,c:f,d:g,t:l})}Settings(){return settings}}var OS13k=new _OS13k;function da(a,b=0){for(let c of a.N){let d=c[-1]=c[-1]||new ea(...c);d.M=d.A?new fa(d.A,a):a}a.innerHTML="";programsMenu.appendChild(a);a.N.map(c=>a.appendChild(c[-1]));a.style.top=b;a.style.left=a.H&&a.H.getBoundingClientRect().right;a.N.map(c=>{c[-1].M!=a&&da(c[-1].M,b);b+=26})}
-class fa extends HTMLElement{constructor(a,b){super();this.className="programMenu";this.H=b;this.N=a}h(){ha();this.H&&this.H.h();this.style.visibility="visible"}}customElements.define("m-",fa);function ia(a){let b=F.findIndex(c=>c.id==a.id);a.info=0>b?{}:F[b]}
-class ea extends HTMLElement{constructor(a,b=720,c=405,d,e="",f="",g){super();this.L=d&128;this.code=!(this.K=f)&&(d&32||this.L);this.className="program";this.width=b;this.height=c;this.A=g;this.id=e;this.flags=d|(g&&16)||90;this.I(a,e);ia(this);"Music Player"==e&&M(ja,this);"Medal Cabinet"==e&&M(u,this);"Controls"==e&&M(ka,this);"Notebook"==e&&M(la,this);"Clock"==e&&M(N,this);"Help"==e&void 0==this.info.open&&(ma=this);this.flags&1?this.info.open&&this.i():this.id==L&&(ma=this);this.flags&64&&desktopIcons.appendChild(new na(this))}I(a,
-b){this.icon=a;this.innerHTML='<span style="pointer-events:none;width:45;text-shadow:1px 1px 3px#000;text-align:center;overflow:hidden">'+a;this.innerHTML+=`<div style=flex:1;padding-right:9;pointer-events:none>${this.name=OS13k.StripHTML(b)}</div>`+(this.A?"\u25b6":"")}P(){this.M.h();this.className="program programActive";oa!=this&&O(6,0);oa=this}i(){if(this.window)this.window.h(1,1);else if(this.flags&256)[...desktop.children].map(a=>a.F&&a.F()),pa=99,P=143;else if(this.name||this.A){let a=this.info.x,
-b=this.info.y;a||(a=pa,b=P,400<(pa+=37)&&(pa=P=99),300<(P+=37)&&(P=P=143));this.window=new qa(this,a,b);this.Save()}}h(){this.i()}Save(a=1){this.info={open:a,id:this.id,x:a|this.flags&1?parseInt(this.window.style.left):0,y:parseInt(this.window.style.top),scale:a|this.flags&1?this.window.scale:1};a=F.findIndex(b=>b.id==this.id);OS13k.Save(0>a?F.push(this.info):F[a]=this.info)}}customElements.define("p-",ea);function aa(a){O(-5);a.B&&a.B.S?a.B.S():ra(a,a.u.style.visibility="")}
-function ra(a){a.u&&a.j.removeChild(a.u);a.u=a.j.appendChild(document.createElement("iframe"));let b=a.B=a.u.contentWindow,c=a.g,d=b.document,e=document.getElementsByName(c.name)[0].innerHTML,f=e;a.u.style="width:100%;height:100%;background:#fff;border:none";b.OS13k=OS13k;b.OS13kWindow=a;b.zzfx=zzfx;a.G.value=c.K||e;c.L&&(e="<style>canvas{width:100%;background:#fff}</style><canvas id=c width=1920 height=1080>");d.open();d.write(e);d.close();c.L&&(d.body.style="background:#111;overflow:hidden;margin:0;display:flex;align-items:center",
-b.eval("OS13k=parent.OS13k;x=c.getContext('2d');zzfx=parent.zzfx;S=Math.sin;C=Math.cos;T=Math.tan;R=(r,g,b,a=1)=>`rgba(${0|r},${0|g},${0|b},${a})`;"+`u=t=>{\n${f}\n};`+"OS13kU=t=>t>OS13kF-2&&u(((t=frame++/60)*60|0==frame-1)&&t>0?t+1e-6:t,OS13kF=Math.max(OS13kF+100/6,t));(OS13kA=t=>(requestAnimationFrame(OS13kA),"+(c.flags&4||0==c.info.X?"":"t<1e3|parent.document.activeElement==OS13kWindow&&")+"OS13kU(t)))(frame=OS13kF=0)"));b.oncontextmenu=()=>!1;a.C||(a.C=new sa(c,a)).h()}
-function ta(a,b,c){b=OS13k.Clamp(a.g.width*b,1920,170);a.style.left=parseInt(a.style.left)+parseInt(a.style.width)-b;a.style.width=b;a.j.style.height=a.g.height*(a.scale=b/a.g.width);a.g.Save();c&&O(c)}
-class qa extends HTMLElement{constructor(a,b,c){super();desktop.appendChild(this);this.g=a;this.style.left=b;this.style.top=c;this.T=0;this.attachShadow({mode:"open"});this.shadowRoot.innerHTML=windowTemplate.textContent;this.D=this.shadowRoot.appendChild(document.createElement("div"));this.D.id="titlebar";b=(d,e,f,g="path")=>{this.D.innerHTML+=`<style>#${d.split(" ")[0]}:hover{background:#${f}</style>`+`<div id=${d.split(" ")[0]} title=${d}>`+`<svg viewBox='0 0 10 10'style=height:100%;width:22;pointer-events:none><${g} stroke=#000 fill=none ${e} />`};
-a.flags&16&&b("Grow",'d="M2 5L8 5M5 8L5 2"',"0f0",b("Shrink",'d="M2 5L8 5"',"0ff"));a.flags&8&&b("Full Screen","x=1 y=2 width=8 height=6","fff","rect");a.K&&b("Help",'d="M5 8L8 2L2 2L5 8L8 2"',"0ff");a.code&&b("Code",'d="M5 2L8 8L2 8L5 2L8 8"',"f0f");a.flags&2&&b("Reload","cx=5 cy=5 r=3","ff0","circle");b("Close",'d="M2 2L8 8M8 2L2 8"',"f00");this.D.prepend(this.name=document.createElement("div"));this.name.id="name";(()=>{this.name.innerHTML=`<span id=icon>${a.icon}`;this.name.innerHTML+=a.name})();
-this.j=this.shadowRoot.appendChild(document.createElement("div"));this.J=this.shadowRoot.appendChild(document.createElement("div"));this.J.style.display="none";this.G=this.J.appendChild(document.createElement("textarea"));this.G.id="codeText";this.G.readOnly=1;this.G.spellcheck=0;b=a.flags&16?Math.min(a.width*(a.info.scale||1),innerWidth-6):a.width;this.style.width=b;this.j.style.height=b*a.height/a.width;this.scale=b/a.width;OS13k.Speak(a.name);this.C||(this.C=new sa(a,this)).h();a.A?(this.j.className=
-"folder",a.A.map(d=>{this.j.appendChild(new na(d[-1],this))})):(this.j.style.background="#000",ra(this))}i(a,b,c){a.i&&a!=this?a.i(a,b,c):(this.h(),a==this.name?(Q=this,O(45),document.body.style.cursor="grabbing",desktop.style.pointerEvents="none",ua=b-parseInt(this.style.left),va=c-parseInt(this.style.top)):("Full"==a.id&&(O(-9),this.B.focus(),this.j.webkitRequestFullScreen?this.j.webkitRequestFullScreen():this.j.requestFullscreen?this.j.requestFullscreen():0),"Reload"==a.id&&aa(this),"Close"==a.id&&
-this.F(),"Shrink"==a.id&&ta(this,this.scale-.2,75),"Grow"==a.id&&ta(this,this.scale+.2,61),"Help"==a.id|"Code"==a.id&&(this.J.style.display=(this.U=!this.U)?"inline":"none",O(this.g.K?22:16))))}h(a=1,b,c=1){ha();this.className=a?"activeWindow":"";this.D.className="titlebar titlebar"+(a?"Active":"")+(this.g.flags&1?"Sticky":"");this.j.style.filter=a||this.g.flags&4?"":"saturate(.7)brightness(.7";if(a){var d=this.getBoundingClientRect();b&&(this.style.left=OS13k.Clamp(d.x,innerWidth-d.width,0,this.style.top=
-OS13k.Clamp(d.y,Math.max(44,innerHeight-d.height),44)));c&&E&&setTimeout(()=>document.activeElement!=this&&this.B&&this.B.focus(wa=this.u));T!=this&&(T&&T.h(0),T=this,O(this.T++?66:87),this.style.zIndex=++xa,this.C&&this.C.h(a,b,c),E&!(this.g.flags&1)&&OS13k.Save(L=this.g.id))}}F(){this.g.id==L&&(L="");O(92);this.g.Save(0);this.g.window=0;this.C.remove();this.remove()}}customElements.define("w-",qa);
-class sa extends HTMLElement{constructor(a,b){super();this.className="taskbarIcon";this.O=b;this.I(this.g=a);taskbarSpace.before(this)}I(){this.innerHTML="<div style=pointer-events:none>"+(this.g.icon||"\ud83d\udca0");this.title=this.g.name}i(){this.h()}h(a=1,b=1,c=1){a&&this.O.h(1,b,c);if(this==U)return O(-9,.3);this.className="taskbarIcon "+(a?"taskbarIconActive":"");a&&ya!=this&&(ya&&ya.h(0),ya=this)}}customElements.define("i-",sa);function M(a,b){a.g=b;a.title=b.name;a.innerHTML=b.icon}
-class Z extends HTMLElement{constructor(){super();this.className="trayIcon";tray.appendChild(this)}i(){var a=this.g;T&&T==a.window?a.window.F():a.i()}}customElements.define("t-",Z);class na extends HTMLElement{constructor(a,b){super();this.g=a;this.window=b;this.className="desktopIcon";this.innerHTML="<div class=desktopIconIcon>"+(a.A?"\ud83d\udcc1":a.icon);this.innerHTML+=this.title=a.name}i(){this.window&&this.window.h();this.g.i()}}customElements.define("d-",na);
-let Q,ua,va,E,T,oa,ya,U,D=document.createElement("canvas"),ca=[],za=-1E4,wa,xa=0,Aa=0,pa=99,P=143,ma,L,F=[],r=[],u,ka,N,ja,la,settings={v:.2,m:.2,s:1,p:1,o:1,c:"#551111",d:"#cccc11",t:"\u0424\u262d\u0413\u042d\u0436"},v=new (window.AudioContext||webkitAudioContext),A=v.createGain(),y=v.createGain(),ba=v.createAnalyser(),Ba=a=>{requestAnimationFrame(Ba);var b=document.activeElement,c=b.shadowRoot&&b.shadowRoot.activeElement==b.u?b.u:0;c&&wa!=c&&b.h(Aa=1);wa=c;document.body.style.opacity=OS13k.Clamp(a/
-1E3);b=r.length+"\ud83c\udf96\ufe0f";b!=u.innerHTML&&(u.innerHTML=b);N.title=Date();b=N.title.replace(/.* (\d+):(\d+).*/,(e,f,g)=>(f%12||12)+":"+g);b!=N.innerHTML&&(N.innerHTML=b);if(Aa){b=new Uint8Array(ba.fftSize=256);c=D.getContext("2d");ba.getByteFrequencyData(b);D.width=D.height=32;for(let e=0;32>e;){let f=(b[2*e+3]/255)**3*(1+Math.log10(44100*(2*e+3)/1024));c.fillStyle=`hsl(${-99-59*f} 99%50%)`;c.fillRect(e,31,1,-7*f);ca[e++]=OS13k.Clamp(f/5);za=f?a:za}D.style.display=1E4>a-za?"":"none";var d=
-0;[...popups.children].map((e,f)=>{e.speak&&OS13k.Speak(e.speak,e.V);e.speak=0;if(!settings.p)popups.removeChild(e);else if(!document.fullscreenElement){let g=e.style.visibility?innerHeight:parseInt(e.style.top)+d-9;e.style.visibility="";44>g&&(g=44,!f&&0>(e.style.opacity=(e.style.opacity||3)-.01)&&(d+=e.getBoundingClientRect().height,popups.removeChild(e)));e.style.top=g}})}},ha=()=>{[...programsMenu.children].map(a=>a.style.visibility="");oa&&(oa.className="program")},Ca=(a,b=a?a.split(","):[])=>
-"OS13kTrophy"==b.shift()&&(b.length=3,OS13k.Trophy(...b,localStorage[a])),O=(...a)=>E&Aa&settings.o&&OS13k.PlaySeed(...a);localStorage.R&&([r,settings,F,L]=JSON.parse(localStorage.R));OS13k.Save();A.connect(v.destination);y.connect(v.destination);u=new Z;ja=new Z;ka=new Z;la=new Z;N=new Z;
-U=new sa({icon:"\ud83d\udcbe",name:"Load"},new fa([["\ud83d\udca5",,,256,"Close All"],["\ud83d\udea9",300,300,80,"Help"],["\u2699\ufe0f",,,64,"System",,[["\ud83c\udf96\ufe0f",,,25,"Medal Cabinet"],["\u270f\ufe0f",300,263,3,"Notebook","Ctrl+B = Bold\nCtrl+I = Italic\nCtrl+U = Underline\nReload = Clear"],["\u23f0",192,108,133,"Clock"],["\ud83d\udee0\ufe0f",470,130,1,"Controls"]]],["\ud83c\udfb6",,,64,"Music",,[["\ud83d\udcfb",400,330,1,"Music Player"],["\ud83d\udc41\ufe0f",,,156,"Visualizer"],["\ud83d\udcef",
-,,218,"Zeremin","Mouse = Play\nWheel = Change Sound"]]],["\ud83d\udd79\ufe0f",,,64,"Games",,[["\ud83c\udfc3",,,218,"Marathon","Click = Jump"]]]]));da(U.O);OS13k.Trophy("\ud83d\udea9","","Glory to OS13k!");for(let a in localStorage)Ca(a);onstorage=a=>Ca(a.key);onunload=()=>speechSynthesis&&speechSynthesis.cancel();Ba();OS13k.Save(ja.prepend(D),D.style="width:16;height:16;margin:2;pointer-events:none;display:none",self==top&&ma&&ma.i(),E=1);
-var zzfx=(...a)=>OS13k.PlaySamples(zzfxG(...a)),zzfxG=(a=1,b=.05,c=220,d=0,e=0,f=.1,g=0,l=1,q=0,p=0,k=0,G=0,t=0,V=0,B=0,R=0,m=0,H=1,w=0,W=0,I=[])=>{d=99+44100*d;f*=44100;e*=44100;w*=44100;m*=44100;let n=2*Math.PI,z=OS13k.l=OS13k.Clamp(d+w+e+f+m,396900)|0,X=q*=500*n/194481E4;b=c*=(1+2*b*Math.random()-b)*n/44100;let J=(0<B?1:-1)*n/4,x=0,S=0,h=0,K=1,Da=0,Ea=0,C=0,Y;t=44100*t|0;G*=44100;k*=n/44100;p*=500*n/44100**3;for(B*=n/44100;h<z;I[h]=(I[h++]||0)+C)++Ea%(100*R|0)||(C=g?1<g?2<g?3<g?Math.sin((x%n)**
-3):Math.max(Math.min(Math.tan(x),1),-1):1-(2*x/n%2+2)%2:1-4*Math.abs(Math.round(x/n)-x/n):Math.sin(x),C=(t?1-W+W*Math.sin(2*Math.PI*h/t):1)*(0<C?1:-1)*Math.abs(C)**l*a*(h<d?h/d:h<d+w?1-(h-d)/w*(1-H):h<d+w+e?H:h<z-m?(z-h-m)/f*H:0),C=m?C/2+(m>h?0:(h<z-m?1:(z-h)/m)*I[h-m|0]/2):C),Y=(c+=q+=p)*Math.sin(S*B-J),x+=Y-Y*V*(1-1E9*(Math.sin(h)+1)%2),S+=Y-Y*V*(1-1E9*(Math.sin(h)**2+1)%2),K&&++K>G&&(c+=k,b+=k,K=0),!t||++Da%t||(c=b,q=X,K=K||1);return I},zzfxM=(a,b,c,d=125,e)=>{let f,g,l,q,p,k,G,t,V,B,R,m,H=0,w,
-W,I,n=[],z=0,X=1,J=[[],[]],x={},S=44100/d*60>>2;for(;X;z++)n=[X=t=w=0],c.map((h,K)=>{k=b[h][z]||[0,0,0];X|=!!b[h][z];I=w+(b[h][0].length-2-!t)*S;G=K==c.length-1;g=2;for(q=w;g<k.length+G;t=++g){V=g==k.length+G-1&&G||B!=(k[0]||0)|k[g]|0;if(!e)for(l=0;l<S&&t;l++>S-99&&V?m+=(1>m)/99:0)p=(1-m)*n[W++]/2||0,J[0][q]=(J[0][q]||0)-p*H+p,J[1][q]=(J[1][q++]||0)+p*H+p;k[g]&&(m=k[g]%1,H=k[1]||0,k[g]|0&&(n=x[[B=k[W=0]||0,R=k[g]|0]]=x[[B,R]]||(f=[...a[B]],f[2]*=2**((R-12)/12),0<R?zzfxG(...f):[])))}w=I});return J};
-onmousedown=a=>{var b=a.composedPath()[0];if(a.target==U&&a.target.O.style.visibility)return ha(),T&&T.h(),!1;ha(programsMenu.style.left=0,programsMenu.style.top=44,Aa=1);if(Q)return onmouseup(a);if(a.button){if("button"==b.localName)return!1;a.button&2&&((a.target.h?a.target:U).h(1,1,0),b=programsMenu,b.style.left=a.x,b.style.top=a.y,a.target!=U&&(b.style.visibility="visible"))}else return a.target.i?a.target.i(b,a.x,a.y):T&&T.h(),a.target==U||/input|textarea/.test(b.localName)};
-onmousemove=a=>{Q?Q.style.left=a.x-ua:0;Q?Q.style.top=a.y-va:0;a.target.P&&a.target.P()};onmouseup=a=>{a=a.composedPath()[0];a.parentElement==popups&&a.remove(O(92));Q&&(Q.g.Save(),O(66),Q.h(1,0),document.body.style.cursor=desktop.style.pointerEvents=Q="")};oncontextmenu=()=>!1;
-</script> 
+_='HXyEiMKdc|r~xCqOaigxZm~`QO{fW^UIOB{waZUTC`]YK]wonLBUYutGwZjPDjnw}qZh^hNp~sIdLPy{iktCsCaLy?{UaoUQZRcYeiyd@]@azhoOJW|`OhRIyY}caqJT]_uVnxDh{gqBGrBNpVWbgrYYrMJJhF_hlfX~VcVSLSxIeES]_[gPgkQTGKBZRunbjbvnYf^ConyXdbMasmEfWi]^iz|qSxm]Ywmwp]sjKO[_hUWZ{[{^HynRqOutWX[GLLKI~LElkIzPBNjlVJMze^cW_MC[y|iY_gpBKzsGUx^qa@aXPlx^r{@JJQwQ^~lDrgiJDG|elJ}CJFnO~MYZkhQJT~nQe[TbddQHvhHu]SHTOqqHBpcuT|HFbduQsHNFrPglYkZ}NjpeLJVbzQhP[EJufjFUvuUNintS^QugqDS_WUytR{gOzEPAWg[EEZh}KF_Me|AnJEcuDHmuUn@AJXKoAwhyMNos[pvG^DSnZxLbW^n?yfFwHb{HXowgQBOanWAfW@JNz}GS]PHqj[^`GBxUeMbTYYt]DX}TNmwkC|iQeuIA|O{XPUK^?j@tANMA[d]kas|zUM|TEjA|OdVtKToBlZSrHohq@uSZl[uwGri@H`Fxmqpbm[}~n}v|icbwVElhYICnHpoCdlK^|syOTW_ZjopSdVvmypGFNvHkQXmW]nS[_~Vor`XaU~ds{LlPKllDqWPcPDKjbxpKGrVq_zrKklu`tQXqDz}D}T[qcCsveDDDTrgaP?KntdFRaE}tb_vQgJpATNsLT[DxY@D{@LLGflV@XoBEV@Fy{lLdQf^qiHC~C|os~SctOcQbsAkW@]nPNT{[?YKOCj?ks`il@o`NklSnuO`EcX_?]BYMtZCqo[^QwSHm^F`hxb]XToj}FT^XMsJN?s[lWgxKsXeTEJCc{fFoLNLzhZicjZ^zieXOBujRUe]mHfVA@In^`zQyPfseXK|XQvBZ{xOKtQRn}otgn]N}nE|kbYao}lC~M@LDsTeAdEemLFyM@zdSOhf_{imHPgi~zCfsB``JDdJR[yd[EzsaPwhaJg|{?FnnAFUXzpgoezb~cnhV@cEvRHGYLsBwvZj?EwkcolR`rXzTJTCa]U{LMu{rFUz?UG~exbByJSAQIVb|`?RPYls`cg^B{Ll{ObydLRydgWIdyYgDkGf}}wvS?AJbfWJn{kNHtwMsy?coUmFJP]Pqwx{KajorIaPOHJ}CA^owtgMMN_|Rxi_`UgtX}locsnCu{wHtR`zb~dIIlos][YZVO|zAbGWDqdb|cbZIgh__}LUmTnjmypDpLCkIxkLQP|}PLeZlkCHJto_Q~PEkC}WuyXddWVtZCb^m_A?sWUQVwfr|jYBr^k@wOjCv[vqv[Dt{OKVzQZLnPuwJ[umC^xwi_lmu{ERot]NypmxME[XymSnNCSv[Z_ehQ[eoTJDB@VsWm[sFbFTp?CSoGgqtGHDo^psDzinBjhG{FWCpJwpJSzoP]W}O__XXtlhOsnl@Y?cGTJ?ChZfn[^{YvEnIaPYXArJgCqpzPpAAY[QDVrlrQ^GHPGX{DfRPKAKF?jm}NQ@WoUmiQJkAINedM^VQ}duJtY|`FOBdJFZiDqhCTtoI~JedFpVR@ildYXDdSTJhFnZT]|^AlstEVzyEq~ah{G{ym|gRRewMpj{UJGwedsDwQ^niaeaMNFWHbpMC|dX^bRgD}eUqadpXZWJlZ^@{fiTyycoYv]QirU?T@}hC?[UYu_CDOmFs|BwWgJJu|Da]TZicbwED@NebQ}zcDvKmCesv|DsvwXjSn{kVJm|iFJEYgg}]Ujmqb~?uGeYQcZj[I[mAv{Qdxz~GFrlgECH`xsW|yAqX`PqaEFiNViUfEkDYquretoP`{]PmIMK^D^lVdcxONGB|bnNEOARt@l}~IMeoYjuITqbvVTvCAxkfac~v@SZx}@@L^FkqOM@Cl{b^lLDztdXQUhoM}JlMxwxzYolhJXdPtzF]dEmeBYU`{RS@et_MHh`E|gLmxADMxJcEhTNpSnU|E}pxJm[O^EkUylqvaEI_XbFB?MZ]WGkJasmNue}@khNMlBGra[~HBbgHPctvJP`TXtZDvNGdB|_T?`MFlOK}fXKLmgMf~Wo]|lh_N~@oZXeR}F~^[_ceTgoyYY_F^c_YyQD^`xjYGS[hF@vJtDC`YBbJoEv@mzFZuLSoduOTc{Evpkg]qAsGoaLv~Rp?PcOdKcVp]YBGBphs_VU_nF`~dhvAIkH~XYn@vYnnv~QEHRfedLJg`FqBddeK}iRujFOYv]qowQuMe_`laezP}UVX}]haLiEIuk~wzqo{dWs~Fu]@Tv`]ki}Lil|?i[GCKYJf?tEN]TXOtikEzj~pvZV?Wlp~yBKqdHSV|PBmKExO_`R|LmizXRfjEOLzC?QP^jZ|RszAfTLZNWSEMqNww`OjOGwNaXQAv@v@_[dxauWzW[a`kixCSXOlZHBGxXxGsysr~aGdpR}SWmOyCaDufuMpSvcYKQgsiANKU{TDI{{^xikrXctP|BnQjxLTrja?TqoSRedWmSHCqU~eCNxQgMa]a^ahOToz|WEFcMlmSNHWi`]ltVqoeu|zPxSNeoJ]NuebHymkXC[rnRCWF]D{tgw{`@nUtKAWGFQgMRzwQOZriwCVXJK}?kcwRB~tIopI`e[GImOqnYiWhIopniWc|ox@|xbLmpMmpbYFYcUOZW|hNPnM@fIpHJE^YnsBiwanmzA{^STnN|rUHhmBttpD}YjVOFOY~yQgovDPuvk[HuRBdUPmiVmoWToQr`UIKeOD~REAPcmBFLqZS_MFRVfGtWqx`@qlazZfvUg]EYqFpOaiW?CCxASm~u^MBbz^nGTbI]w`GsQI^kzSI?HXDslS_isAXgDDE~Xf}nP[dpwnHB}ydbRskU@rUwsd?K~LsbWkWPF@WpH?LxgnZtd`UhIC{]jLsHkNjZcAO]cZrRsTAvQh~tTCnqwhUJCHwIhOW[cn@azZ]O@rw~lhYGxxKzm[D]qpiq}WKqUvifpFbVcTs|EWF?^eJiWofDSYzJV{QPbklsVxXZyTKqaQuQDT@T`A^tAtq?cRyksFhLon?^PtFD{v|SBD`hnesQwiZ`ZLGmJPl]amcDs_ZWjxGoyctO|OBeCGOSElKzaRbZouROlwSK@EFUKPgcYKCrncX{KG@gyItxSoWIebiXtu_nfw}SgjdWfCoLQlQ_TG_qBqncA_qOXzFTSQyYtVTouKoFg_Rq_pLNMrMZvqctUJ`CiXx_humENXyo_tMf@|BZzkhbTO~fwiYt]SXliTmSKwrJx?jGLije^xQAyGXfjRzRH}itDbyFAQ~or@n}IIndqHhDe}N|uPq`j`QbqO~pGkcg`vCqhHKjsWXYS^HwWfvykZiL?{sokhAerSALeqG}BaMAGQz@fmx?l^iwwT^MzXbHQKs~l^~br`qRn@kQq|LVX]FFDeQCovvR~Fju`iyyQkyGZOU}wAesxNLVDb}gf[WMuqh|?cowBBc}KMY|av^oHX_aDHc@mObdNNuRXBt`bVgIsVs|fbeCO|`rZRYDGNFjEAqZ~[ZdEyL[eO?oz`zrRQuEAPA{fq_@`zgq]IxoYXqgiozPUGbFosOYvKDG`Cgpy?x]|GlL|HIIeNT^DGxBt|wrE|OXi~WqDcG`[AtOfpaym}TLGJLZROfv~@XcwBGDj}n~}N_yt[PO@iigM[BrFPg~X|NJgwD]KLMt~sswOCoANLqStzzGj]GoiWwKJ]A{SY]q}_urOzvHml@hV~ZNJB|fRTctJJCsyd?CwQuVNbUtbEmtKTXKNZrirXFoeY`Nh]jVzpEsKvYtl@Bd?d|?wParynhXxZUuQ^oH[LhCA^rWBg~VB`cl@yhZazChFFo{}FiTkMmKjfDxC@SUuxXkAoVJmgWzAX}_yfA{~fJiw~UXGYO}?aDfDUHIEi|@CrT_GHzg@MFVUBceZvkcfDuZz}eNhGGk{D?_utszK|OWilY@dqAk~LSzkhyU{Bq[PCUr{?vWTQTl~aB^F?QxvbUtf?JeNaI]qC|d`su`QlAVvuisfZ@rTFPxIYxfKYXb{QJvRqhoD[[^?]hGmOJLhRaukoxTFbKhiaOqxYfotyW^`VyjQpLMBF@|_p}Da[iMdJrnkd^rHcnV^XL[]dUaeYvsejDmG]U_RxHNEbMz|EjYYG?QwNOLDFai^fOx^NOHJKme]AyTdHj_PTVogfICp}Y?W]eVeutwcECdd{KAyd?NVzViXrJAb[Ph@NwqqKIPQa}KRQN~QUcMMXH{AXotmkCAcvjoCBtJNP@Ug]EvK@}oopyLJaEcPcNxvapH}kwFXzOPJsqr~MG?XNWo[Gql?PN{i[~{SUdwbgNtwr[rXR|D`Xw~lTi~tYJxQPE]}@q?IvbLj}kiCnYPvrFYTHZku[D?]Hdo@dj[Fsv_LK?]ljnPeV~LBBuYvAtSRCKKSCpWbiXPqFjPLEIRnnAtzDxmbFQxHN|n{dE`kTkMpPeCdGjAE@iywmjIYHDZuANaOPuUdfMClsgnxC|DuoUjYjz`QT@sLnvL[_pEd{jvWZWphPJSHxzdLVu^aL~}[zxWsybgAE}]nPUhAES~{pKE{WqzFB}hHqzPyanrR|TqU]Gszu`W]PRIPZsnOa^TZ~`^H]Z}a}GLIS]qUcMK^[WonkO`a_J[TyvSTEahYJ?fCbxTlM]blk[_kUjyF|BYGP@|e_Ay`IoGZmeV_EOrvybJgFZ@_nS??a|_VJOfxnSKQWrzv?w|atJLUBPOO~d_lCbE^^K[uSwjtgf~zsxLh~MCfcXQpTLq?gRenozORx[b@ZHMpjTRQ{[^~^BkZxp{Kk}@rGNe}E`BVw_Z?ieuNmZ?|wGQPC@UI`c^U_|JAg_hqYRLpqOpBPo}HK@J^gkLFBsoFUvbcw`}dgdQNJpGNHGRWyvNkQFAdB@IaMnib|r{T[`yREki}{n@}lJRBomgwhwjcu|vaNjoTeMdNQid_GImXtr@tufinUvaxKwksbzLx_^GSv[~PUcvb{|UEvNo^p}~QTBA|zgXSTkLhxThBvB}jKHJxFeT`KSuaT@rqXwnkbP~VI}UOxruPfjQaL@ol][TvwEQofGhxefb[WIDDrKdXjxyUOcFJQ]JwL]hNJ^fpUeDdC`Je~@jNM|EIBrVHLtP~C_RRYST]pSV`enQbBgJEqYhP{TSK~DLaQSZ}iijhIdECBR_PoutOe]HNChdMM@WkGCXf?VbDk{i[o?Z`yB{UjOpugLPrArIlRFgReDPkn@FLeWaP_mfuWbW{kkvfdHt~q_xAqjqPz`hb[[tC`ojEfzk~@CIFdQ[D@vl|`tqOdUp^VFqyS{iGCLtMoQBWUEU]SGJyqpGQU|e]um|FbeQ?mIYOxQ{aSZQuqiyQxMXUI[qDCHsDkohrIT]s]ppTtEd|qqfXCGGbxZtXXMQqbndjPeqrKjdZL[|UNTBqPInr^IwoSP]Nspg?yhFi|j@t}gKHIvMjSPWJKvE_I]qEnBWmN[Dtx[`}UFkK_tEES^FZc{Vtgb[jF{XCAGLeBov?z_uHpvd@BLvlh[x]Fb~j[VUDkD]^Fl]_pS]|VGOlxgoyzuD|BZ{kWsA}YCdLhRKpY@jtNsK]q^p||kICP^@iiKsgZ?N_yguqd|b`ich]AXGLxgs}Yr`[BK~szEJ^BJjFFhrUJGsnmxzAsBnVq_RtLmvvcACLjLvBXD?cv|ecoOxDK^^QtBhD{S@VelqCEwATI|gU|YxzPyJm_YnUyfCnLsKvDxi@RjqCEs?wAV{uCxBygeiwwLYYlR_STtxaw]GhefOkiJyrx|nGQJpcUnMXUJyfsEsRhVCoFBGnujKx{D|]K?_ayOs_mh[ajiWRaO_EyTLC{PR~oYqEJ]DT[GyshmkILhqK`V?pXUfjYhDLWetmXSMPTT[pxvTMEWdidd@]y??EMvl_n?iOKMn{^fIB@Xt{~Ha^bpsA{rb{tL`}obRma`jHyNxlu{}aXqmfheXJnA{ARN]awlQrmhr`?DNLEQAHaiyqsTrKZHTRDxFoOXKDAjfDBDSM_gVqdUL~CuxyJciNkrZeNfNj[NObEHHdIqxwykDd@gxwRfpDfPDSSpVNw|dKw@^WYv{zIN_]xOw`?OQ~^Y`Go{KlFGpXeSOHP@kNeJrKnY@Q]F]jlgnOfcyNblGUFPfrUQOOYNPK?g|wz|xnD{RGdPFNbuVAUl]^xxeW]aKjodhr?HQhjTN?~h[_|b}|N`t^eY_~zpKEE]{b`rhhRdwO}W?_~^t`Xppx|o^yb[OQr@O^zkqm`@rk~CYB@_ELNt]HLYWT}[NZx`Nyrk^Dfl_yRvH{RKSTizbdYZCqa]XAQTeMcVoB^u~ED{UlLfl~@cIG{]^YmDGD}rYuK|yfycnNVe^YYxNg@fAcJ`VwZ?kE]Btf`zOoF_dr|dhFNpsUaZ`XKV`KzjTM`ZtS]jWvkuR^aGkhaPEvlVfSDETHzGPHg}yxrNYbj~KDyyLl`]Dz@tH|xCeMr@kgv_JVQYojxQaKGANzbX}SHMX}WsEl]kmRm_UqYB]W}ZnQE|}G]SGwhqQ|nairKZ@HHcWRhriYaJ}l@oywErHfQEoL@uCdqvyri[}nF]LMoSUCUkOeZiPzfjcgN`xBHtEF`hrmZspF|FMrl|}mgZ}`fdruZttoTFiczn|gacbMVWcD[MYUOVqr}fBHd}xLUfVWsVmgUajuG~_bgG_hA_Rj^xdXXqZCINZYzD`yKW`njA}IqIZturKJ^qXDMv@QIYt~WwJrDprB~jqnK{YmUn}`{vciLH^QiGDUbCI[}hJUgaQrTKoG`RLgo_LWlSjFoaYXUCaEN}lfOCKYcnt?RXb{QVIj`JzdSLEwrbLKxofVUkYVGkwGtZK?qEFMrNGZRvGo@yxlcvAzO@?rMjqztWgmbfpvGewlOgLeteFSGYyDEJNdb_Qesd@FzycodCNS^`pBKOur@APzuHBvWIiSB}R[oPGThnDF`IwrrPZKnMIA~XNKDV^LL]F`nKmGHdvmA?@]BfwkjOz^vpIvaT@l{eDzrLYEAox[vWhrtrL|KBCYkBBxydgnMHQpwfxloHvReWwCV`ZjAzDezfzklDaUF@idSt~XLIWypbE]CYco{r_T|m|xMzvFojdevwNCLcxtyFEJ[KElh{DX_QEfX]q}WQZ|x?BXvNNukVoJHCr]uDAmolJqMcOpTRxQcOETFFRyGovC?mVPYzwWyakRqRzgkANnhSVE]cnzQ@p|TDmGWjOIM~ZzMExvDGgh|psUmyVBuuM[gSDBQJ}yzmXb^SUTcQAtAV|@Pepklx[FxbuXr?e}[SVBkTQR|WnCR}IQq~ws^DHF@{cqvZX_jQWltR?NjKDQFRIfKw@UBb^KcvkMjnla`ppyfp?_xCGWV|}}Mpw|Z[vDSJpH[M_B|GdCkH}P??kNLoKWkckhp`_IgRuG[GG{vELy^ioGjikObdK~cdxQxZyfu]VaiAWJPOU|VjgbYEWpbk_zzxBwkG]Hcxv}]DUzoyVT[flEHFOi^EtN|iqCzb`nyN|_rE[BYijOZoBFMcxYuZDGdAQbCYF`gAY{eJDiJ~MiAoLEvGsC}Cm?nQR`DLgKsNgkhUxWDCFjPvxSN`}P[e[Vl[_Z?JEPmX^qVs_VTcH}mnZCmrhDzfPV?VK}q_|QFlc}R?l}O}U{vw~cAjqg|L]AIHgjsEUrsl?@{LrCS|t`KahMj`dbL[ps_hRzeXf]N}ad?RW_z@NJgBVrnPl]sNmShIZccrKENGIXbFvl`QH?VIiEP_dqwNApUw_HdHzDx@WfP@Dt`dZvmQIB|hAUjjlLragAVprIg_Ci|ZkC}A|}xfHxs]^eUJLEw[AvX|D`|vkvjLNlKlLEtsnHAibJk}eg?SLtXdUDgH~gbsM`cUaGzecfr{_iBfrsUF`nO?BffKSvh{OtVXqfJ@BKjZLZaPc[ekyvDPVXCYsGJZk|{hQo}CSO`HfMyVBbeh}cNVIaXFckwAQVF@MffREe?AoJ~@ytIgZG{`{qRCLYKJOQ~iQ]TCDXkcRqwyPYHC|hw~EQbArIEjyt^dpJKiNDiipsuWVNkE?peiubJmjocmWPCGlZPCbLyhI_UjfU|KEsjtDSLdF^V_IS[`d^vYLbTlvdHQFF]QVvdB`YXew|YMJv^^WYwDtbqaqfwRSxUC|bUTW}T_z{vxy_wpgJXQ`ctXS|vtfEBfZEMeNB|nBBj@RCLdYLmKBYnjeBxuUbN`tCKflmr}NLuzwXQo]RDz`S@]^KffdFEqGpz`D|jxOY|uqnWBIs@mWROUt^yO~AhM^`k?}|m?jduxZKUG^qq}E{mvBZlt^KmRmKer@S^ddus@~]spPyUyZt@Gm`]{SlvhL{zIpdwxkqYsm_?^cRWbiF@o?wIcq~M|Bqvwk^v^XJVljTrB?qkop_~}oGoh`UhK|]`fvnsx|Nm_Ta^Hz^RaH|ZcEkXgqsbOqVM{WNqiQf}WPd|IGaRx~JqJrfb?GORw?SQMBk]Lw`oqrMlma^xGHtbuO~BmxMERq_ii|iFenmMw~M]HUpVyz}Dlv?|A_RO~FABZ`ckqlHRguGZEWBmJiEVmnW`w|wU{}s[DgWj_TpCBuYhMaMVFixJIlq|BjGfWH?aJd?CKyzPUfwe_mnwpFJckWM^[Kz{piM|zQKlLDJG}KF|yT]HeqR?vR?ofP`IlJcgKINtDFkePD|PJlCjM`HwTo]~EK|bLYUwk}ykBwx_ah^KX}CHjil]IIlDwswDcdzgl@GCqg^?VlKqHXC?KymN@g^_ai{BTNemRRhkHOo}SIBV}_?Jar?@tuUu]]fESBDorTe~[SAiTRuuG?TAFeiYPP`u{Ktm@fAKPzv_rZMMcg~eE|[VIB_eNMWYu}eO`cIjtMkrPhCg_WcB~V]N~rFNJGWP@Bdclm]Jen}Mgq^VjnFzpzLt`rtTu@FtAJUymfLB[Q^zgvjI_{YghgSDUrQPCqM@z[~MDMECKMptUEPswizZ]JvZy^OVpG{AmWe^mlMrZgujodc@JMGxuCsqrRCoB^qT^ItsYYgxum@d?XTicTb}[TL?}MsVIBKWDRb^wSHkS^o^oQEBCjaerdSlpciffeivFpgavbPZPhQA_~bdEbhOAT[eETSfiD^VYqBjghDHS@ZT?xNzSyvBzjdSWF]c@hMijoSH~K}kWmUHA|D]YPKoN?~kKuqwYmClHF~QpABw@vWViBj}EQmWFm@E`u|Jac}f?NjbmphOhIU~BssJxf?Lo|}LBhMVbpVyUaxeOUXREu~~vg[FyB?~VnxvA_XfcIIYUWYMTSWtn_zKI|ZJma~D]{HOf_rf]s^g}P]gBYv~I]UlFMJUfNfwJa@VylP~?b[yZlqn]uhnI[M^T~CsqridJhEZM{ReG|vjjFHbk{LMAtjpt|lFk]xhBlGefoaG`EFPJ{Txxg_VipHlhuCelitTbx[|OhPTEoeM?mHcwROYOqFE|zuz_b^}RVU{C~mFlXBlpbbsyCrypNiFDgBOEfvM_@osqAkQzIVyBAGIpU|u[sql|SyxzpDpHXfYQmGKCnONhXQuu{mTnM?AlHIspjPGbQs?jyfBXOOST}qdWuxET{nu?kRBQAXvqRYdvFa]?oBv~cwSa~ntwFf}XR]mAoPKDsf?`ljgBl{xalxUdO}nTqtGWiHbQsu_t}err|Cc@hM}CchJKR?xkjqIPCbUJzVzvUWkgvKv?sBCnOJp]r_Cxr}eb^[OMbb^Z|waG@`pnwDVfar@Io@kd`aAE{V]YByP?MNzKR`U?E`Oj[Yznhq|DTLOlsuA[|eYx|rByCV^iCg@aJ]rlbAl?]cvjnH@CiAf~PJGochB]NcvnjkUB_fXRpKZQTYevm[[uzouIzwXdHpQ@SBhMGdgpZnRgVP{UssNxPnL`r{Raxj[_n^sErhjD_i?UUaeA|mDFyDBdxm~NPP}XanX}DEkd?slFXXejzhkQ_tPQDlsalkuQ}~I}pJl_v_DOf[HEDP`MJch`DfZTBYYIY^~Rt?WwmSMs@}ovQ@YY]|ORORhoKoIhQ{]Q?AoVfov?oNu]nO]}kk}^hXGxNX?MXHToCA[DoDqoKaZPQpoHRIQutlc]HxhHoEy~KZxxHHcvTrEiw?j{lAyEzbttk}Ga}Eyg?rxEYuKZZAExRp|eHNWcKHUDkKtUqdA]azzKpWnaz]Zt[rNg_T[[}h}IRprHsydVvVRK_uSRJlfQPhTcAPQ^bQPF^SbSTblQEagi[ASmdUGecrSNgJvGfuzI]~WQTJqvtSRYIvhdH^Yi?kn~dlp]JJyrUhtcOxShIX{eoPoAKwZCajNoJxDRECVN_HooNz|J[{a~Gby_Uten?SeCJfcgZZXS`mROpLV]iDUdeiGVhkYiLV`j}HfeK?h~g`|LQZ`{HrIOqmbsa_MIxWAMYxwAQVxqyZCOEmxIkeVRxA@AbP?PW}uZQPZUxrUAzFJLBq`SoFmxnExfPVauec_r~~eYsnPq}MNcXrhiUya@GE?wSqEsdJRJvxsW|Z^uk`tu^Y|fXr[zdGNyI`]qdk`r[V^TWys{aMGkBJmh`TXXFUlPJB}}Mze[tPQptn[DfqNzsKYOevxfOsH}SVuJLAFNr{@E?jNPjBl}C~[fGCoPX_~BdZsW[xZedrcSYB_XQZYO@U?yHdujFCLQ^{XpLurp_I]n~BgV[Y}hvBRjuLvaZAa?MLSp_Qwl_OSY[q@^[vEB~rhu{ueVNfTnjcGLQF?NZJ_N@BlhNoehYYCIu~JoGyCo[fKstt{ov}Nv[}wlXYZin}GJ]X~Hg_UwNIjL~lZ|rGVot|r?vaGPMw__ERqrcfYecGxJc|doJEt~izcF_NS_lOMBRanBlsZhkBJ_EehmkCJj^bc_f~SFIYSd}nu@DjdZIF~u]nfEMMkftlaInOrkjl[QHEWwTbZ[]VtlsiulBnSbW~ZQA^oItR{kxieUhcGZglZhz_`n}En@m_z?rdiiMO|G?E?viUUYe]`jk]z{cPWdiI[pRw`fcrpEZ`OALGE?YxRmFC}~mclwmJfadHlgAIJpBKztT~sJNxXAggpXOJ}kwwsFDC@AWzCVk@Vyy|HFHJO@OaC`NzCapmk?kXJnb`qhEYHM]pttCFotZl}ekM|k`E]g~xSes|vmsTFDq]`GPVfig{@kGlTedObfJ_aH|AaQyPd|yCIuMwiDFDyVFpa@SRidhaecpqvxmm|DlKUMsoo@yqbeKkub@KJtXGpPchCRv^grou~}GOtqyDSo{FY~ViwuHNjukwi|TKZPUeHVjtlKlX[JEmCwVoZT?S`aL@nvV_s@sDxmAJ_~p}_Dl}bE}TU_iHePGWXr[oZOtYpKCb{Jss@jkYeJMFQ^RJujj]rH@sVuv^@RPbEiFo^uDj{RmyEeEoLWJnC[?`KMTV[b[WYda_QAXuK]XbdvqUAbkgFiF^JbB|Uuseu?L{~rH_{KN}XuStkCgx~KhFz~qUkOpUvNQzK^HVg?IjFs`]t{@ROmp~XRN{IF[]K{iCrKBjuDIOFqLbZTngaxq?dMxQaiAHZT}[jVIuf?j`H_uf~DO}aIprI`fKGvOIyDdSmnnnBp?MA@pPcFQd_ezv@wcRneDUCkHxtMwwJxkfC?gK}]nU?c?tk@Ma{VKu^HeY||fvOd?PP_nOPfSrfUmW{[Cd~|I{IYolI{@jvE_vDKtCF?B~J_`mJ{xD}}uclusZuyOAt~Yam|Ky^W^KjZI|MWgfeUY]KEgNwkNcz@|yeZ~OqklPhiFcPrA_`bFJMFaNCIb@`KM~|~DpKRn}Do[bUFTwrw~gckhhuUJvnOSH`Y@ZR_?krERASa[lBOhx~f|yGxRoOUxz^VjHAJqTpAv~CdUv^HmzdfLZWfS@njnbjHq@EyVd@Y_Borwj_CdnrxWYGp@gexDwQVxiUqAbNauomyw[mK?sc}uRJ[mjAKe^]VnUDdcW{iqzgEKP]AL{kO~U^l}xLhWXhMa]MHadbsForCFg?`LzaBIk|gH`@[Gx|rGv}PQeJaDmmIZrS`hO[IKNGyirF{PFyGQ^tlgSeLfbKAHd|rgB?^ZHW{Lz}S`rWcLzzLOdL~yZlhs_MnjWgokUAqzIFEvWhospsCqX?H}vTeGAAqkTct]pp|lwHpiyhFNnM|]PSkMbh|S[dswNGS@fewKcMQGSCl@JAPS_OGv`hhnuL}W~QULU}XSICLU{Q{@OglkvJbWxbeKb?rcWnzCJ|XNcetkGrJ|_E[XsejEvMBcHnR}nEAaBsOu[nxIwOt_@pLO~iWU@AAJM{GhUKn@MlPoYvqFZGJhpxIobK?^gDmssUv~`tVNVrTKiKCYT?en'
+t=27913349;M=1<<17;w=[0,0,0,0,0,0,0,0,0,0,0,0];p=new Uint32Array(12<<21).fill(M/4);c=new Uint8Array(12<<21).fill(1);for(z=[r=k=0];k<22904;z[k++]=v-=256)for(v=1;v<256;u.map((j,i)=>(y=p[j]+=(b*M/2-p[j]<<14)/(c[j]+=2*(c[j]<126))>>13,w[i]+=x[i]*(b-q/M))),v=v*2+b)for(u='010202103203210431053105410642065206541'.split(q=0).map((j,i)=>((1<<21)-1&[...j].reduce((j,i)=>j*997+(z[k-i]|0)|0,0)*997+v)*12+i),x=u.map((j,i)=>(y=p[j]*2+1,y=Math.log(y/(M-y)),q-=w[i]*y,y/256)),q=M/(1+Math.exp(q))|1,b=t%M<q,t=(b?q:M-q)*(t>>17)+t%M-!b*q;t<M<<5;t=t<<6|_.charCodeAt(r++)&63);for(c=String.fromCharCode(...z);w=/[\0-@~]/.exec(c);)with(c.split(w))c=join(shift());eval(c)</script> 

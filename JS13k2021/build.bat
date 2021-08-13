@@ -7,6 +7,7 @@ rem install closure and advzip globally if necessary
 rem npm install -g google-closure-compiler
 rem npm install -g uglify-js
 rem npm install -g advzip-bin
+rem npm install -g roadroller
 
 rem remove old files
 del index.zip
@@ -14,13 +15,20 @@ del index.min.html
 rmdir /s /q build
 
 rem run google closure compiler
-google-closure-compiler --js index.js --externs externs.js --js_output_file build\index.js --compilation_level ADVANCED --language_out ECMASCRIPT_2019 --warning_level VERBOSE --jscomp_off * | more
+google-closure-compiler --js  index.js --externs externs.js --js_output_file build\indexStrict.js --compilation_level ADVANCED --language_out ECMASCRIPT_2019 --warning_level VERBOSE --jscomp_off * | more
+
+rem prevent strict mode
+echo 0 > build\index.js
+type build\indexStrict.js >> build\index.js
 
 rem run uglify
 uglifyjs -o build\index.js --compress --mangle -- build\index.js | more
 
+rem run roadroller
+roadroller build\index.js -o build\index.js | more
+
 rem remove script tag
-findstr /v "index.js" index.html > build\index.html
+findstr /v /c:"index.js" index.html > build\index.html
 
 rem insert the html
 echo ^<script^> >> build\index.html
