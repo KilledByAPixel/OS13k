@@ -1,5 +1,5 @@
-i=OS13k.Input(window);
-t||(T=U=V=F=0,W=[],Y=700,X=-Y)
+I=OS13k.Input(window);
+(I.reset||!t)&&(T=U=V=F=0,W=[],Y=700,X=-Y)
 if(X>0)return
 x.fillStyle='#ccc8'
 x.fillRect(0,0,2e3,2e3)
@@ -11,7 +11,7 @@ F=Math.min(F+.2,Math.min(20+T/5e4,30))
 Z=U>1
 W.push((t*60|0)%Math.max(9,Z?30:20-T/1e4|0)?{t:'●',x:X,y:Y,c:`hsl(${T} 99%${Z?50:100}%)`}:{t:[...'🌲🌳⭐'][Math.random()*2+(Math.random()<.05)|0],x:-2200,y:79+Math.random()*900})
 W=W.filter(w=>(z=w.t=='⭐',x.fillStyle=w.c||R(),x.fillText(w.t=='●'||U<1||z?w.t:'🌮',w.x+=F*(z?.7:1),w.y),w.x<99&&(w.t=='●'||(Math.hypot(X-w.x,Y-w.y)>99?1:(OS13k.PlaySeed(z?169:Z?22:121),z?U=4:Z?(U=U>2?U:2):(F=9,U=-3),0)))))
-Y+=(V=V*.95+.5-i.mousedown*1.5)
+Y+=(V=V*.95+.5-I.mousedown*1.5)
 x.fillText(U>1.5&&t*4%1<.5?'':'🏂🏻',X=Math.max(X-(U*=.99),-960),Y>1e3?(V=0,Y=1e3):Y<99?(V=0,Y=99):Y)
 x.scale(-1,1);
 x.textAlign='left'

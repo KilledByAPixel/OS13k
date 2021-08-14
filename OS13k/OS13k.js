@@ -371,11 +371,12 @@ class _OS13k
             inputCopy = {...inputWindow.document.OS13kInput};
 
             // get direction from wasd or arrow keys
-            inputCopy.x = inputCopy.y = 0;
+            inputCopy.x = inputCopy.y = inputCopy.reset = 0;
             Pressed(87) | Pressed(38) && ++inputCopy.y; // up
             Pressed(83) | Pressed(40) && --inputCopy.y; // down
             Pressed(68) | Pressed(39) && ++inputCopy.x; // right
             Pressed(65) | Pressed(37) && --inputCopy.x; // left
+            Pressed(27) | Pressed(82) && ++inputCopy.reset; // reset (escape or R)
         }
 
         // create or clear input object

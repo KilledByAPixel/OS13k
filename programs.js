@@ -47,7 +47,7 @@ const programStubs =
     ['💖','games/bounceBack.html',1280,720,defaultFlags|shortcut,,"When life gets you down, it's never too late to... BOUNCE BACK!\n\nWASD = Move\nMouse = Aim\nClick = Throw\nShift = Dash\n\nBy Frank Force"],
     ['🐍','games/sheddingSnake.dweet.js',800,600,defaultFlags|shortcut,,"Eat apples to grow and don't hit your skin!\n\nBy Niklas Berg and Frank Force"],
     ['🙉','games/dontFall.dweet.js',,,defaultFlags|shortcut,,'Build energy to bounce higher.\n\nLeft/Right = Move\nDown = Bounce\n\nBy Tomxor'],
-    ['🏂🏻','games/bogusSlopes.dweet.js',,,defaultFlags|shortcut,,'Star = Invincible\nClick = Move\n\nBy Frank Force'],
+    ['🏂🏻','games/bogusSlopes.dweet.js',,,defaultFlags|shortcut,,'Star = Invincible\nClick = Move\nR = Reset\n\nBy Frank Force'],
     ['🌋','games/lavaRush.html',640,400,defaultFlags|shortcut,,'Escape the rising lava for as long as you can.\n\nWASD = Move\nMouse = Look\nSpace = Jump\n\nBy Jeremy Burns'],
     ['🌈','games/swatch.html',320,340,reload|shortcut,,'Create a smooth gradient.\n\nClick = Swap Colors\n\nBy Nicholas Ortenzio'],
     ['🧜🏽‍♂️','games/aquaPop.html',640,480,defaultFlags|shortcut,,'Left/Right = Move\nSpace = Shoot\nEnter = Restart\n\nBy Kang Seonghoon and Erik Sombroek'],

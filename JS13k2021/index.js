@@ -52,13 +52,11 @@ programStubs =
 
 programs = 
 {
-'Help':
-
-'<h2><i>Glory to OS13k!</i></h2><p>The OS13k is tiny control system made by workers of great nation for JS13k.<p>All citizens are asked to submit little programs for inclusion.<p>😎🤚🚩 Ministry of OS13k<p>Project Links...<ul><li><a href=https://github.com/KilledByAPixel/OS13k target=_blank>GitHub</a><li><a href=https://discord.gg/n8vxUcZ target=_blank>Discord</a></ul>',
+'Help':'<h2><i>Glory to OS13k!</i></h2><p>The OS13k is tiny control system made by workers of great nation for JS13k.<p>All citizens are asked to submit little programs for inclusion.<p>😎🤚🚩 Ministry of OS13k<p>Project Links...<ul><li><a href=https://github.com/KilledByAPixel/OS13k target=_blank>GitHub</a><li><a href=https://discord.gg/n8vxUcZ target=_blank>Discord</a></ul>',
 'Marathon':`// Click = Jump
 c.style.filter='invert('
 I=OS13k.Input(window)
-for(F=T,t?T+=P:P=Y=V=T=Q=1,i=9,c.width=300;i--?H=R:0;x.fillRect(j*47-T,R=99-C(j*j)*15,44,1e3))j=i+T/47|0
+for(F=T,t&&!I.reset?T+=P:P=Y=V=T=Q=1,i=9,c.width=300;i--?H=R:0;x.fillRect(j*47-T,R=99-C(j*j)*15,44,1e3))j=i+T/47|0
 x[f='fillText'](j,3,9)
 Q+=V?P/29:P/6
 Y-=V-=.06
@@ -71,6 +69,7 @@ if((F/47|0)-(T/47|0))OS13k.PlaySeed(3,0)
 // Wheel = Change Sound
 c.style.filter='invert('
 I=OS13k.Input(window)
+I.reset?c.width|=S=0:0
 t?I.wheel?S+=I.wheel>0?-1:1:0:S=0
 if(I.mousedown[0]||I.wheel)
 X=I.mousex*c.width,Y=I.mousey*c.height,
@@ -350,11 +349,12 @@ class _OS13k
             inputCopy = {...inputWindow.document.OS13kInput};
 
             // get direction from wasd or arrow keys
-            inputCopy.x = inputCopy.y = 0;
+            inputCopy.x = inputCopy.y = inputCopy.reset = 0;
             Pressed(87) | Pressed(38) && ++inputCopy.y; // up
             Pressed(83) | Pressed(40) && --inputCopy.y; // down
             Pressed(68) | Pressed(39) && ++inputCopy.x; // right
             Pressed(65) | Pressed(37) && --inputCopy.x; // left
+            Pressed(27) | Pressed(82) && ++inputCopy.reset; // reset (escape or R)
         }
 
         // create or clear input object
