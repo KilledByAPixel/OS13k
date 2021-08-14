@@ -124,6 +124,7 @@ Add an icon config to programs.js to register your program, examples...
 - full (1) - Enables full screen option
 - code (0) - Shows code option, defaults to true for dweets/shaders, help is shown instead if it exists
 - rezize (1) - Allows resizing the window
+- shortcut (0) - Shows shortcut icon on the desktop
  
 ### User Programs
  - You can create and access custom programs in the user programs folder
@@ -155,6 +156,7 @@ Most of the OS was created by myself, but there were many other people helping o
 - Niklas Berg - Shedding Snake
 - Pavel - Visualizer and 404
 - Rodrigo Siqueira - Sticky Note
+- Kang Seonghoon - Roadroller
 
 Additional help by...
 
