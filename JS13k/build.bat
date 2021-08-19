@@ -5,7 +5,7 @@ set name=OS13k
 
 rem install closure and advzip globally if necessary
 rem npm install -g google-closure-compiler
-rem npm install -g uglify-js
+rem npm install -g terser
 rem npm install -g advzip-bin
 rem npm install -g roadroller
 
@@ -21,14 +21,17 @@ rem prevent strict mode
 echo 0 > build\index.js
 type build\indexStrict.js >> build\index.js
 
-rem run uglify
-uglifyjs -o build\index.js --compress --mangle -- build\index.js | more
+rem run terser
+terser -o build\index.js --compress --mangle -- build\index.js | more
 
 rem run roadroller
 roadroller build\index.js -o build\index.js | more
 
 rem remove script tag
 findstr /v /c:"index.js" index.html > build\index.html
+
+rem remove head tag
+findstr /v /c:"<head></head>" build\index.html > build\index.html
 
 rem insert the html
 echo ^<script^> >> build\index.html
