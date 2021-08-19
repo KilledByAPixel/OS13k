@@ -30,9 +30,6 @@ roadroller build\index.js -o build\index.js | more
 rem remove script tag
 findstr /v /c:"index.js" index.html > build\index.html
 
-rem remove head tag
-findstr /v /c:"<head></head>" build\index.html > build\index.html
-
 rem insert the html
 echo ^<script^> >> build\index.html
 type build\index.js >> build\index.html
