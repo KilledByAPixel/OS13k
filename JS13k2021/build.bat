@@ -5,7 +5,7 @@ set name=OS13k
 
 rem install closure and advzip globally if necessary
 rem npm install -g google-closure-compiler
-rem npm install -g uglify-js
+rem npm install -g terser
 rem npm install -g advzip-bin
 rem npm install -g roadroller
 
@@ -14,24 +14,19 @@ del index.zip
 del index.min.html
 rmdir /s /q build
 
-rem run google closure compiler
-google-closure-compiler --js  index.js --externs externs.js --js_output_file build\indexStrict.js --compilation_level ADVANCED --language_out ECMASCRIPT_2019 --warning_level VERBOSE --jscomp_off * | more
+google-closure-compiler --js  index.js --externs externs.js --js_output_file build\index.js --compilation_level ADVANCED --language_out ECMASCRIPT_2019 --warning_level VERBOSE --jscomp_off * | more
 
-rem prevent strict mode
+rem get rid of strict mode by adding a 0 at the top
+copy build\index.js build\indexStrict.js
+del build\index.js
 echo 0 > build\index.js
 type build\indexStrict.js >> build\index.js
 
-rem run uglify
-uglifyjs -o build\index.js --compress --mangle -- build\index.js | more
-
-rem run roadroller
+terser -o build\index.js --compress --mangle -- build\index.js | more
 roadroller build\index.js -o build\index.js | more
 
-rem remove script tag
-findstr /v /c:"index.js" index.html > build\index.html
-
-rem insert the html
-echo ^<script^> >> build\index.html
+rem make the html
+echo ^<body^>^<script^> >> build\index.html
 type build\index.js >> build\index.html
 echo ^</script^> >> build\index.html
 
@@ -46,4 +41,3 @@ cd ..
 rmdir /s /q build
 
 rem pause to see result
-rem pause
