@@ -394,7 +394,7 @@ class OS13kWindow extends HTMLElement
         {
             // load source
             this.iframe.onload = ()=> LoadFrame();
-            this.iframe.src = program.src + '?v' + OS13kPageCacheVersion;
+            this.iframe.src = program.src + '?' + Date.now();
         }
     }
         

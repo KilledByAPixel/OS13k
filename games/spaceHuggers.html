@@ -184,7 +184,7 @@ const debugRender = ()=> {}
 // engine config
 
 const engineName = 'LittleJS';
-const engineVersion = 'v0.72';
+const engineVersion = 'v0.73';
 const FPS = 60, timeDelta = 1/FPS;
 const defaultFont = 'arial'; // font used for text rendering
 const maxWidth = 1920, maxHeight = 1200; // up to 1080p and 16:10
@@ -202,8 +202,9 @@ const pixelated = 1;              // use crisp pixels for pixel art
 ///////////////////////////////////////////////////////////////////////////////
 // core engine
 
+const gravity = -.01;
 let mainCanvas=0, mainContext=0, mainCanvasSize=vec2();
-let engineObjects=[], engineCollideObjects=[], gravity=0;
+let engineObjects=[], engineCollideObjects=[];
 let frame=0, time=0, realTime=0, paused=0, frameTimeLastMS=0, frameTimeBufferMS=0, debugFPS=0;
 let cameraPos=vec2(), cameraScale=4*max(defaultTileSize.x, defaultTileSize.y);
 let tileImageSize, tileImageSizeInverse, shrinkTilesX, shrinkTilesY, drawCount;
@@ -339,8 +340,9 @@ function engineInit(appInit, appUpdate, appUpdatePost, appRender, appRenderPost)
         glCopyToContext(mainContext);
     }
 
+    //tileImage.src = 'tiles.png';
     tileImage.src = 
-`data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAABABAMAAAAg+GJMAAAAJ1BMVEUADbj///+AgID/AAAAAACJT6T/dwBIG11mlD2i91azs7PZ2dlAQECB66IOAAAAAXRSTlMAQObYZgAAAoRJREFUeNqsk8dZw0AQhWfNiHDbARfgVAB0sNI3LTgcfSLcbasC0o0j6panHIYMT+FX+p8y/UdECJnNJlTn6PJnft4wEvHFasCkis2JakItl9dpemjZxgniywInnhX2hWAxXug0NIwKcduwjRTpF8hVLp7PJDSEuE5X24ofFZAQV7cAEZtDQ4jLJcSKgzuAXD8DDuVDdGOFmWjNaPN0v1zdPtU0BTSIi8cQY60ZPWcQ715r2oIzeqFupBQbZqVY0xY8PT1RN6zIh7QP8TTL+lcwmiE1megkRagif1DgvB8WsAILbQpYgZ2aD8kWsGLMUSybdfMpm1tgDRiJzfr7P5MteGufDpXchoE4jGcKj32C2oBKsM5jlPUlT4VKyN9TdFuSwKsfqrLHTcE5ucQgKL8H+GZW2n0YZptZKUXSXhIUic4nfa4OXrPPNmXTxI8BwzCBFcP6DjGxfwFmmwIwBv548/sccBJqPGRK10uYu5YCtRkD/r3xc8AEELDOk6ZAn3OHXR7h19D8OAckE3ukFiAkyb7V+lPXAqecd/8DYCSAkAGK+r37W3fhDZYCQqg4ICS/HKjNQsACbuYYRHLmHLh1BFfRHikKevd0dwATAQzTW3Dv7n8DKCrsZSF51wLh2hssfCOGQTLoegvZrn/j0iIlVEyKLSDjk0VaWGVjZERCQpHLqwywcEzIlbCChLArx1SbpQBgjITB5+f88l6bw+tLnbzW2eZWJQGEOMwKk3hz4JQnuy8FIH4tw+T2QNkNzSmeA0eA7T0BgFMc8mQox9qsCiQIY+AwDO/bNSOk4zaMIxxyvi8AMAW2xwcH1o+w/hHXf+P6RVq/yo86pjXn/PT09LTsL3dlHSBbTLmdAAAAAElFTkSuQmCC`;
+`data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAABABAMAAAAg+GJMAAAAJ1BMVEUAAAD///+AgID/AAAAAACJT6T/dwBIG11mlD2i91azs7PZ2dlAQEA9UPniAAAAAXRSTlMAQObYZgAAAoRJREFUeNqsk8dZw0AQhWfNiHDbARfgVAB0sNI3LTgcfSLcbasC0o0j6panHIYMT+FX+p8y/UdECJnNJlTn6PJnft4wEvHFasCkis2JakItl9dpemjZxgniywInnhX2hWAxXug0NIwKcduwjRTpF8hVLp7PJDSEuE5X24ofFZAQV7cAEZtDQ4jLJcSKgzuAXD8DDuVDdGOFmWjNaPN0v1zdPtU0BTSIi8cQY60ZPWcQ715r2oIzeqFupBQbZqVY0xY8PT1RN6zIh7QP8TTL+lcwmiE1megkRagif1DgvB8WsAILbQpYgZ2aD8kWsGLMUSybdfMpm1tgDRiJzfr7P5MteGufDpXchoE4jGcKj32C2oBKsM5jlPUlT4VKyN9TdFuSwKsfqrLHTcE5ucQgKL8H+GZW2n0YZptZKUXSXhIUic4nfa4OXrPPNmXTxI8BwzCBFcP6DjGxfwFmmwIwBv548/sccBJqPGRK10uYu5YCtRkD/r3xc8AEELDOk6ZAn3OHXR7h19D8OAckE3ukFiAkyb7V+lPXAqecd/8DYCSAkAGK+r37W3fhDZYCQqg4ICS/HKjNQsACbuYYRHLmHLh1BFfRHikKevd0dwATAQzTW3Dv7n8DKCrsZSF51wLh2hssfCOGQTLoegvZrn/j0iIlVEyKLSDjk0VaWGVjZERCQpHLqwywcEzIlbCChLArx1SbpQBgjITB5+f88l6bw+tLnbzW2eZWJQGEOMwKk3hz4JQnuy8FIH4tw+T2QNkNzSmeA0eA7T0BgFMc8mQox9qsCiQIY+AwDO/bNSOk4zaMIxxyvi8AMAW2xwcH1o+w/hHXf+P6RVq/yo86pjXn/PT09LTsL3dlHSBbTLmdAAAAAElFTkSuQmCC`;
 }
 
 function engineUpdateObjects()
@@ -401,7 +403,6 @@ const soundTaperPecent = .5; // extra range added for sound taper
 const audioVolume = .5;        // volume for sound, music and speech
 
 ///////////////////////////////////////////////////////////////////////////////
-
 // play a zzfx sound in world space with attenuation and culling
 function playSound(zzfxSound, pos, range=defaultSoundRange, volumeScale=1)
 {
@@ -420,20 +421,6 @@ function playSound(zzfxSound, pos, range=defaultSoundRange, volumeScale=1)
     zzfxSound[0] = (zzfxSound[0]||1) * scale;
     zzfx(...zzfxSound);
 }
-
-/*
-    LittleJS Object Base Class
-    - Base object class used by the engine
-    - Automatically adds self to object list
-    - Will be updated and rendered each frame
-    - Renders as a sprite from a tilesheet by default
-    - Can have color and addtive color applied
-    - 2d Physics and collision system
-    - Sorted by renderOrder
-    - Objects can have children attached
-    - Parents are updated before children, and set child transform
-    - Call destroy() to get rid of objects
-*/
 
 'use strict';
 
@@ -613,14 +600,12 @@ class EngineObject
                         this.groundObject = wasMovingDown;
 
                         // push out of collision and bounce
-                        const dy = sign(this.velocity.y);
                         this.pos.y = oldPos.y;
                         this.velocity.y *= -this.elasticity;
                     }
                     if (isBlockedX || !isBlockedY)
                     {
                         // push out of collision and bounce
-                        const dx = sign(this.velocity.x);
                         this.pos.x = oldPos.x;
                         this.velocity.x *= -this.elasticity;
                     }
@@ -729,7 +714,6 @@ const getTileCollisionData = (pos)=>
 function tileCollisionTest(pos, size=vec2(), object)
 {
     // check if there is collision in a given area
-    // fixes problem with positions between -1 going to 0
     const minX = pos.x - size.x*.5|0;
     const minY = pos.y - size.y*.5|0;
     const maxX = pos.x + size.x*.5|0;
@@ -738,8 +722,8 @@ function tileCollisionTest(pos, size=vec2(), object)
     for(let x = minX; x <= maxX; ++x)
     {
         const tileData = tileCollision[y*tileCollisionSize.x + x];
-        if (tileData && (object ? object.collideWithTile(tileData, new Vector2(x, y)) : tileData > 0))
-            return new Vector2(x, y);
+        if (tileData && (!object || object.collideWithTile(tileData, new Vector2(x, y))))
+            return 1;
     }
 }
 
@@ -1000,13 +984,14 @@ onmousemove = e=>
 
     if (e.button == 1)
         e.preventDefault();
-
+        
     // convert mouse pos to canvas space
     const rect = mainCanvas.getBoundingClientRect();
     mousePosScreen.x = mainCanvasSize.x * percent(e.x, rect.right, rect.left);
     mousePosScreen.y = mainCanvasSize.y * percent(e.y, rect.bottom, rect.top);
 }
-onwheel = e=> e.ctrlKey || (mouseWheel = sign(e.deltaY));
+if(debug)
+    onwheel = e=> e.ctrlKey || (mouseWheel = sign(e.deltaY));
 oncontextmenu = e=> !1; // prevent right click menu
 const remapKeyCode = c=> copyWASDToDpad ? c==87?38 : c==83?40 : c==65?37 : c==68?39 : c : c;
 
@@ -1041,7 +1026,7 @@ function updateGamepads()
             data.stickData = [vec2(), vec2()];
         }
 
-        if (gamepad && gamepad.axes.length >= 4)
+        if (gamepad && gamepad.axes.length >= 2)
         {
             gamepadCount = i+1;
 
@@ -1051,7 +1036,6 @@ function updateGamepads()
                 v >  deadZone ?  percent( v, deadZoneMax, deadZone) : 
                 v < -deadZone ? -percent(-v, deadZoneMax, deadZone) : 0;
             data.stickData[0] = vec2(applyDeadZone(gamepad.axes[0]), applyDeadZone(-gamepad.axes[1]));
-            data.stickData[1] = vec2(applyDeadZone(gamepad.axes[2]), applyDeadZone(-gamepad.axes[3]));
             
             if (copyGamepadDirectionToStick)
             {
@@ -1062,7 +1046,6 @@ function updateGamepads()
 
             // clamp stick input to unit vector
             data.stickData[0] = data.stickData[0].clampLength();
-            data.stickData[1] = data.stickData[1].clampLength();
             
             // read buttons
             gamepad.buttons.map((button, j)=>
@@ -1084,6 +1067,7 @@ if (enableTouchInput && window.ontouchstart !== undefined)
     ontouchstart = ontouchmove = ontouchend = e=>
     {
         e.button = 0; // all touches are left click
+        hadInput || zzfx(hadInput = 1) ; // fix mobile audio, force it to play a sound the first time
 
         // check if touching and pass to mouse events
         const touching = e.touches.length;
@@ -1140,8 +1124,7 @@ class ParticleEmitter extends EngineObject
         collideTiles,                   // do particles collide against tiles
         additive,                       // should particles use addtive blend
         randomColorLinear = 1,          // should color be randomized linearly or across each component
-        renderOrder = additive ? 1 : 0, // render order for particles (additive is above other stuff by default)
-        trailScale = 0                  // extend particles as a trail along velocity direction
+        renderOrder = additive ? 1e9 : 0// render order for particles (additive is above other stuff by default)
     )
     {
         super(pos, new Vector2, tileIndex, tileSize);
@@ -1174,10 +1157,8 @@ class ParticleEmitter extends EngineObject
         this.collideTiles      = collideTiles;
         this.additive          = additive;
         this.renderOrder       = renderOrder;
-        this.trailScale        = trailScale;
-
-        // prepare to emit particles
-        this.emitTimeBuffer = 0;
+        this.trailScale        =  
+        this.emitTimeBuffer    = 0;
     }
     
     update()
@@ -1233,7 +1214,7 @@ class ParticleEmitter extends EngineObject
         particle.lifeTime        = particleTime;
         particle.sizeStart       = sizeStart;
         particle.sizeEndDelta    = sizeEnd - sizeStart;
-        particle.mirror          = rand(2)|0; // random mirroring
+        //particle.mirror          = rand(2)|0; // random mirroring
         particle.fadeRate        = this.fadeRate;
         particle.damping         = this.damping;
         particle.angleDamping    = this.angleDamping;
@@ -1782,6 +1763,8 @@ class GameObject extends EngineObject
         this.damageTimer = new Timer;
         this.burnDelayTimer = new Timer;
         this.burnTimer = new Timer;
+        this.extinguishTimer = new Timer;
+        this.color = new Color;
         this.additiveColor = new Color(0,0,0,0);
     }
 
@@ -1839,14 +1822,14 @@ class GameObject extends EngineObject
  
     render()
     {
-        drawTile(this.pos, this.size, this.tileIndex, this.tileSize, this.color ? this.color.scale(this.burnColorPercent(),1) : undefined, this.angle, this.mirror, this.additiveColor);
+        drawTile(this.pos, this.size, this.tileIndex, this.tileSize, this.color.scale(this.burnColorPercent(),1), this.angle, this.mirror, this.additiveColor);
     }
     
     burnColorPercent() { return lerp(this.burnTimer.getPercent(), .2, 1); }
 
     burn(instant)
     {
-        if (!this.canBurn)
+        if (!this.canBurn || this.burnTimer.isSet() || this.extinguishTimer.active())
             return;
 
         if (godMode && this.isPlayer)
@@ -1861,12 +1844,9 @@ class GameObject extends EngineObject
 
         if (instant)
         {
-            if (!this.burnTimer.isSet())
-            {
-                this.burnTimer.set(this.burnTime*rand(1.5, 1));
-                this.fireEmitter = makeFire();
-                this.addChild(this.fireEmitter);
-            }
+            this.burnTimer.set(this.burnTime*rand(1.5, 1));
+            this.fireEmitter = makeFire();
+            this.addChild(this.fireEmitter);
         }
         else
             this.burnDelayTimer.isSet() || this.burnDelayTimer.set(this.burnDelay*rand(1.5, 1));
@@ -1878,6 +1858,7 @@ class GameObject extends EngineObject
             return;
 
         // stop burning
+        this.extinguishTimer.set(.1);
         this.burnTimer.unset();
         this.burnDelayTimer.unset();
         if (this.fireEmitter)
@@ -2060,7 +2041,7 @@ class Prop extends GameObject
             makeWater(this.pos);
 
         this.destroy();
-        makeDebris(this.pos, this.color);
+        makeDebris(this.pos, this.color.scale(this.burnColorPercent(),1));
         
         this.explosionSize ? 
             explosion(this.pos, this.explosionSize) :
@@ -2091,7 +2072,7 @@ class Checkpoint extends GameObject
 
         // check if player is near
         for(const player of players)
-            !player.isDead() && this.pos.distanceSquared(player.pos) < 1 && this.setActive();
+            player && !player.isDead() && this.pos.distanceSquared(player.pos) < 1 && this.setActive();
     }
 
     setActive()
@@ -2128,6 +2109,7 @@ class Grenade extends GameObject
         this.elasticity = .3;
         this.friction   = .9;
         this.angleDamping = .96;
+        this.renderOrder = 1e8;
         this.setCollision();
     }
 
@@ -2148,7 +2130,7 @@ class Grenade extends GameObject
             this.beepTimer.set(1);
         }
 
-        alertEnemies(this.pos, this.pos, 2);
+        alertEnemies(this.pos, this.pos);
     }
        
     render()
@@ -2200,13 +2182,12 @@ class Weapon extends EngineObject
 
         const fireRate = 8;
         const bulletSpeed = .5;
-        const bulletRange = 8;
         const spread = .1;
 
         this.mirror = this.parent.mirror;
         this.fireTimeBuffer += timeDelta;
 
-        if (this.recoilTimer.isSet())
+        if (this.recoilTimer.active())
             this.localAngle = lerp(this.recoilTimer.getPercent(), 0, this.localAngle);
 
         if (this.triggerIsDown)
@@ -2221,7 +2202,6 @@ class Weapon extends EngineObject
                 const bullet = new Bullet(this.pos, this.parent);
                 const direction = vec2(this.getMirrorSign(speed), 0);
                 bullet.velocity = direction.rotate(rand(spread,-spread));
-                bullet.range = bulletRange;
 
                 this.shellEmitter.localAngle = -.8*this.getMirrorSign();
                 this.shellEmitter.emitParticle();
@@ -2235,7 +2215,7 @@ class Weapon extends EngineObject
                 playSound(sound_shoot, this.pos);
 
                 // alert enemies
-                this.parent.isPlayer && alertEnemies(this.pos, this.pos, 4);
+                this.parent.isPlayer && alertEnemies(this.pos, this.pos);
             }
         }
         else
@@ -2258,6 +2238,8 @@ class Bullet extends EngineObject
         this.gravityScale = 0;
         this.attacker = attacker;
         this.team = attacker.team;
+        this.renderOrder = 1e9;
+        this.range = 8;
     }
 
     update()
@@ -2327,7 +2309,7 @@ class Bullet extends EngineObject
             return;
 
         const emitter = new ParticleEmitter(
-            this.pos, 0, .1, 100, .2, // pos, emitSize, emitTime, emitRate, emiteCone
+            this.pos, 0, .1, 100, .5, // pos, emitSize, emitTime, emitRate, emiteCone
             undefined, undefined,     // tileIndex, tileSize
             new Color(1,1,0), new Color(1,0,0), // colorStartA, colorStartB
             new Color(1,1,0), new Color(1,0,0), // colorEndA, colorEndB
@@ -2337,6 +2319,7 @@ class Bullet extends EngineObject
         );
         emitter.trailScale = 1;
         emitter.angle = this.lastVelocity.angle() + PI;
+        emitter.elasticity = .3;
 
         //playSound(sound_bulletHit, this.pos);
         this.destroy();
@@ -2358,8 +2341,8 @@ class Bullet extends EngineObject
 'use strict';
 
 const aiEnable = 1;
-const maxCharacterSpeed = .2;
 const debugAI = 0;
+const maxCharacterSpeed = .2;
 
 class Character extends GameObject 
 {
@@ -2391,6 +2374,7 @@ class Character extends GameObject
     
     update() 
     {
+        this.lastPos = this.pos.copy();
         this.gravityScale = 1; // reset default gravity (incase climbing ladder)
 
         if (this.isDead() || !this.inUpdateWindow() && !this.persistent)
@@ -2421,6 +2405,25 @@ class Character extends GameObject
             
         // update ladder
         //    debugPoint(vec2((this.pos.x|0)+.5, this.pos.y));
+
+        if (this.dodgeTimer.active())
+        {
+            // update roll
+            this.angle = this.getMirrorSign(2*PI*this.dodgeTimer.getPercent());
+
+            if (this.groundObject)
+                this.velocity.x += this.getMirrorSign(.1);
+
+            // apply damage to enemies when rolling
+            forEachObject(this.pos, this.size, (o)=>
+            {
+                if (o.isCharacter && o.team != this.team && !o.isDead())
+                    o.damage(1, this);
+            });
+        }
+        else
+            this.angle = 0;
+
         if (this.climbingLadder)
         {
             this.gravityScale = this.climbingWall = this.groundObject = 0;
@@ -2429,8 +2432,11 @@ class Character extends GameObject
             this.velocity = this.velocity.multiply(vec2(.85)).add(vec2(0,.02*moveInput.y));
 
             const delta = (this.pos.x|0)+.5 - this.pos.x;
-            this.velocity.x += .02*delta*abs(moveInput.y);
+            this.velocity.x += .02*delta*abs(moveInput.x ? 0:moveInput.y);
             moveInput.x *= .2;
+
+            // exit ladder if ground is below
+            this.climbingLadder = moveInput.y >= 0 || getTileCollisionData(this.pos.subtract(vec2(0,1))) <= 0;
         }
         else
         {
@@ -2493,32 +2499,11 @@ class Character extends GameObject
 
             if (!this.groundObject && this.getAliveTime() > .2)
                 this.velocity.y += .2;
-
         }
-        if (this.dodgeTimer.active())
-        {
-            // update roll
-            this.angle = this.getMirrorSign(2*PI*this.dodgeTimer.getPercent());
-
-                if (this.groundObject)
-                    this.velocity.x += this.getMirrorSign(.1);
-
-                // apply damage to enemies when rolling
-                forEachObject(this.pos, this.size, (o)=>
-                {
-                    if (o.isCharacter && o.team != this.team && !o.isDead())
-                        o.damage(1, this);
-                });
-        }
-        else
-            this.angle = 0;
 
         // apply movement acceleration and clamp
         this.velocity.x = clamp(this.velocity.x + moveInput.x * .042, maxCharacterSpeed, -maxCharacterSpeed);
 
-        // save old pos for walk cycle speed
-        const oldPosX = this.pos.x;
-        
         // call parent, update physics
         const oldVelocity = this.velocity.copy();
         super.update();
@@ -2538,11 +2523,9 @@ class Character extends GameObject
         else
             this.walkCyclePercent = 0;
 
+        this.weapon.triggerIsDown = this.holdingShoot && !this.dodgeTimer.active();
         if (!this.dodgeTimer.active())
         {
-            if (this.weapon)
-                this.weapon.triggerIsDown = this.holdingShoot;
-
             if (this.grenadeCount > 0 && this.pressingThrow && !this.wasPressingThrow && !this.grendeThrowTimer.active())
             {
                 // throw greande
@@ -2649,22 +2632,30 @@ class Character extends GameObject
         this.weapon && this.weapon.destroy();
 
         // move to back layer
-        this.renderOrder -= 2;
+        this.renderOrder = 1;
     }
     
     collideWithTile(data, pos)
     {
         if (!data)
-            return 0;
+            return;
 
         if (data == tileType_ladder)
         {
-            //debugPoint(pos, '#0ff')
-            //debugPoint(vec2(pos.x,this.pos.y - this.size.y*.5), '#f0f')
-            if (getTileCollisionData(pos.add(vec2(0,1))) == tileType_ladder)
-                return 0;
+            if (pos.y + 1 > this.lastPos.y - this.size.y*.5)
+                return;
 
-            return !this.climbingLadder && pos.y < this.pos.y - this.size.y*.5;
+            if (getTileCollisionData(pos.add(vec2(0,1))) // above
+                && !(getTileCollisionData(pos.add(vec2(1,0))) // left
+                    && getTileCollisionData(pos.add(vec2(1,0)))) // right
+            )
+                return; // dont collide if something above it and nothing to left or right
+
+            //debugPoint(this.pos.add(vec2(0,-this.size.y*.5)), '#f00');
+            //debugPoint(pos.add(vec2(0,1)), '#0ff');
+
+            // allow standing on top of ladders
+            return !this.climbingLadder;
         }
 
         // break blocks above
@@ -2674,7 +2665,7 @@ class Character extends GameObject
             if (destroyTile(pos))
             {
                 this.velocity.y = 0;
-                return 0;
+                return;
             }
         }
 
@@ -2717,8 +2708,9 @@ const type_elite  = 3;
 const type_grenade= 4;
 const type_count  = 5;
 
-function alertEnemies(pos, playerPos, radius=2)
+function alertEnemies(pos, playerPos)
 {
+    const radius = 4;
     forEachObject(pos, radius, (o)=>{o.team == team_enemy && o.alert && o.alert(playerPos)});
     debugAI && debugCircle(pos, radius, '#0ff6');
 }
@@ -2740,16 +2732,15 @@ class Enemy extends Character
         this.type = randSeeded()**3*min(level+1,type_count)|0;
 
         let health = 1 + this.type;
+        this.eyeColor = new Color(1,.5,0);
         if (this.type == type_weak)
         {
             this.color = new Color(0,1,0);
-            this.eyeColor = new Color(1,.5,0);
             this.size = this.size.scale(this.sizeScale = .9);
         }
         else if (this.type == type_normal)
         {
             this.color = new Color(0,.4,1);
-            this.eyeColor = new Color(1,.5,0);
         }
         else if (this.type == type_strong)
         {
@@ -2782,10 +2773,10 @@ class Enemy extends Character
 
         this.health = this.healthMax = health;
         this.color = this.color.mutate();
+        this.mirror = rand() < .5;
 
         new Weapon(this.pos, this);
          --levelEnemyCount;
-
 
         this.sightCheckFrame = rand(9)|0;
     }
@@ -2814,7 +2805,7 @@ class Enemy extends Character
             for(const player of players)
             {
                 // check range
-                if (!player.isDead())
+                if (player && !player.isDead())
                 if (sawRecently || this.getMirrorSign() == sign(player.pos.x - this.pos.x))
                 if (sawRecently || abs(player.pos.x - this.pos.x) > abs(player.pos.y - this.pos.y) ) // 45 degree slope
                 if (this.pos.distanceSquared(player.pos) < visionRangeSquared)
@@ -2858,8 +2849,8 @@ class Enemy extends Character
             this.moveInput.y = 0;
 
             // random dodge
-            if (this.type >= type_elite)
-                this.pressedDodge = rand() < .02;
+            if (this.type == type_elite)
+                this.pressedDodge = 1;
             else if (this.groundObject)
                 this.pressedDodge = rand() < .005;
         }
@@ -2898,7 +2889,7 @@ class Enemy extends Character
                         this.facePlayerTimer.set(rand(2,.5));
 
                     // random jump
-                    if (rand()<(this.type != type_elite ? .0005 : .005))
+                    if (rand()<(this.type < type_strong ? .0005 : .005))
                     {
                         this.pressedJumpTimer.set(.1);
                         this.holdJumpTimer.set(rand(.2));
@@ -2977,7 +2968,7 @@ class Enemy extends Character
         super.update();
 
         // override default mirror
-        if (this.facePlayerTimer.active() && !this.dodgeTimer.active())
+        if (this.facePlayerTimer.active() && !this.dodgeTimer.active() && !this.reactionTimer.active())
             this.mirror = this.sawPlayerPos.x < this.pos.x;
     }
 
@@ -3000,11 +2991,13 @@ class Enemy extends Character
 
     damage(damage, damagingObject)
     {
-        if (!this.isDead())
-            this.alert(damagingObject ? damagingObject.pos : this.pos, 1);
-        
-        this.reactionTimer.set(rand(1,.5));
         super.damage(damage, damagingObject);
+        if (!this.isDead())
+        {
+            this.alert(damagingObject ? damagingObject.pos.subtract(damagingObject.velocity.normalize()) : this.pos, 1);
+            this.reactionTimer.set(rand(1,.5));
+            this.shootTimer.unset();
+        }
     }
 
     kill(damagingObject)
@@ -3013,22 +3006,7 @@ class Enemy extends Character
             return 0;
 
         super.kill(damagingObject);
-        if (damagingObject && damagingObject.team == team_player)
-            ++totalKills;
-
-        // check if any enemies left
-        let enemiesCount = 0;
-        for (const o of engineCollideObjects)
-        {
-            if (o.isCharacter && o.team  == team_enemy && !o.isDead())
-                ++enemiesCount;
-        }
-
-        if (!enemiesCount)
-        {
-            playerLives += 3;
-            levelEndTimer.set();
-        }
+        levelWarmup || ++totalKills;
     }
 }
 
@@ -3041,6 +3019,7 @@ class Player extends Character
         super(pos);
 
         this.grenadeCount = 3;
+        this.burnTime = 2;
         
         this.eyeColor = (new Color).setHSLA(-playerIndex*.6,1,.5);
         //this.color = this.color.mutate(.2);
@@ -3080,7 +3059,7 @@ class Player extends Character
                     {
                         this.persistent = 0;
                         new Player(checkpointPos, this.playerIndex);
-                        playSound(sound_jump, checkpointPos);
+                        playSound(sound_jump, cameraPos);
                     }
                 }
                 else
@@ -3090,8 +3069,11 @@ class Player extends Character
                     let minDeadTime = 1e3;
                     for(const player of players)
                     {
-                        minDeadTime = min(minDeadTime, player.isDead() ? player.deadTimer.get() : 1e3);
-                        hasLivingPlayers |= (!player.isDead() && player.getAliveTime() > .1);
+                        if (player)
+                        {
+                            minDeadTime = min(minDeadTime, player.isDead() ? player.deadTimer.get() : 1e3);
+                            hasLivingPlayers |= (!player.isDead() && player.getAliveTime() > .1);
+                        }
                     }
 
                     if (minDeadTime > 2)
@@ -3100,15 +3082,15 @@ class Player extends Character
                         {
                             // respawn all
                             this.persistent = 0;
-                            new Player(checkpointPos.subtract(vec2(this.playerIndex*.4,0)), this.playerIndex);
-                            playSound(sound_jump, checkpointPos);
+                            new Player(checkpointPos.add(vec2(1-this.playerIndex/2,0)), this.playerIndex);
+                            this.playerIndex || playSound(sound_jump, cameraPos);
                         }
                         else if (checkpointTimer.active())
                         {
                             // respawn if checkpoint active
                             this.persistent = 0;
                             const player = new Player(checkpointPos, this.playerIndex);
-                            playSound(sound_jump, checkpointPos);
+                            playSound(sound_jump, cameraPos);
                         }
                     }
                 }
@@ -3135,7 +3117,7 @@ class Player extends Character
         this.holdingJump = (!this.playerIndex && keyIsDown(38)) || gamepadIsDown(0, this.playerIndex);
         if (!this.holdingJump)
             this.pressedJumpTimer.unset();
-        else if (!this.wasHoldingJump)
+        else if (!this.wasHoldingJump || this.climbingWall)
             this.pressedJumpTimer.set(.3);
         this.wasHoldingJump = this.holdingJump;
 
@@ -3143,10 +3125,6 @@ class Player extends Character
         this.holdingShoot  = !this.playerIndex && (mouseIsDown(0) || keyIsDown(90)) || gamepadIsDown(2, this.playerIndex);
         this.pressingThrow = !this.playerIndex && (mouseIsDown(2) || keyIsDown(67)) || gamepadIsDown(1, this.playerIndex);
         this.pressedDodge  = !this.playerIndex && (mouseIsDown(1) || keyIsDown(88)) || gamepadIsDown(3, this.playerIndex);
-
-        // jump when spawn in
-        if (players.length > 1 && this.getAliveTime() < .1)
-             this.pressedDodge = 1;
 
         super.update();
 
@@ -3172,26 +3150,17 @@ class Player extends Character
                 if (tileCollisionRaycast(this.pos,vec2(this.pos.x,0)))
                 {
                     for(const player of players)
-                        if (player != this && !player.isDead())
+                        if (player && player != this && !player.isDead())
                         {
                             this.pos = player.pos.copy();
                             this.velocity = vec2();
+                            playSound(sound_jump, this.pos);
                         }
                 }
                 else
                     this.kill();
             }
         }
-    }
-
-    kill(damagingObject) 
-    {
-        if (this.isPlayer && !playerLives)
-        {
-            if (OS13k && totalKills > OS13k.GetTrophy('Space Huggers','Kills'))
-                OS13k.Trophy('☠️','Space Huggers', 'Kills', totalKills)
-        }
-        super.kill(damagingObject);
     }
 }
 /*
@@ -3202,6 +3171,7 @@ class Player extends Character
 
 'use strict';
 
+const precipitationEnable = 1;
 const debugFire = 0;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -3254,7 +3224,7 @@ function makeFire(pos = vec2())
         new Color(1,0,0), new Color(1,.5,.1), // colorEndA, colorEndB
         .5, .5, .1, .01, .1, // particleTime, sizeStart, sizeEnd, particleSpeed, particleAngleSpeed
         .95, .1, -.05, PI, .5,  // damping, angleDamping, gravityScale, particleCone, fadeRate, 
-        .5, 0, 1, 0, 1e9);             // randomness, collide, additive, randomColorLinear, renderOrder
+        .5, 0, 1);             // randomness, collide, additive, randomColorLinear, renderOrder
 }
 
 function makeDebris(pos, color = new Color, amount = 100)
@@ -3290,14 +3260,15 @@ function makeWater(pos, amount=400)
     // droplets
     const emitter = new ParticleEmitter(
         pos, 1, .1, amount, PI, // pos, emitSize, emitTime, emitRate, emiteCone
-        undefined, undefined,   // tileIndex, tileSize
-        new Color(1,1,1), new Color(.3,.6,1,.5), // colorStartA, colorStartB
-        new Color(1,1,1), new Color(.3,.6,1,.5), // colorEndA, colorEndB
-        1, .1, .1, .1, .1, // particleTime, sizeStart, sizeEnd, particleSpeed, particleAngleSpeed
-        1, .95, .7, PI, .1,  // damping, angleDamping, gravityScale, particleCone, fadeRate, 
+        0, undefined,   // tileIndex, tileSize
+        new Color(.8,1,1,.6), new Color(.5,.5,1,.2), // colorStartA, colorStartB
+        new Color(.8,1,1,.6), new Color(.5,.5,1,.2), // colorEndA, colorEndB
+        2, .1, .1, .2, 0,  // particleTime, sizeStart, sizeEnd, particleSpeed, particleAngleSpeed
+        .99, 1, .5, PI, .2,  // damping, angleDamping, gravityScale, particleCone, fadeRate, 
         .5, 1              // randomness, collide, additive, randomColorLinear, renderOrder
     );
-    emitter.trailScale = 3;
+    emitter.elasticity = .2;
+    emitter.trailScale = 2;
 
     // put out fires
     const radius = 3;
@@ -3324,7 +3295,8 @@ function makeWater(pos, amount=400)
 
 function explosion(pos, radius=2)
 {
-    if (radius <=0 || levelWarmup)
+    ASSERT(radius > 0);
+    if (levelWarmup)
         return;
 
     const damage = radius*2;
@@ -3476,7 +3448,6 @@ function decorateTile(pos)
             continue;
 
         // hacky code to make pixel perfect outlines
-        const directionVector = vec2().setAngle(i*PI/2, 8).int();
         let size = tileData == tileType_dirt ? vec2( rand(16,8), 2) : vec2( 16, 1);
         i&1 && (size = size.flip());
 
@@ -3511,8 +3482,7 @@ function destroyTile(pos, makeSound = 1, cleanNeighbors = 1, maxCascadeChance = 
     const layerData = tileLayer.getData(pos);
     if (layerData)
     {
-        const color = layerData.color;
-        makeDebris(centerPos, color.mutate());
+        makeDebris(centerPos, layerData.color.mutate());
         makeSound && playSound(sound_destroyTile, centerPos);
 
         setTileCollisionData(pos, tileType_empty);
@@ -3548,7 +3518,7 @@ function destroyTile(pos, makeSound = 1, cleanNeighbors = 1, maxCascadeChance = 
 function drawStars()
 {
     randSeed = levelSeed;
-    for(let i = lowGraphicsSettings ? 300 : 1e3; i--;)
+    for(let i = lowGraphicsSettings ? 400 : 1e3; i--;)
     {
         let size = randSeeded(6, 1);
         let speed = randSeeded() < .9 ? randSeeded(5) : randSeeded(99,9);
@@ -3601,7 +3571,7 @@ function updateSky()
         skyParticles.angle = clamp(skyParticles.angle + rand(.3,-.3),PI+.5,PI-.5);
     }
    
-    if (!skySoundTimer.active())
+    if (!levelWarmup && !skySoundTimer.active())
     {
         skySoundTimer.set(rand(2,1));
         playSound(skyRain ? sound_rain : sound_wind, skyParticlesPos, 20, skyParticles.emitRate/1e3);
@@ -3624,10 +3594,9 @@ function generateParallaxLayers()
         let groundLevel = startGroundLevel, groundSlope = rand(1,-1);
         tileParallaxLayer.renderOrder = -3e3+i;
         tileParallaxLayer.canvas.width = parallaxSize.x;
-        tileParallaxLayer.canvas.height = parallaxSize.y;
 
         const layerColor = levelColor.mutate(.2).lerp(levelSkyColor,.95-i*.15);
-        const gradient = tileParallaxLayer.context.fillStyle = tileParallaxLayer.context.createLinearGradient(0,0,0,tileParallaxLayer.canvas.height);
+        const gradient = tileParallaxLayer.context.fillStyle = tileParallaxLayer.context.createLinearGradient(0,0,0,tileParallaxLayer.canvas.height = parallaxSize.y);
         gradient.addColorStop(0,layerColor.rgba());
         gradient.addColorStop(1,layerColor.subtract(new Color(1,1,1,0)).mutate(.1).clamp().rgba());
         //tileParallaxLayer.context.fillStyle = layerColor.rgba();
@@ -3635,10 +3604,8 @@ function generateParallaxLayers()
         for(let x=parallaxSize.x;x--;)
         {
             // pull slope towards start ground level
-            groundLevel += groundSlope += (startGroundLevel - groundLevel)/2e3;
-            if (rand() < .05)
-                groundSlope = rand(1,-1);
-            tileParallaxLayer.context.fillRect(x,groundLevel,1,parallaxSize.y)
+            tileParallaxLayer.context.fillRect(x,groundLevel += groundSlope = rand() < .05 ? rand(1,-1) :
+                groundSlope + (startGroundLevel - groundLevel)/2e3,1,parallaxSize.y)
         }
     }
 }
@@ -3701,26 +3668,22 @@ const resetGame=()=>
 {
     levelEndTimer.unset();
     gameTimer.set(totalKills = level = 0);
-    nextLevel(playerLives = 10);
+    nextLevel(playerLives = 6);
 }
 
 function buildTerrain(size)
 {
-    let startGroundLevel = rand(40, 60);
-    let groundLevel = startGroundLevel;
-
-    let groundSlope = rand(.5,-.5);
-    let canayonWidth = 0;
-
     tileBackground = [];
     initTileCollision(size);
-    let backgroundDelta = 0, backgroundDeltaSlope = 0;
+    let startGroundLevel = rand(40, 60);
+    let groundLevel = startGroundLevel;
+    let groundSlope = rand(.5,-.5);
+    let canayonWidth = 0, backgroundDelta = 0, backgroundDeltaSlope = 0;
     for(let x=0; x < size.x; x++)
     {
         // pull slope towards start ground level
-        groundLevel += groundSlope += (startGroundLevel - groundLevel)/1e3;
-        if (rand() < .05)
-            groundSlope = rand(.5,-.5);
+        groundLevel += groundSlope = rand() < .05 ? rand(.5,-.5) :
+            groundSlope + (startGroundLevel - groundLevel)/1e3;
         
         // small jump
         if (rand() < .04)
@@ -3952,6 +3915,10 @@ function buildBase()
 function generateLevel()
 {
     levelEndTimer.unset();
+
+    // remove all objects that are not persistnt or are descendants of something persitant
+    for(const o of engineObjects)
+        o.destroy();
     engineObjects = [];
     engineCollideObjects = [];
 
@@ -3996,16 +3963,6 @@ function generateLevel()
             new Checkpoint(pos);
         }
     }
-
-    // destroy any objects that are stuck in collision
-    forEachObject(0, 0, (o)=>
-    {
-        if (o.isGameObject)
-        {
-            const checkBackground = o.isCheckpoint;
-            (checkBackground ? getTileBackgroundData(o.pos) : getTileCollisionData(o.pos)) > 0 && o.destroy();
-        }
-    });
 }
 
 const groundTileStart = 8;
@@ -4054,8 +4011,7 @@ function makeTileLayers(level_)
             else if (tileType == tileType_ladder)
             {
                 tileIndex = groundTileStart+7;
-                direction = 0;
-                mirror = 0;
+                direction = mirror = 0;
             }
             tileLayer.setData(pos, new TileLayerData(tileIndex, direction, mirror, color));
         }
@@ -4121,10 +4077,9 @@ function applyArtToLevel()
     if (precipitationEnable && !lowGraphicsSettings)
     {
         // create rain or snow particles
-        if (rand() < .5)
+        if (skyRain = rand() < .5)
         {
             // rain
-            skyRain = 1;
             skyParticles = new ParticleEmitter(
                 vec2(), 3, 0, 0, .3, // pos, emitSize, emitTime, emitRate, emiteCone
                 0, undefined,   // tileIndex, tileSize
@@ -4140,7 +4095,6 @@ function applyArtToLevel()
         else
         {
             // snow
-            skyRain = 0;
             skyParticles = new ParticleEmitter(
                 vec2(), 3, 0, 0, .5, // pos, emitSize, emitTime, emitRate, emiteCone
                 0, undefined,   // tileIndex, tileSize
@@ -4158,17 +4112,9 @@ function applyArtToLevel()
 
 function nextLevel()
 {
+    playerLives += 4; // three for beating a level plus 1 for respawning
     levelEnemyCount = 15 + min(level * 30, 300);
     ++level;
-
-    const planet = level - 1;
-    if (OS13k && planet && planet > OS13k.GetTrophy('Space Huggers','Planet'))
-    {
-        const icons = ['🌎','🌑','🌗','🌕','🪐','☄️','🌠']
-        OS13k.Trophy(icons[min(planet-1,icons.length-1)],'Space Huggers', 'Planet', planet)
-    }
-
-    gravity = -.01;
     levelSeed = randSeed = rand(1e9)|0;
     levelSize = vec2(min(level*99,400),200);
     levelColor = randColor(new Color(.2,.2,.2), new Color(.8,.8,.8));
@@ -4183,7 +4129,7 @@ function nextLevel()
     levelWarmup = 1;
 
     // objects that effect the level must be added here
-    new Checkpoint(checkpointPos).setActive();
+    const firstCheckpoint = new Checkpoint(checkpointPos).setActive();
 
     applyArtToLevel();
 
@@ -4194,6 +4140,16 @@ function nextLevel()
         engineUpdateObjects();
     }
     levelWarmup = 0;
+
+    // destroy any objects that are stuck in collision
+    forEachObject(0, 0, (o)=>
+    {
+        if (o.isGameObject && o != firstCheckpoint)
+        {
+            const checkBackground = o.isCheckpoint;
+            (checkBackground ? getTileBackgroundData(o.pos) > 0 : tileCollisionTest(o.pos,o.size))  && o.destroy();
+        }
+    });
 
     // hack, subtract off warm up time from main game timer
     //gameTimer.time += warmUpTime;
@@ -4216,7 +4172,6 @@ const clampCamera = !debug;
 const lowGraphicsSettings = glOverlay = !window['chrome']; // only chromium uses high settings
 const startCameraScale = 4*16;
 const defaultCameraScale = 4*16;
-const precipitationEnable = 1;
 const maxPlayers = 4;
 
 const team_none = 0;
@@ -4299,17 +4254,16 @@ engineInit(
             randomizeLevelParams();
             applyArtToLevel();
         }*/
-
-        if (keyWasPressed(82))
-            resetGame();
+        if (keyWasPressed(78))
+            nextLevel();
     }
 
     // restart if no lives left
     let minDeadTime = 1e3;
     for(const player of players)
-        minDeadTime = min(minDeadTime, player.isDead() ? player.deadTimer.get() : 0);
+        minDeadTime = min(minDeadTime, player && player.isDead() ? player.deadTimer.get() : 0);
 
-    if (minDeadTime > 9)
+    if (minDeadTime > 3 && (keyWasPressed(90) || keyWasPressed(32) || gamepadWasPressed(0)) || keyWasPressed(82))
         resetGame();
 
     if (levelEndTimer.get() > 3)
@@ -4319,55 +4273,52 @@ engineInit(
 ///////////////////////////////////////////////////////////////////////////////
 ()=> // appUpdatePost
 {
-    if (!debug || !gifTimer.isSet())
+    if (players.length == 1)
     {
-        if (players.length == 1)
-        {
-            const player = players[0];
-            if (!player.isDead())
-                cameraPos = cameraPos.lerp(player.pos, clamp(player.getAliveTime()/2));
-        }
-        else
-        {
-            // camera follows average pos of living players
-            let posTotal = vec2();
-            let playerCount = 0;
-            let cameraOffset = 1;
-            for(const player of players)
-            {
-                if (!player.isDead())
-                {
-                    ++playerCount;
-                    posTotal = posTotal.add(player.pos.add(vec2(0,cameraOffset)));
-                }
-            }
-
-            if (playerCount)
-                cameraPos = cameraPos.lerp(posTotal.scale(1/playerCount), .2);
-        }
-
-        // spawn players if they don't exist
-        for(let i = maxPlayers;i--;)
-        {
-            if (!players[i] && (gamepadWasPressed(0, i)||gamepadWasPressed(1, i)))
-            {
-                ++playerLives;
-                new Player(checkpointPos, i);
-            }
-        }
-        
-        // clamp to bottom and sides of level
-        if (clampCamera)
-        {
-            const w = maxWidth/2/cameraScale+1;
-            const h = maxHeight/2/cameraScale+2;
-            cameraPos.y = max(cameraPos.y, h);
-            if (w*2 < tileCollisionSize.x)
-                cameraPos.x = clamp(cameraPos.x, tileCollisionSize.x - w, w);
-        }
-
-        updateParallaxLayers();
+        const player = players[0];
+        if (!player.isDead())
+            cameraPos = cameraPos.lerp(player.pos, clamp(player.getAliveTime()/2));
     }
+    else
+    {
+        // camera follows average pos of living players
+        let posTotal = vec2();
+        let playerCount = 0;
+        let cameraOffset = 1;
+        for(const player of players)
+        {
+            if (player && !player.isDead())
+            {
+                ++playerCount;
+                posTotal = posTotal.add(player.pos.add(vec2(0,cameraOffset)));
+            }
+        }
+
+        if (playerCount)
+            cameraPos = cameraPos.lerp(posTotal.scale(1/playerCount), .2);
+    }
+
+    // spawn players if they don't exist
+    for(let i = maxPlayers;i--;)
+    {
+        if (!players[i] && (gamepadWasPressed(0, i)||gamepadWasPressed(1, i)))
+        {
+            ++playerLives;
+            new Player(checkpointPos, i);
+        }
+    }
+    
+    // clamp to bottom and sides of level
+    if (clampCamera)
+    {
+        const w = mainCanvas.width/2/cameraScale+1;
+        const h = mainCanvas.height/2/cameraScale+2;
+        cameraPos.y = max(cameraPos.y, h);
+        if (w*2 < tileCollisionSize.x)
+            cameraPos.x = clamp(cameraPos.x, tileCollisionSize.x - w, w);
+    }
+
+    updateParallaxLayers();
 
     updateSky();
 },
@@ -4405,27 +4356,29 @@ engineInit(
     {
         //mainContext.fillStyle = (new Color).setHSLA(time/3,1,.5,p).rgba();
         mainContext.font = '1.5in impact';
-        mainContext.fillText('SPACE HUGGERS', mainCanvas.width/2, 140);
+        //mainContext.fillText('SPACE HUGGERS', mainCanvas.width/2, 140);
     }
 
     mainContext.font = '.5in impact';
-    p > 0 && mainContext.fillText('A JS13K Game by Frank Force',mainCanvas.width/2, 210);
+    //p > 0 && mainContext.fillText('A JS13K Game by Frank Force',mainCanvas.width/2, 210);
 
     // check if any enemies left
     let enemiesCount = 0;
     for (const o of engineCollideObjects)
     {
-        if (o.isCharacter && o.team  == team_enemy && !o.isDead())
+        if (o.isCharacter && o.team  == team_enemy)
         {
             ++enemiesCount;
-
             const pos = vec2(mainCanvas.width/2 + (o.pos.x - cameraPos.x)*30,mainCanvas.height-20);
             drawRectScreenSpace(pos, o.size.scale(20), o.color.scale(1,.6));
         }
     }
 
+    if (!enemiesCount && !levelEndTimer.isSet())
+        levelEndTimer.set();
+
     mainContext.fillStyle = new Color(0,0,0).rgba();
-    mainContext.fillText('Level ' + level + '      Lives ' + playerLives + '      Enemies ' + enemiesCount, mainCanvas.width/2, mainCanvas.height-40);
+   // mainContext.fillText('Level ' + level + '      Lives ' + playerLives + '      Enemies ' + enemiesCount, mainCanvas.width/2, mainCanvas.height-40);
 
     // fade in level transition
     const fade = levelEndTimer.isSet() ? percent(levelEndTimer.get(), 3, 1) : percent(levelTimer.get(), .5, 2);
