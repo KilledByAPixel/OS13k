@@ -44,7 +44,7 @@ const programStubs =
 ]],
 ['🕹️',,,,shortcut,'Games',,
 [
-    ['🚀','games/spaceHuggers.html',1280,720,defaultFlags|shortcut,,"A procedural run and gun roguelike for JS13k!\n\nWASD = Move\nC or Left Click = Shoot\nX or Middle Click = Roll\nC or Right Click = Grenade\n"],
+    ['🚀','games/spaceHuggers.html',1280,720,defaultFlags|shortcut,,"A procedural run and gun roguelike for JS13k!\n\nWASD = Move\nZ or Left Click = Shoot\nX or Middle Click = Roll\nC or Right Click = Grenade\nR = Restart\n\nAlso supports Xbox or SNES style gamepads\nConnect up to 4 controllers for 4 player co-op"],
     ['💖','games/bounceBack.html',1280,720,defaultFlags|shortcut,,"When life gets you down, it's never too late to... BOUNCE BACK!\n\nWASD = Move\nMouse = Aim\nClick = Throw\nShift = Dash\n\nBy Frank Force"],
     ['🐍','games/sheddingSnake.dweet.js',800,600,defaultFlags|shortcut,,"Eat apples to grow and don't hit your skin!\n\nBy Niklas Berg and Frank Force"],
     ['🙉','games/dontFall.dweet.js',,,defaultFlags|shortcut,,'Build energy to bounce higher.\n\nLeft/Right = Move\nDown = Bounce\n\nBy Tomxor'],
