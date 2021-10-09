@@ -4110,6 +4110,7 @@ function applyArtToLevel()
         }
         skyParticles.emitRate = precipitationEnable && rand()<.5 ? rand(500) : 0;
         skyParticles.angle = PI+rand(.5,-.5);
+        skyParticles.renderOrder = 1e9;
     }
 }
 
@@ -4359,11 +4360,11 @@ engineInit(
     {
         //mainContext.fillStyle = (new Color).setHSLA(time/3,1,.5,p).rgba();
         mainContext.font = '1.5in impact';
-        //mainContext.fillText('SPACE HUGGERS', mainCanvas.width/2, 140);
+        mainContext.fillText('SPACE HUGGERS', mainCanvas.width/2, 140);
     }
 
     mainContext.font = '.5in impact';
-    //p > 0 && mainContext.fillText('A JS13K Game by Frank Force',mainCanvas.width/2, 210);
+    p > 0 && mainContext.fillText('A JS13K Game by Frank Force',mainCanvas.width/2, 210);
 
     // check if any enemies left
     let enemiesCount = 0;
@@ -4381,7 +4382,7 @@ engineInit(
         levelEndTimer.set();
 
     mainContext.fillStyle = new Color(0,0,0).rgba();
-   // mainContext.fillText('Level ' + level + '      Lives ' + playerLives + '      Enemies ' + enemiesCount, mainCanvas.width/2, mainCanvas.height-40);
+    mainContext.fillText('Level ' + level + '      Lives ' + playerLives + '      Enemies ' + enemiesCount, mainCanvas.width/2, mainCanvas.height-40);
 
     // fade in level transition
     const fade = levelEndTimer.isSet() ? percent(levelEndTimer.get(), 3, 1) : percent(levelTimer.get(), .5, 2);

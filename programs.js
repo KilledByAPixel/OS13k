@@ -31,7 +31,7 @@ const programStubs =
 ]],
 ['🎶',,,,shortcut,'Music',,
 [
-    ['🎵','music/musicPlayer.html',400,330,sticky,,'OS13k can play music using the tiny ZzFXM format.\nJS13k games can add their music to your library.\nPlay games to collect more music.'],
+    ['🎵','music/musicPlayer.html',500,330,sticky,,'OS13k can play music using the tiny ZzFXM format.\nJS13k games can add their music to your library.\nPlay games to collect more music.'],
     ['👁️','music/visualizer.dweet.js',,,awake|full|resize|code],
     ['🎹','music/piano.html',520,510,reload|shortcut],
     ['🥁','music/sequencer.html',800,,,,'Keyboard = Note\nUp/Down = Volume\nSpace = Stop\nEnter = End'],
@@ -95,12 +95,12 @@ const programStubs =
 ['📼',,,,shortcut,'Videos',,
 [
     ['🐈','https://www.youtube.com/embed/dpuqKAWISN0',,,,'Alien Cat vs Super Dog'],
+    ['🚂','https://www.youtube.com/embed/chuBzGjv7Ms',,,,'LittleJS Engine'],
     ['🛣️','https://www.youtube.com/embed/txcH9sB9UTM',,,,'Bogus Roads Trailer'],
-    ['<span style=color:#00a>π√','https://www.youtube.com/embed/i4Z8TMFQGJ0',,,,'π√ (Piroot) Trailer'],
+    ['<span style=color:#00a><b>π√','https://www.youtube.com/embed/i4Z8TMFQGJ0',,,,'π√ (Piroot) Trailer'],
     ['💫','https://www.youtube.com/embed/d69sIsu3kGQ',,,,'Dual Axis Illusion'],
     ['🔲','https://www.youtube.com/embed/nbZyXP7SCEg',,,,'Squaresville Sifteo Cubes'],
     ['🌳','https://www.youtube.com/embed/GxgwprJVs9c',,,,'Go Bonsai'],
-    ['<span style=color:#0f0>F','https://www.youtube.com/embed/lA8xqr14QIY',,,,'Frank Engine Demo'],
     ['🌆','https://www.youtube.com/embed/vnx8kI4EcVc',,,,'Dwitter Coding Demo'],
 ]]
 ];
