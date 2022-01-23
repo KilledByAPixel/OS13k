@@ -133,7 +133,8 @@ class OS13kProgram extends HTMLElement
         else if (this.flags & closeAll)
         {
             // close all windows if no src or folder and play sound
-            [...desktop.children].map(child=> child.Close && child.Close());
+            [...desktop.children].map(child=> child.Close && child.Close(1));
+            SystemSound(soundClose);
 
             // reset window open position
             windowOpenX = startOpenOffset;
@@ -167,12 +168,17 @@ class OS13kProgram extends HTMLElement
     
     Load() 
     {
-        // load saved program info from local storage
-        let i = programInfos.findIndex(e=> e.id == this.id);
-        this.info = i < 0 ? {} : programInfos[i];
+        if (this.folder)
+            this.info = {};
+        else
+        {
+            // load saved program info from local storage
+            let i = programInfos.findIndex(e=> e.id == this.id);
+            this.info = i < 0 ? {} : programInfos[i];
 
-        // check for user code
-        this.userProgram = this.info.code != undefined;
+            // check for user code
+            this.userProgram = this.info.code != undefined;
+        }
     }
 
     // save program info and reset settings when closed if non sticky

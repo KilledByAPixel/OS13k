@@ -332,6 +332,9 @@ class OS13kWindow extends HTMLElement
 
             // release grab window since this one will be in front
             grabWindow && onmouseup();
+
+            // set help display
+            this.codeText.value = program.help;
         }
         
         // remove old iframe if it exists
@@ -562,11 +565,11 @@ class OS13kWindow extends HTMLElement
             this.CreateFrame(this.iframe.style.visibility = '');
     }
     
-    Close()
+    Close(silent)
     {
         // remove start program if closed and play sound
         this.program.id == startProgramId && (startProgramId = '');
-        SystemSound(soundClose);
+        silent || SystemSound(soundClose);
             
         // save info and set closed
         this.program.Save(0);

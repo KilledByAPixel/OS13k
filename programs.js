@@ -57,7 +57,7 @@ const programStubs =
     ['🌲','games/hueJumper.html',,,defaultFlags|shortcut,,'Reach checkpoints to get more time.\nThe road ends at 1000.\n\nMouse = Turn\nClick = Brake\nDouble Click = Jump\n\nBy Frank Force'],
     ['4x4','games/4x4.html',800,440,,'Four Fours','Use 4 4s and math operators to form each number.\nHow many can you find?\n\nBy Frank Force'],
     ['🛣️','games/bogusRoadsMini.dweet.js'],
-    ['🏃','games/marathon.dweet.js',,,defaultFlags|shortcut],
+    ['🏃','games/marathon.dweet.js',,,defaultFlags|code|shortcut],
     ['🦋','games/batafuraiko.html',,,defaultFlags|shortcut,,'Use mouse to fly.\nYou have 1 life to survive 9 waves.\nReload to start over.\n\nBy Frank Force'],
     ['⛱️','games/sandbox.dweet.js'],
 ]],

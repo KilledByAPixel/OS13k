@@ -6,7 +6,10 @@
 onmousedown = e=>
 {
     if (e.button == 1)
+    {
         e.preventDefault(); // prevent middle mouse zoom
+        return false;
+    }
 
     // get orignal target
     const originalTarget = e.composedPath()[0];

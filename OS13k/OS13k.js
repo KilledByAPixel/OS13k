@@ -306,7 +306,6 @@ class _OS13k
         x.attachShader(shaderProgram, vertexShader);
         x.attachShader(shaderProgram, pixelShader);
         x.linkProgram(shaderProgram);
-        x.useProgram(shaderProgram);
         return shaderProgram;
     }
     
@@ -326,6 +325,7 @@ class _OS13k
             return;
 
         // set uniforms
+        x.useProgram(shaderProgram);
         x.uniform3f(x.getUniformLocation(shaderProgram, 'iResolution'), canvas.width, canvas.height, 1);
         x.uniform1f(x.getUniformLocation(shaderProgram, 'iTime'), time);
         x.uniform1f(x.getUniformLocation(shaderProgram, 'iFrame'), frame);

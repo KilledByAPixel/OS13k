@@ -1,3 +1,4 @@
+// by KilledByAPixel based on https://www.dwitter.net/d/21963
 
 I=OS13k.Input(window)
 x.fillRect(0,0,c.width=300,300)
@@ -9,4 +10,3 @@ Y>H?Y+(V=0)>H+3?(P&&OS13k.PlaySeed(100,2),P=0,OS13k.Trophy('🏃','Marathon','Hi
 for(j=4,l=(r,a)=>x.lineTo(X+=r*C(a),y+=r*S(a));j--;x.strokeStyle=`hsl(${j*30+t*500},99%,80%)`,x.beginPath(x.stroke()))i=j%4,q=i<2,y=Y-30,n=Q,l(X=27,7),l(q?3:7,2),l(r=4-q,a=C(n+=3*i)-5+q),l(r,a-(2*q-1)*(C(n-2)+1))
 j>99&&OS13k.Trophy('🎖️','Marathon','100!')
 if((F/47|0)-(T/47|0))OS13k.PlaySeed(3,0)
-// by KilledByAPixel based on https://www.dwitter.net/d/21963
