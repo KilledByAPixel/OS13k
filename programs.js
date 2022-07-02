@@ -23,6 +23,7 @@ const programStubs =
 ['🛠️',,,,shortcut,'Apps',,
 [
     ['🌐','apps/webBrowser.html',,,defaultFlags|shortcut,,'Tiny web browser with history controls.\nMany websites will prevent opening in a frame like this.'],
+    ['🔎','https://dweetview.3d2k.com',,,defaultFlags|shortcut],
     ['⌛','apps/timer.html',400,139,reload|shortcut],
     ['👾','apps/spriteGenerator.html'],
     ['📈','apps/graphingCalculator.html',,,,,'Enter a math equation or function of x to see the graph.\n\nMouse = Show Values\nWheel = Zoom'],
@@ -63,7 +64,6 @@ const programStubs =
 ]],
 ['<b style=color:#000;background:#fff>&nbspIII&nbsp',,,,shortcut,'Dweets',,
 [
-    ['🔎','https://dweetview.3d2k.com'],
     ['🌌','dweets/blackHole.dweet.js'],
     ['🌊','dweets/underwaterCavern.dweet.js'],
     ['🚌','dweets/cityTraffic.dweet.js'],
