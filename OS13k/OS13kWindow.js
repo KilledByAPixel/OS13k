@@ -332,9 +332,6 @@ class OS13kWindow extends HTMLElement
 
             // release grab window since this one will be in front
             grabWindow && onmouseup();
-
-            // set help display
-            this.codeText.value = program.help;
         }
         
         // remove old iframe if it exists
