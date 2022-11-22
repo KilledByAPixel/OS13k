@@ -152,7 +152,7 @@ if (window.ontouchstart !== undefined)
         let originalTarget = e.originalTarget || e.path[0];
 
         // allow event to contiue only if input
-        return !e.cancelable || /input|textarea|button/.test(originalTarget.localName);
+        return !e.cancelable || /button/.test(originalTarget.localName);
 
     }
     ontouchmove = e =>
