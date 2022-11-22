@@ -3,16 +3,16 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Mouse Input
 
-onmousedown = e=>
+const OS13k_onMouseDown = e=>
 {
     if (e.button == 1)
     {
         e.preventDefault(); // prevent middle mouse zoom
-        return false;
+        return true;
     }
 
     // get orignal target
-    const originalTarget = e.composedPath()[0];
+    const originalTarget = e && e.composedPath ? e.composedPath()[0] : e.target;
 
     // check if load icon is target while programs menu was visible
     if (e.target == loadIcon && e.target.windowOrMenu.style.visibility)
@@ -58,14 +58,27 @@ onmousedown = e=>
     else
     {
         // open or reactivate window if no valid target
+        //e.target.Open ? e.target.Open(originalTarget, e.x, e.y) : activeWindow && activeWindow.SetActive();
         e.target.Open ? e.target.Open(originalTarget, e.x, e.y) : activeWindow && activeWindow.SetActive();
         
         // allow event to contiue only if input
-        return e.target == loadIcon || /input|textarea/.test(originalTarget.localName);
+        return !e.cancelable || e.target == loadIcon || /input|textarea/.test(originalTarget.localName);
     }
 }
 
-onmousemove = e=>
+const OS13k_onMouseUp = e=>
+{
+    const originalTarget = e && e.composedPath ? e.composedPath()[0] : e.target;
+    originalTarget.parentElement == popups && originalTarget.remove(SystemSound(soundClose));
+
+    // set grab window active, no clamp, and set cursor to default, unset grab
+    grabWindow && (grabWindow.program.Save(),
+    SystemSound(soundGrabEnd),
+    grabWindow.SetActive(1, 0),
+        document.body.style.cursor = desktop.style.pointerEvents = grabWindow = '');
+}
+
+const OS13k_onMouseMove = e=>
 {
     // update grab position
     grabWindow ? grabWindow.style.left = e.x - grabOffsetX : 0;
@@ -75,17 +88,9 @@ onmousemove = e=>
     e.target.Move && e.target.Move();
 }
 
-onmouseup = e=>
-{
-    const originalTarget = e.composedPath()[0];
-    originalTarget.parentElement == popups && originalTarget.remove(SystemSound(soundClose));
-
-    // set grab window active, no clamp, and set cursor to default, unset grab
-    grabWindow && (grabWindow.program.Save(),
-    SystemSound(soundGrabEnd),
-    grabWindow.SetActive(1, 0),
-        document.body.style.cursor = desktop.style.pointerEvents = grabWindow = '');
-}
+onmouseup = e=> OS13k_onMouseUp(e);
+onmousedown = e=> OS13k_onMouseDown(e);
+onmousemove = e=> OS13k_onMouseMove(e);
 
 // prevent default right click context menu
 oncontextmenu = e=> false;
@@ -113,7 +118,7 @@ ondragover = ()=> false;
 
 // save if user was touching
 let wasTouching;
-    
+
 if (window.ontouchstart !== undefined)
 {
     // remove hovers, they get stuck on mobile
@@ -126,41 +131,52 @@ if (window.ontouchstart !== undefined)
             sheet.deleteRule(i)});
     }
     RemoveHovers(document);
-                
-    // handle touch event
-    let ProcessTouch = e=>
+    
+    // set touch events
+    ontouchstart = e =>
     {
-        // check if touching
-        let touching = e.touches.length;
-        if (touching)
+        if (e.touches[0])
         {
-            // set event pos
             e.x = e.touches[0].clientX;
             e.y = e.touches[0].clientY;
-
-            // pass event to mousemove and give focus to main window
-            onmousemove(e);
         }
 
-        // pass event to mouse down, prevent closing folders
-        touching & !wasTouching & !e.target.folder && e.target != loadIcon && onmousedown(e);
-
-        // pass event to mouse up
-        !touching & wasTouching && onmouseup(e);
-
-        // set was touching
-        wasTouching = touching;
+        OS13k_onMouseMove(e);
+        !e.target.folder &&    // allow browsing in folder list
+            OS13k_onMouseDown(e);
         
         // remove hovers from active window
         activeWindow && RemoveHovers(activeWindow.shadowRoot);
         
         // prevent default if not edit area
         let originalTarget = e.originalTarget || e.path[0];
-        
+
         // allow event to contiue only if input
-        return !e.cancelable || e.target == loadIcon || /input|textarea|button/.test(originalTarget.localName);
+        return !e.cancelable || /input|textarea|button/.test(originalTarget.localName);
+
+    }
+    ontouchmove = e =>
+    {
+        if (e.touches[0])
+        {
+            e.x = e.touches[0].clientX;
+            e.y = e.touches[0].clientY;
+        }
+        return OS13k_onMouseMove(e);
     }
     
-    // set touch events
-    ontouchstart = ontouchmove = ontouchend = ontouchcancel = ProcessTouch;
+    ontouchend = ontouchcancel = e =>
+    {
+        // pass event to mouse down
+        if (e.touches[0])
+        {
+            e.x = e.touches[0].clientX;
+            e.y = e.touches[0].clientY;
+        }
+        OS13k_onMouseUp(e);
+    }
+
+    onmousedown = e=>{}
+    onmouseup = e=>{}
+    onmousemove = e=>{}
 }
